@@ -1,0 +1,15 @@
+{
+  "short_name": "podopieczni",
+  "name": "podopieczni",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "type": "image/png",
+      "sizes": "51x60"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#7e10b1"
+}
