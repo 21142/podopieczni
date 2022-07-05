@@ -1,0 +1,14 @@
+trigger:
+  - main
+
+pool:
+  vmImage: "windows-latest"
+
+variables:
+  branchNameLowerCase: ${{lower(variables['Build.SourceBranchName'])}}
+  apiDomain: 'https://api.petfinder.com/v2/'
+  buildPlatform: "Any CPU"
+  buildConfiguration: "Release"
+  appName: 'podopieczni-frontend'
+
+name: '$(branchNameLowerCase)-$(appName)-$(Date:yyyyMMdd)$(Rev:.r)'
