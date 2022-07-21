@@ -17,4 +17,8 @@ export default defineNextConfig({
   images: {
     domains: ['i.pravatar.cc'],
   },
+  env: {
+    NEXTAUTH_URL: env.NEXTAUTH_URL,
+    NEXTAUTH_SECRET: env.NEXTAUTH_SECRET,
+  },
 });
