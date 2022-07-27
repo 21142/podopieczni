@@ -15,6 +15,9 @@ steps:
     versionSpec: '14.x'
   displayName: 'Install Node.js'
 
+- task: Npm@1
+  inputs:
+    workingDir: 'podopieczni/src'
 - script: |
     npm install
     npm run build
