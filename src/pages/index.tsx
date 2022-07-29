@@ -1,5 +1,5 @@
-import type { NextPage } from 'next';
-import Head from 'next/head';
+import PageLayout from '../components/layouts/primary/PageLayout';
+import { NextPageWithLayout } from './page';
 
 type TechnologyCardProps = {
   name: string;
@@ -7,15 +7,9 @@ type TechnologyCardProps = {
   documentation: string;
 };
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   return (
     <>
-      <Head>
-        <title>podopieczni</title>
-        <meta name="description" content="podopieczni" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <main className="container mx-auto flex flex-col items-center justify-center h-screen p-4">
         <h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
           pod<span className="text-purple-300">opieczni</span>
@@ -62,6 +56,10 @@ const TechnologyCard = ({
       </a>
     </section>
   );
+};
+
+Home.getLayout = (page) => {
+  return <PageLayout>{page}</PageLayout>;
 };
 
 export default Home;

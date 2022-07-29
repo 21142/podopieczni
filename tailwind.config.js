@@ -5,8 +5,9 @@ module.exports = {
     './src/components/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
+    //match with the ones from .storybook/preview.js
     screens: {
-      xm: '375px',
+      xs: '375px',
       sm: '600px',
       md: '900px',
       lg: '1200px',
