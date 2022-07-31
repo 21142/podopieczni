@@ -10,29 +10,27 @@ type TechnologyCardProps = {
 const Home: NextPageWithLayout = () => {
   return (
     <>
-      <main className="container mx-auto flex flex-col items-center justify-center h-screen p-4">
-        <h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
-          pod<span className="text-purple-300">opieczni</span>
-        </h1>
-        <p className="text-2xl text-gray-700">made with</p>
-        <div className="grid gap-3 pt-3 mt-3 text-center md:grid-cols-3 lg:w-2/3">
-          <TechnologyCard
-            name="NextJS"
-            description="The React framework for production"
-            documentation="https://nextjs.org/"
-          />
-          <TechnologyCard
-            name="TypeScript"
-            description="Strongly typed programming language that builds on JavaScript, giving you better tooling at any scale"
-            documentation="https://www.typescriptlang.org/"
-          />
-          <TechnologyCard
-            name="TailwindCSS"
-            description="Rapidly build modern websites without ever leaving your HTML"
-            documentation="https://tailwindcss.com/"
-          />
-        </div>
-      </main>
+      <h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
+        pod<span className="text-purple-300">opieczni</span>
+      </h1>
+      <p className="text-2xl text-gray-700">made with</p>
+      <div className="grid gap-3 pt-3 mt-3 text-center md:grid-cols-3 lg:w-2/3">
+        <TechnologyCard
+          name="NextJS"
+          description="The React framework for production"
+          documentation="https://nextjs.org/"
+        />
+        <TechnologyCard
+          name="TypeScript"
+          description="Strongly typed programming language that builds on JavaScript, giving you better tooling at any scale"
+          documentation="https://www.typescriptlang.org/"
+        />
+        <TechnologyCard
+          name="TailwindCSS"
+          description="Rapidly build modern websites without ever leaving your HTML"
+          documentation="https://tailwindcss.com/"
+        />
+      </div>
     </>
   );
 };
