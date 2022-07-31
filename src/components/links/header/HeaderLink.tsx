@@ -7,9 +7,9 @@ export interface IHeaderLink {
 const HeaderLink: React.FC<IHeaderLink> = ({ title }) => {
   return (
     <Link href="/">
-      <a className="text-gray-600 hover:text-primary-400 hover:underline">
+      <h3 className="hover:text-primary-400 cursor-pointer transition duration-100 ease-in-out hover:scale-110">
         {title}
-      </a>
+      </h3>
     </Link>
   );
 };
