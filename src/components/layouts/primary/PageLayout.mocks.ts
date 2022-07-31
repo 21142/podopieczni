@@ -1,7 +1,7 @@
 import { IPageLayout } from './PageLayout';
 
 const base: IPageLayout = {
-  children: '{{component}}',
+  children: '',
 };
 
 export const mockPageLayoutProps = {

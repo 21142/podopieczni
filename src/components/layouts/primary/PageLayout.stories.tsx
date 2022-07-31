@@ -3,7 +3,7 @@ import PageLayout, { IPageLayout } from './PageLayout';
 import { mockPageLayoutProps } from './PageLayout.mocks';
 
 export default {
-  title: 'layouts/PrimaryLayout',
+  title: 'layouts/PageLayout',
   component: PageLayout,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {},
