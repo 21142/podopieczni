@@ -1,9 +1,7 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import logo from '../../../../public/images/logo.png';
 import HeaderLink from '../../links/header/HeaderLink';
 import Button from '../../buttons/base/Button';
 import { MenuAlt2Icon } from '@heroicons/react/outline';
+import Logo from 'src/components/logos/default/Logo';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 
@@ -11,18 +9,11 @@ const Header: React.FC<IHeader> = ({ className, ...headerProps }) => {
   return (
     <header
       {...headerProps}
-      className={`flex flex-col h-20 w-full px-5 mx-auto ${className}`}
+      className={`flex flex-col h-20 w-full px-5 mx-auto max-w-7xl ${className}`}
     >
       <div className="flex items-center justify-between space-x-10">
         <div className="flex">
-          <Link href="/">
-            <Image
-              src={logo}
-              className="cursor-pointer"
-              objectFit="contain"
-              alt="podopieczni logo"
-            />
-          </Link>
+          <Logo />
         </div>
         <div className="hidden md:inline-flex items-center space-x-10">
           <HeaderLink title="Główna" />
