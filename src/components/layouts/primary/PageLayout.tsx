@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Footer from 'src/components/navigation/footer/Footer';
 import Header from '../../navigation/header/Header';
 
 export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
@@ -11,7 +12,7 @@ const PageLayout: React.FC<IPageLayout> = ({
   ...divProps
 }) => {
   return (
-    <>
+    <div className="bg-neutral-50">
       <Head>
         <title>podopieczni</title>
         <meta name="description" content="podopieczni" />
@@ -19,16 +20,17 @@ const PageLayout: React.FC<IPageLayout> = ({
       </Head>
       <div
         {...divProps}
-        className={`min-h-screen max-w-7xl mx-auto flex flex-col ${justify}`}
+        className={`min-h-screen w-full mx-auto flex flex-col ${justify}`}
       >
-        <Header className="border" />
-        <main className="border flex flex-col items-center justify-center h-screen p-4 px-5">
+        <div className="w-full bg-neutral-0">
+          <Header />
+        </div>
+        <main className="mb-auto pb-20 flex flex-col flex-grow items-center justify-center max-w-8xl">
           {children}
         </main>
-        <div className="m-auto" />
-        {/* <Footer /> */}
+        <Footer />
       </div>
-    </>
+    </div>
   );
 };
 
