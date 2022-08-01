@@ -90,6 +90,9 @@ module.exports = {
         128: '32rem',
         144: '36rem',
       },
+      maxWidth: {
+        '8xl': '96rem',
+      },
       borderRadius: {
         '4xl': '2rem',
       },
