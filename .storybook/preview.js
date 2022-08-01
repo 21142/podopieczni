@@ -2,6 +2,7 @@
 import * as NextImage from 'next/image';
 import React from 'react';
 import '../src/styles/globals.css';
+import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 const BREAKPOINTS_INT = {
   xs: 375,
@@ -44,5 +45,7 @@ export const parameters = {
     },
   },
   viewport: { viewports: customViewports },
+  // For mobile testing
+  // viewport: { viewports: INITIAL_VIEWPORTS },
   layout: 'fullscreen',
 };
