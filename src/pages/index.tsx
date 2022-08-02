@@ -1,4 +1,6 @@
 import Hero from 'src/components/utils/hero/Hero';
+import GlobalStatistics from 'src/components/utils/statistics/GlobalStatistics';
+import { mockGlobalStatisticsProps } from 'src/components/utils/statistics/GlobalStatistics.mocks';
 import PageLayout from '../components/layouts/primary/PageLayout';
 import { NextPageWithLayout } from './page';
 
@@ -13,12 +15,16 @@ const Home: NextPageWithLayout = () => {
     <>
       <div className="w-full">
         <Hero />
-        <div className="flex flex-col items-center justify-center py-12">
-          <h1 className="text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700">
-            pod<span className="text-primary-300">opieczni</span>
+        <div className="flex flex-col text-center items-center justify-center mt-10 py-12">
+          <h1 className="text-5xl p-2 md:text-[4rem] leading-[1.25] font-extrabold text-neutral-800">
+            Szukaj <span className="text-primary-300">podopiecznych</span>,
+            <br /> do których pasujesz.
           </h1>
-          <p className="text-2xl text-gray-700">made with</p>
-          <div className="grid gap-3 pt-3 mt-3 text-center md:grid-cols-3 lg:w-2/3">
+          <h2 className="text-md md:text-4xl p-2 mb-[15rem] font-bold text-neutral-600">
+            Pomoc w adopcji i zarządzaniu danymi zwierząt.
+          </h2>
+          <GlobalStatistics adopted={222} waiting={111} shelters={31} />
+          <div className="grid gap-3 pt-3 mt-[20rem] text-center md:grid-cols-3 lg:w-2/3">
             <TechnologyCard
               name="NextJS"
               description="The React framework for production"
