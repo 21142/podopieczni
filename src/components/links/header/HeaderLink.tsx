@@ -1,15 +1,16 @@
 import Link from 'next/link';
 
 export interface IHeaderLink {
+  href: string;
   title: string;
 }
 
-const HeaderLink: React.FC<IHeaderLink> = ({ title }) => {
+const HeaderLink: React.FC<IHeaderLink> = ({ href, title }) => {
   return (
-    <Link href="/">
-      <h3 className="hover:text-primary-400 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110">
+    <Link href={href}>
+      <a className="hover:text-primary-400 cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110">
         {title}
-      </h3>
+      </a>
     </Link>
   );
 };
