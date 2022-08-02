@@ -4,7 +4,7 @@ const Footer: React.FC<IFooter> = () => {
   return (
     <footer className="w-full bg-primary-400">
       <div className="flex flex-col justify-center items-center">
-        <div className="grid grid-cols-2 gap-6 py-8 mt-2 px-6 md:grid-cols-4 text-neutral-50">
+        <div className="grid max-w-[77.5rem] grid-cols-2 gap-6 py-8 mt-2 px-6 md:grid-cols-4 text-neutral-50">
           <div>
             <h2 className="mb-6 text-sm font-semibold uppercase">
               Mapa strony

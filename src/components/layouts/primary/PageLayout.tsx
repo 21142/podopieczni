@@ -3,7 +3,7 @@ import Footer from 'src/components/navigation/footer/Footer';
 import Header from '../../navigation/header/Header';
 
 export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
-  justify?: 'items-center' | 'items-start' | 'items-end' | 'items-stretch';
+  justify?: 'items-center';
 }
 
 const PageLayout: React.FC<IPageLayout> = ({
@@ -12,7 +12,7 @@ const PageLayout: React.FC<IPageLayout> = ({
   ...divProps
 }) => {
   return (
-    <div className="bg-neutral-50">
+    <div className="overflow-x-hidden bg-neutral-50">
       <Head>
         <title>podopieczni</title>
         <meta name="description" content="podopieczni" />
@@ -25,7 +25,7 @@ const PageLayout: React.FC<IPageLayout> = ({
         <div className="w-full bg-neutral-0">
           <Header />
         </div>
-        <main className="mb-auto pb-20 flex flex-col flex-grow items-center justify-center max-w-8xl">
+        <main className="mb-auto pb-20 w-full flex flex-col flex-grow">
           {children}
         </main>
         <Footer />
