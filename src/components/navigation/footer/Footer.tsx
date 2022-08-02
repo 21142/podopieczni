@@ -95,8 +95,7 @@ const Footer: React.FC<IFooter> = () => {
         </div>
         <div className="py-4 md:flex md:items-center md:justify-between">
           <span className="text-sm text-neutral-0 sm:text-center">
-            © 2022{' '}
-            <a href="https://podopieczni.azurewebsites.net/">podopieczni™</a>
+            © 2022 podopieczni™
           </span>
         </div>
       </div>
