@@ -10,7 +10,7 @@ const Header: React.FC<IHeader> = ({ className, ...headerProps }) => {
   return (
     <header
       {...headerProps}
-      className={`sticky top-0 z-10 flex flex-col h-20 w-full px-5 mx-auto max-w-8xl ${className}`}
+      className={`sticky top-0 z-10 flex flex-col h-20 w-full px-5 mx-auto max-w-7xl 2xl:max-w-8xl ${className}`}
     >
       <div className="flex items-center justify-between space-x-10">
         <Link href="/">
@@ -19,10 +19,10 @@ const Header: React.FC<IHeader> = ({ className, ...headerProps }) => {
           </div>
         </Link>
         <div className="hidden md:inline-flex pr-14 items-center space-x-10">
-          <HeaderLink title="Główna" />
-          <HeaderLink title="Adopcja" />
-          <HeaderLink title="Edukacja" />
-          <HeaderLink title="Kontakt" />
+          <HeaderLink href="/" title="Główna" />
+          <HeaderLink href="/" title="Adopcja" />
+          <HeaderLink href="/" title="Edukacja" />
+          <HeaderLink href="/" title="Kontakt" />
         </div>
         <div className="flex justify-between space-x-5 m-5">
           <div className="hidden sm:inline-flex items-center space-x-5">
