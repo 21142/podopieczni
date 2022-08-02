@@ -12,6 +12,7 @@ module.exports = {
       md: '900px',
       lg: '1200px',
       xl: '1536px',
+      '2xl': '1800px',
     },
     fontSize: {
       xs: '.75rem',
@@ -91,7 +92,7 @@ module.exports = {
         144: '36rem',
       },
       maxWidth: {
-        '8xl': '96rem',
+        '8xl': '120rem',
       },
       borderRadius: {
         '4xl': '2rem',
