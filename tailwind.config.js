@@ -92,7 +92,7 @@ module.exports = {
         144: '36rem',
       },
       maxWidth: {
-        '8xl': '120rem',
+        '8xl': '96rem',
       },
       borderRadius: {
         '4xl': '2rem',
