@@ -23,7 +23,7 @@ const Home: NextPageWithLayout = () => {
           <h2 className="text-md md:text-4xl p-2 mb-[15rem] font-bold text-neutral-600">
             Pomoc w adopcji i zarządzaniu danymi zwierząt.
           </h2>
-          <GlobalStatistics adopted={222} waiting={111} shelters={31} />
+          <GlobalStatistics {...mockGlobalStatisticsProps.base} />
           <div className="grid gap-3 pt-3 mt-[20rem] text-center md:grid-cols-3 lg:w-2/3">
             <TechnologyCard
               name="NextJS"

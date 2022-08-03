@@ -97,6 +97,9 @@ module.exports = {
       borderRadius: {
         '4xl': '2rem',
       },
+      aspectRatio: {
+        '3/1': '1440 / 500',
+      },
     },
   },
   plugins: [],
