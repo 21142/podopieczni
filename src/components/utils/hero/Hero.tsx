@@ -14,7 +14,10 @@ const Hero: React.FC<IHero> = () => {
         objectFit="cover"
         alt="hero image section"
       />
-      <div className="flex flex-col text-center items-center justify-center absolute top-[71%] left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-sm h-[10.75rem] w-[90%] sm:max-w-[34rem] rounded-2xl shadow-lg">
+      <div className="flex flex-col text-center items-center justify-center absolute top-[61%] xl:top-[64%] left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-sm h-[11.5rem] w-[90%] sm:max-w-[34rem] rounded-2xl shadow-lg">
+        <h2 className="text-neutral-50 font-bold text-lg sm:text-2xl mb-2">
+          Wyszukaj zwierzę lub schronisko:
+        </h2>
         <Search />
         <div className="pt-3 flex items-center justify-center gap-x-5 w-[19.5rem]">
           <Button text="Psy" />
