@@ -13,6 +13,6 @@ function defineNextConfig(config) {
 module.exports = defineNextConfig({
   reactStrictMode: true,
   images: {
-    domains: ['i.pravatar.cc'],
+    domains: ['i.pravatar.cc', 'dl5zpyw5k3jeb.cloudfront.net'],
   },
 });
