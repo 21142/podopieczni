@@ -4,9 +4,10 @@ import styles from './AnimalCard.module.css';
 export interface IAnimalCard {
   tag: string;
   title: string;
-  body: string;
+  body?: string;
   author: string;
-  time: string;
+  avatar: string;
+  photo?: string;
 }
 
 const AnimalCard: React.FC<IAnimalCard> = ({
@@ -14,7 +15,8 @@ const AnimalCard: React.FC<IAnimalCard> = ({
   title,
   body,
   author,
-  time,
+  avatar,
+  photo,
 }) => {
   return (
     <>
@@ -22,7 +24,7 @@ const AnimalCard: React.FC<IAnimalCard> = ({
         <div className={styles.card}>
           <div className={styles.card__header}>
             <Image
-              src="/time-cat.jpeg"
+              src={photo ?? '/time-cat.jpeg'}
               alt="card__image"
               className={styles.card__image}
               width="600"
@@ -37,15 +39,14 @@ const AnimalCard: React.FC<IAnimalCard> = ({
           <div className={styles.card__footer}>
             <div className={styles.user}>
               <Image
-                src="https://i.pravatar.cc/40?img=3"
+                src={author ?? 'https://i.pravatar.cc/40?img=3'}
                 alt="user__image"
                 className={styles.user__image}
                 width="40"
                 height="40"
               />
               <div className={styles.user__info}>
-                <h5>{author}</h5>
-                <small>{time}</small>
+                <h5>{avatar}</h5>
               </div>
             </div>
           </div>
