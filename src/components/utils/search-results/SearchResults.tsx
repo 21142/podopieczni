@@ -1,12 +1,11 @@
 import AnimalCard from 'src/components/cards/animal/AnimalCard';
-import AnimalData from './types';
+import IAnimalData from './types';
 
 export interface ISearchResults {
-  results?: AnimalData[];
+  results?: IAnimalData[];
 }
 
 const SearchResults: React.FC<ISearchResults> = ({ results }) => {
-  console.log(results);
   return (
     <div className="grid gap-2 lg:grid-cols-3 md:grid-cols-2">
       {results?.map((animal) => (

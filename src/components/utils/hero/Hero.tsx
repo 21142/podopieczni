@@ -3,7 +3,7 @@ import Button from 'src/components/buttons/base/Button';
 import hero from '../../../../public/images/hero.png';
 import Search from '../../../components/inputs/search/Search';
 
-export interface IHero { }
+export interface IHero {}
 
 const Hero: React.FC<IHero> = () => {
   return (

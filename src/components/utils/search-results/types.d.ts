@@ -1,21 +1,21 @@
 /* eslint-disable no-unused-vars */
-export default interface AnimalData {
+export default interface IAnimalData {
   id: number;
   organization_id: string;
   url: string;
   type: Species;
-  breeds: Breeds;
-  colors: Colors;
+  breeds: IBreeds;
+  colors: IColors;
   age: Age;
   gender: Gender;
   size: Size;
   coat?: string;
-  attributes: Attributes;
+  attributes: IAttributes;
   tags: string[];
   name: string;
   description?: string | undefined;
   organization_animal_id?: string;
-  photos: Photo[];
+  photos: IPhoto[];
   videos: any[];
   status: string;
   status_changed_at: string;
@@ -23,14 +23,14 @@ export default interface AnimalData {
   distance: number;
 }
 
-export interface Breeds {
+export interface IBreeds {
   primary: string;
   secondary?: string;
   mixed: boolean;
   unknown: boolean;
 }
 
-export interface Attributes {
+export interface IAttributes {
   spayed_neutered: boolean;
   house_trained: boolean;
   declawed?: boolean;
@@ -38,14 +38,14 @@ export interface Attributes {
   shots_current: boolean;
 }
 
-export interface Photo {
+export interface IPhoto {
   small?: string;
   medium?: string;
   large?: string;
   full?: string;
 }
 
-export interface Colors {
+export interface IColors {
   primary?: string;
   secondary?: string;
 }

@@ -1,23 +1,29 @@
 import { SearchIcon } from '@heroicons/react/outline';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 export interface ISearch {}
 
 const Search: React.FC<ISearch> = () => {
   const [searchQuery, setSearchQuery] = useState<string>();
+  const router = useRouter();
 
   return (
-    <form 
-      className="flex p-2 w-[90%] max-w-[24rem] bg-neutral-50 items-center rounded-full border-2 shadow-sm" 
+    <form
+      className="flex p-2 w-[90%] max-w-[24rem] bg-neutral-50 items-center rounded-full border-2 shadow-sm"
       onSubmit={(e) => {
-      e.preventDefault();
-      alert(searchQuery);
+        e.preventDefault();
+        if (searchQuery === undefined) {
+          router.push('/results');
+        } else {
+          router.push(`/results?search=${searchQuery}`);
+        }
       }}
     >
       <input
         className="flex-grow pl-3 pr-2 bg-transparent outline-none placeholder-neutral-400 text-neutral-400 focus:text-neutral-600 transition-colors duration-200 ease-in-out"
         type="text"
-        placeholder="Podaj ulicę, miejscowość lub kod pocztowy"
+        placeholder="np. California lub 22-152"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
