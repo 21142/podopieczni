@@ -1,7 +1,7 @@
 import { ILanding } from './Landing';
 
 const base: ILanding = {
-  sampleTextProp: 'sampleText',
+  featuredAnimals: [],
 };
 
 export const mockLandingProps = {
