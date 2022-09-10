@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import logo from '../../../../public/images/logo.png';
+import logo from '../../../../public/images/logo.svg';
 
-export interface ILogo { }
+export interface ILogo {}
 
 const Logo: React.FC<ILogo> = () => {
   return (

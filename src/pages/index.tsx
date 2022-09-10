@@ -11,7 +11,7 @@ export interface IResults {
 const Home: NextPageWithLayout<IResults> = ({ featuredAnimals }) => {
   return (
     <>
-      <Landing featuredAnimals={featuredAnimals}/>
+      <Landing featuredAnimals={featuredAnimals} />
     </>
   );
 };

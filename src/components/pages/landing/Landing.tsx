@@ -7,12 +7,15 @@ import SearchByState from 'src/components/utils/search-by-state/SearchByState';
 import IAnimalData from 'src/components/utils/search-results/types';
 import GlobalStatistics from 'src/components/utils/statistics/GlobalStatistics';
 import { mockGlobalStatisticsProps } from 'src/components/utils/statistics/GlobalStatistics.mocks';
+import printConsoleLogo from 'src/utils/console-logo';
 
 export interface ILanding {
   featuredAnimals?: IAnimalData[];
 }
 
 const Landing: React.FC<ILanding> = ({ featuredAnimals }) => {
+  printConsoleLogo();
+
   return (
     <>
       <Hero />
