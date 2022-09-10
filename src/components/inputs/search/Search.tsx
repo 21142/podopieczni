@@ -5,7 +5,7 @@ import { useState } from 'react';
 export interface ISearch {}
 
 const Search: React.FC<ISearch> = () => {
-  const [searchQuery, setSearchQuery] = useState<string>();
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const router = useRouter();
 
   return (
