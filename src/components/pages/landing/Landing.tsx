@@ -4,16 +4,13 @@ import FeaturedPets from 'src/components/utils/featured-pets/FeaturedPets';
 import Hero from 'src/components/utils/hero/Hero';
 import SearchByBreed from 'src/components/utils/search-by-breed/SearchByBreed';
 import SearchByState from 'src/components/utils/search-by-state/SearchByState';
-import IAnimalData from 'src/components/utils/search-results/types';
 import GlobalStatistics from 'src/components/utils/statistics/GlobalStatistics';
 import { mockGlobalStatisticsProps } from 'src/components/utils/statistics/GlobalStatistics.mocks';
 import printConsoleLogo from 'src/utils/console-logo';
 
-export interface ILanding {
-  featuredAnimals?: IAnimalData[];
-}
+export interface ILanding {}
 
-const Landing: React.FC<ILanding> = ({ featuredAnimals }) => {
+const Landing: React.FC<ILanding> = () => {
   printConsoleLogo();
 
   return (
@@ -33,7 +30,7 @@ const Landing: React.FC<ILanding> = ({ featuredAnimals }) => {
           <ChevronDoubleDownIcon className="h-8 hover:scale-95 transition-transform duration-50 ease-in-out text-primary-300 cursor-pointer" />
         </Link>
 
-        <FeaturedPets featuredAnimals={featuredAnimals} />
+        <FeaturedPets />
         <GlobalStatistics {...mockGlobalStatisticsProps.base} />
         <SearchByBreed />
         <SearchByState />

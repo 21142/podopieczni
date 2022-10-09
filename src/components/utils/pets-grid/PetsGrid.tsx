@@ -1,14 +1,14 @@
 import AnimalCard from 'src/components/cards/animal/AnimalCard';
-import IAnimalData from './types';
+import IAnimalData from '../search-results/types';
 
-export interface ISearchResults {
-  results?: IAnimalData[];
+export interface IPetsGrid {
+  featuredAnimals: IAnimalData[];
 }
 
-const SearchResults: React.FC<ISearchResults> = ({ results }) => {
+const PetsGrid: React.FC<IPetsGrid> = ({ featuredAnimals }) => {
   return (
-    <div className="grid gap-2 lg:grid-cols-3 md:grid-cols-2">
-      {results?.map((animal) => (
+    <div className="grid gap-3 p-5 max-w-7xl lg:grid-cols-3 md:grid-cols-2 xl:w-3/4 2xl:w-2/3">
+      {featuredAnimals?.map((animal: IAnimalData) => (
         <AnimalCard
           key={animal.id}
           photo={animal.photos[0]?.large ?? '/no-profile-picture.svg'}
@@ -23,4 +23,4 @@ const SearchResults: React.FC<ISearchResults> = ({ results }) => {
   );
 };
 
-export default SearchResults;
+export default PetsGrid;
