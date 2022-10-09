@@ -16,7 +16,7 @@ const AnimalCard: React.FC<IAnimalCard> = ({
   body,
   author,
   avatar,
-  photo,
+  photo
 }) => {
   return (
     <>
@@ -24,7 +24,7 @@ const AnimalCard: React.FC<IAnimalCard> = ({
         <div className={styles.card}>
           <div className={styles.card__header}>
             <Image
-              src={photo ?? '/time-cat.jpeg'}
+              src={photo ?? '/no-profile-picture.svg'}
               alt="card__image"
               className={styles.card__image}
               width="600"

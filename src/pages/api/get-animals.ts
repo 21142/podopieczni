@@ -13,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const accessToken = petfindetOauthData.access_token;
     if (accessToken) {
       const petfindetData = await fetch(
-        'https://api.petfinder.com/v2/animals?location=22152',
+        'https://api.petfinder.com/v2/animals',
         {
           headers: {
             Authorization: `Bearer ${accessToken}`
