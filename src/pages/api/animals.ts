@@ -2,10 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import IAnimalData from 'src/components/utils/search-results/types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { host } = req.headers;
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
-  const baseUrl = req ? `${protocol}://${host}` : '';
-
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   try {
     const petfindetOauthData = await fetch(
       `${baseUrl}/api/petfinder-oauth-token`
@@ -16,8 +13,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         'https://api.petfinder.com/v2/animals',
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
       ).then((res) => res.json());
       const allAnimals: IAnimalData[] = petfindetData.animals;
