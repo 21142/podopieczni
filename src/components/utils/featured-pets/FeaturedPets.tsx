@@ -8,16 +8,18 @@ export interface IFeaturedPets {
 }
 
 const animalFetcher = async () => {
-  const petfindetAnimalsData = await fetch(
-    'http://localhost:3000/api/get-animals'
-  ).then((res) => res.json());
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+  const petfindetAnimalsData = await fetch(`${baseUrl}/api/animals`).then(
+    (res) => res.json()
+  );
   const featuredAnimalsData = petfindetAnimalsData.slice(10, 16);
   return featuredAnimalsData;
 };
 
 const FeaturedPets: React.FC<IFeaturedPets> = () => {
   const { data: featuredAnimals, isLoading } = useQuery(
-    ['get-animals'],
+    ['animals'],
     animalFetcher
   );
 
