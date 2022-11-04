@@ -7,13 +7,14 @@ import Search from 'src/components/inputs/search/Search';
 
 export interface IResults {
   animals?: IAnimalData[];
+  searchQuery: string;
 }
 
-const Results: NextPageWithLayout<IResults> = ({ animals }) => {
+const Results: NextPageWithLayout<IResults> = ({ animals, searchQuery }) => {
   return (
     <>
       <div className="flex text-center bg-primary-300 w-full items-center justify-center pt-4">
-        <Search />
+        <Search query={searchQuery} />
       </div>
       <div id="featured" className="aspect-[40/1] rotate-180">
         <svg
@@ -39,9 +40,13 @@ const Results: NextPageWithLayout<IResults> = ({ animals }) => {
         </svg>
       </div>
       <div className="flex text-center justify-center pt-10 mx-auto max-w-8xl">
-        <div className="bg-gray-400 w-32">FILTER MENU PLACEHOLDER</div>
+        <div className="hidden md:inline-flex bg-gray-400 w-32">
+          FILTER MENU PLACEHOLDER
+        </div>
         <div className="flex flex-col">
-          <div className="bg-neutral-200">FILTERS ROW PLACEHOLDER</div>
+          <div className="hidden md:inline-flex bg-neutral-200">
+            FILTERS ROW PLACEHOLDER
+          </div>
           <SearchResults results={animals} />
         </div>
       </div>
@@ -72,20 +77,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     const petfindetData = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     }).then((res) => res.json());
     const animals: IAnimalData[] = petfindetData?.animals;
     return {
       props: {
-        animals
-      }
+        animals: animals,
+        searchQuery: search,
+      },
     };
   } else {
     return {
       props: {
-        animals: ['no animals found']
-      }
+        animals: ['no animals found'],
+        searchQuery: search,
+      },
     };
   }
 };

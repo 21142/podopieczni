@@ -1,19 +1,27 @@
 import { SearchIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export interface ISearch {}
+export interface ISearch {
+  query: string;
+}
 
-const Search: React.FC<ISearch> = () => {
+const Search: React.FC<ISearch> = ({ query }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const router = useRouter();
+
+  useEffect(() => {
+    if (query) {
+      setSearchQuery(query);
+    }
+  }, [query]);
 
   return (
     <form
       className="flex p-2 w-[90%] max-w-[24rem] bg-neutral-50 items-center rounded-full border-2 shadow-sm"
       onSubmit={(e) => {
         e.preventDefault();
-        if (searchQuery === undefined) {
+        if (!searchQuery) {
           router.push('/results');
         } else {
           router.push(`/results?search=${searchQuery}`);
