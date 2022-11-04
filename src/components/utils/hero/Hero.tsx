@@ -19,7 +19,7 @@ const Hero: React.FC<IHero> = () => {
         <h2 className="text-neutral-50 font-bold text-lg sm:text-2xl mb-2">
           Wyszukaj zwierzę lub schronisko:
         </h2>
-        <Search />
+        <Search query={''} />
         <div className="pt-3 flex items-center justify-center gap-x-5 w-[19.5rem]">
           <Button text="Psy" />
           <Button text="Koty" />
