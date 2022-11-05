@@ -1,23 +1,18 @@
+import type { Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
+import type { AppType } from 'next/app';
+import { trpc } from 'src/utils/trpc';
 import '../styles/globals.css';
-import { NextPageWithLayout } from './page';
-import type AppProps from 'next/app';
-import '../styles/globals.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-interface AppPropsWithLayout extends AppProps {
-  Component: NextPageWithLayout;
-  pageProps: any;
-}
-
-const queryClient = new QueryClient();
-
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const getLayout = Component.getLayout || ((page) => page);
-  return getLayout(
-    <QueryClientProvider client={queryClient}>
+const MyApp: AppType<{ session: Session | null }> = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}) => {
+  return (
+    <SessionProvider session={session}>
       <Component {...pageProps} />
-    </QueryClientProvider>
+    </SessionProvider>
   );
-}
+};
 
-export default MyApp;
+export default trpc.withTRPC(MyApp);

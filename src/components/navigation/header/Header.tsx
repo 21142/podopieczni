@@ -3,6 +3,7 @@ import Button from '../../buttons/base/Button';
 import { MenuAlt2Icon } from '@heroicons/react/outline';
 import Logo from 'src/components/logos/default/Logo';
 import Link from 'next/link';
+import AuthButton from 'src/components/auth/button/AuthButton';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 
@@ -26,7 +27,7 @@ const Header: React.FC<IHeader> = ({ className, ...headerProps }) => {
         </div>
         <div className="flex justify-between space-x-5 m-5">
           <div className="hidden sm:inline-flex items-center space-x-5">
-            <Button text="Zaloguj się" />
+            <AuthButton />
           </div>
           <div className="md:hidden">
             <MenuAlt2Icon className="w-8 h-8 cursor-pointer" />
