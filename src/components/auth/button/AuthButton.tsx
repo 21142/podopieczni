@@ -5,16 +5,13 @@ const AuthButton: React.FC = () => {
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center gap-2">
-      {sessionData && (
-        <p className="text-lg text-primary-300">
-          Witaj {sessionData?.user?.name?.split(' ').at(0)}
-        </p>
-      )}
       <button
-        className="text-primary-300 border border-primary-300 rounded-full py-1 px-4 hover:text-white hover:bg-primary-300 transition-colors duration-200 ease-in-out cursor-pointer"
+        className="text-primary-300 border border-primary-300 rounded-full py-1 px-4 text-sm lg:text-base hover:text-white hover:bg-primary-300 transition-colors duration-200 ease-in-out cursor-pointer"
         onClick={sessionData ? () => signOut() : () => signIn()}
       >
-        {sessionData ? 'Wyloguj się' : 'Zaloguj się'}
+        {sessionData
+          ? `Wyloguj się ${sessionData?.user?.name?.split(' ').at(0)}`
+          : 'Zaloguj się'}
       </button>
     </div>
   );

@@ -3,10 +3,13 @@ import { MenuAlt2Icon } from '@heroicons/react/outline';
 import Logo from 'src/components/logos/default/Logo';
 import Link from 'next/link';
 import AuthButton from 'src/components/auth/button/AuthButton';
+import { useSession } from 'next-auth/react';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 
 const Header: React.FC<IHeader> = ({ className, ...headerProps }) => {
+  const { data: sessionData } = useSession();
+
   return (
     <header
       {...headerProps}
@@ -23,6 +26,7 @@ const Header: React.FC<IHeader> = ({ className, ...headerProps }) => {
           <HeaderLink href="/" title="Adopcja" />
           <HeaderLink href="/" title="Edukacja" />
           <HeaderLink href="/" title="Kontakt" />
+          {sessionData && <HeaderLink href="/register" title="Dodaj" />}
         </div>
         <div className="flex justify-between space-x-5 m-5">
           <div className="hidden sm:inline-flex items-center space-x-5">
