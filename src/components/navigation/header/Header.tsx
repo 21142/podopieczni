@@ -1,5 +1,4 @@
 import HeaderLink from '../../links/header/HeaderLink';
-import Button from '../../buttons/base/Button';
 import { MenuAlt2Icon } from '@heroicons/react/outline';
 import Logo from 'src/components/logos/default/Logo';
 import Link from 'next/link';
