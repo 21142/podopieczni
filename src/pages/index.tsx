@@ -1,19 +1,17 @@
+import type { NextPage } from 'next';
+import PageLayout from 'src/components/layouts/primary/PageLayout';
 import Landing from 'src/components/pages/landing/Landing';
-import PageLayout from '../components/layouts/primary/PageLayout';
-import { NextPageWithLayout } from './page';
 
 export interface IResults {}
 
-const Home: NextPageWithLayout<IResults> = () => {
+const Home: NextPage<IResults> = () => {
   return (
     <>
-      <Landing />
+      <PageLayout>
+        <Landing />
+      </PageLayout>
     </>
   );
-};
-
-Home.getLayout = (page) => {
-  return <PageLayout>{page}</PageLayout>;
 };
 
 export default Home;

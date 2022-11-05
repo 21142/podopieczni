@@ -19,10 +19,12 @@
   },
   "include": [
     "next-env.d.ts",
-    "next-auth.d.ts",
+    "src/types/next-auth.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js"
+    "**/*.js",
+    "**/*.cjs",
+    "**/*.mjs"
   ],
   "exclude": ["node_modules"]
 }

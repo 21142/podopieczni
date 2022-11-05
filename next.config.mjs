@@ -10,7 +10,7 @@ function defineNextConfig(config) {
   return config;
 }
 
-module.exports = defineNextConfig({
+export default defineNextConfig({
   reactStrictMode: true,
   images: {
     domains: ['i.pravatar.cc', 'dl5zpyw5k3jeb.cloudfront.net'],
