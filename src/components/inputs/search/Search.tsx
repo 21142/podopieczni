@@ -29,7 +29,7 @@ const Search: React.FC<ISearch> = ({ query }) => {
       }}
     >
       <input
-        className="flex-grow pl-3 pr-2 bg-transparent outline-none placeholder-neutral-400 text-neutral-400 focus:text-neutral-600 transition-colors duration-200 ease-in-out"
+        className="flex-grow pl-3 pr-2 bg-transparent border-none outline-none placeholder-neutral-400 text-neutral-400 focus:text-neutral-600 transition-colors duration-200 ease-in-out"
         type="text"
         placeholder="np. California lub 22-152"
         value={searchQuery}

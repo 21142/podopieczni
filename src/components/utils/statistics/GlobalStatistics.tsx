@@ -10,7 +10,7 @@ const GlobalStatistics: React.FC<IGlobalStatistics> = ({
   shelters,
 }) => {
   return (
-    <div className="flex items-center justify-center gap-[1rem] sm:gap-[3rem] md:gap-[5rem]">
+    <div className="flex items-center min-h-screen justify-center gap-[1rem] sm:gap-[3rem] md:gap-[5rem]">
       <div>
         <p className="text-lg sm:text-2xl md:text-4xl font-semibold text-neutral-800">
           {adopted}
