@@ -5,15 +5,16 @@ import Link from 'next/link';
 import AuthButton from 'src/components/auth/button/AuthButton';
 import { useSession } from 'next-auth/react';
 
-export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
-
-const Header: React.FC<IHeader> = ({ className, ...headerProps }) => {
+const Header: React.FC<JSX.IntrinsicElements['header']> = ({
+  className,
+  ...headerProps
+}) => {
   const { data: sessionData } = useSession();
 
   return (
     <header
       {...headerProps}
-      className={`sticky top-0 z-10 flex flex-col h-20 w-full px-5 mx-auto max-w-7xl 2xl:max-w-8xl ${className}`}
+      className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col px-5 2xl:max-w-8xl ${className}`}
     >
       <div className="flex items-center justify-between space-x-10">
         <Link href="/">
@@ -21,19 +22,36 @@ const Header: React.FC<IHeader> = ({ className, ...headerProps }) => {
             <Logo />
           </div>
         </Link>
-        <div className="hidden md:inline-flex pr-14 items-center space-x-10">
-          <HeaderLink href="/" title="Główna" />
-          <HeaderLink href="/" title="Adopcja" />
-          <HeaderLink href="/" title="Edukacja" />
-          <HeaderLink href="/" title="Kontakt" />
-          {sessionData && <HeaderLink href="/register" title="Dodaj" />}
+        <div className="hidden items-center space-x-10 pr-14 md:inline-flex">
+          <HeaderLink
+            href="/"
+            title="Główna"
+          />
+          <HeaderLink
+            href="/"
+            title="Adopcja"
+          />
+          <HeaderLink
+            href="/"
+            title="Edukacja"
+          />
+          <HeaderLink
+            href="/"
+            title="Kontakt"
+          />
+          {sessionData && (
+            <HeaderLink
+              href="/register"
+              title="Dodaj"
+            />
+          )}
         </div>
-        <div className="flex justify-between space-x-5 m-5">
-          <div className="hidden sm:inline-flex items-center space-x-5">
+        <div className="m-5 flex justify-between space-x-5">
+          <div className="hidden items-center space-x-5 sm:inline-flex">
             <AuthButton />
           </div>
           <div className="md:hidden">
-            <MenuAlt2Icon className="w-8 h-8 cursor-pointer" />
+            <MenuAlt2Icon className="h-8 w-8 cursor-pointer" />
           </div>
         </div>
       </div>

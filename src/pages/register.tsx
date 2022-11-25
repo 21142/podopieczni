@@ -12,7 +12,7 @@ const Register: NextPage = () => {
         {sessionData ? (
           <Form />
         ) : (
-          <p className="text-center mt-20">Please log in to see this view</p>
+          <p className="mt-20 text-center">Please log in to see this view</p>
         )}
       </PageLayout>
     </>

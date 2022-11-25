@@ -1,9 +1,7 @@
 import Image from 'next/image';
 import logo from '../../../../public/images/logo.svg';
 
-export interface ILogo {}
-
-const Logo: React.FC<ILogo> = () => {
+const Logo: React.FC = () => {
   return (
     <Image
       src={logo}

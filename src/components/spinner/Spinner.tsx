@@ -1,9 +1,7 @@
-export interface ISpinner {}
-
-const Spinner: React.FC<ISpinner> = () => {
+const Spinner: React.FC = () => {
   return (
-    <div className="transform translate-x-1/2 translate-y-1/2 mr-28">
-      <div className="border-solid animate-spinner rounded-full border-transparent border-8 h-32 w-32"></div>
+    <div className="mr-28 translate-x-1/2 translate-y-1/2 transform">
+      <div className="h-32 w-32 animate-spinner rounded-full border-8 border-solid border-transparent"></div>
     </div>
   );
 };

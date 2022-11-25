@@ -4,9 +4,9 @@ const AuthButton: React.FC = () => {
   const { data: sessionData } = useSession();
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center gap-2">
+    <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
       <button
-        className="text-primary-300 border border-primary-300 rounded-full py-1 px-4 text-sm lg:text-base hover:text-white hover:bg-primary-300 transition-colors duration-200 ease-in-out cursor-pointer"
+        className="cursor-pointer rounded-full border border-primary-300 py-1 px-4 text-sm text-primary-300 transition-colors duration-200 ease-in-out hover:bg-primary-300 hover:text-white lg:text-base"
         onClick={sessionData ? () => signOut() : () => signIn()}
       >
         {sessionData

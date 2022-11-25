@@ -16,7 +16,7 @@ export default interface IAnimalData {
   description?: string | undefined;
   organization_animal_id?: string;
   photos: IPhoto[];
-  videos: any[];
+  videos: string[];
   status: string;
   status_changed_at: string;
   published_at: string;

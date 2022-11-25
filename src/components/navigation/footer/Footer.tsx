@@ -1,6 +1,4 @@
-export interface IFooter {}
-
-const Footer: React.FC<IFooter> = () => {
+const Footer: React.FC<JSX.IntrinsicElements['footer']> = () => {
   return (
     <>
       <div className="aspect-[10/1]">
@@ -31,30 +29,42 @@ const Footer: React.FC<IFooter> = () => {
         </svg>
       </div>
       <footer className="w-full bg-primary-300">
-        <div className="flex flex-col justify-center items-center">
-          <div className="grid max-w-[77.5rem] grid-cols-2 gap-6 py-8 mt-2 px-6 md:grid-cols-4 text-neutral-50">
+        <div className="flex flex-col items-center justify-center">
+          <div className="mt-2 grid max-w-[77.5rem] grid-cols-2 gap-6 py-8 px-6 text-neutral-50 md:grid-cols-4">
             <div>
               <h2 className="mb-6 text-sm font-semibold uppercase">
                 Mapa strony
               </h2>
               <ul className="">
                 <li className="mb-4">
-                  <a href="#" className=" hover:underline">
+                  <a
+                    href="#"
+                    className=" hover:underline"
+                  >
                     Główna
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Adopcja
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Edukacja
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Kontakt
                   </a>
                 </li>
@@ -64,22 +74,34 @@ const Footer: React.FC<IFooter> = () => {
               <h2 className="mb-6 text-sm font-semibold uppercase">Adopcja</h2>
               <ul className="">
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Poznaj proces
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Adoptuj psa
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Adoptuj kota
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Znajdź schroniska
                   </a>
                 </li>
@@ -89,17 +111,26 @@ const Footer: React.FC<IFooter> = () => {
               <h2 className="mb-6 text-sm font-semibold uppercase">Kontakt</h2>
               <ul className="">
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Facebook
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Adres email
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Numery telefonu
                   </a>
                 </li>
@@ -109,12 +140,18 @@ const Footer: React.FC<IFooter> = () => {
               <h2 className="mb-6 text-sm font-semibold uppercase">Prawne</h2>
               <ul className="">
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Polityka prywatności
                   </a>
                 </li>
                 <li className="mb-4">
-                  <a href="#" className="hover:underline">
+                  <a
+                    href="#"
+                    className="hover:underline"
+                  >
                     Przetwarzanie danych osobowych
                   </a>
                 </li>

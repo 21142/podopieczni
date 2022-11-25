@@ -1,9 +1,9 @@
-import IAnimalData from 'src/components/utils/search-results/types';
-import { GetServerSideProps } from 'next';
 import type { NextPage } from 'next';
-import SearchResults from 'src/components/utils/search-results/SearchResults';
+import { GetServerSideProps } from 'next';
 import Search from 'src/components/inputs/search/Search';
 import PageLayout from 'src/components/layouts/primary/PageLayout';
+import SearchResults from 'src/components/utils/search-results/SearchResults';
+import IAnimalData from 'src/components/utils/search-results/types';
 
 export interface IResults {
   animals?: IAnimalData[];
@@ -14,10 +14,13 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
   return (
     <>
       <PageLayout>
-        <div className="flex text-center bg-primary-300 w-full items-center justify-center pt-4">
+        <div className="flex w-full items-center justify-center bg-primary-300 pt-4 text-center">
           <Search query={searchQuery} />
         </div>
-        <div id="featured" className="aspect-[40/1] rotate-180">
+        <div
+          id="featured"
+          className="aspect-[40/1] rotate-180"
+        >
           <svg
             id="visual"
             viewBox="0 0 3840 96"
@@ -40,12 +43,12 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
             ></path>
           </svg>
         </div>
-        <div className="flex text-center justify-center pt-10 mx-auto max-w-8xl">
-          <div className="hidden md:inline-flex bg-gray-400 w-32">
+        <div className="mx-auto flex max-w-8xl justify-center pt-10 text-center">
+          <div className="hidden w-32 bg-gray-400 md:inline-flex">
             FILTER MENU PLACEHOLDER
           </div>
           <div className="flex flex-col">
-            <div className="hidden md:inline-flex bg-neutral-200">
+            <div className="hidden bg-neutral-200 md:inline-flex">
               FILTERS ROW PLACEHOLDER
             </div>
             <SearchResults results={animals} />
