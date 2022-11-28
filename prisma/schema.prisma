@@ -40,7 +40,7 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
-  role          String?
+  role          Role?
   image         String?
   accounts      Account[]
   sessions      Session[]
@@ -52,4 +52,10 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum Role {
+  Adopter
+  Shelter
+  Admin
 }

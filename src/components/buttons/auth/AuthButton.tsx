@@ -1,7 +1,10 @@
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, signOut } from 'next-auth/react';
+import { trpc } from 'src/utils/trpc';
 
 const AuthButton: React.FC = () => {
-  const { data: sessionData } = useSession();
+  const query = trpc.auth.getSession.useQuery(undefined);
+
+  const sessionData = query.data;
 
   return (
     <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
@@ -10,7 +13,7 @@ const AuthButton: React.FC = () => {
         onClick={sessionData ? () => signOut() : () => signIn()}
       >
         {sessionData
-          ? `Wyloguj się ${sessionData?.user?.name?.split(' ').at(0)}`
+          ? `Wyloguj się ${sessionData?.name?.split(' ').at(0)}`
           : 'Zaloguj się'}
       </button>
     </div>

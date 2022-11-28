@@ -10,10 +10,18 @@ export const authOptions: NextAuthOptions = {
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
+        session.user.role = user.role;
       }
       return session;
     },
+    async redirect({ baseUrl }) {
+      return `${baseUrl}/welcome`;
+    },
   },
+  // pages: {
+  //   signIn: '/auth/signin',
+  //   error: '/auth/error', // Error code passed in query string as ?error=
+  // },
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({

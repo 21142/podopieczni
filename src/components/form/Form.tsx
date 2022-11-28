@@ -1,13 +1,18 @@
+import SelectInput from '../inputs/select/SelectInput';
 import TextInput from '../inputs/text/TextInput';
 
-export default function Form() {
+type FormProps = {
+  formAction: string;
+};
+
+const Form = ({ formAction }: FormProps) => {
   return (
     <div className="mx-auto w-full max-w-7xl pt-5 2xl:max-w-8xl">
       <div className="mt-10 sm:mt-0">
         <div className="m-5 md:grid md:grid-cols-3 md:gap-6">
           <div className="mt-5 md:col-span-3 md:mt-0">
             <form
-              action="#"
+              action={formAction}
               method="POST"
             >
               <div className="overflow-hidden shadow sm:rounded-md">
@@ -226,6 +231,12 @@ export default function Form() {
                   </div>
                 </div>
 
+                <SelectInput
+                  value={''}
+                  initial={'Please select'}
+                  options={[{ id: '1', value: 'OPTION 1', disabled: false }]}
+                />
+
                 <div className="bg-neutral-0 px-4 py-3 text-left sm:px-6 sm:py-6">
                   <button
                     type="submit"
@@ -241,4 +252,6 @@ export default function Form() {
       </div>
     </div>
   );
-}
+};
+
+export default Form;

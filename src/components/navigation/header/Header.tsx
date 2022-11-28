@@ -1,15 +1,17 @@
-import HeaderLink from '../../links/header/HeaderLink';
 import { MenuAlt2Icon } from '@heroicons/react/outline';
-import Logo from 'src/components/logos/default/Logo';
 import Link from 'next/link';
-import AuthButton from 'src/components/auth/button/AuthButton';
-import { useSession } from 'next-auth/react';
+import AuthButton from 'src/components/buttons/auth/AuthButton';
+import Logo from 'src/components/logos/default/Logo';
+import { trpc } from 'src/utils/trpc';
+import HeaderLink from '../../links/header/HeaderLink';
 
 const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   className,
   ...headerProps
 }) => {
-  const { data: sessionData } = useSession();
+  const query = trpc.auth.getSession.useQuery(undefined);
+
+  const sessionData = query.data;
 
   return (
     <header

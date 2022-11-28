@@ -9,7 +9,7 @@ export const t = initTRPC.context<Context>().create({
   },
 });
 
-//check session using tRPC middleware
+
 export const authedProcedure = t.procedure.use(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });

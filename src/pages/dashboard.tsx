@@ -3,22 +3,21 @@ import Form from 'src/components/form/Form';
 import PageLayout from 'src/components/layouts/primary/PageLayout';
 import { trpc } from 'src/utils/trpc';
 
-const Register: NextPage = () => {
-  const query = trpc.auth.getSession.useQuery(undefined);
+const Dashboard: NextPage = () => {
+  const query = trpc.auth.getSecretMessage.useQuery();
 
-  const sessionData = query.data;
+  const loggedInTestMsg = query.data;
 
   return (
     <>
       <PageLayout>
-        {sessionData ? (
+        <div className="grid place-items-center">
+          <div className="">{loggedInTestMsg}</div>
           <Form formAction="" />
-        ) : (
-          <p className="mt-20 text-center">Please log in to see this view</p>
-        )}
+        </div>
       </PageLayout>
     </>
   );
 };
 
-export default Register;
+export default Dashboard;
