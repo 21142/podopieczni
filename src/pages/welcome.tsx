@@ -22,7 +22,7 @@ const Welcome: NextPage = () => {
   const setAdopterRole = async () => {
     await setRoleAsAdopter();
     console.log('HERE? ADOPTER SET');
-    router.push('/register');
+    router.push('/results');
   };
 
   const setShelterRole = async () => {
