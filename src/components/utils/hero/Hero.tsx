@@ -1,13 +1,12 @@
 import Image from 'next/image';
 import Button from 'src/components/buttons/base/Button';
-import hero from '../../../../public/images/hero.png';
 import Search from '../../../components/inputs/search/Search';
 
 const Hero: React.FC = () => {
   return (
     <div className="relative h-[19rem] w-full lg:h-[20rem] xl:h-[21rem] 2xl:h-[22rem]">
       <Image
-        src={hero}
+        src="https://i.postimg.cc/7Y7Lk3S8/hero.png"
         layout="fill"
         objectFit="cover"
         alt="hero image section"
