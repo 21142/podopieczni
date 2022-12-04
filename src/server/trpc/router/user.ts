@@ -9,13 +9,8 @@ export const userRouter = t.router({
     });
     return user;
   }),
-  hasRole: authedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.prisma.user.findUnique({
-      where: {
-        id: ctx.session.user.id,
-      },
-      select: { role: ctx.session.user.role ? true : false },
-    });
-    return user;
+  getAllUsers: authedProcedure.query(async ({ ctx }) => {
+    const allUsers = await ctx.prisma.user.findMany();
+    return allUsers;
   }),
 });

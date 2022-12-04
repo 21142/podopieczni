@@ -9,10 +9,10 @@ const Welcome: NextPage = () => {
   const router = useRouter();
 
   const isLoggingInQuery = trpc.auth.getSession.useQuery(undefined);
-  const hasRoleQuery = trpc.user.hasRole.useQuery(undefined);
+  const meQuery = trpc.user.me.useQuery(undefined);
 
   const isLoggingIn = isLoggingInQuery.data;
-  const hasRole = hasRoleQuery.data;
+  const hasRole = meQuery.data?.role ? true : false;
 
   const { mutateAsync: setRoleAsAdopter } =
     trpc.auth.setAdoptingRole.useMutation();
@@ -30,6 +30,7 @@ const Welcome: NextPage = () => {
     console.log('HERE? SHELTER SET');
     router.push('/dashboard');
   };
+
   return (
     <>
       <PageLayout>

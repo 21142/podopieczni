@@ -4,15 +4,15 @@ import PageLayout from 'src/components/layouts/primary/PageLayout';
 import { trpc } from 'src/utils/trpc';
 
 const Dashboard: NextPage = () => {
-  const query = trpc.auth.getSecretMessage.useQuery();
+  const getAllUsers = trpc.user.getAllUsers.useQuery(undefined);
 
-  const loggedInTestMsg = query.data;
+  const allUsers = JSON.stringify(getAllUsers.data, null, 2);
 
   return (
     <>
       <PageLayout>
+        <pre>{allUsers}</pre>
         <div className="grid place-items-center">
-          <div className="">{loggedInTestMsg}</div>
           <Form formAction="" />
         </div>
       </PageLayout>
