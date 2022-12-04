@@ -4,7 +4,7 @@ import PageLayout from 'src/components/layouts/primary/PageLayout';
 import { trpc } from 'src/utils/trpc';
 
 const Register: NextPage = () => {
-  const query = trpc.auth.getSession.useQuery(undefined);
+  const query = trpc.auth.getSession.useQuery();
 
   const sessionData = query.data;
 

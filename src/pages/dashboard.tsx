@@ -4,7 +4,7 @@ import PageLayout from 'src/components/layouts/primary/PageLayout';
 import { trpc } from 'src/utils/trpc';
 
 const Dashboard: NextPage = () => {
-  const getAllUsers = trpc.user.getAllUsers.useQuery(undefined);
+  const getAllUsers = trpc.user.getAllUsers.useQuery();
 
   const allUsers = JSON.stringify(getAllUsers.data, null, 2);
 

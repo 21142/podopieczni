@@ -9,7 +9,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   className,
   ...headerProps
 }) => {
-  const query = trpc.auth.getSession.useQuery(undefined);
+  const query = trpc.auth.getSession.useQuery();
 
   const sessionData = query.data;
 

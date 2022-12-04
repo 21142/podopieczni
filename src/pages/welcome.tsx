@@ -8,8 +8,8 @@ import { trpc } from 'src/utils/trpc';
 const Welcome: NextPage = () => {
   const router = useRouter();
 
-  const isLoggingInQuery = trpc.auth.getSession.useQuery(undefined);
-  const meQuery = trpc.user.me.useQuery(undefined);
+  const isLoggingInQuery = trpc.auth.getSession.useQuery();
+  const meQuery = trpc.user.me.useQuery();
 
   const isLoggingIn = isLoggingInQuery.data;
   const hasRole = meQuery.data?.role ? true : false;
@@ -40,7 +40,7 @@ const Welcome: NextPage = () => {
           ) : (
             <div className="grid h-80 place-items-center content-center">
               <p className="text-lg">Please, tell us what are you here for</p>
-              <div className="flex gap-5 p-5">
+              <div className="grid gap-5 p-5 sm:grid-cols-2">
                 <LinkButton
                   value="I want to adopt a pet"
                   onClick={setAdopterRole}
