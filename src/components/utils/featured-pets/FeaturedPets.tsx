@@ -25,7 +25,10 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
 
   return (
     <>
-      <div id="featured" className="aspect-[10/1]">
+      <div
+        id="featured"
+        className="aspect-[10/1]"
+      >
         <svg
           id="visual"
           viewBox="0 0 3840 384"
@@ -52,8 +55,8 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
           ></path>
         </svg>
       </div>
-      <div className="bg-primary-200 w-full min-h-[84rem] flex flex-col items-center justify-start">
-        <p className="text-neutral-50 text-3xl sm:text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl py-10 md:py-10 font-bold">
+      <div className="flex min-h-[84rem] w-full flex-col items-center justify-start bg-primary-200">
+        <p className="py-10 text-3xl font-bold text-neutral-50 sm:text-4xl md:py-10 md:text-5xl lg:text-6xl 2xl:text-7xl">
           Podopieczni szukający domu
         </p>
         {isLoading ? (
