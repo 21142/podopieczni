@@ -10,7 +10,6 @@ const Hero: React.FC = () => {
         layout="fill"
         objectFit="cover"
         alt="hero image section"
-        priority
       />
       <div className="absolute top-[61%] left-1/2 flex h-[11.5rem] w-[90%] -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-white/20 text-center shadow-lg backdrop-blur-sm sm:max-w-[34rem] xl:top-[64%]">
         <h2 className="mb-2 text-lg font-bold text-neutral-50 sm:text-2xl">

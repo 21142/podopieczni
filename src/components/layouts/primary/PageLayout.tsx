@@ -21,7 +21,7 @@ const PageLayout: React.FC<IPageLayout> = ({
           content="podopieczni | Pomoc w procesie adopcji zwierząt"
         />
         <meta
-          name="description"
+          name="og:description"
           content="Szukaj podopiecznych gotowych do adopcji i pasujących do twoich preferencji."
         />
         <meta
