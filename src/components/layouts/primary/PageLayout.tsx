@@ -30,15 +30,19 @@ const PageLayout: React.FC<IPageLayout> = ({
         />
         <meta
           property="og:url"
-          content="website"
+          content="https://podopieczni-21142.vercel.app/"
         />
         <meta
           property="og:type"
-          content="https://podopieczni-21142.vercel.app/"
+          content="website"
         />
         <meta
           property="og:locale"
           content="pl_PL"
+        />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
         />
         <link
           rel="icon"
