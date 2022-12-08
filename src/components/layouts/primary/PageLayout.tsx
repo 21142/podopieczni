@@ -26,7 +26,7 @@ const PageLayout: React.FC<IPageLayout> = ({
         />
         <meta
           property="og:image"
-          content={`${getBaseUrl}/api/og-image`}
+          content={'https://podopieczni-dev.vercel.app/api/og-image'}
         />
         <meta
           property="og:url"
