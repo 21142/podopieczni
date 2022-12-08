@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Footer from 'src/components/navigation/footer/Footer';
+import { getBaseUrl } from 'src/utils/getBaseUrl';
 import Header from '../../navigation/header/Header';
 
 export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
@@ -15,19 +16,43 @@ const PageLayout: React.FC<IPageLayout> = ({
     <div className="overflow-x-hidden bg-neutral-50">
       <Head>
         <title>podopieczni</title>
-        <meta name="description" content="podopieczni" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta
+          property="og:title"
+          content="podopieczni | Pomoc w procesie adopcji zwierząt"
+        />
+        <meta
+          name="description"
+          content="Szukaj podopiecznych gotowych do adopcji i pasujących do twoich preferencji."
+        />
+        <meta
+          property="og:image"
+          content={`${getBaseUrl}/api/og-image`}
+        />
+        <meta
+          property="og:url"
+          content="website"
+        />
+        <meta
+          property="og:type"
+          content="https://podopieczni-21142.vercel.app/"
+        />
+        <meta
+          property="og:locale"
+          content="pl_PL"
+        />
+        <link
+          rel="icon"
+          href="/favicon.ico"
+        />
       </Head>
       <div
         {...divProps}
-        className={`min-h-screen w-full mx-auto flex flex-col ${justify}`}
+        className={`mx-auto flex min-h-screen w-full flex-col ${justify}`}
       >
         <div className="w-full bg-neutral-0">
           <Header />
         </div>
-        <main className="w-full flex flex-col flex-grow">
-          {children}
-        </main>
+        <main className="flex w-full flex-grow flex-col">{children}</main>
         <Footer />
       </div>
     </div>
