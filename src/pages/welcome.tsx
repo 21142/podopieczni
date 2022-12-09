@@ -1,5 +1,7 @@
 import type { NextPage } from 'next';
+import { signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { CvaButton } from 'src/components/buttons/cva/ButtonCva';
 import { LinkButton } from 'src/components/buttons/link/LinkButton';
 import PageLayout from 'src/components/layouts/primary/PageLayout';
 import Landing from 'src/components/pages/landing/Landing';
@@ -7,6 +9,9 @@ import { trpc } from 'src/utils/trpc';
 
 const Welcome: NextPage = () => {
   const router = useRouter();
+
+  const query = trpc.auth.getSession.useQuery();
+  const sessionData = query.data;
 
   const isLoggingInQuery = trpc.auth.getSession.useQuery();
   const meQuery = trpc.user.me.useQuery();
@@ -53,7 +58,27 @@ const Welcome: NextPage = () => {
             </div>
           )
         ) : (
-          <Landing />
+          <>
+            <p className="pt-24 pb-12 text-center">
+              Zaloguj się, aby wybrać w czym możemy Ci pomóc?
+            </p>
+            <div className="flex justify-center gap-5">
+              <CvaButton
+                variant="primary"
+                className="w-36 rounded-md px-4 py-2"
+                onClick={sessionData ? () => signOut() : () => signIn()}
+              >
+                {sessionData ? 'Wyloguj się' : 'Zaloguj się'}
+              </CvaButton>
+              <CvaButton
+                variant="secondary"
+                className="w-36 rounded-md"
+                onClick={() => router.push('/')}
+              >
+                Strona główna
+              </CvaButton>
+            </div>
+          </>
         )}
       </PageLayout>
     </>

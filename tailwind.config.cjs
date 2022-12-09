@@ -29,6 +29,9 @@ module.exports = {
       '9xl': '5.16rem',
     },
     extend: {
+      fontFamily: {
+        sans: '"SF PRO Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Oxygen,Ubuntu,Cantarel,"Open Sans","Helvetica Neue",sans-serif',
+      },
       colors: {
         neutral: {
           0: '#ffffff',

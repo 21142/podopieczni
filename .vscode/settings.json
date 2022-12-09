@@ -13,5 +13,8 @@
   },
   "[svg]": {
     "editor.defaultFormatter": "jock.svg"
-  }
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ]
 }
