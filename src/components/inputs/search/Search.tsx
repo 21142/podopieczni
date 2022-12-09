@@ -18,7 +18,7 @@ const Search: React.FC<ISearch> = ({ query }) => {
 
   return (
     <form
-      className="flex p-2 w-[90%] max-w-[24rem] bg-neutral-50 items-center rounded-full border-2 shadow-sm"
+      className="flex w-[90%] max-w-[24rem] items-center rounded-full border-2 bg-neutral-50 p-2 shadow-sm"
       onSubmit={(e) => {
         e.preventDefault();
         if (!searchQuery) {
@@ -29,14 +29,14 @@ const Search: React.FC<ISearch> = ({ query }) => {
       }}
     >
       <input
-        className="flex-grow pl-3 pr-2 bg-transparent border-none outline-none placeholder-neutral-400 text-neutral-400 focus:text-neutral-600 transition-colors duration-200 ease-in-out"
+        className="flex-grow border-none bg-transparent pl-3 pr-2 text-neutral-400 placeholder-neutral-400 outline-none transition-colors duration-200 ease-in-out focus:text-neutral-600 focus:ring-0"
         type="text"
         placeholder="np. California lub 22-152"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
       <button type="submit">
-        <SearchIcon className="h-8 p-1.5 rounded-full hover:scale-95 transition-transform duration-50 ease-in-out bg-primary-300 text-white cursor-pointer" />
+        <SearchIcon className="duration-50 h-8 cursor-pointer rounded-full bg-primary-300 p-1.5 text-white transition-transform ease-in-out hover:scale-95" />
       </button>
     </form>
   );

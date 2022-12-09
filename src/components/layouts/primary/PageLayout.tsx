@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import Footer from 'src/components/navigation/footer/Footer';
-import { getBaseUrl } from 'src/utils/getBaseUrl';
 import Header from '../../navigation/header/Header';
 
 export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {

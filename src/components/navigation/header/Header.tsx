@@ -24,7 +24,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
             <Logo />
           </div>
         </Link>
-        <div className="hidden items-center space-x-10 pr-14 md:inline-flex">
+        <nav className="hidden items-center space-x-10 pr-14 md:inline-flex">
           <HeaderLink
             href="/"
             title="Główna"
@@ -47,7 +47,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
               title="Dodaj"
             />
           )}
-        </div>
+        </nav>
         <div className="m-5 flex justify-between space-x-5">
           <div className="hidden items-center space-x-5 sm:inline-flex">
             <AuthButton />
