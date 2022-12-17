@@ -35,8 +35,11 @@ const Search: React.FC<ISearch> = ({ query }) => {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      <button type="submit">
-        <SearchIcon className="duration-50 h-8 cursor-pointer rounded-full bg-primary-300 p-1.5 text-white transition-transform ease-in-out hover:scale-95" />
+      <button
+        aria-label="Przycisk szukaj"
+        type="submit"
+      >
+        <SearchIcon className="duration-50 h-14 cursor-pointer rounded-full bg-primary-300 p-2 text-white transition-transform ease-in-out hover:scale-95" />
       </button>
     </form>
   );

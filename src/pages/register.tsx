@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Form from 'src/components/form/Form';
-import PageLayout from 'src/components/layouts/primary/PageLayout';
+import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
 import { trpc } from 'src/utils/trpc';
 
 const Register: NextPage = () => {
@@ -9,15 +9,13 @@ const Register: NextPage = () => {
   const sessionData = query.data;
 
   return (
-    <>
-      <PageLayout>
-        {sessionData ? (
-          <Form formAction="" />
-        ) : (
-          <p className="mt-20 text-center">Please log in to see this view</p>
-        )}
-      </PageLayout>
-    </>
+    <DashboardLayout>
+      {sessionData ? (
+        <Form formAction="" />
+      ) : (
+        <p className="mt-20 text-center">Please log in to see this view</p>
+      )}
+    </DashboardLayout>
   );
 };
 
