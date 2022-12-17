@@ -24,7 +24,10 @@ const Landing: React.FC = () => {
           Pomoc w adopcji i zarządzaniu danymi zwierząt.
         </h2>
 
-        <Link href="#featured">
+        <Link
+          href="#featured"
+          scroll={false}
+        >
           <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
         </Link>
 

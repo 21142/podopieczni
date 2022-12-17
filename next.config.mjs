@@ -15,4 +15,8 @@ export default defineNextConfig({
   images: {
     domains: ['i.pravatar.cc', 'i.postimg.cc', 'dl5zpyw5k3jeb.cloudfront.net'],
   },
+  i18n: {
+    locales: ['pl'],
+    defaultLocale: 'pl',
+  },
 });

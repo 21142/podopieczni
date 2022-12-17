@@ -1,22 +1,24 @@
-import Footer from 'src/components/navigation/footer/Footer';
 import HeadMeta from 'src/components/utils/head-seo/HeadMeta';
 import Header from '../../navigation/header/Header';
 
-export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
+export interface IDashboardLayout
+  extends React.ComponentPropsWithoutRef<'div'> {
   justify?: 'items-center' | 'items-start' | 'items-end';
 }
 
-const PageLayout: React.FC<IPageLayout> = ({
+const DashboardLayout: React.FC<IDashboardLayout> = ({
   children,
   justify = 'items-center',
   ...divProps
 }) => {
   return (
-    <div className="overflow-x-hidden bg-neutral-50">
+    <div className="h-screen overflow-y-hidden overflow-x-scroll bg-neutral-0">
       <HeadMeta
-        title={'podopieczni | Pomoc w procesie adopcji zwierząt'}
+        title={
+          'podopieczni | Pomoc w zarządzaniu danymi zwierząt i procesie adopcji'
+        }
         description={
-          'Szukaj podopiecznych gotowych do adopcji i pasujących do twoich preferencji.'
+          'Promuj zwierzęta gotowe do adopcji i zarządzaj danymi podopiecznych z Twojego schroniska w ekologiczny i prosty sposób.'
         }
         keywords={'psy, koty, adopcja zwierząt, schroniska'}
         type={'website'}
@@ -27,16 +29,15 @@ const PageLayout: React.FC<IPageLayout> = ({
       />
       <div
         {...divProps}
-        className={`mx-auto flex min-h-screen w-full flex-col ${justify}`}
+        className={`mx-auto flex h-screen w-full flex-col ${justify}`}
       >
         <div className="w-full bg-neutral-0">
           <Header />
         </div>
         <main className="flex w-full flex-grow flex-col">{children}</main>
-        <Footer />
       </div>
     </div>
   );
 };
 
-export default PageLayout;
+export default DashboardLayout;
