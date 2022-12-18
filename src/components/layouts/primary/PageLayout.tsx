@@ -14,7 +14,9 @@ const PageLayout: React.FC<IPageLayout> = ({
   return (
     <div className="overflow-x-hidden bg-neutral-50">
       <HeadMeta
-        title={'podopieczni | Pomoc w procesie adopcji zwierząt'}
+        title={
+          'podopieczni - Pomoc w znalezieniu zwierząt gotowych do adopcji.'
+        }
         description={
           'Szukaj podopiecznych gotowych do adopcji i pasujących do twoich preferencji.'
         }
