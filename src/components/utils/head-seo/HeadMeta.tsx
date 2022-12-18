@@ -23,20 +23,40 @@ const HeadMeta = ({
 }: Props) => {
   return (
     <Head>
-      <meta charSet="UTF-8" />
       <title>{title}</title>
+      <meta charSet="UTF-8" />
+      <meta
+        httpEquiv="X-UA-Compatible"
+        content="IE=Edge,chrome=1"
+      />
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+      />
       <meta
         name="description"
         property="og:description"
         content={description}
       />
       <meta
-        property="og:title"
-        content={title}
-      />
-      <meta
         name="keywords"
         content={keywords}
+      />
+      <meta
+        name="author"
+        content={author ?? 'podopieczni'}
+      />
+      <link
+        rel="canonical"
+        href={canonical ?? url}
+      />
+      <link
+        rel="icon"
+        href="/favicon.ico"
+      />
+      <meta
+        property="og:title"
+        content={title}
       />
       <meta
         property="og:type"
@@ -45,14 +65,6 @@ const HeadMeta = ({
       <meta
         property="og:locale"
         content="pl_PL"
-      />
-      <meta
-        name="author"
-        content={author ?? 'podopieczni'}
-      />
-      <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
       />
       <meta
         property="og:url"
@@ -89,14 +101,6 @@ const HeadMeta = ({
       <meta
         property="fb:admins"
         content={'222'}
-      />
-      <link
-        rel="canonical"
-        href={canonical ?? url}
-      />
-      <link
-        rel="icon"
-        href="/favicon.ico"
       />
     </Head>
   );
