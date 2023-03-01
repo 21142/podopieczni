@@ -12,7 +12,7 @@ const DashboardLayout: React.FC<IDashboardLayout> = ({
   ...divProps
 }) => {
   return (
-    <div className="h-screen overflow-y-hidden overflow-x-scroll bg-neutral-0">
+    <div className="overflow-x-hidden bg-neutral-0">
       <HeadMeta
         title={
           'podopieczni - Pomoc w zarządzaniu danymi zwierząt i procesie adopcji.'

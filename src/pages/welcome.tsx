@@ -6,6 +6,7 @@ import { LinkButton } from 'src/components/buttons/link/LinkButton';
 import PageLayout from 'src/components/layouts/primary/PageLayout';
 import Spinner from 'src/components/spinner/Spinner';
 import { api } from '~/utils/api';
+import { Roles } from '~/utils/constants';
 
 const Welcome: NextPage = () => {
   const router = useRouter();
@@ -24,20 +25,26 @@ const Welcome: NextPage = () => {
   const { mutateAsync: setRoleAsShelter } =
     api.auth.setShelterWorkerRole.useMutation();
 
-  const setAdopterRole: () => Promise<void> = async () => {
+  const setAdopterRole = async () => {
     await setRoleAsAdopter();
     console.log('HERE? ADOPTER SET');
-    await router.push('/results');
+    router.push('/results');
   };
 
-  const setShelterRole: () => Promise<void> = async () => {
+  const setShelterRole = async () => {
     await setRoleAsShelter();
     console.log('HERE? SHELTER SET');
-    await router.push('/dashboard');
+    router.push('/dashboard');
   };
 
   if (sessionData?.role) {
-    void router.push('/dashboard');
+    const redirectSlug =
+      sessionData?.role == Roles.Adopter
+        ? '/'
+        : sessionData?.role == Roles.Shelter
+        ? '/dashboard'
+        : '/';
+    router.push(redirectSlug);
   }
 
   return (
@@ -53,11 +60,11 @@ const Welcome: NextPage = () => {
             <div className="grid gap-5 p-5 sm:grid-cols-2">
               <LinkButton
                 value="I want to adopt a pet"
-                onClick={() => setAdopterRole}
+                onClick={setAdopterRole}
               />
               <LinkButton
                 value="I work in a shelter"
-                onClick={() => setShelterRole}
+                onClick={setShelterRole}
               />
             </div>
           </div>

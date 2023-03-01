@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { Roles } from '~/utils/constants';
 
 export const authRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {
@@ -35,8 +36,3 @@ export const authRouter = createTRPCRouter({
     return 'Updated role - adopting';
   }),
 });
-
-export enum Roles {
-  Adopter = 'Adopter',
-  Shelter = 'Shelter',
-}
