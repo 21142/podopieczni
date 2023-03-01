@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Spinner from 'src/components/spinner/Spinner';
 import PetsGrid from '../pets-grid/PetsGrid';
-import IAnimalData from '../search-results/types';
+import type IAnimalData from '../search-results/types';
 
 export interface IFeaturedPets {
   featuredAnimals?: IAnimalData[];

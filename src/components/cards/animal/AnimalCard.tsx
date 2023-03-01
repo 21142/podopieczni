@@ -16,7 +16,7 @@ const AnimalCard: React.FC<IAnimalCard> = ({
   body,
   author,
   avatar,
-  photo
+  photo,
 }) => {
   return (
     <>
@@ -32,7 +32,13 @@ const AnimalCard: React.FC<IAnimalCard> = ({
             />
           </div>
           <div className={styles.card__body}>
-            <span className={`${styles.tag} ${styles['tag-blue']}`}>{tag}</span>
+            <span
+              className={`${styles.tag as string} ${
+                styles['tag-blue'] as string
+              }`}
+            >
+              {tag}
+            </span>
             <h4>{title}</h4>
             <p>{body}</p>
           </div>

@@ -1,10 +1,10 @@
-import Image from 'next/image';
-import logo from '../../../../public/images/logo.svg';
+import Image from "next/image";
+import logo from "/public/images/logo.svg";
 
 const Logo: React.FC = () => {
   return (
     <Image
-      src={logo}
+      src={logo as string}
       className="cursor-pointer"
       objectFit="contain"
       alt="podopieczni logo"

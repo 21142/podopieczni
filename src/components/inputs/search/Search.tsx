@@ -1,13 +1,13 @@
-import { SearchIcon } from '@heroicons/react/outline';
-import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { SearchIcon } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 
 export interface ISearch {
   query: string;
 }
 
 const Search: React.FC<ISearch> = ({ query }) => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
@@ -22,9 +22,9 @@ const Search: React.FC<ISearch> = ({ query }) => {
       onSubmit={(e) => {
         e.preventDefault();
         if (!searchQuery) {
-          router.push('/results');
+          void router.push("/results");
         } else {
-          router.push(`/results?search=${searchQuery}`);
+          void router.push(`/results?search=${searchQuery}`);
         }
       }}
     >
@@ -35,11 +35,8 @@ const Search: React.FC<ISearch> = ({ query }) => {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      <button
-        aria-label="Przycisk szukaj"
-        type="submit"
-      >
-        <SearchIcon className="duration-50 h-14 cursor-pointer rounded-full bg-primary-300 p-2 text-white transition-transform ease-in-out hover:scale-95" />
+      <button aria-label="Przycisk szukaj" type="submit">
+        <SearchIcon className="duration-50 bg-primary-300 h-14 cursor-pointer rounded-full p-2 text-white transition-transform ease-in-out hover:scale-95" />
       </button>
     </form>
   );

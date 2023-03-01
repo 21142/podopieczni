@@ -104,8 +104,12 @@ module.exports = {
       },
       keyframes: {
         deviation: {
-          '0%': { boxShadow: '0 0 0 0 #9b1ea6, 0 0 0 0 #c505d6' },
-          '8%': { boxShadow: '-0.05rem 0 0 0 #9b1ea6, 0.05rem 0 0 0 #c505d6' },
+          '0%': {
+            boxShadow: '0 0 0 0 #9b1ea6, 0 0 0 0 #c505d6',
+          },
+          '8%': {
+            boxShadow: '-0.05rem 0 0 0 #9b1ea6, 0.05rem 0 0 0 #c505d6',
+          },
           '92%': {
             boxShadow:
               '-0.15rem -0.05rem 0 0 #9b1ea6, 0.15 0.05rem 0 0 #c505d6',
@@ -114,10 +118,25 @@ module.exports = {
             boxShadow: '-0.3rem -0.1rem 0 0 #9b1ea6, 0.3rem 0.1rem 0 0 #c505d6',
           },
         },
+        blob: {
+          '0%': {
+            transform: 'scale(1) translate(0px, 0px)',
+          },
+          '30%': {
+            transform: 'scale(0.9) translate(30px, -50px)',
+          },
+          '70%': {
+            transform: 'scale(1.1) translate(-20px, 20px)',
+          },
+          '100%': {
+            transform: 'scale(1) translate(0px, 0px)',
+          },
+        },
       },
       animation: {
         spinner:
           '2s linear infinite spin, 1s linear infinite alternate deviation',
+        blob: '6s infinite blob',
       },
     },
   },
