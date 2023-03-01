@@ -1,15 +1,14 @@
 import { TRPCError } from '@trpc/server';
-import { Roles } from 'src/server/common/roles';
-import { t, authedProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 
-export const authRouter = t.router({
-  getSecretMessage: authedProcedure.query(() => {
+export const authRouter = createTRPCRouter({
+  getSecretMessage: protectedProcedure.query(() => {
     return 'You are logged in and can see this secret message!';
   }),
-  getSession: authedProcedure.query(({ ctx }) => {
+  getSession: protectedProcedure.query(({ ctx }) => {
     return ctx.session?.user;
   }),
-  setShelterWorkerRole: authedProcedure.mutation(async ({ ctx }) => {
+  setShelterWorkerRole: protectedProcedure.mutation(async ({ ctx }) => {
     if (ctx.session.user.role) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
@@ -22,7 +21,7 @@ export const authRouter = t.router({
     });
     return 'Updated role - shelter';
   }),
-  setAdoptingRole: authedProcedure.mutation(async ({ ctx }) => {
+  setAdoptingRole: protectedProcedure.mutation(async ({ ctx }) => {
     if (ctx.session.user.role) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
@@ -36,3 +35,8 @@ export const authRouter = t.router({
     return 'Updated role - adopting';
   }),
 });
+
+export enum Roles {
+  Adopter = 'Adopter',
+  Shelter = 'Shelter',
+}

@@ -1,5 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { env } from '../../env/server.mjs';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { env } from '~/env.mjs';
 
 const petfinderApi = async (req: NextApiRequest, res: NextApiResponse) => {
   const params = new URLSearchParams();
@@ -15,10 +15,10 @@ const petfinderApi = async (req: NextApiRequest, res: NextApiResponse) => {
         body: params,
       }
     );
-    const token = await petfinderRes.json();
+    const token = (await petfinderRes.json()) as string;
     res.status(200).json(token);
   } catch (err) {
-    res.status(500).json({ error: `Could not get a token, msg: ${err}` });
+    res.status(500).json({ error: 'Could not get a token' });
   }
 };
 

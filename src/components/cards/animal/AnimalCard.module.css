@@ -10,6 +10,7 @@
 
 .card__image {
   max-width: 100%;
+  max-height: 14rem;
   display: block;
   object-fit: cover;
 }
@@ -54,8 +55,13 @@
 
 .card__footer {
   display: flex;
+  align-items: center;
   padding: 1rem;
   margin-top: auto;
+}
+
+.card__footer > div {
+  align-items: center;
 }
 
 .user {
@@ -65,6 +71,8 @@
 
 .user__image {
   border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .user__info > small {

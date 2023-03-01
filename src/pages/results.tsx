@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
-import { GetServerSideProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import Search from 'src/components/inputs/search/Search';
 import PageLayout from 'src/components/layouts/primary/PageLayout';
 import SearchResults from 'src/components/utils/search-results/SearchResults';
-import IAnimalData from 'src/components/utils/search-results/types';
+import type IAnimalData from 'src/components/utils/search-results/types';
 
 export interface IResults {
   animals?: IAnimalData[];
@@ -64,7 +64,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const search = query.search ?? '';
   const { host } = context.req.headers;
   const protocol = context.req.headers['x-forwarded-proto'] || 'http';
-  const baseUrl = context.req ? `${protocol}://${host}` : '';
+  const baseUrl = context.req
+    ? `${protocol as string}://${host as string}`
+    : '';
   const petfindetOauthData = await fetch(
     `${baseUrl}/api/petfinder-oauth-token`
   ).then((res) => res.json());

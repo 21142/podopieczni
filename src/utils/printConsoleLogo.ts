@@ -38,7 +38,7 @@ const printConsoleLogo = () => {
  
  
  `,
-    'font-family:monospace'
+    "font-family:monospace"
   );
 };
 

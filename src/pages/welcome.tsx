@@ -5,39 +5,39 @@ import { CvaButton } from 'src/components/buttons/cva/ButtonCva';
 import { LinkButton } from 'src/components/buttons/link/LinkButton';
 import PageLayout from 'src/components/layouts/primary/PageLayout';
 import Spinner from 'src/components/spinner/Spinner';
-import { trpc } from 'src/utils/trpc';
+import { api } from '~/utils/api';
 
 const Welcome: NextPage = () => {
   const router = useRouter();
 
-  const query = trpc.auth.getSession.useQuery();
+  const query = api.auth.getSession.useQuery();
   const sessionData = query.data;
 
-  const isLoggingInQuery = trpc.auth.getSession.useQuery();
-  const meQuery = trpc.user.me.useQuery();
+  const isLoggingInQuery = api.auth.getSession.useQuery();
+  const meQuery = api.user.me.useQuery();
 
   const isLoggingIn = isLoggingInQuery.data;
   const hasRole = meQuery.data?.role ? true : false;
 
   const { mutateAsync: setRoleAsAdopter } =
-    trpc.auth.setAdoptingRole.useMutation();
+    api.auth.setAdoptingRole.useMutation();
   const { mutateAsync: setRoleAsShelter } =
-    trpc.auth.setShelterWorkerRole.useMutation();
+    api.auth.setShelterWorkerRole.useMutation();
 
-  const setAdopterRole = async () => {
+  const setAdopterRole: () => Promise<void> = async () => {
     await setRoleAsAdopter();
     console.log('HERE? ADOPTER SET');
-    router.push('/results');
+    await router.push('/results');
   };
 
-  const setShelterRole = async () => {
+  const setShelterRole: () => Promise<void> = async () => {
     await setRoleAsShelter();
     console.log('HERE? SHELTER SET');
-    router.push('/dashboard');
+    await router.push('/dashboard');
   };
 
   if (sessionData?.role) {
-    router.push('/dashboard');
+    void router.push('/dashboard');
   }
 
   return (
@@ -53,11 +53,11 @@ const Welcome: NextPage = () => {
             <div className="grid gap-5 p-5 sm:grid-cols-2">
               <LinkButton
                 value="I want to adopt a pet"
-                onClick={setAdopterRole}
+                onClick={() => setAdopterRole}
               />
               <LinkButton
                 value="I work in a shelter"
-                onClick={setShelterRole}
+                onClick={() => setShelterRole}
               />
             </div>
           </div>
@@ -71,14 +71,14 @@ const Welcome: NextPage = () => {
             <CvaButton
               variant="primary"
               className="w-36 rounded-md px-4 py-2"
-              onClick={sessionData ? () => signOut() : () => signIn()}
+              onClick={sessionData ? () => void signOut() : () => void signIn()}
             >
               {sessionData ? 'Wyloguj się' : 'Zaloguj się'}
             </CvaButton>
             <CvaButton
               variant="secondary"
               className="w-36 rounded-md"
-              onClick={() => router.push('/')}
+              onClick={() => void router.push('/')}
             >
               Strona główna
             </CvaButton>

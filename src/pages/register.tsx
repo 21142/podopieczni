@@ -1,10 +1,10 @@
-import type { NextPage } from 'next';
-import Form from 'src/components/form/Form';
-import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
-import { trpc } from 'src/utils/trpc';
+import type { NextPage } from "next";
+import Form from "src/components/form/Form";
+import DashboardLayout from "src/components/layouts/dashboard/DashboardLayout";
+import { api } from "~/utils/api";
 
 const Register: NextPage = () => {
-  const query = trpc.auth.getSession.useQuery();
+  const query = api.auth.getSession.useQuery();
 
   const sessionData = query.data;
 

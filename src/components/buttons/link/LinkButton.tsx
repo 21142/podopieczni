@@ -10,7 +10,9 @@ export const LinkButton = ({
   return (
     <button
       onClick={onClick}
-      className={`lg:text-md flex cursor-pointer items-center justify-center gap-2 rounded-full border border-primary-300 py-1 px-4 text-sm text-primary-300 transition-colors duration-200 ease-in-out hover:bg-primary-300 hover:text-white ${className}`}
+      className={`lg:text-md border-primary-300 text-primary-300 hover:bg-primary-300 flex cursor-pointer items-center justify-center gap-2 rounded-full border py-1 px-4 text-sm transition-colors duration-200 ease-in-out hover:text-white ${
+        className as string
+      }`}
     >
       {value}
     </button>
