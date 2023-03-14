@@ -1,0 +1,98 @@
+import { useRouter } from 'next/router';
+import { type NextPage, type GetServerSideProps } from 'next/types';
+import PageLayout from '~/components/layouts/primary/PageLayout';
+import type IAnimalData from '~/components/utils/search-results/types';
+import Image from 'next/image';
+
+type IPetProfilePage = {
+  pet: IAnimalData;
+  message: string;
+};
+
+const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
+  const router = useRouter();
+  const id = router.query.id as string;
+
+  return (
+    <PageLayout>
+      <div className="grid h-full items-center justify-center">
+        {pet === null ? (
+          <p>{message}</p>
+        ) : (
+          <>
+            <Image
+              src={pet.photos[0]?.large ?? '/no-profile-picture.svg'}
+              alt="profile picture"
+              className="rounded-md"
+              width="600"
+              height="400"
+            />
+            <p>
+              <strong>id:</strong> {id}
+            </p>
+            <p>
+              <strong>name:</strong> {pet.name}
+            </p>
+            <p>
+              <strong>status:</strong> {pet.status}
+            </p>
+            <p>
+              <strong>description:</strong> {pet.description}
+            </p>
+          </>
+        )}
+      </div>
+    </PageLayout>
+  );
+};
+
+export default PetProfilePage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { query } = context;
+  const id = query.id ?? '';
+  const { host } = context.req.headers;
+  const protocol = context.req.headers['x-forwarded-proto'] || 'http';
+  const baseUrl = context.req
+    ? `${protocol as string}://${host as string}`
+    : '';
+  const petfindetOauthData = await fetch(
+    `${baseUrl}/api/petfinder-oauth-token`
+  ).then((res) => res.json());
+  const accessToken = petfindetOauthData.access_token;
+  if (accessToken) {
+    let url = 'https://api.petfinder.com/v2/animals?location=22152';
+    if (id) {
+      url = `https://api.petfinder.com/v2/animals/${id}`;
+    }
+    const petfindetData = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then((res) => res.json());
+    const pet: IAnimalData = petfindetData?.animal;
+
+    if (pet) {
+      return {
+        props: {
+          pet: pet,
+          message: 'success',
+        },
+      };
+    } else {
+      return {
+        props: {
+          pet: null,
+          message: `no animal found for id: ${id}`,
+        },
+      };
+    }
+  } else {
+    return {
+      props: {
+        pet: null,
+        message: 'no access token',
+      },
+    };
+  }
+};

@@ -7,8 +7,8 @@ const Hero: React.FC = () => {
     <div className="relative h-[19rem] w-full lg:h-[20rem] xl:h-[21rem] 2xl:h-[22rem]">
       <Image
         src="https://i.postimg.cc/7Y7Lk3S8/hero.png"
-        layout="fill"
-        objectFit="cover"
+        fill
+        className="object-cover"
         alt="hero image section"
       />
       <div className="absolute top-[61%] left-1/2 flex h-[11.5rem] w-[90%] -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-white/20 text-center shadow-lg backdrop-blur-sm sm:max-w-[34rem] xl:top-[64%]">

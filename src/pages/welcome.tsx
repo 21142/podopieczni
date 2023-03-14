@@ -11,14 +11,10 @@ import { Roles } from '~/utils/constants';
 const Welcome: NextPage = () => {
   const router = useRouter();
 
-  const query = api.auth.getSession.useQuery();
-  const sessionData = query.data;
+  const { data: sessionData } = api.auth.getSession.useQuery();
 
-  const isLoggingInQuery = api.auth.getSession.useQuery();
-  const meQuery = api.user.me.useQuery();
-
-  const isLoggingIn = isLoggingInQuery.data;
-  const hasRole = meQuery.data?.role ? true : false;
+  const { data: meQueryData } = api.user.me.useQuery();
+  const hasRole = meQueryData?.role ? true : false;
 
   const { mutateAsync: setRoleAsAdopter } =
     api.auth.setAdoptingRole.useMutation();
@@ -27,18 +23,16 @@ const Welcome: NextPage = () => {
 
   const setAdopterRole = async () => {
     await setRoleAsAdopter();
-    console.log('HERE? ADOPTER SET');
-    router.push('/results');
+    router.push('/results#scrollToPosition');
   };
 
   const setShelterRole = async () => {
     await setRoleAsShelter();
-    console.log('HERE? SHELTER SET');
     router.push('/dashboard');
   };
 
   if (sessionData?.role) {
-    const redirectSlug =
+    const redirectSlug: string =
       sessionData?.role == Roles.Adopter
         ? '/'
         : sessionData?.role == Roles.Shelter
@@ -49,7 +43,7 @@ const Welcome: NextPage = () => {
 
   return (
     <PageLayout>
-      {isLoggingIn ? (
+      {sessionData ? (
         hasRole ? (
           <div className="grid h-[50vh] content-center">
             <Spinner />
