@@ -4,11 +4,9 @@ import Landing from 'src/components/pages/landing/Landing';
 
 const Home: NextPage = () => {
   return (
-    <>
-      <PageLayout>
-        <Landing />
-      </PageLayout>
-    </>
+    <PageLayout>
+      <Landing />
+    </PageLayout>
   );
 };
 

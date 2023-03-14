@@ -1,7 +1,7 @@
-import { IBaseComponentTemplate } from './BaseComponentTemplate';
+import type { IBaseComponentTemplate } from "./BaseComponentTemplate";
 
 const base: IBaseComponentTemplate = {
-  sampleTextProp: 'sampleText',
+  sampleTextProp: "sampleText",
 };
 
 export const mockBaseComponentTemplateProps = {

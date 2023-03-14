@@ -1,23 +1,42 @@
 import type { NextPage } from 'next';
+import { signIn, signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import Form from 'src/components/form/Form';
-import PageLayout from 'src/components/layouts/primary/PageLayout';
-import { trpc } from 'src/utils/trpc';
+import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
+import { CvaButton } from '~/components/buttons/cva/ButtonCva';
+import { api } from '~/utils/api';
 
 const Register: NextPage = () => {
-  const query = trpc.auth.getSession.useQuery();
+  const router = useRouter();
 
-  const sessionData = query.data;
+  const { data: sessionData } = api.auth.getSession.useQuery();
 
   return (
-    <>
-      <PageLayout>
-        {sessionData ? (
-          <Form formAction="" />
-        ) : (
-          <p className="mt-20 text-center">Please log in to see this view</p>
-        )}
-      </PageLayout>
-    </>
+    <DashboardLayout>
+      {sessionData ? (
+        <Form formAction="" />
+      ) : (
+        <div className="grid h-[50vh] content-center">
+          <p className="p-12 text-center">Please log in to see this view</p>
+          <div className="flex justify-center gap-5">
+            <CvaButton
+              variant="primary"
+              className="w-36 rounded-md px-4 py-2"
+              onClick={sessionData ? () => void signOut() : () => void signIn()}
+            >
+              {sessionData ? 'Wyloguj się' : 'Zaloguj się'}
+            </CvaButton>
+            <CvaButton
+              variant="secondary"
+              className="w-36 rounded-md"
+              onClick={() => void router.push('/')}
+            >
+              Strona główna
+            </CvaButton>
+          </div>
+        </div>
+      )}
+    </DashboardLayout>
   );
 };
 

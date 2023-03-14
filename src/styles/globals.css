@@ -4,7 +4,20 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    @apply bg-primary-300 scroll-smooth font-sans;
+  }
+}
+
+@layer utilities {
+  .animation-delay-2 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4 {
+    animation-delay: 4s;
+  }
+
+  .text-shadow {
+    text-shadow: rgb(0 0 0 / 56%) 0px 3px 12px;
   }
 }
 

@@ -10,6 +10,7 @@
 
 .card__image {
   max-width: 100%;
+  height: 14rem;
   display: block;
   object-fit: cover;
 }
@@ -23,8 +24,8 @@
   box-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.1);
   border-radius: 1em;
   background: #ece9e6;
-  background: linear-gradient(to right, #ffffff, #ece9e6);
-  height: 33rem;
+  background: linear-gradient(to right, #ffffff, #fafafa);
+  height: 32rem;
 }
 
 .card__body {
@@ -54,8 +55,13 @@
 
 .card__footer {
   display: flex;
+  align-items: center;
   padding: 1rem;
   margin-top: auto;
+}
+
+.card__footer > div {
+  align-items: center;
 }
 
 .user {
@@ -65,6 +71,8 @@
 
 .user__image {
   border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
 }
 
 .user__info > small {

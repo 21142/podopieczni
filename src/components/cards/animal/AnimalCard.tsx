@@ -1,7 +1,9 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import styles from './AnimalCard.module.css';
 
 export interface IAnimalCard {
+  id: number;
   tag: string;
   title: string;
   body?: string;
@@ -11,16 +13,21 @@ export interface IAnimalCard {
 }
 
 const AnimalCard: React.FC<IAnimalCard> = ({
+  id,
   tag,
   title,
   body,
   author,
   avatar,
-  photo
+  photo,
 }) => {
+  const router = useRouter();
   return (
     <>
-      <div className={styles.container}>
+      <div
+        onClick={() => router.push(`pet/${id}`)}
+        className={`transform transition duration-100 hover:scale-105 hover:cursor-pointer hover:ease-out ${styles.container}`}
+      >
         <div className={styles.card}>
           <div className={styles.card__header}>
             <Image
@@ -32,7 +39,13 @@ const AnimalCard: React.FC<IAnimalCard> = ({
             />
           </div>
           <div className={styles.card__body}>
-            <span className={`${styles.tag} ${styles['tag-blue']}`}>{tag}</span>
+            <span
+              className={`${styles.tag as string} ${
+                styles['tag-blue'] as string
+              }`}
+            >
+              {tag}
+            </span>
             <h4>{title}</h4>
             <p>{body}</p>
           </div>

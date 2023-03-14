@@ -1,4 +1,4 @@
-import { IGlobalStatistics } from './GlobalStatistics';
+import type { IGlobalStatistics } from './GlobalStatistics';
 
 const base: IGlobalStatistics = {
   adopted: 222,

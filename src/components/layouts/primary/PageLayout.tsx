@@ -1,5 +1,5 @@
-import Head from 'next/head';
 import Footer from 'src/components/navigation/footer/Footer';
+import HeadMeta from 'src/components/utils/head-seo/HeadMeta';
 import Header from '../../navigation/header/Header';
 
 export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
@@ -13,21 +13,28 @@ const PageLayout: React.FC<IPageLayout> = ({
 }) => {
   return (
     <div className="overflow-x-hidden bg-neutral-50">
-      <Head>
-        <title>podopieczni</title>
-        <meta name="description" content="podopieczni" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <HeadMeta
+        title={
+          'podopieczni - Pomoc w znalezieniu zwierząt gotowych do adopcji.'
+        }
+        description={
+          'Szukaj podopiecznych gotowych do adopcji i pasujących do twoich preferencji.'
+        }
+        keywords={'psy, koty, adopcja zwierząt, schroniska'}
+        type={'website'}
+        url={
+          process.env.NEXT_PUBLIC_BASE_URL ??
+          'https://podopieczni-dev.vercel.app'
+        }
+      />
       <div
         {...divProps}
-        className={`min-h-screen w-full mx-auto flex flex-col ${justify}`}
+        className={`mx-auto flex min-h-screen w-full flex-col ${justify}`}
       >
         <div className="w-full bg-neutral-0">
           <Header />
         </div>
-        <main className="w-full flex flex-col flex-grow">
-          {children}
-        </main>
+        <main className="flex w-full flex-grow flex-col">{children}</main>
         <Footer />
       </div>
     </div>
