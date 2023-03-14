@@ -9,9 +9,7 @@ import { api } from '~/utils/api';
 const Register: NextPage = () => {
   const router = useRouter();
 
-  const query = api.auth.getSession.useQuery();
-
-  const sessionData = query.data;
+  const { data: sessionData } = api.auth.getSession.useQuery();
 
   return (
     <DashboardLayout>

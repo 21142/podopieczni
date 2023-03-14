@@ -10,7 +10,7 @@
 
 .card__image {
   max-width: 100%;
-  max-height: 14rem;
+  height: 14rem;
   display: block;
   object-fit: cover;
 }
@@ -24,8 +24,8 @@
   box-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.1);
   border-radius: 1em;
   background: #ece9e6;
-  background: linear-gradient(to right, #ffffff, #ece9e6);
-  height: 33rem;
+  background: linear-gradient(to right, #ffffff, #fafafa);
+  height: 32rem;
 }
 
 .card__body {
@@ -71,8 +71,8 @@
 
 .user__image {
   border-radius: 50%;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 .user__info > small {

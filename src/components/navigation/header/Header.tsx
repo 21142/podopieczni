@@ -1,26 +1,24 @@
-import { MenuAlt2Icon } from "@heroicons/react/outline";
-import { XIcon } from "@heroicons/react/outline";
-import Link from "next/link";
-import { useState } from "react";
-import AuthButton from "src/components/buttons/auth/AuthButton";
-import Logo from "src/components/logos/default/Logo";
-import { api } from "~/utils/api";
-import HeaderLink from "../../links/header/HeaderLink";
-import classNames from "classnames";
+import { MenuAlt2Icon } from '@heroicons/react/outline';
+import { XIcon } from '@heroicons/react/outline';
+import Link from 'next/link';
+import { useState } from 'react';
+import AuthButton from 'src/components/buttons/auth/AuthButton';
+import Logo from 'src/components/logos/default/Logo';
+import { api } from '~/utils/api';
+import HeaderLink from '../../links/header/HeaderLink';
+import classNames from 'classnames';
 
-const Header: React.FC<JSX.IntrinsicElements["header"]> = ({
+const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   className,
   ...headerProps
 }) => {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
-  const query = api.auth.getSession.useQuery();
-
-  const sessionData = query.data;
+  const { data: sessionData } = api.auth.getSession.useQuery();
 
   return (
     <header
       {...headerProps}
-      className={`2xl:max-w-8xl sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col px-5 ${
+      className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col px-5 2xl:max-w-8xl ${
         className as string
       }`}
     >
@@ -33,15 +31,32 @@ const Header: React.FC<JSX.IntrinsicElements["header"]> = ({
         <nav
           className={classNames(
             mobileMenuIsOpen
-              ? "bg-neutral-0 fixed top-0 left-0 m-0 flex h-full w-full flex-col pt-12 [&_a]:ml-5 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-neutral-50"
-              : "hidden items-center space-x-10 pr-14 md:inline-flex"
+              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-neutral-0 pt-12 [&_a]:ml-5 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-neutral-50'
+              : 'hidden items-center space-x-10 pr-14 md:inline-flex'
           )}
         >
-          <HeaderLink href="/" title="Główna" />
-          <HeaderLink href="/" title="Adopcja" />
-          <HeaderLink href="/" title="Edukacja" />
-          <HeaderLink href="/" title="Kontakt" />
-          {sessionData && <HeaderLink href="/register" title="Dodaj" />}
+          <HeaderLink
+            href="/"
+            title="Główna"
+          />
+          <HeaderLink
+            href="/"
+            title="Adopcja"
+          />
+          <HeaderLink
+            href="/"
+            title="Edukacja"
+          />
+          <HeaderLink
+            href="/"
+            title="Kontakt"
+          />
+          {sessionData && (
+            <HeaderLink
+              href="/register"
+              title="Dodaj"
+            />
+          )}
           {mobileMenuIsOpen && (
             <div className="ml-5 mt-8 items-center space-x-5 sm:hidden">
               <AuthButton />
@@ -54,8 +69,8 @@ const Header: React.FC<JSX.IntrinsicElements["header"]> = ({
           </div>
           <button
             className={classNames(
-              mobileMenuIsOpen ? "fixed top-5 right-10" : "",
-              "z-10 md:hidden"
+              mobileMenuIsOpen ? 'fixed top-5 right-10' : '',
+              'z-10 md:hidden'
             )}
             onClick={() => setMobileMenuIsOpen((currentState) => !currentState)}
           >
