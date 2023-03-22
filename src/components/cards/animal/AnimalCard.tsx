@@ -10,6 +10,7 @@ export interface IAnimalCard {
   author: string;
   avatar: string;
   photo?: string;
+  variant: string;
 }
 
 const AnimalCard: React.FC<IAnimalCard> = ({
@@ -20,12 +21,13 @@ const AnimalCard: React.FC<IAnimalCard> = ({
   author,
   avatar,
   photo,
+  variant,
 }) => {
   const router = useRouter();
   return (
     <>
       <div
-        onClick={() => router.push(`pet/${id}`)}
+        onClick={() => router.push(`${variant}/${id}`)}
         className={`transform transition duration-100 hover:scale-105 hover:cursor-pointer hover:ease-out ${styles.container}`}
       >
         <div className={styles.card}>

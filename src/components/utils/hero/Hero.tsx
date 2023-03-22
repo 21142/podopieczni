@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Button from 'src/components/buttons/base/Button';
+import { TypeOfResults } from '~/utils/constants';
 import Search from '../../../components/inputs/search/Search';
 
 const Hero: React.FC = () => {
@@ -11,15 +12,23 @@ const Hero: React.FC = () => {
         className="object-cover"
         alt="hero image section"
       />
-      <div className="absolute top-[61%] left-1/2 flex h-[11.5rem] w-[90%] -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-white/20 text-center shadow-lg backdrop-blur-sm sm:max-w-[34rem] xl:top-[64%]">
-        <h2 className="mb-2 text-lg font-bold text-neutral-50 sm:text-2xl">
-          Wyszukaj zwierzę lub schronisko:
+      <div className="absolute top-[58%] left-1/2 flex h-[12.5rem] w-[90%] -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-white/20 text-center shadow-lg backdrop-blur-sm sm:max-w-[34rem] xl:top-[62%]">
+        <h2 className="mb-3 text-lg font-bold text-neutral-50 sm:text-2xl">
+          Szukaj dostępnych podopiecznych:
         </h2>
-        <Search query={''} />
+        <Search
+          query={''}
+          typeOfResults={TypeOfResults.Animal}
+        />
         <div className="flex w-[19.5rem] items-center justify-center gap-x-5 pt-3">
-          <Button text="Psy" />
-          <Button text="Koty" />
-          <Button text="Schroniska" />
+          <Button
+            text="Zwierzęta"
+            href={`/${TypeOfResults.Animal}#scrollToPosition`}
+          />
+          <Button
+            text="Schroniska"
+            href={`/${TypeOfResults.Organization}#scrollToPosition`}
+          />
         </div>
       </div>
     </div>

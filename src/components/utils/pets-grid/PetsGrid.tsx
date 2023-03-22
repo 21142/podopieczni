@@ -1,4 +1,5 @@
 import AnimalCard from 'src/components/cards/animal/AnimalCard';
+import { Variant } from '~/utils/constants';
 import type IAnimalData from '../search-results/types';
 
 export interface IPetsGrid {
@@ -18,6 +19,7 @@ const PetsGrid: React.FC<IPetsGrid> = ({ featuredAnimals }) => {
           body={animal.description}
           avatar={animal.organization_id}
           author={animal.photos[0]?.small ?? '/no-profile-picture.svg'}
+          variant={Variant.Animal}
         />
       ))}
     </div>

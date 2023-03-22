@@ -7,7 +7,6 @@ import {
   type SessionOptions,
 } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import FacebookProvider from 'next-auth/providers/facebook';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import EmailProvider from 'next-auth/providers/email';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
@@ -210,10 +209,6 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_ID,
       clientSecret: env.GOOGLE_SECRET,
-    }),
-    FacebookProvider({
-      clientId: env.FACEBOOK_ID,
-      clientSecret: env.FACEBOOK_SECRET,
     }),
     EmailProvider({
       server: env.EMAIL_SERVER,
