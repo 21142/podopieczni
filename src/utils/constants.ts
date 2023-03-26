@@ -1,6 +1,7 @@
 export enum Roles {
   Adopter = 'Adopter',
   Shelter = 'Shelter',
+  Admin = 'Admin',
 }
 
 export enum TypeOfResults {

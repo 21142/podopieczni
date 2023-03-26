@@ -1,5 +1,5 @@
 import HeadMeta from 'src/components/utils/head-seo/HeadMeta';
-import Header from '../../navigation/header/Header';
+import DashboardHeader from '../../navigation/header/DashboardHeader';
 
 export interface IDashboardLayout
   extends React.ComponentPropsWithoutRef<'div'> {
@@ -12,7 +12,7 @@ const DashboardLayout: React.FC<IDashboardLayout> = ({
   ...divProps
 }) => {
   return (
-    <div className="overflow-x-hidden bg-neutral-0">
+    <div className="overflow-x-hidden bg-neutral-50/30">
       <HeadMeta
         title={
           'podopieczni - Pomoc w zarządzaniu danymi zwierząt i procesie adopcji.'
@@ -32,7 +32,7 @@ const DashboardLayout: React.FC<IDashboardLayout> = ({
         className={`mx-auto flex h-screen w-full flex-col ${justify}`}
       >
         <div className="w-full bg-neutral-0">
-          <Header />
+          <DashboardHeader />
         </div>
         <main className="flex w-full flex-grow flex-col">{children}</main>
       </div>
