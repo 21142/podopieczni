@@ -1,11 +1,11 @@
 import type { NextPage } from 'next';
 import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
-import NewAnimalForm from '~/components/form/NewAnimalForm';
+import ProfileForm from '~/components/form/ProfileForm';
 import Spinner from '~/components/spinner/Spinner';
 import LoginToAccessPage from '~/components/utils/login-or-landing/LoginToAccessPage';
 import { api } from '~/utils/api';
 
-const Register: NextPage = () => {
+const RegisterUser: React.FC<NextPage> = () => {
   const {
     data: sessionData,
     isLoading,
@@ -31,13 +31,13 @@ const Register: NextPage = () => {
   return (
     <DashboardLayout>
       {sessionData && (
-        <NewAnimalForm
+        <ProfileForm
           formAction=""
-          title={'Your new pet'}
+          title={'Dodaj nową osobę'}
         />
       )}
     </DashboardLayout>
   );
 };
 
-export default Register;
+export default RegisterUser;
