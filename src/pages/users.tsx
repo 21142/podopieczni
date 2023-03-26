@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
 import { CvaButton } from '~/components/buttons/cva/ButtonCva';
 import Spinner from '~/components/spinner/Spinner';
+import UnauthorizedPage from '~/components/utils/unauthorized/UnauthorizedPage';
 import { api } from '~/utils/api';
 import { Roles } from '~/utils/constants';
 
@@ -34,20 +35,7 @@ const Users: NextPage = () => {
   if (error || sessionData.role !== Roles.Admin)
     return (
       <DashboardLayout>
-        <div className="grid h-[50vh] content-center">
-          <p className="p-12 text-center">
-            You don&apos;t have permission to access this page
-          </p>
-          <div className="flex justify-center gap-5">
-            <CvaButton
-              variant="primary"
-              className="w-36 rounded-md"
-              onClick={() => void router.push('/')}
-            >
-              Strona główna
-            </CvaButton>
-          </div>
-        </div>
+        <UnauthorizedPage />
       </DashboardLayout>
     );
 
@@ -73,9 +61,18 @@ const Users: NextPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="mx-auto w-full max-w-7xl pt-5 2xl:max-w-8xl">
-        {allUsers && <pre>{allUsers}</pre>}
-      </div>
+      <section className="flex flex-col items-center justify-center pt-12">
+        <CvaButton
+          variant="primary"
+          className="w-42 rounded-md"
+          onClick={() => void router.push('/user/new')}
+        >
+          Dodaj osobę
+        </CvaButton>
+        <div className="mx-auto w-full max-w-7xl pt-5 2xl:max-w-8xl">
+          {allUsers && <pre>{allUsers}</pre>}
+        </div>
+      </section>
     </DashboardLayout>
   );
 };

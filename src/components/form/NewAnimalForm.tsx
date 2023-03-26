@@ -9,7 +9,7 @@ type FormProps = {
 
 const NewAnimalForm: React.FC<FormProps> = ({ formAction, title }) => {
   return (
-    <div className="mx-auto w-full max-w-7xl pt-5 2xl:max-w-8xl">
+    <div className="mx-auto w-full max-w-7xl 2xl:max-w-8xl">
       <div className="mt-10 sm:mt-0">
         <div className="m-5 md:grid md:grid-cols-3 md:gap-6">
           <div className="mt-5 md:col-span-3 md:mt-0">
@@ -75,7 +75,7 @@ const NewAnimalForm: React.FC<FormProps> = ({ formAction, title }) => {
                     />
 
                     <div className="col-span-3"></div>
-                    <div className="col-span-6 h-14"></div>
+                    <div className="col-span-6 h-6"></div>
 
                     <TextInput
                       divStyles="col-span-6 sm:col-span-3"
@@ -105,7 +105,7 @@ const NewAnimalForm: React.FC<FormProps> = ({ formAction, title }) => {
                       inputId="microchip-brand"
                     />
 
-                    <div className="col-span-6 h-14"></div>
+                    <div className="col-span-6 h-6"></div>
                     <TextInput
                       divStyles="col-span-6 sm:col-span-3"
                       label="Intake date"

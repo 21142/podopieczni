@@ -55,8 +55,8 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
                 title="Użytkownicy"
               />
               <HeaderLink
-                href="/statistics"
-                title="Statystyki"
+                href="/applications"
+                title="Wnioski"
               />
             </>
           ) : (

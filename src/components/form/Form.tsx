@@ -123,11 +123,7 @@ const Form = ({ formAction, title }: FormProps) => {
                   </div>
                 </div>
 
-                <SelectInput
-                  value={''}
-                  initial={'Please select'}
-                  options={[{ id: '1', value: 'OPTION 1', disabled: false }]}
-                />
+                <SelectInput value={''} />
 
                 <div className="bg-neutral-0 px-4 py-3 text-left sm:px-6 sm:py-6">
                   <button
