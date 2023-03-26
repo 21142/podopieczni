@@ -1,9 +1,9 @@
 import type { NextPage } from 'next';
 import { signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import Form from 'src/components/form/Form';
 import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
 import { CvaButton } from '~/components/buttons/cva/ButtonCva';
+import NewAnimalForm from '~/components/form/NewAnimalForm';
 import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/utils/api';
 
@@ -54,7 +54,14 @@ const Register: NextPage = () => {
     );
 
   return (
-    <DashboardLayout>{sessionData && <Form formAction="" />}</DashboardLayout>
+    <DashboardLayout>
+      {sessionData && (
+        <NewAnimalForm
+          formAction=""
+          title={'Your new pet'}
+        />
+      )}
+    </DashboardLayout>
   );
 };
 
