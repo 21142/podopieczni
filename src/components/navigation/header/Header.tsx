@@ -33,7 +33,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
           className={classNames(
             mobileMenuIsOpen
               ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-neutral-0 pt-12 [&_a]:ml-5 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-neutral-50'
-              : 'hidden items-center space-x-10 pr-14 md:inline-flex'
+              : 'hidden items-center space-x-10 md:inline-flex'
           )}
         >
           <HeaderLink
@@ -56,7 +56,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
           />
           <HeaderLink
             href="/"
-            title="Kontakt"
+            title="Wsparcie"
           />
           {mobileMenuIsOpen && (
             <div className="ml-5 mt-8 items-center space-x-5 sm:hidden">
