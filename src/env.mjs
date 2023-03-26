@@ -23,8 +23,6 @@ const server = z.object({
   PETFINDER_SECRET: z.string(),
   GOOGLE_ID: z.string(),
   GOOGLE_SECRET: z.string(),
-  FACEBOOK_ID: z.string(),
-  FACEBOOK_SECRET: z.string(),
   EMAIL_SERVER: z.string(),
   EMAIL_FROM: z.string(),
 });
@@ -52,8 +50,6 @@ const processEnv = {
   PETFINDER_SECRET: process.env.PETFINDER_SECRET,
   GOOGLE_ID: process.env.GOOGLE_ID,
   GOOGLE_SECRET: process.env.GOOGLE_SECRET,
-  FACEBOOK_ID: process.env.FACEBOOK_ID,
-  FACEBOOK_SECRET: process.env.FACEBOOK_SECRET,
   EMAIL_SERVER: process.env.EMAIL_SERVER,
   EMAIL_FROM: process.env.EMAIL_FROM,
 };

@@ -10,28 +10,28 @@ const GlobalStatistics: React.FC<IGlobalStatistics> = ({
   shelters,
 }) => {
   return (
-    <div className="flex items-center min-h-screen justify-center gap-[1rem] sm:gap-[3rem] md:gap-[5rem]">
-      <div>
-        <p className="text-lg sm:text-2xl md:text-4xl font-semibold text-neutral-800">
+    <div className="flex min-h-[80%] items-center justify-center gap-[1rem] sm:gap-[3rem] md:gap-[5rem]">
+      <div className="text-center">
+        <p className="text-lg font-semibold text-neutral-800 sm:text-2xl md:text-4xl">
           {adopted}
         </p>
-        <p className="text-md sm:text-lg md:text-2xl font-light text-neutral-600">
+        <p className="text-md font-light text-neutral-600 sm:text-lg md:text-2xl">
           Zaadoptowanych
         </p>
       </div>
-      <div>
-        <p className="text-lg sm:text-2xl md:text-4xl font-semibold text-neutral-800">
+      <div className="text-center">
+        <p className="text-lg font-semibold text-neutral-800 sm:text-2xl md:text-4xl">
           {waiting}
         </p>
-        <p className="text-md sm:text-lg md:text-2xl font-light text-neutral-600">
+        <p className="text-md font-light text-neutral-600 sm:text-lg md:text-2xl">
           Czeka na dom
         </p>
       </div>
-      <div>
-        <p className="text-lg sm:text-2xl md:text-4xl font-semibold text-neutral-800">
+      <div className="text-center">
+        <p className="text-lg font-semibold text-neutral-800 sm:text-2xl md:text-4xl">
           {shelters}
         </p>
-        <p className="text-md sm:text-lg md:text-2xl font-light text-neutral-600">
+        <p className="text-md font-light text-neutral-600 sm:text-lg md:text-2xl">
           Schronisk
         </p>
       </div>

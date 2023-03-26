@@ -50,6 +50,27 @@ export interface IColors {
   secondary?: string;
 }
 
+export default interface IOrganizationData {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  address: Address;
+  hours: object;
+  adoption: object;
+  social_media: object;
+  website?: string | null;
+  mission_statement?: string | null;
+  photos: IPhoto[];
+  distance: number;
+}
+
+export interface Address {
+  city: string;
+  country: string;
+  state: string;
+}
+
 export enum Species {
   Cat = 'Cat',
   Dog = 'Dog',

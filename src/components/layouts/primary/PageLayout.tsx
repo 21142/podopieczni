@@ -12,7 +12,7 @@ const PageLayout: React.FC<IPageLayout> = ({
   ...divProps
 }) => {
   return (
-    <div className="overflow-x-hidden bg-neutral-50">
+    <div className="overflow-x-hidden bg-neutral-50/30">
       <HeadMeta
         title={
           'podopieczni - Pomoc w znalezieniu zwierząt gotowych do adopcji.'

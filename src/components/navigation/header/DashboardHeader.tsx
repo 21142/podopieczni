@@ -9,13 +9,14 @@ import HeaderLink from '../../links/header/HeaderLink';
 import classNames from 'classnames';
 import { Roles } from '~/utils/constants';
 
-const Header: React.FC<JSX.IntrinsicElements['header']> = ({
+const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
   className,
   ...headerProps
 }) => {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
   const { data: sessionData } = api.auth.getSession.useQuery();
 
+  console.log(sessionData);
   return (
     <header
       {...headerProps}
@@ -40,24 +41,41 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
             href="/"
             title="Główna"
           />
-          {sessionData && sessionData.role !== Roles.Adopter && (
-            <HeaderLink
-              href="/dashboard"
-              title="Schronisko"
-            />
+          {sessionData && sessionData.role !== Roles.Adopter ? (
+            <>
+              <HeaderLink
+                href="/dashboard"
+                title="Schronisko"
+              />
+              <HeaderLink
+                href="/pets"
+                title="Zwierzęta"
+              />
+              <HeaderLink
+                href="/users"
+                title="Użytkownicy"
+              />
+              <HeaderLink
+                href="/statistics"
+                title="Statystyki"
+              />
+            </>
+          ) : (
+            <>
+              <HeaderLink
+                href="/"
+                title="Adopcja"
+              />
+              <HeaderLink
+                href="/"
+                title="Edukacja"
+              />
+              <HeaderLink
+                href="/"
+                title="Kontakt"
+              />
+            </>
           )}
-          <HeaderLink
-            href="/"
-            title="Adopcja"
-          />
-          <HeaderLink
-            href="/"
-            title="Edukacja"
-          />
-          <HeaderLink
-            href="/"
-            title="Kontakt"
-          />
           {mobileMenuIsOpen && (
             <div className="ml-5 mt-8 items-center space-x-5 sm:hidden">
               <AuthButton />
@@ -88,4 +106,4 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   );
 };
 
-export default Header;
+export default DashboardHeader;
