@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { type NextPage, type GetServerSideProps } from 'next/types';
 import PageLayout from '~/components/layouts/primary/PageLayout';
 import type IOrganizationData from '~/components/utils/search-results/types';
@@ -19,7 +19,7 @@ const PetProfilePage: NextPage<IOrganizationProfilePage> = ({
   message,
 }) => {
   const router = useRouter();
-  const id = router.query.id as string;
+  const id = useSearchParams().get("id")
 
   return (
     <PageLayout>

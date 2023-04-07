@@ -2,3 +2,10 @@
 .npm
 dist
 node_modules
+build
+CHANGELOG.md
+public
+package.json
+package-lock.json
+cache
+.cache

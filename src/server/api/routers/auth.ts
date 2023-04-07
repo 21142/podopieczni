@@ -1,10 +1,12 @@
 import { TRPCError } from '@trpc/server';
 import { hash } from 'argon2';
+import { z } from 'zod';
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from '~/server/api/trpc';
+import { prisma } from '~/server/db';
 import { Roles } from '~/utils/constants';
 import { signUpSchema } from '~/utils/validation/auth';
 
@@ -69,4 +71,32 @@ export const authRouter = createTRPCRouter({
         result: result.email,
       };
     }),
+  // verifyPassword: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       passwordInput: z.string(),
+  //     })
+  //   )
+  //   .mutation(async ({ input, ctx }) => {
+  //     const user = await prisma.user.findUnique({
+  //       where: {
+  //         id: ctx.user.id,
+  //       },
+  //     });
+
+  //     if (!user?.password) {
+  //       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+  //     }
+
+  //     const passwordsMatch = await verifyPassword(
+  //       input.passwordInput,
+  //       user.password
+  //     );
+
+  //     if (!passwordsMatch) {
+  //       throw new TRPCError({ code: 'UNAUTHORIZED' });
+  //     }
+
+  //     return;
+  //   }),
 });

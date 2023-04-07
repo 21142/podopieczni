@@ -1,5 +1,5 @@
 import { signIn, signOut } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
 import { CvaButton } from '~/components/buttons/cva/ButtonCva';
 import { api } from '~/utils/api';

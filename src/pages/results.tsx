@@ -418,6 +418,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     }).then((res) => res.json())) as IResults;
     const animals = petfindetData?.animals;
+
+    if (!animals)
+      return {
+        props: {
+          animals: null,
+          searchQuery: search,
+        },
+      };
+
     return {
       props: {
         animals: animals,
