@@ -11,7 +11,11 @@ import { Roles } from '~/utils/constants';
 const Welcome: NextPage = () => {
   const router = useRouter();
 
-  const { data: sessionData } = api.auth.getSession.useQuery();
+  const {
+    data: sessionData,
+    isLoading,
+    error,
+  } = api.auth.getSession.useQuery();
 
   const { data: meQueryData } = api.user.me.useQuery();
   const hasRole = meQueryData?.role ? true : false;
@@ -23,47 +27,32 @@ const Welcome: NextPage = () => {
 
   const setAdopterRole = async () => {
     await setRoleAsAdopter();
-    router.push('/results#scrollToPosition');
+    router.replace('/results#scrollToPosition');
   };
 
   const setShelterRole = async () => {
     await setRoleAsShelter();
-    router.push('/dashboard');
+    router.replace('/dashboard');
   };
 
   if (sessionData?.role) {
     const redirectSlug: string =
-      sessionData?.role == Roles.Adopter
-        ? '/'
-        : sessionData?.role == Roles.Shelter
-        ? '/dashboard'
-        : '/';
-    router.push(redirectSlug);
+      sessionData?.role == Roles.Adopter ? '/' : '/dashboard';
+    router.replace(redirectSlug);
   }
 
-  return (
-    <PageLayout>
-      {sessionData ? (
-        hasRole ? (
-          <div className="grid h-[50vh] content-center">
-            <Spinner />
-          </div>
-        ) : (
-          <div className="grid h-80 place-items-center content-center">
-            <p className="text-lg">Please, tell us what are you here for</p>
-            <div className="grid gap-5 p-5 sm:grid-cols-2">
-              <LinkButton
-                value="I want to adopt a pet"
-                onClick={setAdopterRole}
-              />
-              <LinkButton
-                value="I work in a shelter"
-                onClick={setShelterRole}
-              />
-            </div>
-          </div>
-        )
-      ) : (
+  if (isLoading)
+    return (
+      <PageLayout>
+        <div className="grid h-[70vh] content-center">
+          <Spinner />
+        </div>
+      </PageLayout>
+    );
+
+  if (error)
+    return (
+      <PageLayout>
         <div className="grid h-[50vh] content-center">
           <p className="p-12 text-center">
             Zaloguj się, aby wybrać w czym możemy Ci pomóc?
@@ -83,6 +72,25 @@ const Welcome: NextPage = () => {
             >
               Strona główna
             </CvaButton>
+          </div>
+        </div>
+      </PageLayout>
+    );
+
+  return (
+    <PageLayout>
+      {sessionData && !hasRole && (
+        <div className="grid h-80 place-items-center content-center">
+          <p className="text-lg">Please, tell us what are you here for</p>
+          <div className="grid gap-5 p-5 sm:grid-cols-2">
+            <LinkButton
+              value="I want to adopt a pet"
+              onClick={setAdopterRole}
+            />
+            <LinkButton
+              value="I work in a shelter"
+              onClick={setShelterRole}
+            />
           </div>
         </div>
       )}

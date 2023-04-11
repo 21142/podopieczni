@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 
 export interface ISearch {
   query: string;
+  typeOfResults: string;
 }
 
-const Search: React.FC<ISearch> = ({ query }) => {
+const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const router = useRouter();
 
@@ -22,9 +23,11 @@ const Search: React.FC<ISearch> = ({ query }) => {
       onSubmit={(e) => {
         e.preventDefault();
         if (!searchQuery) {
-          void router.push('/results#scrollToPosition');
+          void router.push(`/${typeOfResults}#scrollToPosition`);
         } else {
-          void router.push(`/results?search=${searchQuery}#scrollToPosition`);
+          void router.push(
+            `/${typeOfResults}?search=${searchQuery}#scrollToPosition`
+          );
         }
       }}
     >

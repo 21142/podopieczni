@@ -7,7 +7,7 @@ const AuthButton: React.FC = () => {
 
   return (
     <button
-      className="lg:text-md min-w-[8rem] cursor-pointer rounded-full border border-primary-300 py-1 px-4 text-sm font-medium text-primary-300 transition-all duration-300 ease-out hover:translate-y-1 hover:scale-95 hover:bg-primary-300 hover:font-semibold hover:text-white xl:text-base"
+      className="lg:text-md mt-1 min-w-[8rem] cursor-pointer rounded-full border border-primary-300 py-1 px-4 text-sm font-medium text-primary-300 transition-all ease-out hover:bg-primary-300 hover:font-semibold hover:text-white xl:text-base"
       onClick={sessionData ? () => void signOut() : () => void signIn()}
     >
       {sessionData ? (

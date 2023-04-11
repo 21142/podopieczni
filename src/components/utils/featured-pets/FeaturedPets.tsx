@@ -10,9 +10,11 @@ export interface IFeaturedPets {
 const animalFetcher = async () => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-  const petfindetAnimalsData = await fetch(`${baseUrl}/api/animals`).then(
+  const petfindetAnimalsData = (await fetch(`${baseUrl}/api/animals`).then(
     (res) => res.json()
-  );
+  )) as IAnimalData[] | undefined;
+
+  if (!petfindetAnimalsData) return;
   const featuredAnimalsData = petfindetAnimalsData.slice(10, 16);
   return featuredAnimalsData;
 };
@@ -62,7 +64,7 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
         {isLoading ? (
           <Spinner />
         ) : (
-          <PetsGrid featuredAnimals={featuredAnimals} />
+          <PetsGrid featuredAnimals={featuredAnimals ?? []} />
         )}
       </div>
       <div className="aspect-[10/1] rotate-180">

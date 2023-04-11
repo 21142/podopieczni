@@ -1,11 +1,16 @@
 import AnimalCard from 'src/components/cards/animal/AnimalCard';
 import type IAnimalData from './types';
+import type IOrganizationData from './types';
 
 export interface ISearchResults {
-  results?: IAnimalData[];
+  results?: IAnimalData[] | IOrganizationData[];
+  typeOfResults: string;
 }
 
-const SearchResults: React.FC<ISearchResults> = ({ results }) => {
+const SearchResults: React.FC<ISearchResults> = ({
+  results,
+  typeOfResults,
+}) => {
   return (
     <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:col-span-3 lg:gap-x-4 xl:grid-cols-3">
       {results?.map((animal) => (
@@ -18,6 +23,7 @@ const SearchResults: React.FC<ISearchResults> = ({ results }) => {
           body={animal.description}
           avatar={animal.organization_id}
           author={animal.photos[0]?.small ?? '/no-profile-picture.svg'}
+          variant={typeOfResults}
         />
       ))}
     </div>

@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'cva';
+import { type ButtonHTMLAttributes } from 'react';
 
 const button = cva('button', {
   variants: {
@@ -37,7 +38,7 @@ const button = cva('button', {
 });
 
 export interface ButtonProps
-  extends React.HTMLAttributes<HTMLButtonElement>,
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof button> {}
 
 export const CvaButton: React.FC<ButtonProps> = ({

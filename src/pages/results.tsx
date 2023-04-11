@@ -15,10 +15,15 @@ import PageLayout from 'src/components/layouts/primary/PageLayout';
 import SearchResults from 'src/components/utils/search-results/SearchResults';
 import type IAnimalData from 'src/components/utils/search-results/types';
 import Link from 'next/link';
+import { TypeOfResults } from '~/utils/constants';
 
 export interface IResults {
   animals?: IAnimalData[];
   searchQuery: string;
+}
+
+export interface PetfinderOauth {
+  access_token: string;
 }
 
 const filters = [
@@ -72,7 +77,6 @@ function classNames(...classes: string[]) {
 }
 
 const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   return (
@@ -81,7 +85,10 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
         id="scrollToPosition"
         className="flex w-full items-center justify-center bg-primary-300 pt-4 text-center"
       >
-        <Search query={searchQuery} />
+        <Search
+          query={searchQuery}
+          typeOfResults={TypeOfResults.Animal}
+        />
       </div>
       <div
         id="featured"
@@ -318,7 +325,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
                   {({ open }) => (
                     <>
                       <h3 className="-my-3 flow-root">
-                        <Disclosure.Button className="flex w-full items-center justify-between bg-neutral-50 py-3 text-sm text-gray-400 hover:text-gray-500">
+                        <Disclosure.Button className="flex w-full items-center justify-between bg-neutral-50/30 py-3 text-sm text-gray-400 hover:text-gray-500">
                           <span className="font-medium text-gray-900">
                             {section.name}
                           </span>
@@ -368,7 +375,10 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
               ))}
             </form>
 
-            <SearchResults results={animals} />
+            <SearchResults
+              results={animals}
+              typeOfResults="pet"
+            />
           </div>
         </section>
         <Link
@@ -393,21 +403,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const baseUrl = context.req
     ? `${protocol as string}://${host as string}`
     : '';
-  const petfindetOauthData = await fetch(
+  const petfindetOauthData = (await fetch(
     `${baseUrl}/api/petfinder-oauth-token`
-  ).then((res) => res.json());
+  ).then((res) => res.json())) as PetfinderOauth;
   const accessToken = petfindetOauthData.access_token;
   if (accessToken) {
     let url = 'https://api.petfinder.com/v2/animals?location=22152';
     if (search) {
       url = `https://api.petfinder.com/v2/animals?location=${search}`;
     }
-    const petfindetData = await fetch(url, {
+    const petfindetData = (await fetch(url, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    }).then((res) => res.json());
-    const animals: IAnimalData[] = petfindetData?.animals;
+    }).then((res) => res.json())) as IResults;
+    const animals = petfindetData?.animals;
     return {
       props: {
         animals: animals,
