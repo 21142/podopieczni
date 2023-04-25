@@ -34,7 +34,9 @@ const PageLayout: React.FC<IPageLayout> = ({
         <div className="w-full bg-neutral-0">
           <Header />
         </div>
-        <main className="flex w-full flex-grow flex-col">{children}</main>
+        <main className="flex w-full flex-grow flex-col font-sans">
+          {children}
+        </main>
         <Footer />
       </div>
     </div>

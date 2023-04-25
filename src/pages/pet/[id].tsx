@@ -1,8 +1,8 @@
-import { useRouter, useSearchParams } from 'next/navigation';
-import { type NextPage, type GetServerSideProps } from 'next/types';
+import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import { type GetServerSideProps, type NextPage } from 'next/types';
 import PageLayout from '~/components/layouts/primary/PageLayout';
 import type IAnimalData from '~/components/utils/search-results/types';
-import Image from 'next/image';
 import { type PetfinderOauth } from '../results';
 
 type IPetProfilePage = {
@@ -15,7 +15,6 @@ type PetfinderData = {
 };
 
 const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
-  const router = useRouter();
   const id = useSearchParams().get('id');
 
   return (

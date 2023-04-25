@@ -7,7 +7,7 @@ const SelectInput: React.FC<Props> = () => {
     <div className="col-span-6 sm:col-span-3">
       <label
         htmlFor="role"
-        className="block text-sm font-medium text-gray-700"
+        className="block text-sm font-light uppercase tracking-[0.25rem] text-primary-400/80"
       >
         Role
       </label>

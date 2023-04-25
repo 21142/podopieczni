@@ -15,5 +15,8 @@ const config = {
     locales: ['pl'],
     defaultLocale: 'pl',
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 export default config;

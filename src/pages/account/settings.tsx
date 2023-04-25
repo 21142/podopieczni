@@ -1,4 +1,4 @@
-import { type User } from '@prisma/client';
+import { User } from '@prisma/client';
 import type { FC } from 'react';
 import ProfileForm from '~/components/form/ProfileForm';
 import PageLayout from '~/components/layouts/primary/PageLayout';
@@ -15,7 +15,6 @@ const settings: FC<settingsProps> = ({}) => {
   return (
     <PageLayout>
       <ProfileForm
-        formAction=""
         title="Your profile"
         user={me}
       />

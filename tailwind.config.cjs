@@ -32,7 +32,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', ...fontFamily.sans],
+        sans: ['var(--font-sans)', ...fontFamily.sans],
         // sans: '"SF PRO Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Oxygen,Ubuntu,Cantarel,"Open Sans","Helvetica Neue",sans-serif',
       },
       colors: {

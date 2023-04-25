@@ -3,24 +3,20 @@ import SelectInput from '../inputs/select/SelectInput';
 import TextInput from '../inputs/text/TextInput';
 
 type FormProps = {
-  formAction: string;
   title: string;
   user?: User | null | undefined;
 };
 
-const ProfileForm = ({ formAction, title, user }: FormProps) => {
+const ProfileForm = ({ title, user }: FormProps) => {
   return (
     <div className="mx-auto w-full max-w-7xl 2xl:max-w-8xl">
       <div className="mt-10 sm:mt-0">
         <div className="m-5 md:grid md:grid-cols-3 md:gap-6">
           <div className="mt-5 md:col-span-3 md:mt-0">
-            <form
-              action={formAction}
-              method="POST"
-            >
+            <form noValidate>
               <div className="overflow-hidden shadow sm:rounded-md">
-                <div className="bg-white px-4 py-5 sm:p-6">
-                  <p className="mb-4 text-2xl font-light tracking-widest text-neutral-800 underline decoration-2 underline-offset-2 sm:text-4xl">
+                <div className="px-4 py-5 sm:p-6">
+                  <p className="my-4 text-2xl font-light tracking-widest text-neutral-800 underline decoration-2 underline-offset-2 sm:text-4xl">
                     {title}
                   </p>
 
@@ -31,7 +27,6 @@ const ProfileForm = ({ formAction, title, user }: FormProps) => {
                       inputName="first-name"
                       inputId="first-name"
                       autoComplete="given-name"
-                      value={user?.name ?? ''}
                     />
 
                     <TextInput
@@ -48,7 +43,6 @@ const ProfileForm = ({ formAction, title, user }: FormProps) => {
                       inputName="email-address"
                       inputId="email-address"
                       autoComplete="email"
-                      value={user?.email ?? ''}
                     />
 
                     <TextInput
@@ -66,7 +60,12 @@ const ProfileForm = ({ formAction, title, user }: FormProps) => {
                       inputId="tel"
                       autoComplete="tel"
                     />
-
+                      <SelectInput />
+                  </div>
+                  <p className="col-span-6 mt-12 mb-4 text-2xl font-light tracking-widest text-neutral-800 underline decoration-2 underline-offset-2 sm:text-4xl">
+                    Your address details
+                  </p>
+                  <div className="grid grid-cols-6 gap-6">
                     <TextInput
                       divStyles="col-span-6 sm:col-span-4"
                       label="Correspondence address"
@@ -106,7 +105,6 @@ const ProfileForm = ({ formAction, title, user }: FormProps) => {
                       inputId="country-name"
                       autoComplete="country-name"
                     />
-                    <SelectInput />
                   </div>
                 </div>
                 <div className="bg-neutral-0 px-4 py-3 text-left sm:px-6 sm:py-6">

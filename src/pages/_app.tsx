@@ -1,10 +1,10 @@
-import { type AppType } from 'next/app';
+import { Analytics } from '@vercel/analytics/react';
 import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
-import { Analytics } from '@vercel/analytics/react';
+import { type AppType } from 'next/app';
 import { Inter } from 'next/font/google';
-import { api } from '~/utils/api';
 import '~/styles/globals.css';
+import { api } from '~/utils/api';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,10 +17,16 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <>
+      <style
+        jsx
+        global
+      >{`
+        :root {
+          --font-sans: ${inter.style.fontFamily};
+        }
+      `}</style>
       <SessionProvider session={session}>
-        <main className={`${inter.variable} font-sans`}>
-          <Component {...pageProps} />
-        </main>
+        <Component {...pageProps} />
       </SessionProvider>
       <Analytics />
     </>

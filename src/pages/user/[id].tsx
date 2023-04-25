@@ -2,33 +2,30 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { type GetServerSideProps, type NextPage } from 'next/types';
 import PageLayout from '~/components/layouts/primary/PageLayout';
-import type IOrganizationData from '~/components/utils/search-results/types';
+import type IAnimalData from '~/components/utils/search-results/types';
 import { type PetfinderOauth } from '../results';
 
-type IOrganizationProfilePage = {
-  organization: IOrganizationData;
+type IPetProfilePage = {
+  pet: IAnimalData;
   message: string;
 };
 
 type PetfinderData = {
-  organization: IOrganizationData;
+  animal: IAnimalData;
 };
 
-const PetProfilePage: NextPage<IOrganizationProfilePage> = ({
-  organization,
-  message,
-}) => {
+const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
   const id = useSearchParams().get('id');
 
   return (
     <PageLayout>
       <div className="grid h-full items-center justify-center">
-        {organization === null ? (
+        {pet === null ? (
           <p>{message}</p>
         ) : (
           <>
             <Image
-              src={organization.photos[0]?.large ?? '/no-profile-picture.svg'}
+              src={pet.photos[0]?.large ?? '/no-profile-picture.svg'}
               alt="profile picture"
               className="rounded-md"
               width="600"
@@ -38,14 +35,13 @@ const PetProfilePage: NextPage<IOrganizationProfilePage> = ({
               <strong>id:</strong> {id}
             </p>
             <p>
-              <strong>name:</strong> {organization.name}
+              <strong>name:</strong> {pet.name}
             </p>
             <p>
-              <strong>phone:</strong> {organization.phone}
+              <strong>role:</strong> {pet.status}
             </p>
             <p>
-              <strong>address:</strong> {organization.address.city}{' '}
-              {organization.address.state} {organization.address.country}
+              <strong>description:</strong> {pet.description}
             </p>
           </>
         )}
@@ -69,36 +65,36 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   ).then((res) => res.json())) as PetfinderOauth;
   const accessToken = petfindetOauthData.access_token;
   if (accessToken) {
-    let url = 'https://api.petfinder.com/v2/organizations?location=22152';
+    let url = 'https://api.petfinder.com/v2/animals?location=22152';
     if (id) {
-      url = `https://api.petfinder.com/v2/organizations/${id}`;
+      url = `https://api.petfinder.com/v2/animals/${id}`;
     }
     const petfindetData = (await fetch(url, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     }).then((res) => res.json())) as PetfinderData;
-    const organization = petfindetData?.organization;
+    const pet = petfindetData?.animal;
 
-    if (organization) {
+    if (pet) {
       return {
         props: {
-          organization: organization,
+          pet: pet,
           message: 'success',
         },
       };
     } else {
       return {
         props: {
-          organization: null,
-          message: `no organization found for id: ${id}`,
+          pet: null,
+          message: `no animal found for id: ${id}`,
         },
       };
     }
   } else {
     return {
       props: {
-        organization: null,
+        pet: null,
         message: 'no access token',
       },
     };
