@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import styles from './AnimalCard.module.css';
 
 export interface IAnimalCard {

@@ -1,12 +1,12 @@
 import type { NextPage } from 'next';
 import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
 import Blob from 'src/components/utils/blob/Blob';
-import { api } from '~/utils/api';
-import { Roles } from '~/utils/constants';
 import Spinner from '~/components/spinner/Spinner';
+import LoginToAccessPage from '~/components/utils/login-or-landing/LoginToAccessPage';
 import GlobalStatistics from '~/components/utils/statistics/GlobalStatistics';
 import { mockGlobalStatisticsProps } from '~/components/utils/statistics/GlobalStatistics.mocks';
-import LoginToAccessPage from '~/components/utils/login-or-landing/LoginToAccessPage';
+import { api } from '~/utils/api';
+import { Roles } from '~/utils/constants';
 
 const Dashboard: NextPage = () => {
   const {
@@ -15,7 +15,7 @@ const Dashboard: NextPage = () => {
     error,
   } = api.auth.getSession.useQuery();
 
-  if (isLoading)
+  if (isLoading || !sessionData)
     return (
       <DashboardLayout>
         <Spinner />
@@ -30,7 +30,7 @@ const Dashboard: NextPage = () => {
     );
   return (
     <DashboardLayout>
-      {sessionData && sessionData.role !== Roles.Shelter && (
+      {sessionData && sessionData.role !== Roles.Adopter && (
         <div className="mx-auto w-full max-w-7xl pt-80 2xl:max-w-8xl">
           <GlobalStatistics {...mockGlobalStatisticsProps.base} />
           <div className="relative">

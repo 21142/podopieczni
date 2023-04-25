@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { signIn, signOut } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { CvaButton } from 'src/components/buttons/cva/ButtonCva';
 import { LinkButton } from 'src/components/buttons/link/LinkButton';
 import PageLayout from 'src/components/layouts/primary/PageLayout';

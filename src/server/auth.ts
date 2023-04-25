@@ -1,21 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { type User } from '@prisma/client';
 import { type GetServerSidePropsContext } from 'next';
 import {
   getServerSession,
-  type NextAuthOptions,
   type DefaultSession,
+  type NextAuthOptions,
   type SessionOptions,
 } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+import { decode, encode } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import EmailProvider from 'next-auth/providers/email';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import GoogleProvider from 'next-auth/providers/google';
 import { env } from '~/env.mjs';
 import { prisma } from '~/server/db';
-import { type ILogin, loginSchema } from '~/utils/validation/auth';
-import { verify, hash } from 'argon2';
-import { decode, encode } from 'next-auth/jwt';
-import { type User } from '@prisma/client';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -156,18 +154,15 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const { email, password }: ILogin = await loginSchema.parseAsync(
-          credentials
-        );
+        const { email } = credentials;
 
         let userFromDb: User | null = null;
 
-        if (email && password) {
+        if (email) {
           userFromDb = await prisma.user.create({
             data: {
               name: email.split('@')[0],
               email,
-              password: await hash(password),
             },
           });
         } else {
@@ -177,18 +172,7 @@ export const authOptions: NextAuthOptions = {
             },
           });
 
-          if (!userFromDb || !userFromDb.password) {
-            return null;
-          }
-
-          console.log(password, 'PASSWORD INPUT');
-          console.log(userFromDb.password, 'PASSWORD DB');
-
-          const isPasswordValid = await verify(userFromDb.password, password);
-
-          console.log(isPasswordValid, 'PASSWORD CHECK');
-
-          if (!isPasswordValid) {
+          if (!userFromDb) {
             return null;
           }
 
