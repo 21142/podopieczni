@@ -50,5 +50,5 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       },
     };
   }
-  return { props: {} };
+  return { props: { userRole: session.user.role } };
 }
