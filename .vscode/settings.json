@@ -1,6 +1,11 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.formatOnType": false,
+  "editor.formatOnPaste": false,
+  "files.autoSave": "onFocusChange",
+  "vs-code-prettier-eslint.prettierLast": false,
   "editor.codeActionsOnSave": {
     "source.fixAll": true,
     "source.organizeImports": true,

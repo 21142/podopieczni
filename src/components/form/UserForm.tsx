@@ -1,4 +1,4 @@
-import * as z from 'zod';
+import type * as z from 'zod';
 import { api } from '~/utils/api';
 import { useZodForm } from '~/utils/useZodForm';
 import { userAccountDetailsSchema } from '~/utils/validation/user';

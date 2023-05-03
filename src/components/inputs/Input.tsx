@@ -1,6 +1,6 @@
 import { forwardRef, type ComponentProps } from 'react';
 
-export interface Props extends ComponentProps<'input'> {}
+export type Props = ComponentProps<'input'>
 
 const Input = forwardRef<HTMLInputElement, Props>(({ id, ...props }, ref) => (
   <input
@@ -13,3 +13,5 @@ const Input = forwardRef<HTMLInputElement, Props>(({ id, ...props }, ref) => (
 ));
 
 export default Input;
+
+Input.displayName = "Input"

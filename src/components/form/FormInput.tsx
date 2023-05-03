@@ -20,3 +20,5 @@ const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
 });
 
 export default Input;
+
+Input.displayName = 'FormInput';

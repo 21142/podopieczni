@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { AddressInfo, User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
-import { useEffect, type FC } from 'react';
+import { useEffect, useMemo, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { api, getBaseUrl } from '~/utils/api';
 import {
@@ -42,7 +42,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
     },
   });
 
-  const prefilledValues: IUserAccountDetails = {
+  const prefilledValues: IUserAccountDetails = useMemo(() => ({
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',
     email: user?.email ?? '',
@@ -54,7 +54,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
     postCode: user?.address?.postCode ?? '',
     state: user?.address?.state ?? '',
     country: user?.address?.country ?? '',
-  };
+  }), [user]);
 
   const {
     register,
@@ -68,7 +68,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
 
   useEffect(() => {
     reset(prefilledValues);
-  }, [user, reset]);
+  }, [user, reset, prefilledValues]);
 
   const onSubmit: SubmitHandler<IUserAccountDetails> = async (data) => {
     await updateUserDetailsMutation.mutateAsync(data);

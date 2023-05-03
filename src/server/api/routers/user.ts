@@ -52,8 +52,6 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(userAccountDetailsSchema)
     .mutation(async ({ input, ctx }) => {
-      const { email } = input;
-
       await ctx.prisma.user.update({
         where: { email: input.email },
         data: {

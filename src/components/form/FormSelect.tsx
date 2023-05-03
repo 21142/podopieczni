@@ -20,3 +20,5 @@ const Select = forwardRef<HTMLSelectElement, Props>((props, ref) => {
 });
 
 export default Select;
+
+Select.displayName = 'FormSelect';
