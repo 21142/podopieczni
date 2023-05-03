@@ -3,6 +3,9 @@ name: Typescript Type Check, Prettier and ESLint CI
 on:
   pull_request:
 
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
 jobs:
   build:
     name: Typescript Type Check, Prettier and ESLint
