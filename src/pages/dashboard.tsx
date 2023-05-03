@@ -1,4 +1,4 @@
-import type { GetServerSidePropsContext } from 'next';
+import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
 import Blob from 'src/components/utils/blob/Blob';
@@ -8,7 +8,7 @@ import { getServerAuthSession } from '~/server/auth';
 import { getBaseUrl } from '~/utils/api';
 import { Roles } from '~/utils/constants';
 
-export default function Dashboard() {
+const Dashboard: NextPage = () => {
   const { data: session } = useSession();
 
   return (
@@ -39,7 +39,9 @@ export default function Dashboard() {
       )}
     </DashboardLayout>
   );
-}
+};
+
+export default Dashboard;
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);
@@ -50,5 +52,5 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       },
     };
   }
-  return { props: { userRole: session.user.role } };
+  return { props: {} };
 }

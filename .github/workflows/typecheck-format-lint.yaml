@@ -1,7 +1,6 @@
 name: Typescript Type Check, Prettier and ESLint CI
 
 on:
-  push:
   pull_request:
 
 jobs:
