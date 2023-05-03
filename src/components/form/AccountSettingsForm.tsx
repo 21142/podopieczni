@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { AddressInfo, User } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 import { useEffect, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { api } from '~/utils/api';
+import { api, getBaseUrl } from '~/utils/api';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
@@ -19,9 +20,23 @@ export interface Props {
 }
 
 const AccountSettingsForm: FC<Props> = ({ user }) => {
+  const router = useRouter();
   const trpc = api.useContext();
 
   const updateUserDetailsMutation = api.user.update.useMutation({
+    retry: (count, error) => {
+      if (error.data?.code === 'UNAUTHORIZED') {
+        return false;
+      }
+      return count < 3;
+    },
+    onError: (error) => {
+      if (error.data?.code === 'UNAUTHORIZED') {
+        void router.push(
+          `/api/auth/signin?callbackUrl=${getBaseUrl()}/user/settings&error=SessionRequired`
+        );
+      }
+    },
     onSuccess: async () => {
       await trpc.user.me.invalidate();
     },

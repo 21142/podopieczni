@@ -1,36 +1,19 @@
-import type { NextPage } from 'next';
+import type { GetServerSidePropsContext } from 'next';
+import { useSession } from 'next-auth/react';
 import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
 import Blob from 'src/components/utils/blob/Blob';
-import Spinner from '~/components/spinner/Spinner';
-import LoginToAccessPage from '~/components/utils/login-or-landing/LoginToAccessPage';
 import GlobalStatistics from '~/components/utils/statistics/GlobalStatistics';
 import { mockGlobalStatisticsProps } from '~/components/utils/statistics/GlobalStatistics.mocks';
-import { api } from '~/utils/api';
+import { getServerAuthSession } from '~/server/auth';
+import { getBaseUrl } from '~/utils/api';
 import { Roles } from '~/utils/constants';
 
-const Dashboard: NextPage = () => {
-  const {
-    data: sessionData,
-    isLoading,
-    error,
-  } = api.auth.getSession.useQuery();
+export default function Dashboard() {
+  const { data: session } = useSession();
 
-  if (isLoading || !sessionData)
-    return (
-      <DashboardLayout>
-        <Spinner />
-      </DashboardLayout>
-    );
-
-  if (error)
-    return (
-      <DashboardLayout>
-        <LoginToAccessPage />
-      </DashboardLayout>
-    );
   return (
     <DashboardLayout>
-      {sessionData && sessionData.role !== Roles.Adopter && (
+      {session && session.user.role !== Roles.Adopter && (
         <div className="mx-auto w-full max-w-7xl pt-80 2xl:max-w-8xl">
           <GlobalStatistics {...mockGlobalStatisticsProps.base} />
           <div className="relative">
@@ -56,6 +39,16 @@ const Dashboard: NextPage = () => {
       )}
     </DashboardLayout>
   );
-};
+}
 
-export default Dashboard;
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/api/auth/signin?callbackUrl=${getBaseUrl()}/dashboard&error=SessionRequired`,
+      },
+    };
+  }
+  return { props: {} };
+}
