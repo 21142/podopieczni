@@ -1,4 +1,8 @@
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import {
+  adminProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from '~/server/api/trpc';
 import { userAccountDetailsSchema } from '~/utils/validation/user';
 
 export const userRouter = createTRPCRouter({
@@ -14,11 +18,14 @@ export const userRouter = createTRPCRouter({
     return user;
   }),
   getAllUsers: protectedProcedure.query(async ({ ctx }) => {
-    const allUsers = await ctx.prisma.user.findMany();
+    const allUsers = await ctx.prisma.user.findMany({
+      include: {
+        address: true,
+      },
+    });
     return allUsers;
   }),
-  //change to adminProcedure in the future
-  add: protectedProcedure
+  add: adminProcedure
     .input(userAccountDetailsSchema)
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.user.create({
@@ -45,10 +52,6 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(userAccountDetailsSchema)
     .mutation(async ({ input, ctx }) => {
-      const { email } = input;
-
-      console.log(input);
-
       await ctx.prisma.user.update({
         where: { email: input.email },
         data: {

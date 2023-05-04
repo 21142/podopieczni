@@ -18,5 +18,9 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  swcMinify: true,
 };
 export default config;

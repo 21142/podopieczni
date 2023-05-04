@@ -6,7 +6,14 @@ import { api } from '~/utils/api';
 
 const LoginToAccessPage: FC = ({}) => {
   const router = useRouter();
-  const { data: sessionData } = api.auth.getSession.useQuery();
+  const { data: sessionData } = api.auth.getSession.useQuery(undefined, {
+    retry: (failureCount, error) => {
+      if (error?.message === 'UNAUTHORIZED') {
+        return false;
+      }
+      return failureCount < 3;
+    },
+  });
   return (
     <div className="grid h-[50vh] content-center">
       <p className="p-12 text-center">

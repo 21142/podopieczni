@@ -12,7 +12,14 @@ const Users: NextPage = () => {
     data: sessionData,
     isLoading,
     error,
-  } = api.auth.getSession.useQuery();
+  } = api.auth.getSession.useQuery(undefined, {
+    retry: (failureCount, error) => {
+      if (error?.message === 'UNAUTHORIZED') {
+        return false;
+      }
+      return failureCount < 3;
+    },
+  });
 
   const {
     data: users,

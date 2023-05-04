@@ -15,23 +15,27 @@ const Welcome: NextPage = () => {
     data: sessionData,
     isLoading,
     error,
-  } = api.auth.getSession.useQuery();
+  } = api.auth.getSession.useQuery(undefined, {
+    retry: (failureCount, error) => {
+      if (error?.message === 'UNAUTHORIZED') {
+        return false;
+      }
+      return failureCount < 3;
+    },
+  });
 
-  const { data: meQueryData } = api.user.me.useQuery();
-  const hasRole = meQueryData?.role ? true : false;
+  const hasRole = sessionData?.role ? true : false;
 
-  const { mutateAsync: setRoleAsAdopter } =
-    api.auth.setAdoptingRole.useMutation();
-  const { mutateAsync: setRoleAsShelter } =
-    api.auth.setShelterWorkerRole.useMutation();
+  const setRoleAsAdopter = api.auth.setAdoptingRole.useMutation();
+  const setRoleAsShelter = api.auth.setShelterWorkerRole.useMutation();
 
   const setAdopterRole = async () => {
-    await setRoleAsAdopter();
+    await setRoleAsAdopter.mutateAsync();
     router.replace('/results#scrollToPosition');
   };
 
   const setShelterRole = async () => {
-    await setRoleAsShelter();
+    await setRoleAsShelter.mutateAsync();
     router.replace('/dashboard');
   };
 

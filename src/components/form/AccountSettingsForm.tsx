@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { AddressInfo, User } from '@prisma/client';
-import { useEffect, type FC } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { api } from '~/utils/api';
+import { api, getBaseUrl } from '~/utils/api';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
@@ -19,15 +20,29 @@ export interface Props {
 }
 
 const AccountSettingsForm: FC<Props> = ({ user }) => {
+  const router = useRouter();
   const trpc = api.useContext();
 
   const updateUserDetailsMutation = api.user.update.useMutation({
+    retry: (count, error) => {
+      if (error.data?.code === 'UNAUTHORIZED') {
+        return false;
+      }
+      return count < 3;
+    },
+    onError: (error) => {
+      if (error.data?.code === 'UNAUTHORIZED') {
+        void router.push(
+          `/api/auth/signin?callbackUrl=${getBaseUrl()}/user/settings&error=SessionRequired`
+        );
+      }
+    },
     onSuccess: async () => {
       await trpc.user.me.invalidate();
     },
   });
 
-  const prefilledValues: IUserAccountDetails = {
+  const prefilledValues: IUserAccountDetails = useMemo(() => ({
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',
     email: user?.email ?? '',
@@ -39,7 +54,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
     postCode: user?.address?.postCode ?? '',
     state: user?.address?.state ?? '',
     country: user?.address?.country ?? '',
-  };
+  }), [user]);
 
   const {
     register,
@@ -53,7 +68,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
 
   useEffect(() => {
     reset(prefilledValues);
-  }, [user, reset]);
+  }, [user, reset, prefilledValues]);
 
   const onSubmit: SubmitHandler<IUserAccountDetails> = async (data) => {
     await updateUserDetailsMutation.mutateAsync(data);

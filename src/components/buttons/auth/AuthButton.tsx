@@ -3,7 +3,14 @@ import Avatar from 'src/components/avatars/base/Avatar';
 import { api } from '~/utils/api';
 
 const AuthButton: React.FC = () => {
-  const { data: sessionData } = api.auth.getSession.useQuery();
+  const { data: sessionData } = api.auth.getSession.useQuery(undefined, {
+    retry: (failureCount, error) => {
+      if (error?.message === 'UNAUTHORIZED') {
+        return false;
+      }
+      return failureCount < 3;
+    },
+  });
 
   return (
     <button

@@ -5,7 +5,14 @@ import LoginToAccessPage from '~/components/utils/login-or-landing/LoginToAccess
 import { api } from '~/utils/api';
 
 const Register: NextPage = () => {
-  const { data: sessionData } = api.auth.getSession.useQuery();
+  const { data: sessionData } = api.auth.getSession.useQuery(undefined, {
+    retry: (failureCount, error) => {
+      if (error?.message === 'UNAUTHORIZED') {
+        return false;
+      }
+      return failureCount < 3;
+    },
+  });
 
   if (!sessionData)
     return (

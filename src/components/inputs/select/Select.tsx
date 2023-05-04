@@ -1,6 +1,6 @@
 import { forwardRef, type ComponentProps } from 'react';
 
-export interface SelectProps extends ComponentProps<'select'> {}
+export type SelectProps = ComponentProps<'select'>
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>((props, ref) => (
   <select
@@ -11,3 +11,5 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>((props, ref) => (
 ));
 
 export default Select;
+
+Select.displayName = "Select"

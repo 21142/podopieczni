@@ -1,13 +1,11 @@
-import { type User } from '@prisma/client';
 import SelectInput from '../inputs/select/SelectInput';
 import TextInput from '../inputs/text/TextInput';
 
 type FormProps = {
   title: string;
-  user?: User | null | undefined;
 };
 
-const ProfileForm = ({ title, user }: FormProps) => {
+const ProfileForm = ({ title }: FormProps) => {
   return (
     <div className="mx-auto w-full max-w-7xl 2xl:max-w-8xl">
       <div className="mt-10 sm:mt-0">
@@ -60,7 +58,7 @@ const ProfileForm = ({ title, user }: FormProps) => {
                       inputId="tel"
                       autoComplete="tel"
                     />
-                      <SelectInput />
+                    <SelectInput />
                   </div>
                   <p className="col-span-6 mt-12 mb-4 text-2xl font-light tracking-widest text-neutral-800 underline decoration-2 underline-offset-2 sm:text-4xl">
                     Your address details
