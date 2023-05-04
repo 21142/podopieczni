@@ -30,8 +30,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
             ${{ runner.os }}-
-          options:
-            ttl: 604800 # week in seconds
 
       - name: Ls cache before accesing
         run: npm cache ls
