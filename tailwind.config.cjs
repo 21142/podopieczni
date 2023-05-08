@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { fontFamily } = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
@@ -55,6 +56,10 @@ module.exports = {
           200: '#c505d6',
           300: '#a704b5',
           400: '#9b1ea6',
+          600: '#9604a3',
+          700: '#7d0388',
+          800: '#64026d',
+          900: '#520259',
         },
         secondary: {
           50: '#ddf5fc',
@@ -153,5 +158,9 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/forms'), require('tailwindcss-animate')],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
+  ],
 };
