@@ -24,19 +24,7 @@ jobs:
           node-version: '16.x'
 
       - name: Install dependencies
-        run: |
-          npm install
-          npm install -g @lhci/cli@0.11.x
-          npm install --save-dev @next/bundle-analyzer
-
-      - name: Analyze bundle size
-        run: npm run analyze
-
-      - name: Deploy report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GH_PAGES_TOKEN }}
-          publish_dir: './reports/bundle-analyze'
+        run: npm install && npm install -g @lhci/cli@0.11.x
 
       - name: Run lighthouse audits for mobile
         run: npm run audit:mobile
