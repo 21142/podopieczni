@@ -23,9 +23,6 @@ jobs:
       - name: Install dependencies
         run: npm install && npm install -g @lhci/cli@0.11.x
 
-      - name: Build the latest version of the app
-        run: npm run build
-
       - name: Analyze bundle size
         run: npm run analyze
 
