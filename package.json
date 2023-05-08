@@ -17,7 +17,7 @@
     "prettier": "prettier --write .",
     "prepare": "husky install",
     "postinstall": "prisma generate",
-    "analyze": "next build && next bundle-analyzer --stats-file stats.json --relative-build-dir ./.next/ -o ./reports/bundle-analyze/",
+    "analyze": "next build && next bundle-analyzer",
     "audit:mobile": "lhci autorun",
     "audit:desktop": "lhci autorun --collect.settings.preset=desktop"
   },
