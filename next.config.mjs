@@ -22,5 +22,60 @@ const config = {
     ignoreBuildErrors: true,
   },
   swcMinify: true,
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "default-src 'self'; image-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';",
+          },
+          {
+            key: 'Permissions-Policy',
+            value: "geolocation 'self'",
+          },
+          {
+            key: 'Feature-Policy',
+            value: "geolocation 'self'",
+          },
+          {
+            key: 'Expect-CT',
+            value: 'max-age=86400, enforce',
+          },
+        ],
+      },
+    ];
+  },
 };
+
 export default config;
