@@ -1,4 +1,4 @@
-name: Typescript Type Check, Prettier and ESLint CI
+name: Typescript Type Check, Prettier and ESLint
 
 on:
   pull_request:
@@ -20,7 +20,7 @@ jobs:
           node-version: '16.x'
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -39,3 +39,8 @@ jobs:
 
       - name: Lint with ESLint
         run: npm run lint
+
+      - name: Upload coverage data
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

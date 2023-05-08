@@ -5,8 +5,10 @@ const Logo: React.FC = () => {
   return (
     <Image
       src={logo as string}
-      className="cursor-pointer w-44 object-contain"
+      className="w-44 cursor-pointer object-contain"
       alt="podopieczni logo"
+      height={176}
+      width={176}
       priority
     />
   );

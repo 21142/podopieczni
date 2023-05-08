@@ -11,6 +11,8 @@ const Hero: React.FC = () => {
         fill
         className="object-cover"
         alt="hero image section"
+        loading="eager"
+        priority
       />
       <div className="absolute top-[58%] left-1/2 flex h-[12.5rem] w-[90%] -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-white/20 text-center shadow-lg backdrop-blur-sm sm:max-w-[34rem] xl:top-[62%]">
         <h2 className="mb-3 text-lg font-bold text-neutral-50 sm:text-2xl">
