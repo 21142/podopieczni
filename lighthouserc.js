@@ -5,7 +5,6 @@ module.exports = {
       url: [
         'https://podopieczni-21142.vercel.app/',
         'https://podopieczni-dev.vercel.app/',
-        'http://localhost:3000',
       ],
       numberOfRuns: 1,
     },
