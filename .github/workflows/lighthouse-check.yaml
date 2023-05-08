@@ -1,21 +1,18 @@
-name: Performance Optimization Check
+name: Lighthouse Audits
 
 on:
-  pull_request:
+  schedule:
+    - cron: '0 0 * * *' # run audits every day at midnight UTC
 
 jobs:
-  performance-check:
+  lighthouse-audits:
     runs-on: ubuntu-latest
-
-    env:
-      SKIP_ENV_VALIDATION: true
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
           token: ${{ secrets.GH_PAGES_TOKEN }}
 
       - name: Setup Node.js
@@ -26,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: npm install && npm install -g @lhci/cli@0.11.x
 
-      - name: Run lighthouse audits for mobile
+      - name: Run lighthouse audits on landing page for mobile
         run: npm run audit:mobile
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
@@ -37,7 +34,7 @@ jobs:
           github_token: ${{ secrets.GH_PAGES_TOKEN }}
           publish_dir: './reports/lighthouse/mobile'
 
-      - name: Run lighthouse audits for desktop
+      - name: Run lighthouse audits on landing page for desktop
         run: npm run audit:desktop
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
