@@ -58,7 +58,7 @@ const config = {
           {
             key: 'Content-Security-Policy',
             value:
-              "default-src 'self'; image-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';",
+              "default-src 'self'; image-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; connect-src 'self'; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; media-src 'self'; object-src 'self'; prefetch-src 'self'; worker-src 'self'; block-all-mixed-content; upgrade-insecure-requests;",
           },
           {
             key: 'Permissions-Policy',
