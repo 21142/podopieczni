@@ -2,7 +2,13 @@
 
 <p align="center">
   <a href="https://github.com/21142/podopieczni/actions/workflows/typecheck-format-lint.yaml" target="_blank" rel="noopener">
-    <img src="https://github.com/21142/podopieczni/actions/workflows/typecheck-format-lint.yaml/badge.svg" alt="Typescript Type Check, Prettier and ESLint">
+    <img src="https://github.com/21142/podopieczni/actions/workflows/typecheck-format-lint.yaml/badge.svg" alt="Typescript Type Check, Prettier and ESLint badge">
+  </a>
+  <a href="https://github.com/21142/podopieczni/actions/workflows/performance-check.yaml" target="_blank" rel="noopener">
+    <img src="https://github.com/21142/podopieczni/actions/workflows/performance-check.yaml/badge.svg" alt="Performance Optimization Check badge">
+  </a>
+  <a href="https://github.com/21142/podopieczni/actions/workflows/security-scan.yaml" target="_blank" rel="noopener">
+    <img src="https://github.com/21142/podopieczni/actions/workflows/security-scan.yaml/badge.svg" alt="OWASP Security Scan badge">
   </a>
   <a href="https://codecov.io/gh/21142/podopieczni" target="_blank" rel="noopener">
     <img src="https://codecov.io/gh/21142/podopieczni/branch/main/graph/badge.svg" alt="Codecov Coverage">
