@@ -4,8 +4,8 @@
   <a href="https://github.com/21142/podopieczni/actions/workflows/typecheck-format-lint.yaml" target="_blank" rel="noopener">
     <img src="https://github.com/21142/podopieczni/actions/workflows/typecheck-format-lint.yaml/badge.svg" alt="Typescript Type Check, Prettier and ESLint badge">
   </a>
-  <a href="https://github.com/21142/podopieczni/actions/workflows/performance-check.yaml" target="_blank" rel="noopener">
-    <img src="https://github.com/21142/podopieczni/actions/workflows/performance-check.yaml/badge.svg" alt="Performance Optimization Check badge">
+  <a href="https://github.com/21142/podopieczni/actions/workflows/lighthouse-check.yaml" target="_blank" rel="noopener">
+    <img src="https://github.com/21142/podopieczni/actions/workflows/lighthouse-check.yaml/badge.svg" alt="Lighthouse Audits badge">
   </a>
   <a href="https://github.com/21142/podopieczni/actions/workflows/security-scan.yaml" target="_blank" rel="noopener">
     <img src="https://github.com/21142/podopieczni/actions/workflows/security-scan.yaml/badge.svg" alt="OWASP Security Scan badge">
