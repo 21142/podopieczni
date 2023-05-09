@@ -173,7 +173,7 @@ TODO: Add acknowledgments
 
 <p align="right"><a href="#readme-beginning">&#9650;</a></p>
 
-[product-screenshot]: public/product-screenshot
+[product-screenshot]: public/product-screenshot.png
 [product-url]: https://podopieczni-21142.vercel.app
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
