@@ -381,3 +381,6 @@ MigrationBackup/
 
 # Audit files
 .lighthouseci/
+
+# Auto-generated prisma docs
+prisma/docs/
