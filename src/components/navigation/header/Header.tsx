@@ -1,26 +1,32 @@
-import { MenuAlt2Icon } from '@heroicons/react/outline';
-import { XIcon } from '@heroicons/react/outline';
+import { MenuAlt2Icon, XIcon } from '@heroicons/react/outline';
+import classNames from 'classnames';
 import Link from 'next/link';
 import { useState } from 'react';
 import AuthButton from 'src/components/buttons/auth/AuthButton';
 import Logo from 'src/components/logos/default/Logo';
 import { api } from '~/utils/api';
-import HeaderLink from '../../links/header/HeaderLink';
-import classNames from 'classnames';
 import { Roles } from '~/utils/constants';
+import HeaderLink from '../../links/header/HeaderLink';
 
 const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   className,
   ...headerProps
 }) => {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
-  const { data: sessionData } = api.auth.getSession.useQuery();
+  const { data: sessionData } = api.auth.getSession.useQuery(undefined, {
+    retry: (failureCount, error) => {
+      if (error?.message === 'UNAUTHORIZED') {
+        return false;
+      }
+      return failureCount < 3;
+    },
+  });
 
   return (
     <header
       {...headerProps}
       className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col px-5 2xl:max-w-8xl ${
-        className as string
+        className ?? ''
       }`}
     >
       <div className="flex items-center justify-between md:space-x-10">

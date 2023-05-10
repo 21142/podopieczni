@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
 import { CvaButton } from '~/components/buttons/cva/ButtonCva';
 import type IAnimalData from '~/components/utils/search-results/types';

@@ -1,12 +1,6 @@
 import { TRPCError } from '@trpc/server';
-import { hash } from 'argon2';
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from '~/server/api/trpc';
+import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 import { Roles } from '~/utils/constants';
-import { signUpSchema } from '~/utils/validation/auth';
 
 export const authRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {
@@ -41,32 +35,4 @@ export const authRouter = createTRPCRouter({
     });
     return 'Updated role - adopting';
   }),
-  signUp: publicProcedure
-    .input(signUpSchema)
-    .mutation(async ({ input, ctx }) => {
-      const { name, email, password } = input;
-
-      const exists = await ctx.prisma.user.findFirst({
-        where: { email },
-      });
-
-      if (exists) {
-        throw new TRPCError({
-          code: 'CONFLICT',
-          message: 'User with provided details already exists.',
-        });
-      }
-
-      const hashedPassword = await hash(password);
-
-      const result = await ctx.prisma.user.create({
-        data: { name, email, password: hashedPassword },
-      });
-
-      return {
-        status: 201,
-        message: 'User created successfully',
-        result: result.email,
-      };
-    }),
 });

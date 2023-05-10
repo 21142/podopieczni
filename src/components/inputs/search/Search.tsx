@@ -1,5 +1,5 @@
 import { SearchIcon } from '@heroicons/react/outline';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 export interface ISearch {
@@ -8,28 +8,31 @@ export interface ISearch {
 }
 
 const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
 
   useEffect(() => {
     if (query) {
-      setSearchQuery(query);
+      const encodedQuery = encodeURI(query);
+      setSearchQuery(encodedQuery);
     }
   }, [query]);
+
+  const onSearchEvent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery) {
+      void router.push(`/${typeOfResults}#scrollToPosition`);
+    } else {
+      void router.push(
+        `/${typeOfResults}?search=${searchQuery}#scrollToPosition`
+      );
+    }
+  };
 
   return (
     <form
       className="flex w-[90%] max-w-[24rem] items-center rounded-full border-2 bg-neutral-50 p-2 shadow-sm"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!searchQuery) {
-          void router.push(`/${typeOfResults}#scrollToPosition`);
-        } else {
-          void router.push(
-            `/${typeOfResults}?search=${searchQuery}#scrollToPosition`
-          );
-        }
-      }}
+      onSubmit={onSearchEvent}
     >
       <input
         className="flex-grow border-none bg-transparent pl-3 pr-2 text-neutral-400 placeholder-neutral-400 outline-none transition-colors duration-200 ease-in-out focus:text-neutral-600 focus:ring-0"

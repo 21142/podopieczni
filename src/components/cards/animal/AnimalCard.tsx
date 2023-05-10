@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import styles from './AnimalCard.module.css';
 
 export interface IAnimalCard {
@@ -48,7 +48,7 @@ const AnimalCard: React.FC<IAnimalCard> = ({
             >
               {tag}
             </span>
-            <h4>{title}</h4>
+            <h3>{title}</h3>
             <p>{body}</p>
           </div>
           <div className={styles.card__footer}>
@@ -57,11 +57,11 @@ const AnimalCard: React.FC<IAnimalCard> = ({
                 src={author ?? 'https://i.pravatar.cc/40?img=3'}
                 alt="user__image"
                 className={styles.user__image}
-                width="40"
-                height="40"
+                width="48"
+                height="64"
               />
               <div className={styles.user__info}>
-                <h5>{avatar}</h5>
+                <h4>{avatar}</h4>
               </div>
             </div>
           </div>

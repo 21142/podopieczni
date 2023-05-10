@@ -21,6 +21,13 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": [".eslintrc.cjs", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
+  "include": [
+    ".eslintrc.cjs",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    "lighthouserc.js"
+  ],
   "exclude": ["node_modules"]
 }

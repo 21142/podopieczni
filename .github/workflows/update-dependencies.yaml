@@ -1,0 +1,44 @@
+name: Dependency Update Check
+
+on:
+  # Schedule the job to run on the first day of every month at midnight
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check for updates
+        run: npx npm-check-updates --upgrade --jsonUpgraded
+        id: check
+
+      - name: Create a draft pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: 'chore: update dependencies'
+          branch: update-dependencies
+          title: 'chore: update dependencies'
+          body: |
+            This pull request updates dependencies using [npm-check-updates](https://www.npmjs.com/package/npm-check-updates).
+
+            ```
+            ${{ steps.check.outputs.upgraded }}
+            ```
+          labels: dependencies
+          draft: true
+          token: ${{ secrets.GH_PAGES_TOKEN }}

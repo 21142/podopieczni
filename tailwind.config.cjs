@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { fontFamily } = require('tailwindcss/defaultTheme');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -30,7 +33,8 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: '"SF PRO Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Oxygen,Ubuntu,Cantarel,"Open Sans","Helvetica Neue",sans-serif',
+        sans: ['var(--font-sans)', ...fontFamily.sans],
+        // sans: '"SF PRO Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Oxygen,Ubuntu,Cantarel,"Open Sans","Helvetica Neue",sans-serif',
       },
       colors: {
         neutral: {
@@ -52,6 +56,10 @@ module.exports = {
           200: '#c505d6',
           300: '#a704b5',
           400: '#9b1ea6',
+          600: '#9604a3',
+          700: '#7d0388',
+          800: '#64026d',
+          900: '#520259',
         },
         secondary: {
           50: '#ddf5fc',
@@ -132,13 +140,27 @@ module.exports = {
             transform: 'scale(1) translate(0px, 0px)',
           },
         },
+        'accordion-down': {
+          from: { height: 0 },
+          to: { height: 'var(--radix-accordion-content-height)' },
+        },
+        'accordion-up': {
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: 0 },
+        },
       },
       animation: {
         spinner:
           '2s linear infinite spin, 1s linear infinite alternate deviation',
         blob: '6s infinite blob',
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
+  ],
 };

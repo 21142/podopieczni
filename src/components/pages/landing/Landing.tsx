@@ -27,6 +27,7 @@ const Landing: React.FC = () => {
         <Link
           href="#featured"
           scroll={false}
+          aria-label="Przewiń w dół"
         >
           <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
         </Link>

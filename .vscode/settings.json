@@ -1,18 +1,18 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.formatOnType": false,
+  "editor.formatOnPaste": false,
+  "files.autoSave": "onFocusChange",
+  "vs-code-prettier-eslint.prettierLast": false,
   "editor.codeActionsOnSave": {
     "source.fixAll": true,
     "source.organizeImports": true,
     "source.fixAll.eslint": true
   },
-  "appService.defaultWebAppToDeploy": "/subscriptions/e4225ffc-4b2d-46a4-be34-f43fb1dc0c10/microsoft.web/sites/subscriptions/e4225ffc-4b2d-46a4-be34-f43fb1dc0c10/resourceGroups/rg-podopieczni-ts/providers/Microsoft.Web/sites/podopieczni",
-  "appService.deploySubpath": ".",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
-  },
-  "[svg]": {
-    "editor.defaultFormatter": "jock.svg"
   },
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]

@@ -34,7 +34,9 @@ const DashboardLayout: React.FC<IDashboardLayout> = ({
         <div className="w-full bg-neutral-0">
           <DashboardHeader />
         </div>
-        <main className="flex w-full flex-grow flex-col">{children}</main>
+        <main className="flex w-full flex-grow flex-col font-sans">
+          {children}
+        </main>
       </div>
     </div>
   );
