@@ -1,11 +1,11 @@
 const printConsoleLogo = () => {
-  console.clear();
-  console.log(`
+  console.log(
+    `%c
 
  Do you want to contribute to the project?
  You can contact podopieczni™ here:
 
- https://www.linkedin.com/in/maciej-galiński-939908209/
+ https://www.linkedin.com/in/maciej-galinski/
 
                               
  
@@ -36,7 +36,9 @@ const printConsoleLogo = () => {
  ...........................................................
  
  
- `);
+ `,
+    'font-family:monospace; color: violet'
+  );
 };
 
 export default printConsoleLogo;

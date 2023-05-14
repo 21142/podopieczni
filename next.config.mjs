@@ -48,29 +48,21 @@ const config = {
             value: 'DENY',
           },
           {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin',
           },
           {
             key: 'Content-Security-Policy',
             value:
-              "default-src 'self'; image-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; connect-src 'self'; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; media-src 'self'; object-src 'self'; prefetch-src 'self'; worker-src 'self'; block-all-mixed-content; upgrade-insecure-requests;",
+              "default-src 'self'; img-src 'self' authjs.dev data:; script-src 'self' 'unsafe-eval' https://cdn.vercel-insights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src *; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action *; manifest-src 'self'; media-src 'self'; object-src 'self'; worker-src 'self'; block-all-mixed-content; upgrade-insecure-requests;",
           },
           {
-            key: 'Permissions-Policy',
+            key: 'Permission-Policy',
             value: "geolocation 'self'",
           },
           {
             key: 'Feature-Policy',
             value: "geolocation 'self'",
-          },
-          {
-            key: 'Expect-CT',
-            value: 'max-age=86400, enforce',
           },
         ],
       },
