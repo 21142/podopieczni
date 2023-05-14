@@ -8,7 +8,10 @@ export const userAccountDetailsSchema = z.object({
     .min(1, 'Email is required')
     .email({ message: 'Email is invalid' }),
   dateOfBirth: z.string().min(1, 'Date of birth is required'),
-  phoneNumber: z.string().min(1, 'Phone number is required'),
+  phoneNumber: z
+    .string()
+    .min(1, 'Phone number is required')
+    .max(13, 'Phone number is invalid'),
   address: z.string().min(1, 'Address is required'),
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),

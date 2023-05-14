@@ -25,11 +25,11 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
   return (
     <header
       {...headerProps}
-      className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col px-5 2xl:max-w-8xl ${
+      className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col justify-center px-5 2xl:max-w-8xl ${
         className ?? ''
       }`}
     >
-      <div className="flex items-center justify-between md:space-x-10">
+      <div className="flex items-center justify-between gap-x-3 lg:gap-x-10">
         <Link href="/">
           <div className="relative flex">
             <Logo />
@@ -39,7 +39,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
           className={classNames(
             mobileMenuIsOpen
               ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-neutral-0 pt-12 [&_a]:ml-5 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-neutral-50'
-              : 'hidden items-center space-x-10 md:inline-flex'
+              : 'hidden items-center gap-x-10 md:inline-flex'
           )}
         >
           <HeaderLink
@@ -60,10 +60,6 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
                 href="/users"
                 title="Użytkownicy"
               />
-              <HeaderLink
-                href="/applications"
-                title="Wnioski"
-              />
             </>
           ) : (
             <>
@@ -73,22 +69,18 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
               />
               <HeaderLink
                 href="/"
-                title="Edukacja"
-              />
-              <HeaderLink
-                href="/"
                 title="Kontakt"
               />
             </>
           )}
           {mobileMenuIsOpen && (
-            <div className="ml-5 mt-8 items-center space-x-5 sm:hidden">
+            <div className="ml-5 mt-8 items-center gap-x-5 sm:hidden">
               <AuthButton />
             </div>
           )}
         </nav>
-        <div className="m-5 flex justify-between space-x-5">
-          <div className="hidden items-center space-x-5 sm:inline-flex">
+        <div className="flex justify-between gap-x-5">
+          <div className="hidden items-center gap-x-5 sm:inline-flex">
             <AuthButton />
           </div>
           <button

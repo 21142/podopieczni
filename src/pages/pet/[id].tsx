@@ -30,6 +30,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
               className="rounded-md"
               width="600"
               height="400"
+              priority={true}
             />
             <p>
               <strong>id:</strong> {id}

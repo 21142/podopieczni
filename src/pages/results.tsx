@@ -1,20 +1,19 @@
-import { Transition, Dialog, Disclosure, Menu } from '@headlessui/react';
+import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react';
 import {
-  XIcon,
-  MinusSmIcon,
-  PlusSmIcon,
   ChevronDownIcon,
   FilterIcon,
+  MinusSmIcon,
+  PlusSmIcon,
+  XIcon,
 } from '@heroicons/react/outline';
 import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
-import type { NextPage } from 'next';
-import type { GetServerSideProps } from 'next';
-import { useState, Fragment } from 'react';
+import type { GetServerSideProps, NextPage } from 'next';
+import Link from 'next/link';
+import { Fragment, useState } from 'react';
 import Search from 'src/components/inputs/search/Search';
 import PageLayout from 'src/components/layouts/primary/PageLayout';
 import SearchResults from 'src/components/utils/search-results/SearchResults';
 import type IAnimalData from 'src/components/utils/search-results/types';
-import Link from 'next/link';
 import { TypeOfResults } from '~/utils/constants';
 
 export interface IResults {
@@ -197,7 +196,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
                           </Disclosure.Button>
                         </h3>
                         <Disclosure.Panel className="pt-6">
-                          <div className="space-y-6">
+                          <div className="gap-y-6">
                             {section.options.map((option, optionIdx) => (
                               <div
                                 key={option.value}
@@ -345,7 +344,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
                         </Disclosure.Button>
                       </h3>
                       <Disclosure.Panel className="pt-6">
-                        <div className="space-y-4">
+                        <div className="gap-y-4">
                           {section.options.map((option, optionIdx) => (
                             <div
                               key={option.value}

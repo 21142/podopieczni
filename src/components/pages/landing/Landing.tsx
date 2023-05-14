@@ -6,11 +6,8 @@ import SearchByBreed from 'src/components/utils/search-by-breed/SearchByBreed';
 import SearchByState from 'src/components/utils/search-by-state/SearchByState';
 import GlobalStatistics from 'src/components/utils/statistics/GlobalStatistics';
 import { mockGlobalStatisticsProps } from 'src/components/utils/statistics/GlobalStatistics.mocks';
-import printConsoleLogo from 'src/utils/printConsoleLogo';
 
 const Landing: React.FC = () => {
-  printConsoleLogo();
-
   return (
     <>
       <Hero />

@@ -1,5 +1,5 @@
-import { CvaButton } from '~/components/buttons/cva/ButtonCva';
 import Image from 'next/image';
+import { CvaButton } from '~/components/buttons/cva/ButtonCva';
 
 const FileUpload: React.FC = () => {
   return (
@@ -33,7 +33,7 @@ const FileUpload: React.FC = () => {
           Cover photo
         </label>
         <div className="mt-5 flex h-48 justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
-          <div className="grid content-center space-y-1 text-center">
+          <div className="grid content-center gap-y-1 text-center">
             <svg
               className="mx-auto h-12 w-12 text-gray-400"
               stroke="currentColor"

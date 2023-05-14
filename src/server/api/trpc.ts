@@ -65,6 +65,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  */
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
+import { Roles } from '~/utils/constants';
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -111,7 +112,7 @@ const isAuthed = t.middleware(({ ctx, next }) => {
 });
 
 const isAdmin = isAuthed.unstable_pipe(({ ctx, next }) => {
-  if (ctx.session.user.role !== 'ADMIN') {
+  if (ctx.session.user.role !== Roles.Admin) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
   return next({

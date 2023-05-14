@@ -9,7 +9,7 @@ const HeaderLink: React.FC<IHeaderLink> = ({ href, title }) => {
   return (
     <Link
       href={href}
-      className="cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110 hover:text-primary-400"
+      className="cursor-pointer transition-transform duration-200 ease-in-out hover:text-primary-400 md:hover:scale-110"
     >
       {title}
     </Link>

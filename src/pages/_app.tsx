@@ -3,8 +3,10 @@ import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { type AppType } from 'next/app';
 import { Inter } from 'next/font/google';
+import { useEffect } from 'react';
 import '~/styles/globals.css';
 import { api } from '~/utils/api';
+import printConsoleLogo from '~/utils/printConsoleLogo';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -15,6 +17,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  useEffect(() => {
+    printConsoleLogo();
+  }, []);
+
   return (
     <>
       <style
