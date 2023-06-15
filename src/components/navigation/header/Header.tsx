@@ -1,9 +1,14 @@
 import { MenuAlt2Icon, XIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useState } from 'react';
 import AuthButton from 'src/components/buttons/auth/AuthButton';
 import Logo from 'src/components/logos/default/Logo';
+import { Icons } from '~/components/icons/Icons';
+import LogoDark from '~/components/logos/dark/LogoDark';
+import { buttonVariants } from '~/components/primitives/Button';
+import { ThemeToggle } from '~/components/utils/theme-toggle/ThemeToggle';
 import { api } from '~/utils/api';
 import { Roles } from '~/utils/constants';
 import HeaderLink from '../../links/header/HeaderLink';
@@ -22,17 +27,20 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
     },
   });
 
+  const { systemTheme, theme } = useTheme();
+  const currentTheme = theme === 'system' ? systemTheme : theme;
+
   return (
     <header
       {...headerProps}
-      className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col justify-center px-5 2xl:max-w-8xl ${
+      className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col justify-center px-5 xl:max-w-8xl ${
         className ?? ''
       }`}
     >
       <div className="flex items-center justify-between md:gap-x-10">
         <Link href="/">
           <div className="relative flex">
-            <Logo />
+            {currentTheme === 'dark' ? <LogoDark /> : <Logo />}
           </div>
         </Link>
         <nav
@@ -46,12 +54,14 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
             href="/"
             title="Główna"
           />
-          {sessionData && sessionData.role !== Roles.Adopter && (
-            <HeaderLink
-              href="/dashboard"
-              title="Schronisko"
-            />
-          )}
+          {sessionData &&
+            (sessionData.role === Roles.Adopter ||
+              sessionData.role === Roles.Admin) && (
+              <HeaderLink
+                href="/dashboard"
+                title="Schronisko"
+              />
+            )}
           <HeaderLink
             href="/"
             title="Adopcja"
@@ -68,6 +78,17 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
         </nav>
         <div className="flex justify-between gap-x-5">
           <div className="hidden items-center gap-x-5 sm:inline-flex">
+            <Link
+              href="/favorites"
+              className={buttonVariants({
+                variant: 'ghost',
+                size: 'sm',
+                className: 'h-9 w-9 px-0',
+              })}
+            >
+              <Icons.heart className="h-8 w-8" />
+            </Link>
+            <ThemeToggle />
             <AuthButton />
           </div>
           <button

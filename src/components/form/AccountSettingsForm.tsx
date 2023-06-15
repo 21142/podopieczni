@@ -3,6 +3,7 @@ import type { AddressInfo, User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useToast } from '~/lib/use-toast';
 import { api, getBaseUrl } from '~/utils/api';
 import {
   userAccountDetailsSchema,
@@ -22,6 +23,7 @@ export interface Props {
 const AccountSettingsForm: FC<Props> = ({ user }) => {
   const router = useRouter();
   const trpc = api.useContext();
+  const { toast } = useToast();
 
   const updateUserDetailsMutation = api.user.update.useMutation({
     retry: (count, error) => {
@@ -42,19 +44,22 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
     },
   });
 
-  const prefilledValues: IUserAccountDetails = useMemo(() => ({
-    firstName: user?.firstName ?? '',
-    lastName: user?.lastName ?? '',
-    email: user?.email ?? '',
-    dateOfBirth: user?.dateOfBirth?.toISOString().slice(0, 10) ?? '',
-    phoneNumber: user?.phoneNumber ?? '',
-    role: user?.role ?? 'Adopter',
-    address: user?.address?.address ?? '',
-    city: user?.address?.city ?? '',
-    postCode: user?.address?.postCode ?? '',
-    state: user?.address?.state ?? '',
-    country: user?.address?.country ?? '',
-  }), [user]);
+  const prefilledValues: IUserAccountDetails = useMemo(
+    () => ({
+      firstName: user?.firstName ?? '',
+      lastName: user?.lastName ?? '',
+      email: user?.email ?? '',
+      dateOfBirth: user?.dateOfBirth?.toISOString().slice(0, 10) ?? '',
+      phoneNumber: user?.phoneNumber ?? '',
+      role: user?.role ?? 'Adopter',
+      address: user?.address?.address ?? '',
+      city: user?.address?.city ?? '',
+      postCode: user?.address?.postCode ?? '',
+      state: user?.address?.state ?? '',
+      country: user?.address?.country ?? '',
+    }),
+    [user]
+  );
 
   const {
     register,
@@ -72,6 +77,10 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
 
   const onSubmit: SubmitHandler<IUserAccountDetails> = async (data) => {
     await updateUserDetailsMutation.mutateAsync(data);
+    toast({
+      description: 'Personal details successfully updated!',
+      variant: 'success',
+    });
   };
 
   return (
@@ -223,6 +232,26 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                           )
                         )}
                       </select>
+                      {/* <Select>
+                        <SelectTrigger className="absolute top-6 left-0 mt-1">
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Role</SelectLabel>
+                            {userAccountDetailsSchema.shape.role.options.map(
+                              (op) => (
+                                <SelectItem
+                                  key={op.value}
+                                  value={op.value}
+                                >
+                                  {RolesMap[op.value]}
+                                </SelectItem>
+                              )
+                            )}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select> */}
                     </div>
                   </div>
 

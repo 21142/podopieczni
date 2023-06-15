@@ -3,7 +3,7 @@ import HeaderLink from 'src/components/links/header/HeaderLink';
 const SearchByState: React.FC = () => {
   return (
     <div className="mt-[22rem] min-h-screen 2xl:mt-[25rem]">
-      <p className="mb-5 text-lg text-neutral-700 md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl">
+      <p className="mb-5 text-lg text-neutral-700 dark:text-muted-foreground md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl">
         Szukaj podopiecznych po{' '}
         <span className="font-bold text-primary-300">województwie</span>
       </p>

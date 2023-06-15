@@ -1,4 +1,5 @@
 import type * as z from 'zod';
+import { useToast } from '~/lib/use-toast';
 import { api } from '~/utils/api';
 import { useZodForm } from '~/utils/useZodForm';
 import { userAccountDetailsSchema } from '~/utils/validation/user';
@@ -18,6 +19,7 @@ export const RolesMap: Record<
 
 const UserForm = () => {
   const trpc = api.useContext().user;
+  const { toast } = useToast();
 
   const addNewUserMutation = api.user.add.useMutation({
     onSuccess: async () => {
@@ -35,6 +37,10 @@ const UserForm = () => {
         form={form}
         onSubmit={async (data) => {
           await addNewUserMutation.mutateAsync(data);
+          toast({
+            description: 'Form successfully submitted!',
+            variant: 'success',
+          });
           form.reset();
         }}
       >

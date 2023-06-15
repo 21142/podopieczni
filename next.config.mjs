@@ -60,10 +60,6 @@ const config = {
             key: 'Permission-Policy',
             value: "geolocation 'self'",
           },
-          {
-            key: 'Feature-Policy',
-            value: "geolocation 'self'",
-          },
         ],
       },
     ];

@@ -12,7 +12,7 @@ const PageLayout: React.FC<IPageLayout> = ({
   ...divProps
 }) => {
   return (
-    <div className="overflow-x-hidden bg-neutral-50/30">
+    <div className="overflow-x-hidden">
       <HeadMeta
         title={
           'podopieczni - Pomoc w znalezieniu zwierząt gotowych do adopcji.'
@@ -31,7 +31,7 @@ const PageLayout: React.FC<IPageLayout> = ({
         {...divProps}
         className={`mx-auto flex min-h-screen w-full flex-col ${justify}`}
       >
-        <div className="w-full bg-neutral-0">
+        <div className="w-full">
           <Header />
         </div>
         <main className="flex w-full flex-grow flex-col font-sans">

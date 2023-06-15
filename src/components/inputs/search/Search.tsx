@@ -1,6 +1,6 @@
 import { SearchIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface ISearch {
   query: string;
@@ -31,11 +31,11 @@ const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
 
   return (
     <form
-      className="flex w-[90%] max-w-[24rem] items-center rounded-full border-2 bg-neutral-50 p-2 shadow-sm"
+      className="flex w-[90%] max-w-[24rem] items-center rounded-full border-2 bg-neutral-50 p-2 shadow-sm dark:border-foreground dark:bg-transparent"
       onSubmit={onSearchEvent}
     >
       <input
-        className="flex-grow border-none bg-transparent pl-3 pr-2 text-neutral-400 placeholder-neutral-400 outline-none transition-colors duration-200 ease-in-out focus:text-neutral-600 focus:ring-0"
+        className="flex-grow border-none bg-transparent pl-3 pr-2 outline-none transition-colors duration-200 ease-in-out focus:ring-0 dark:placeholder-neutral-50"
         type="text"
         placeholder="California or 22-152"
         value={searchQuery}

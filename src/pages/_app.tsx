@@ -4,6 +4,8 @@ import { SessionProvider } from 'next-auth/react';
 import { type AppType } from 'next/app';
 import { Inter } from 'next/font/google';
 import { useEffect } from 'react';
+import { Toaster } from '~/components/primitives/Toaster';
+import { ThemeProvider } from '~/components/utils/theme-provider/ThemeProvider';
 import '~/styles/globals.css';
 import { api } from '~/utils/api';
 import printConsoleLogo from '~/utils/printConsoleLogo';
@@ -32,7 +34,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }
       `}</style>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+        >
+          <Component {...pageProps} />
+          <Toaster />
+        </ThemeProvider>
       </SessionProvider>
       <Analytics />
     </>
