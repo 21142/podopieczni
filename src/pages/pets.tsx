@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/primitives/Table';
-import type IAnimalData from '~/components/utility/types';
+import type IAnimalData from '~/lib/petfinderTypes';
 
 export interface IResults {
   //TODO: change to prisma generated type when Pet/Animal model is added to the db schema

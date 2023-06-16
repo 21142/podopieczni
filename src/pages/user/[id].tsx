@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { type GetServerSideProps, type NextPage } from 'next/types';
 import PageLayout from '~/components/layouts/PageLayout';
-import type IAnimalData from '~/components/utility/types';
+import type IAnimalData from '~/lib/petfinderTypes';
 import { type PetfinderOauth } from '../results';
 
 type IPetProfilePage = {

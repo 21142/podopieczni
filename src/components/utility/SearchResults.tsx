@@ -2,7 +2,7 @@ import PetCard from '~/components/cards/PetCard';
 import type {
   default as IAnimalData,
   default as IOrganizationData,
-} from './types';
+} from '../../lib/petfinderTypes';
 
 export interface ISearchResults {
   results?: IAnimalData[] | IOrganizationData[];

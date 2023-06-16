@@ -8,10 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/primitives/Card';
+import type IAnimalData from '../../lib/petfinderTypes';
 import { Skeleton } from '../primitives/Skeleton';
 import BackgroundWavesFeaturedPets from './BackgroundWavesFeaturedPets';
 import PetsGrid from './PetsGrid';
-import type IAnimalData from './types';
 
 export interface IFeaturedPets {
   featuredAnimals?: IAnimalData[];

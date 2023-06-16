@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type IAnimalData from '~/components/utility/types';
+import type IAnimalData from '~/lib/petfinderTypes';
 import { type IResults, type PetfinderOauth } from '../results';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
