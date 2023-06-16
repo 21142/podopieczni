@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
-import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
 import { CvaButton } from '~/components/buttons/cva/ButtonCva';
+import DashboardLayout from '~/components/layouts/DashboardLayout';
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/primitives/Table';
-import type IAnimalData from '~/components/utils/search-results/types';
+import type IAnimalData from '~/components/utility/types';
 
 export interface IResults {
   //TODO: change to prisma generated type when Pet/Animal model is added to the db schema

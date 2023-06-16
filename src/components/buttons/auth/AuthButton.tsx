@@ -1,6 +1,6 @@
 import { signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
-import Avatar from 'src/components/avatars/base/Avatar';
+import Avatar from '~/components/avatars/Avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/primitives/DropdownMenu';
-import { api } from '~/utils/api';
+import { api } from '~/lib/api';
 import { Roles } from '~/utils/constants';
 
 //TODO: Consider renaming to AuthDropdownMenu

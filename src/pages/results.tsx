@@ -10,11 +10,11 @@ import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
 import type { GetServerSideProps, NextPage } from 'next';
 import Link from 'next/link';
 import { Fragment, useState } from 'react';
-import Search from 'src/components/inputs/search/Search';
-import PageLayout from 'src/components/layouts/primary/PageLayout';
-import SearchResults from 'src/components/utils/search-results/SearchResults';
-import type IAnimalData from 'src/components/utils/search-results/types';
-import BackgroundWave from '~/components/utils/BackgroundWave';
+import Search from '~/components/inputs/Search';
+import PageLayout from '~/components/layouts/PageLayout';
+import BackgroundWave from '~/components/utility/BackgroundWave';
+import SearchResults from '~/components/utility/SearchResults';
+import type IAnimalData from '~/components/utility/types';
 import { TypeOfResults } from '~/utils/constants';
 
 export interface IResults {

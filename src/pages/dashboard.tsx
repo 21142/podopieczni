@@ -1,7 +1,7 @@
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
-import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
 import { Icons } from '~/components/icons/Icons';
+import DashboardLayout from '~/components/layouts/DashboardLayout';
 import { Button } from '~/components/primitives/Button';
 import {
   Card,
@@ -10,10 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/primitives/Card';
-import { Chart } from '~/components/utils/chart/Chart';
-import { RecentAdoptions } from '~/components/utils/recent-adoptions/RecentAdoptions';
-import { getServerAuthSession } from '~/server/auth';
-import { getBaseUrl } from '~/utils/api';
+import { Chart } from '~/components/utility/Chart';
+import { RecentAdoptions } from '~/components/utility/RecentAdoptions';
+import { getBaseUrl } from '~/lib/api';
+import { getServerAuthSession } from '~/lib/auth';
 import { Roles } from '~/utils/constants';
 
 const Dashboard: NextPage = () => {

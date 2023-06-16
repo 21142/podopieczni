@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { type GetServerSideProps, type NextPage } from 'next/types';
-import PageLayout from '~/components/layouts/primary/PageLayout';
-import type IOrganizationData from '~/components/utils/search-results/types';
+import PageLayout from '~/components/layouts/PageLayout';
+import type IOrganizationData from '~/components/utility/types';
 import { type PetfinderOauth } from '../results';
 
 type IOrganizationProfilePage = {

@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
-import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
-import NewAnimalForm from '~/components/form/NewAnimalForm';
-import LoginToAccessPage from '~/components/utils/login-or-landing/LoginToAccessPage';
-import { api } from '~/utils/api';
+import NewAnimalForm from '~/components/forms/NewAnimalForm';
+import DashboardLayout from '~/components/layouts/DashboardLayout';
+import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
+import { api } from '~/lib/api';
 
 const Register: NextPage = () => {
   const { data: sessionData } = api.auth.getSession.useQuery(undefined, {

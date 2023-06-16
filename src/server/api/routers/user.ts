@@ -3,7 +3,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from '~/server/api/trpc';
-import { userAccountDetailsSchema } from '~/utils/validation/user';
+import { userAccountDetailsSchema } from '~/utils/validators/userValidation';
 
 export const userRouter = createTRPCRouter({
   me: protectedProcedure.query(async ({ ctx }) => {

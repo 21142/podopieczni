@@ -1,9 +1,9 @@
 import type { GetServerSideProps, NextPage } from 'next';
-import PageLayout from 'src/components/layouts/primary/PageLayout';
-import SearchResults from 'src/components/utils/search-results/SearchResults';
-import Search from '~/components/inputs/search/Search';
-import BackgroundWave from '~/components/utils/BackgroundWave';
-import type IOrganizationData from '~/components/utils/search-results/types';
+import Search from '~/components/inputs/Search';
+import PageLayout from '~/components/layouts/PageLayout';
+import BackgroundWave from '~/components/utility/BackgroundWave';
+import SearchResults from '~/components/utility/SearchResults';
+import type IOrganizationData from '~/components/utility/types';
 
 export interface IResults {
   organizations?: IOrganizationData[];
