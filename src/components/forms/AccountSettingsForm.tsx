@@ -3,8 +3,9 @@ import type { AddressInfo, User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { api, getBaseUrl } from '~/lib/api';
+import { api } from '~/lib/api';
 import { useToast } from '~/lib/use-toast';
+import { getBaseUrl } from '~/lib/utils';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,

@@ -10,18 +10,7 @@ import { type inferRouterInputs, type inferRouterOutputs } from '@trpc/server';
 import superjson from 'superjson';
 
 import { type AppRouter } from '~/server/api/root';
-
-export const getBaseUrl = () => {
-  if (typeof window !== 'undefined') {
-    // browser should use relative url
-    return '';
-  }
-  const protocol = process.env.VERCEL_URL ? 'https://' : 'http://';
-  const hostname =
-    process.env.VERCEL_URL ?? `localhost:${process.env.PORT ?? 3000}`;
-
-  return `${protocol}${hostname}`;
-};
+import { getBaseUrl } from './utils';
 
 /** A set of type-safe react-query hooks for your tRPC API. */
 export const api = createTRPCNext<AppRouter>({

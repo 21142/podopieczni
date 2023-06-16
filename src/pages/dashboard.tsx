@@ -12,8 +12,8 @@ import {
 } from '~/components/primitives/Card';
 import { Chart } from '~/components/utility/Chart';
 import { RecentAdoptions } from '~/components/utility/RecentAdoptions';
-import { getBaseUrl } from '~/lib/api';
 import { getServerAuthSession } from '~/lib/auth';
+import { getBaseUrl } from '~/lib/utils';
 import { Roles } from '~/utils/constants';
 
 const Dashboard: NextPage = () => {
