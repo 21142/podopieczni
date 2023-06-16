@@ -5,7 +5,9 @@ import { type AppType } from 'next/app';
 import { Inter } from 'next/font/google';
 import { useEffect } from 'react';
 import { Toaster } from '~/components/primitives/Toaster';
+import Spinner from '~/components/spinner/Spinner';
 import { ThemeProvider } from '~/components/utils/theme-provider/ThemeProvider';
+import { usePageLoading } from '~/lib/use-page-loading';
 import '~/styles/globals.css';
 import { api } from '~/utils/api';
 import printConsoleLogo from '~/utils/printConsoleLogo';
@@ -19,6 +21,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  const { isPageLoading } = usePageLoading();
+
   useEffect(() => {
     printConsoleLogo();
   }, []);
@@ -39,7 +43,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
           defaultTheme="system"
           enableSystem
         >
-          <Component {...pageProps} />
+          {isPageLoading ? (
+            <div className="grid h-[80vh] content-center">
+              <Spinner />
+            </div>
+          ) : (
+            <Component {...pageProps} />
+          )}
           <Toaster />
         </ThemeProvider>
       </SessionProvider>

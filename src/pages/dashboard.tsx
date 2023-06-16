@@ -33,7 +33,7 @@ const Dashboard: NextPage = () => {
                 <div className="flex items-center space-x-2">
                   <Button size="sm">
                     <Icons.settings className="mr-2 h-4 w-4" />
-                    Ustawienia organizacji
+                    Organizacja
                   </Button>
                 </div>
               </div>

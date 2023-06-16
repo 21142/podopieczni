@@ -1,5 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import Spinner from 'src/components/spinner/Spinner';
+import Image from 'next/image';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '~/components/primitives/Card';
+import { Skeleton } from '~/components/primitives/skeleton';
 import BackgroundWavesFeaturedPets from '../BackgroundWavesFeaturedPets';
 import PetsGrid from '../pets-grid/PetsGrid';
 import type IAnimalData from '../search-results/types';
@@ -34,7 +43,33 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
           Podopieczni szukający domu
         </p>
         {isLoading ? (
-          <Spinner />
+          <div className="grid max-w-7xl gap-3 p-5 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Card
+                key={index}
+                className="w-[calc(20rem + 2vw)] relative min-h-[585px] border-0 shadow-md transition hover:cursor-pointer hover:ease-out dark:border-2 dark:shadow-primary-300/20 md:w-[352px]"
+              >
+                <CardHeader className="p-0">
+                  <Image
+                    src="/no-profile-picture.svg"
+                    alt="card__image"
+                    className="block h-96 max-w-full rounded-t-lg object-cover"
+                    width="352"
+                    height="384"
+                    unoptimized
+                  />
+                  <CardTitle className="pt-5 pb-1"></CardTitle>
+                  <CardDescription></CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col overflow-hidden">
+                  <Skeleton className="mx-auto mb-2 h-[34px] w-[150px] rounded-full" />
+                  <Skeleton className="mx-auto mb-2 h-[34px] w-[300px] rounded-full" />
+                  <Skeleton className="mx-auto h-[35px] w-[250px] rounded-full" />
+                </CardContent>
+                <CardFooter className="flex justify-end gap-2"></CardFooter>
+              </Card>
+            ))}
+          </div>
         ) : (
           <PetsGrid featuredAnimals={featuredAnimals ?? []} />
         )}

@@ -47,14 +47,14 @@ const PetCard: React.FC<IAnimalCard> = ({
           src={photo ?? '/no-profile-picture.svg'}
           alt="card__image"
           className="block h-96 max-w-full rounded-t-lg object-cover"
-          width="600"
+          width="360"
           height="400"
         />
         <CardTitle className="pt-5 pb-1">{title}</CardTitle>
         <CardDescription>
           {variant === 'organization'
             ? 'Zobacz podopiecznych organizacji'
-            : `${age} • ${breeds?.primary} • ${type}`}
+            : `${age} • ${breeds?.primary} ${type ? `• ${type}` : ''}`}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col overflow-hidden pt-3">

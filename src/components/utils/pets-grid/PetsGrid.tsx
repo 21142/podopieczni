@@ -13,7 +13,12 @@ const PetsGrid: React.FC<IPetsGrid> = ({ featuredAnimals }) => {
         <PetCard
           key={animal.id}
           id={animal.id}
-          photo={animal.photos[0]?.large ?? '/no-profile-picture.svg'}
+          photo={
+            animal.photos[0]?.large ??
+            animal.photos[0]?.medium ??
+            animal.photos[0]?.small ??
+            '/no-profile-picture.svg'
+          }
           tag={animal.status}
           title={animal.name}
           body={animal.description}
