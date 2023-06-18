@@ -1,9 +1,9 @@
 import BackgroundWavesFooter from '~/components/utility/BackgroundWavesFooter';
 
-const Footer: React.FC<JSX.IntrinsicElements['footer']> = () => {
+const Footer = () => {
   return (
     <>
-      <BackgroundWavesFooter className="aspect-[10/1]" />
+      <BackgroundWavesFooter className="-mt-40 aspect-[10/1] sm:mt-0" />
       <footer className="w-full bg-primary-300">
         <div className="flex flex-col items-center justify-center">
           <div className="mt-2 grid max-w-[77.5rem] grid-cols-2 gap-6 py-8 px-6 text-neutral-50 md:grid-cols-4">
@@ -136,7 +136,7 @@ const Footer: React.FC<JSX.IntrinsicElements['footer']> = () => {
           </div>
           <div className="py-4 md:flex md:items-center md:justify-between">
             <span className="text-sm text-neutral-0 sm:text-center">
-              © 2022 podopieczni™
+              © {new Date().getFullYear()} podopieczni™
             </span>
           </div>
         </div>

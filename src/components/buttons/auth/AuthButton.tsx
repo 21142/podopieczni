@@ -1,6 +1,11 @@
 import { signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
-import Avatar from '~/components/avatars/Avatar';
+import { Icons } from '~/components/icons/Icons';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '~/components/primitives/Avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,10 +30,16 @@ const AuthButton: React.FC = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar
-          src={sessionData?.image ?? '/no-profile-picture.svg'}
-          size={'8'}
-        />
+        <Avatar>
+          <AvatarImage
+            src={sessionData?.image as string}
+            alt={sessionData?.name ?? 'User avatar'}
+          />
+          <AvatarFallback>
+            <span className="sr-only">{sessionData?.name}</span>
+            <Icons.user className="h-4 w-4" />
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {sessionData && (

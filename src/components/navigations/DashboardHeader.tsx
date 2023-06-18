@@ -33,7 +33,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
   return (
     <header
       {...headerProps}
-      className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col justify-center px-5 2xl:max-w-8xl ${
+      className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col justify-center px-8 2xl:max-w-8xl ${
         className ?? ''
       }`}
     >
@@ -46,7 +46,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
         <nav
           className={classNames(
             mobileMenuIsOpen
-              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-neutral-0 pt-12 [&_a]:ml-5 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-neutral-50'
+              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-neutral-50 [&_a]:pl-5'
               : 'hidden items-center gap-x-10 md:inline-flex'
           )}
         >
@@ -84,15 +84,26 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
             </>
           )}
           {mobileMenuIsOpen && (
-            <div className="ml-5 mt-8 items-center gap-x-5 sm:hidden">
+            <HeaderLink
+              href="/user/favorites"
+              title="Ulubione"
+              className={buttonVariants({
+                size: 'sm',
+                variant: 'ghost',
+              })}
+            />
+          )}
+          {mobileMenuIsOpen && (
+            <div className="flex items-center gap-x-5 border-t border-neutral-50 pl-4 pt-3 sm:hidden">
               <AuthButton />
+              <ThemeToggle />
             </div>
           )}
         </nav>
-        <div className="flex justify-between gap-x-5">
-          <div className="hidden items-center gap-x-5 sm:inline-flex">
+        <div className="flex items-center justify-between gap-x-2 sm:gap-x-5">
+          <div className="mr-12 hidden items-center gap-x-5 sm:mr-0 sm:inline-flex">
             <Link
-              href="/favorites"
+              href="/user/favorites"
               className={buttonVariants({
                 variant: 'ghost',
                 size: 'sm',
@@ -106,7 +117,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
           </div>
           <button
             className={classNames(
-              mobileMenuIsOpen ? 'fixed top-5 right-10' : '',
+              mobileMenuIsOpen ? 'fixed top-6 right-5' : '',
               'z-10 md:hidden'
             )}
             onClick={() => setMobileMenuIsOpen((currentState) => !currentState)}
