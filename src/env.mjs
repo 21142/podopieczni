@@ -22,7 +22,7 @@ export const env = createEnv({
     GOOGLE_SECRET: z.string(),
     EMAIL_SERVER: z.string(),
     EMAIL_FROM: z.string(),
-    VERCEL_URL: z.string().url().optional(),
+    VERCEL_URL: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_BASE_URL: z.string().url().optional(),
