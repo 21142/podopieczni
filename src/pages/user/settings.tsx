@@ -1,9 +1,9 @@
 import type { FC } from 'react';
-import AccountSettingsForm from '~/components/form/AccountSettingsForm';
-import PageLayout from '~/components/layouts/primary/PageLayout';
-import Spinner from '~/components/spinner/Spinner';
-import LoginToAccessPage from '~/components/utils/login-or-landing/LoginToAccessPage';
-import { api } from '~/utils/api';
+import AccountSettingsForm from '~/components/forms/AccountSettingsForm';
+import PageLayout from '~/components/layouts/PageLayout';
+import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
+import Spinner from '~/components/spinners/Spinner';
+import { api } from '~/lib/api';
 
 const settings: FC = ({}) => {
   const {

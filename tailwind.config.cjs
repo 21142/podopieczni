@@ -7,6 +7,7 @@ module.exports = {
     './src/pages/**/*.{js,jsx,ts,tsx}',
     './src/components/**/*.{js,jsx,ts,tsx}',
   ],
+  darkMode: ['class'],
   theme: {
     screens: {
       xs: '375px',
@@ -31,12 +32,52 @@ module.exports = {
       '8xl': '4.3rem',
       '9xl': '5.16rem',
     },
+    container: {
+      center: true,
+      padding: '2rem',
+      screens: {
+        '2xl': '1800px',
+      },
+    },
     extend: {
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],
         // sans: '"SF PRO Display","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Oxygen,Ubuntu,Cantarel,"Open Sans","Helvetica Neue",sans-serif',
       },
       colors: {
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        brand: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        brandAccent: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
         neutral: {
           0: '#ffffff',
           50: '#fafafa',
@@ -105,6 +146,9 @@ module.exports = {
         '8xl': '96rem',
       },
       borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
         '4xl': '2rem',
       },
       aspectRatio: {
@@ -126,20 +170,6 @@ module.exports = {
             boxShadow: '-0.3rem -0.1rem 0 0 #9b1ea6, 0.3rem 0.1rem 0 0 #c505d6',
           },
         },
-        blob: {
-          '0%': {
-            transform: 'scale(1) translate(0px, 0px)',
-          },
-          '30%': {
-            transform: 'scale(0.9) translate(30px, -50px)',
-          },
-          '70%': {
-            transform: 'scale(1.1) translate(-20px, 20px)',
-          },
-          '100%': {
-            transform: 'scale(1) translate(0px, 0px)',
-          },
-        },
         'accordion-down': {
           from: { height: 0 },
           to: { height: 'var(--radix-accordion-content-height)' },
@@ -152,7 +182,6 @@ module.exports = {
       animation: {
         spinner:
           '2s linear infinite spin, 1s linear infinite alternate deviation',
-        blob: '6s infinite blob',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },

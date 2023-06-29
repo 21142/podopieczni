@@ -1,7 +1,8 @@
-import { ImageResponse } from "@vercel/og";
+import { ImageResponse } from '@vercel/og';
+import { env } from '~/env.mjs';
 
 export const config = {
-  runtime: "edge",
+  runtime: 'edge',
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -10,31 +11,27 @@ export default function () {
     (
       <div
         style={{
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "white",
-          position: "relative",
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'white',
+          position: 'relative',
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           tw="w-full h-[60%] top-0 absolute"
-          style={{ transform: "rotate(180deg)" }}
-          src={`${
-            process.env.NEXT_PUBLIC_BASE_URL as string
-          }/images/footer-wave.svg`}
+          style={{ transform: 'rotate(180deg)' }}
+          src={`${env.NEXT_PUBLIC_BASE_URL}/images/footer-wave.svg`}
           alt="podopieczni logo"
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           tw="w-full h-[50%] bottom-0 absolute"
-          src={`${
-            process.env.NEXT_PUBLIC_BASE_URL as string
-          }/images/footer-wave.svg`}
+          src={`${env.NEXT_PUBLIC_BASE_URL}/images/footer-wave.svg`}
           alt="podopieczni logo"
         />
         <div tw="flex flex-col items-center text-center pt-5">
