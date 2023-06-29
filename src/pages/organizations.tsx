@@ -3,7 +3,7 @@ import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
 import SearchResults from '~/components/utility/SearchResults';
-import type IOrganizationData from '~/lib/petfinderTypes';
+import { type IOrganizationData } from '~/lib/petfinderTypes';
 
 export interface IResults {
   organizations?: IOrganizationData[];

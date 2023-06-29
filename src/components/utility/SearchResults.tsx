@@ -1,8 +1,6 @@
 import PetCard from '~/components/cards/PetCard';
-import type {
-  default as IAnimalData,
-  default as IOrganizationData,
-} from '../../lib/petfinderTypes';
+import type IAnimalData from '../../lib/petfinderTypes';
+import { type IOrganizationData } from '../../lib/petfinderTypes';
 
 export interface ISearchResults {
   results?: IAnimalData[] | IOrganizationData[];

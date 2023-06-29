@@ -1,4 +1,4 @@
-import SelectInput from '../inputs/select/SelectInput';
+import SelectInput from '../inputs/SelectInput';
 import TextInput from '../inputs/TextInput';
 
 type FormProps = {

@@ -63,6 +63,12 @@ export interface IOrganizationData {
   mission_statement?: string | null;
   photos: IPhoto[];
   distance: number;
+  status: string;
+  description: string;
+  organization_id: string;
+  age: Age;
+  breeds: IBreeds;
+  type: Species;
 }
 
 export interface Address {
