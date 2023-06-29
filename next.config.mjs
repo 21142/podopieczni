@@ -1,4 +1,4 @@
-// @ts-check
+import './src/env.mjs';
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -54,7 +54,7 @@ const config = {
           {
             key: 'Content-Security-Policy',
             value:
-              "default-src 'self'; img-src 'self' authjs.dev data:; script-src 'self' 'unsafe-eval' https://cdn.vercel-insights.com https://vercel.live; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src *; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action *; manifest-src 'self'; media-src 'self'; object-src 'self'; worker-src 'self'; block-all-mixed-content; upgrade-insecure-requests;",
+              "default-src 'self'; img-src 'self' authjs.dev data: https://lh3.googleusercontent.com https://dl5zpyw5k3jeb.cloudfront.net; script-src 'self' 'unsafe-eval' 'sha256-eMuh8xiwcX72rRYNAGENurQBAcH7kLlAUQcoOri3BIo=' https://cdn.vercel-insights.com https://vercel.live; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src *; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action *; manifest-src 'self'; media-src 'self'; object-src 'self'; worker-src 'self'; block-all-mixed-content; upgrade-insecure-requests;",
           },
           {
             key: 'Permission-Policy',

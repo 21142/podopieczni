@@ -1,5 +1,6 @@
 import Footer from '~/components/navigations/Footer';
 import HeadMeta from '~/components/utility/HeadMeta';
+import { env } from '~/env.mjs';
 import Header from '../navigations/Header';
 
 export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
@@ -22,10 +23,7 @@ const PageLayout: React.FC<IPageLayout> = ({
         }
         keywords={'psy, koty, adopcja zwierząt, schroniska'}
         type={'website'}
-        url={
-          process.env.NEXT_PUBLIC_BASE_URL ??
-          'https://podopieczni-dev.vercel.app'
-        }
+        url={env.NEXT_PUBLIC_BASE_URL ?? 'https://podopieczni-dev.vercel.app'}
       />
       <div
         {...divProps}

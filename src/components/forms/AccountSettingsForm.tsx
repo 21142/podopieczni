@@ -3,9 +3,9 @@ import type { AddressInfo, User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import { env } from '~/env.mjs';
 import { api } from '~/lib/api';
 import { useToast } from '~/lib/use-toast';
-import { getBaseUrl } from '~/lib/utils';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
@@ -36,7 +36,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
     onError: (error) => {
       if (error.data?.code === 'UNAUTHORIZED') {
         void router.push(
-          `/api/auth/signin?callbackUrl=${getBaseUrl()}/user/settings&error=SessionRequired`
+          `/api/auth/signin?callbackUrl=${env.NEXT_PUBLIC_BASE_URL}/user/settings&error=SessionRequired`
         );
       }
     },

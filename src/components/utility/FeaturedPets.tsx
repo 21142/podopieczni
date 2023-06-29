@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/primitives/Card';
+import { env } from '~/env.mjs';
 import type IAnimalData from '../../lib/petfinderTypes';
 import { Skeleton } from '../primitives/Skeleton';
 import BackgroundWavesFeaturedPets from './BackgroundWavesFeaturedPets';
@@ -18,11 +19,9 @@ export interface IFeaturedPets {
 }
 
 const animalFetcher = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-  const petfindetAnimalsData = (await fetch(`${baseUrl}/api/animals`).then(
-    (res) => res.json()
-  )) as IAnimalData[] | undefined;
+  const petfindetAnimalsData = (await fetch(
+    `${env.NEXT_PUBLIC_BASE_URL}/api/animals`
+  ).then((res) => res.json())) as IAnimalData[] | undefined;
 
   if (!petfindetAnimalsData) return;
   const featuredAnimalsData = petfindetAnimalsData.slice(10, 16);

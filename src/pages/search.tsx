@@ -62,6 +62,7 @@ const SearchPage: NextPage<IResults> = ({ animals, searchQuery }) => {
           scroll={false}
           className="-mt-6 flex justify-center"
         >
+          <span className="sr-only">Scroll to top</span>
           <ChevronDoubleUpIcon className="duration-50 h-12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
         </Link>
       </main>

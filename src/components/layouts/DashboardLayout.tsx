@@ -1,4 +1,5 @@
 import HeadMeta from '~/components/utility/HeadMeta';
+import { env } from '~/env.mjs';
 import DashboardHeader from '../navigations/DashboardHeader';
 
 export interface IDashboardLayout
@@ -22,10 +23,7 @@ const DashboardLayout: React.FC<IDashboardLayout> = ({
         }
         keywords={'psy, koty, adopcja zwierząt, schroniska'}
         type={'website'}
-        url={
-          process.env.NEXT_PUBLIC_BASE_URL ??
-          'https://podopieczni-dev.vercel.app'
-        }
+        url={env.NEXT_PUBLIC_BASE_URL ?? 'https://podopieczni-dev.vercel.app'}
       />
       <div
         {...divProps}

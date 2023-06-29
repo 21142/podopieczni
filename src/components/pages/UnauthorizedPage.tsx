@@ -1,8 +1,7 @@
 import { useRouter } from 'next/navigation';
-import type { FC } from 'react';
 import { CvaButton } from '~/components/buttons/cva/ButtonCva';
 
-const UnauthorizedPage: FC = ({}) => {
+const UnauthorizedPage = () => {
   const router = useRouter();
   return (
     <div className="grid h-[50vh] content-center">

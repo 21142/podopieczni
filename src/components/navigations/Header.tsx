@@ -55,7 +55,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
             title="Główna"
           />
           {sessionData &&
-            (sessionData.role === Roles.Adopter ||
+            (sessionData.role === Roles.Shelter ||
               sessionData.role === Roles.Admin) && (
               <HeaderLink
                 href="/dashboard"
@@ -82,8 +82,8 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
           )}
           {mobileMenuIsOpen && (
             <div className="flex items-center gap-x-5 border-t border-neutral-50 pl-4 pt-3 sm:hidden">
-              <AuthButton />
               <ThemeToggle />
+              <AuthButton />
             </div>
           )}
         </nav>

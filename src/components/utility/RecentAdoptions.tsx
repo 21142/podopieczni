@@ -10,7 +10,7 @@ export function RecentAdoptions() {
       <div className="flex items-center">
         <Avatar className="h-9 w-9">
           <AvatarImage
-            src="/avatars/01.png"
+            src="https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/65205159/3/?bust=1687910951&width=100"
             alt="Avatar"
           />
           <AvatarFallback>B</AvatarFallback>
@@ -24,7 +24,7 @@ export function RecentAdoptions() {
       <div className="flex items-center">
         <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
           <AvatarImage
-            src="/avatars/02.png"
+            src="https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/65225703/3/?bust=1688046716&width=100"
             alt="Avatar"
           />
           <AvatarFallback>J</AvatarFallback>
@@ -38,7 +38,7 @@ export function RecentAdoptions() {
       <div className="flex items-center">
         <Avatar className="h-9 w-9">
           <AvatarImage
-            src="/avatars/03.png"
+            src="https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/65225694/2/?bust=1688046657&width=300"
             alt="Avatar"
           />
           <AvatarFallback>A</AvatarFallback>
@@ -52,7 +52,7 @@ export function RecentAdoptions() {
       <div className="flex items-center">
         <Avatar className="h-9 w-9">
           <AvatarImage
-            src="/avatars/04.png"
+            src="https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/65225694/2/?bust=1688046657&width=300"
             alt="Avatar"
           />
           <AvatarFallback>W</AvatarFallback>
@@ -66,7 +66,7 @@ export function RecentAdoptions() {
       <div className="flex items-center">
         <Avatar className="h-9 w-9">
           <AvatarImage
-            src="/avatars/05.png"
+            src="https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/65225694/2/?bust=1688046657&width=300"
             alt="Avatar"
           />
           <AvatarFallback>K</AvatarFallback>

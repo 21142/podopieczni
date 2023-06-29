@@ -12,8 +12,8 @@ import {
 } from '~/components/primitives/Card';
 import { Chart } from '~/components/utility/Chart';
 import { RecentAdoptions } from '~/components/utility/RecentAdoptions';
+import { env } from '~/env.mjs';
 import { getServerAuthSession } from '~/lib/auth';
-import { getBaseUrl } from '~/lib/utils';
 import { Roles } from '~/utils/constants';
 
 const Dashboard: NextPage = () => {
@@ -134,7 +134,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (!session) {
     return {
       redirect: {
-        destination: `/api/auth/signin?callbackUrl=${getBaseUrl()}/dashboard&error=SessionRequired`,
+        destination: `/api/auth/signin?callbackUrl=${env.NEXT_PUBLIC_BASE_URL}/dashboard&error=SessionRequired`,
+      },
+    };
+  }
+  if (session.user?.role === Roles.Adopter) {
+    return {
+      redirect: {
+        destination: `${env.NEXT_PUBLIC_BASE_URL}/unauthorized`,
       },
     };
   }
