@@ -5,7 +5,7 @@ import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinners/Spinner';
 import Grid from '~/components/utility/Grid';
 import { api } from '~/lib/api';
-import { Roles } from '~/utils/constants';
+import { Roles } from '~/lib/constants';
 
 const Users: NextPage = () => {
   const {

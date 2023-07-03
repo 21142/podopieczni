@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '~/components/primitives/DropdownMenu';
 import { api } from '~/lib/api';
-import { Roles } from '~/utils/constants';
+import { Roles } from '~/lib/constants';
 
 //TODO: Consider renaming to AuthDropdownMenu
 const AuthButton: React.FC = () => {

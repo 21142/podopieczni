@@ -2,7 +2,7 @@ import type * as z from 'zod';
 import { api } from '~/lib/api';
 import { useToast } from '~/lib/use-toast';
 import { useZodForm } from '~/lib/use-zod-form';
-import { userAccountDetailsSchema } from '~/utils/validators/userValidation';
+import { userAccountDetailsSchema } from '~/lib/validators/userValidation';
 import { CvaButton } from '../buttons/cva/ButtonCva';
 import Form from './Form';
 import FormInput from './FormInput';

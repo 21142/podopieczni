@@ -14,7 +14,7 @@ import { Chart } from '~/components/utility/Chart';
 import { RecentAdoptions } from '~/components/utility/RecentAdoptions';
 import { env } from '~/env.mjs';
 import { getServerAuthSession } from '~/lib/auth';
-import { Roles } from '~/utils/constants';
+import { Roles } from '~/lib/constants';
 
 const Dashboard: NextPage = () => {
   const { data: session } = useSession();

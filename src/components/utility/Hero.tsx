@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Button from 'src/components/buttons/base/Button';
-import { TypeOfResults } from '~/utils/constants';
+import { TypeOfResults } from '~/lib/constants';
 import Search from '../inputs/Search';
 
 const Hero: React.FC = () => {

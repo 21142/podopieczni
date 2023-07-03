@@ -6,7 +6,7 @@ import { LinkButton } from 'src/components/buttons/link/LinkButton';
 import PageLayout from '~/components/layouts/PageLayout';
 import Spinner from '~/components/spinners/Spinner';
 import { api } from '~/lib/api';
-import { Roles } from '~/utils/constants';
+import { Roles } from '~/lib/constants';
 
 const Welcome: NextPage = () => {
   const router = useRouter();

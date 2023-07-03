@@ -5,8 +5,8 @@ import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
 import SearchResults from '~/components/utility/SearchResults';
+import { TypeOfResults } from '~/lib/constants';
 import type IAnimalData from '~/lib/petfinderTypes';
-import { TypeOfResults } from '~/utils/constants';
 
 export interface IResults {
   animals?: IAnimalData[];

@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
-import { Roles } from '~/utils/constants';
+import { Roles } from '~/lib/constants';
+import { createTRPCRouter } from '~/server/api/trpc';
+import protectedProcedure from '../procedures/protectedProcedure';
 
 export const authRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {

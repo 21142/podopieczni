@@ -10,7 +10,7 @@ import LogoDark from '~/components/logos/LogoDark';
 import { buttonVariants } from '~/components/primitives/Button';
 import { ThemeToggle } from '~/components/utility/ThemeToggle';
 import { api } from '~/lib/api';
-import { Roles } from '~/utils/constants';
+import { Roles } from '~/lib/constants';
 import HeaderLink from '../links/HeaderLink';
 
 const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
