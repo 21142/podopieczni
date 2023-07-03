@@ -9,6 +9,8 @@ const Hero: React.FC = () => {
       <Image
         src="https://i.postimg.cc/7Y7Lk3S8/hero.png"
         fill
+        sizes="100vw"
+        quality={100}
         className="object-cover"
         alt="hero image section"
         loading="eager"
