@@ -5,6 +5,17 @@ on:
   schedule:
     - cron: '0 0 1 * *'
 
+env:
+  DATABASE_URL: 'https://fake.com'
+  NEXTAUTH_SECRET: 'fake'
+  NEXTAUTH_URL: 'https://fake.com'
+  PETFINDER_KEY: 'fake'
+  PETFINDER_SECRET: 'fake'
+  GOOGLE_ID: 'fake'
+  GOOGLE_SECRET: 'fake'
+  EMAIL_SERVER: 'fake'
+  EMAIL_FROM: 'fake'
+
 jobs:
   update:
     runs-on: ubuntu-latest

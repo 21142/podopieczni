@@ -1,5 +1,5 @@
 import { type User } from '@prisma/client';
-import { Roles } from '~/utils/constants';
+import { Roles } from '~/lib/constants';
 import UserCard from '../cards/UserCard';
 
 export interface IGrid {

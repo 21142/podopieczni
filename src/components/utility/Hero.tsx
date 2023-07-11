@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Button from 'src/components/buttons/base/Button';
-import { TypeOfResults } from '~/utils/constants';
+import { TypeOfResults } from '~/lib/constants';
 import Search from '../inputs/Search';
 
 const Hero: React.FC = () => {
@@ -9,6 +9,8 @@ const Hero: React.FC = () => {
       <Image
         src="https://i.postimg.cc/7Y7Lk3S8/hero.png"
         fill
+        sizes="100vw"
+        quality={100}
         className="object-cover"
         alt="hero image section"
         loading="eager"

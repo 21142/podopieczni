@@ -9,7 +9,7 @@ import { useToast } from '~/lib/use-toast';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
-} from '~/utils/validators/userValidation';
+} from '~/lib/validators/userValidation';
 import { RolesMap } from './UserForm';
 
 export interface Props {

@@ -8,9 +8,9 @@ import { Toaster } from '~/components/primitives/Toaster';
 import Spinner from '~/components/spinners/Spinner';
 import { ThemeProvider } from '~/components/utility/ThemeProvider';
 import { api } from '~/lib/api';
+import printConsoleLogo from '~/lib/printConsoleLogo';
 import { usePageLoading } from '~/lib/use-page-loading';
 import '~/styles/globals.css';
-import printConsoleLogo from '~/utils/printConsoleLogo';
 
 const inter = Inter({
   subsets: ['latin'],

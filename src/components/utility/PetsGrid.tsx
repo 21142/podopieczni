@@ -1,5 +1,5 @@
 import PetCard from '~/components/cards/PetCard';
-import { Variant } from '~/utils/constants';
+import { Variant } from '~/lib/constants';
 import type IAnimalData from '../../lib/petfinderTypes';
 
 export interface IPetsGrid {
