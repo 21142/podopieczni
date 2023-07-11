@@ -1,22 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type IAnimalData from 'src/components/utils/search-results/types';
+import { env } from '~/env.mjs';
+import type IAnimalData from '~/lib/petfinderTypes';
 import { type IResults, type PetfinderOauth } from '../results';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   try {
     const petfindetOauthData = (await fetch(
-      `${baseUrl as string}/api/petfinder-oauth-token`
+      `${env.NEXT_PUBLIC_BASE_URL}/api/petfinder-oauth-token`
     ).then((res) => res.json())) as PetfinderOauth;
-    const accessToken = petfindetOauthData.access_token;
-    if (accessToken) {
+    if (petfindetOauthData.access_token) {
       const petfindetData = (await fetch(
         'https://api.petfinder.com/v2/animals',
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${petfindetOauthData.access_token}`,
           },
         }
       ).then((res) => res.json())) as IResults;

@@ -3,6 +3,17 @@ name: Typescript Type Check, Prettier and ESLint
 on:
   pull_request:
 
+env:
+  DATABASE_URL: 'https://fake.com'
+  NEXTAUTH_SECRET: 'fake'
+  NEXTAUTH_URL: 'https://fake.com'
+  PETFINDER_KEY: 'fake'
+  PETFINDER_SECRET: 'fake'
+  GOOGLE_ID: 'fake'
+  GOOGLE_SECRET: 'fake'
+  EMAIL_SERVER: 'fake'
+  EMAIL_FROM: 'fake'
+
 jobs:
   build:
     name: Typescript Type Check, Prettier and ESLint

@@ -1,9 +1,7 @@
-import {
-  adminProcedure,
-  createTRPCRouter,
-  protectedProcedure,
-} from '~/server/api/trpc';
-import { userAccountDetailsSchema } from '~/utils/validation/user';
+import { userAccountDetailsSchema } from '~/lib/validators/userValidation';
+import { createTRPCRouter } from '~/server/api/trpc';
+import adminProcedure from '../procedures/adminProcedure';
+import protectedProcedure from '../procedures/protectedProcedure';
 
 export const userRouter = createTRPCRouter({
   me: protectedProcedure.query(async ({ ctx }) => {

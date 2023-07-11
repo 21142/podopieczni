@@ -1,11 +1,11 @@
 import type { NextPage } from 'next';
-import DashboardLayout from 'src/components/layouts/dashboard/DashboardLayout';
-import UserForm from '~/components/form/UserForm';
-import Spinner from '~/components/spinner/Spinner';
-import Grid from '~/components/utils/Grid';
-import UnauthorizedPage from '~/components/utils/unauthorized/UnauthorizedPage';
-import { api } from '~/utils/api';
-import { Roles } from '~/utils/constants';
+import UserForm from '~/components/forms/UserForm';
+import DashboardLayout from '~/components/layouts/DashboardLayout';
+import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
+import Spinner from '~/components/spinners/Spinner';
+import Grid from '~/components/utility/Grid';
+import { api } from '~/lib/api';
+import { Roles } from '~/lib/constants';
 
 const Users: NextPage = () => {
   const {

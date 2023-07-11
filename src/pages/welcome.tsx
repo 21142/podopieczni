@@ -3,10 +3,10 @@ import { signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { CvaButton } from 'src/components/buttons/cva/ButtonCva';
 import { LinkButton } from 'src/components/buttons/link/LinkButton';
-import PageLayout from 'src/components/layouts/primary/PageLayout';
-import Spinner from 'src/components/spinner/Spinner';
-import { api } from '~/utils/api';
-import { Roles } from '~/utils/constants';
+import PageLayout from '~/components/layouts/PageLayout';
+import Spinner from '~/components/spinners/Spinner';
+import { api } from '~/lib/api';
+import { Roles } from '~/lib/constants';
 
 const Welcome: NextPage = () => {
   const router = useRouter();

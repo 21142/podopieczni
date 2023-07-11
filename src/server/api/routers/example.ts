@@ -1,10 +1,8 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter } from '~/server/api/trpc';
+import protectedProcedure from '../procedures/protectedProcedure';
+import publicProcedure from '../procedures/publicProcedure';
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
@@ -20,6 +18,6 @@ export const exampleRouter = createTRPCRouter({
   }),
 
   getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+    return 'you can now see this secret message!';
   }),
 });
