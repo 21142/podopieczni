@@ -1,12 +1,30 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
 import { api } from '~/lib/api';
 import { useToast } from '~/lib/use-toast';
-import { useZodForm } from '~/lib/use-zod-form';
-import { userAccountDetailsSchema } from '~/lib/validators/userValidation';
-import { CvaButton } from '../buttons/cva/ButtonCva';
-import Form from './Form';
-import FormInput from './FormInput';
-import FormSelect from './FormSelect';
+import {
+  userAccountDetailsSchema,
+  type IUserAccountDetails,
+} from '~/lib/validators/userValidation';
+import { Button } from '../primitives/Button';
+import { Card, CardHeader } from '../primitives/Card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../primitives/Form';
+import { Input } from '../primitives/Input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../primitives/Select';
 
 export const RolesMap: Record<
   z.infer<typeof userAccountDetailsSchema>['role'],
@@ -21,114 +39,249 @@ const AddPersonForm = () => {
   const trpc = api.useContext().user;
   const { toast } = useToast();
 
-  const addNewUserMutation = api.user.add.useMutation({
+  const addUserMutation = api.user.add.useMutation({
     onSuccess: async () => {
       await trpc.getAllUsers.invalidate();
     },
   });
 
-  const form = useZodForm({
-    schema: userAccountDetailsSchema,
+  const form = useForm<IUserAccountDetails>({
+    resolver: zodResolver(userAccountDetailsSchema),
   });
 
-  return (
-    <div className="mx-auto mt-10 w-full max-w-7xl px-4 py-5 sm:p-6 2xl:max-w-8xl">
-      <Form
-        form={form}
-        onSubmit={async (data) => {
-          await addNewUserMutation.mutateAsync(data);
-          toast({
-            description: 'Form successfully submitted!',
-            variant: 'success',
-          });
-          form.reset();
-        }}
-      >
-        <div className="overflow-hidden shadow sm:rounded-md">
-          <div className="bg-white px-4 py-5 sm:p-6">
-            <p className="mb-4 text-2xl font-light tracking-widest text-neutral-800 underline decoration-2 underline-offset-2 sm:text-4xl">
-              Dodaj nową osobę
-            </p>
+  const onSubmit = async (values: IUserAccountDetails) => {
+    try {
+      await addUserMutation.mutateAsync(values);
+      toast({
+        description: 'Form successfully submitted!',
+        variant: 'success',
+      });
+      form.reset();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
 
-            <div className="grid gap-8 md:grid-cols-3 md:gap-6">
-              <FormInput
-                type="text"
-                label="first name"
-                {...form.register('firstName')}
-              />
-              <FormInput
-                type="text"
-                label="last name"
-                {...form.register('lastName')}
-              />
-              <FormInput
-                type="email"
-                label="email"
-                {...form.register('email')}
-              />
-              <FormInput
-                type="date"
-                label="date of birth"
-                {...form.register('dateOfBirth')}
-              />
-              <FormInput
-                type="text"
-                label="phone number"
-                {...form.register('phoneNumber')}
-              />
-              <FormInput
-                type="text"
-                label="address"
-                {...form.register('address')}
-              />
-              <FormInput
-                type="text"
-                label="city"
-                {...form.register('city')}
-              />
-              <FormInput
-                type="text"
-                label="post code"
-                {...form.register('postCode')}
-              />
-              <FormInput
-                type="text"
-                label="state"
-                {...form.register('state')}
-              />
-              <FormInput
-                type="text"
-                label="country"
-                {...form.register('country')}
-              />
-              <FormSelect
-                label="role"
-                {...form.register('role')}
-              >
-                {userAccountDetailsSchema.shape.role.options.map((op) => (
-                  <option
-                    key={op.value}
-                    value={op.value}
+  return (
+    <div className="p-4">
+      <Card className="mx-auto w-full max-w-7xl p-4 px-4 py-5 sm:mt-10 sm:p-6 2xl:max-w-8xl">
+        <CardHeader className="px-0 pt-2">
+          <h1 className="text-3xl font-medium text-foreground underline">
+            Add a new person
+          </h1>
+        </CardHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-y-6 md:grid md:grid-cols-3 md:gap-6"
+          >
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>First name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dateOfBirth"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date of birth</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="date"
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone number</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>City</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="postCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Post code</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>State</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <Select
+                    onValueChange={field.onChange as (value: string) => void}
+                    defaultValue={field.value}
                   >
-                    {RolesMap[op.value]}
-                  </option>
-                ))}
-              </FormSelect>
-            </div>
-            <div className="mt-12 bg-neutral-0 text-left">
-              <CvaButton
-                variant="primary"
-                className="w-42 rounded-md"
-                onClick={async () => await trpc.getAllUsers.invalidate()}
-                disabled={addNewUserMutation.isLoading}
-                type="submit"
-              >
-                {addNewUserMutation.isLoading ? 'Ładowanie...' : 'Zapisz'}
-              </CvaButton>
-            </div>
-          </div>
-        </div>
-      </Form>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {userAccountDetailsSchema.shape.role.options.map((op) => (
+                        <SelectItem
+                          key={op.value}
+                          value={op.value}
+                        >
+                          {RolesMap[op.value]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              className="col-span-3 justify-self-start"
+              onClick={async () => await trpc.getAllUsers.invalidate()}
+              disabled={addUserMutation.isLoading}
+            >
+              {addUserMutation.isLoading ? 'Ładowanie...' : 'Dodaj'}
+            </Button>
+          </form>
+        </Form>
+      </Card>
     </div>
   );
 };

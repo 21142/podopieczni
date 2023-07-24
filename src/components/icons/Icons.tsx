@@ -1,4 +1,5 @@
 import {
+  ArrowUpDown,
   Calendar,
   Check,
   ChevronDown,
@@ -8,13 +9,16 @@ import {
   Dog,
   DollarSign,
   Download,
+  EyeOff,
   Heart,
   HeartHandshake,
+  HelpCircle,
   Home,
   Laptop,
   Loader2,
   LogIn,
   Moon,
+  MoreHorizontal,
   Plus,
   Settings,
   SunMedium,
@@ -31,6 +35,7 @@ export const Icons = {
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   chevronDown: ChevronDown,
+  arrowUpDown: ArrowUpDown,
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
@@ -50,6 +55,9 @@ export const Icons = {
   calendar: Calendar,
   heart: Heart,
   heartDonate: HeartHandshake,
+  helpQustionMark: HelpCircle,
+  more: MoreHorizontal,
+  hide: EyeOff,
   google: (props: LucideProps) => (
     <svg
       {...props}
