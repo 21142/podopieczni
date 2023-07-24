@@ -9,6 +9,19 @@ export const petRouter = createTRPCRouter({
     const pets = await ctx.prisma.pet.findMany();
     return pets;
   }),
+  getAllPetsDataForTable: protectedProcedure.query(async ({ ctx }) => {
+    const pets = await ctx.prisma.pet.findMany({
+      select: {
+        id: true,
+        name: true,
+        species: true,
+        breed: true,
+        status: true,
+        image: true,
+      },
+    });
+    return pets;
+  }),
   getPetById: protectedProcedure
     .input(
       z.object({
@@ -21,39 +34,62 @@ export const petRouter = createTRPCRouter({
       });
       return pet;
     }),
+  getPetsCount: protectedProcedure.query(async ({ ctx }) => {
+    const count = await ctx.prisma.pet.count();
+    return count;
+  }),
+  getPetsCountChangeFromLastMonth: protectedProcedure.query(async ({ ctx }) => {
+    const thisMonthsCount = await ctx.prisma.pet.count({
+      where: {
+        createdAt: {
+          gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+        },
+      },
+    });
+    const lastMonthsCount = await ctx.prisma.pet.count({
+      where: {
+        createdAt: {
+          gt: new Date(new Date().setMonth(new Date().getMonth() - 2)),
+          lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+        },
+      },
+    });
+    return thisMonthsCount - lastMonthsCount;
+  }),
   add: protectedProcedure
     .input(petDetailsSchema)
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.pet.create({
         data: {
+          internalId: input.internalId,
           name: input.name,
-          species: input.spieces,
+          species: input.species,
           breed: input.breed,
           gender: input.gender,
-          age: input.age,
           color: input.color,
           coat: input.coat,
-          weight: input.weight,
-          adoptionFee: input.adoptionFee,
-          dateOfBirth: new Date(input.dateOfBirth as string),
+          weight: parseFloat(input.weight ?? '0.0'),
+          image: input.image,
+          // adoptionFee: input.adoptionFee,
+          dateOfBirth: new Date(input.dateOfBirth as string).toISOString(),
           status: input.status,
-          description: input.description,
-          houseTrained: input.houseTrained,
-          specialNeeds: input.specialNeeds,
-          neutered: input.neutered,
-          declawed: input.declawed,
-          aggressive: input.aggressive,
-          friendlyWithDogs: input.friendlyWithDogs,
-          friendlyWithCats: input.friendlyWithCats,
-          friendlyWithChildren: input.friendlyWithChildren,
+          // description: input.description,
+          // houseTrained: input.houseTrained,
+          // specialNeeds: input.specialNeeds,
+          // neutered: input.neutered,
+          // declawed: input.declawed,
+          // aggressive: input.aggressive,
+          // friendlyWithDogs: input.friendlyWithDogs,
+          // friendlyWithCats: input.friendlyWithCats,
+          // friendlyWithChildren: input.friendlyWithChildren,
           microchipBrand: input.microchipBrand,
           microchipNumber: input.microchipNumber,
+          healthStatus: input.healthStatus,
           shelter: {
             connect: {
-              id: input.shelterId,
+              id: 'clkg0af0j0000tw7lqiwgvsl9',
             },
           },
-          healthStatus: input.healthStatus,
           // medicalEvents: {
           //   create: { ...input.medicalEvents },
           // },
