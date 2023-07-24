@@ -33,14 +33,14 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   return (
     <header
       {...headerProps}
-      className={`sticky top-0 z-10 mx-auto flex h-20 w-full max-w-7xl flex-col justify-center px-8 xl:max-w-8xl ${
+      className={`sticky top-0 z-10 h-20 w-full border-b border-b-accent py-[14px] px-8 ${
         className ?? ''
       }`}
     >
-      <div className="flex items-center justify-between md:gap-x-10">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-x-3 md:gap-x-10 lg:gap-x-10 2xl:max-w-8xl">
         <Link href="/">
           <div className="relative flex">
-            {currentTheme === 'dark' ? <LogoDark /> : <Logo />}
+            {currentTheme === 'light' ? <Logo /> : <LogoDark />}
           </div>
         </Link>
         <nav

@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import NewAnimalForm from '~/components/forms/NewAnimalForm';
+import AddPetForm from '~/components/forms/AddPetForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import { api } from '~/lib/api';
@@ -21,16 +21,7 @@ const Register: NextPage = () => {
       </DashboardLayout>
     );
 
-  return (
-    <DashboardLayout>
-      {sessionData && (
-        <NewAnimalForm
-          formAction=""
-          title={'Your new pet'}
-        />
-      )}
-    </DashboardLayout>
-  );
+  return <DashboardLayout>{sessionData && <AddPetForm />}</DashboardLayout>;
 };
 
 export default Register;

@@ -29,9 +29,7 @@ const DashboardLayout: React.FC<IDashboardLayout> = ({
         {...divProps}
         className={`mx-auto flex h-screen w-full flex-col ${justify}`}
       >
-        <div className="w-full">
-          <DashboardHeader />
-        </div>
+        <DashboardHeader />
         <main className="flex w-full flex-grow flex-col font-sans">
           {children}
         </main>
