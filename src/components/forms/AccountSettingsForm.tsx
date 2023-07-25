@@ -4,9 +4,9 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { env } from '~/env.mjs';
+import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
-import { useToast } from '~/lib/use-toast';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,

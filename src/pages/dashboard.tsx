@@ -13,12 +13,14 @@ import {
 import { Chart } from '~/components/utility/Chart';
 import { RecentAdoptions } from '~/components/utility/RecentAdoptions';
 import { env } from '~/env.mjs';
+import { useLoginToast } from '~/hooks/use-login-toast';
 import { api } from '~/lib/api';
 import { getServerAuthSession } from '~/lib/auth';
 import { Roles } from '~/lib/constants';
 
 const Dashboard: NextPage = () => {
   const { data: session } = useSession();
+  const { loginToast } = useLoginToast();
 
   const { data: usersCount } = api.user.getUsersCount.useQuery();
   const { data: usersCountChangeFromLastMonth } =
@@ -46,7 +48,10 @@ const Dashboard: NextPage = () => {
                   </Button>
                 </div>
               </div>
-              <Button size="sm">
+              <Button
+                size="sm"
+                onClick={loginToast}
+              >
                 <Icons.download className="mr-2 h-4 w-4" />
                 Pobierz raport
               </Button>

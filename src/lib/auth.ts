@@ -4,7 +4,6 @@ import { type User } from '@prisma/client';
 import { type GetServerSidePropsContext } from 'next';
 import {
   getServerSession,
-  type DefaultSession,
   type NextAuthOptions,
   type SessionOptions,
 } from 'next-auth';
@@ -14,26 +13,6 @@ import EmailProvider from 'next-auth/providers/email';
 import GoogleProvider from 'next-auth/providers/google';
 import { env } from '~/env.mjs';
 import { prisma } from '~/lib/db';
-
-/**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
- */
-declare module 'next-auth' {
-  interface Session extends DefaultSession {
-    user: {
-      id: string;
-      role?: string;
-    } & DefaultSession['user'];
-  }
-
-  interface User {
-    id: string;
-    role?: string;
-  }
-}
 
 //TODO: Check if needed (these are default values for NextAuth)
 const session: Partial<SessionOptions> = {

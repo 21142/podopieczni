@@ -3,8 +3,8 @@ import { TRPCClientError } from '@trpc/client';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { ZodError, type z } from 'zod';
+import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
-import { useToast } from '~/lib/use-toast';
 import { cn } from '~/lib/utils';
 import {
   petDetailsSchema,

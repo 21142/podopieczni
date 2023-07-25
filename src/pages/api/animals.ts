@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { env } from '~/env.mjs';
-import type IAnimalData from '~/lib/petfinderTypes';
+import type IAnimalData from '~/types/petfinderTypes';
 import { type IResults, type PetfinderOauth } from '../results';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

@@ -26,9 +26,8 @@ export const columns: ColumnDef<AnimalDto>[] = [
   {
     accessorKey: 'image',
     header: () => (
-      <div className="flex items-center gap-1 text-left text-foreground">
-        Image
-        <Icons.dog />
+      <div className="flex items-center gap-1 text-left dark:text-neutral-100 dark:hover:text-neutral-100">
+        Photo
       </div>
     ),
     cell: ({ row }) => (
@@ -107,7 +106,11 @@ export const columns: ColumnDef<AnimalDto>[] = [
   },
   {
     id: 'actions',
-    header: () => <div className="text-left text-foreground">Actions</div>,
+    header: () => (
+      <div className="text-left dark:text-neutral-100 dark:hover:text-neutral-100">
+        Actions
+      </div>
+    ),
     cell: ({ row }) => {
       const animal = row.original;
 
