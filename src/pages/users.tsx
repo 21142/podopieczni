@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import UserForm from '~/components/forms/UserForm';
+import AddPersonForm from '~/components/forms/AddPersonForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinners/Spinner';
@@ -67,7 +67,7 @@ const Users: NextPage = () => {
     <DashboardLayout>
       {sessionData && (
         <>
-          <UserForm />
+          <AddPersonForm />
           {users && <Grid items={users} />}
         </>
       )}

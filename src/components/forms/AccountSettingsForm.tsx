@@ -5,12 +5,15 @@ import { useEffect, useMemo, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { env } from '~/env.mjs';
 import { api } from '~/lib/api';
+import { Roles } from '~/lib/constants';
 import { useToast } from '~/lib/use-toast';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
 } from '~/lib/validators/userValidation';
-import { RolesMap } from './UserForm';
+import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
+import { Card } from '../primitives/Card';
+import { RolesMap } from './AddPersonForm';
 
 export interface Props {
   user:
@@ -52,7 +55,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
       email: user?.email ?? '',
       dateOfBirth: user?.dateOfBirth?.toISOString().slice(0, 10) ?? '',
       phoneNumber: user?.phoneNumber ?? '',
-      role: user?.role ?? 'Adopter',
+      role: user?.role ?? Roles.Adopter,
       address: user?.address?.address ?? '',
       city: user?.address?.city ?? '',
       postCode: user?.address?.postCode ?? '',
@@ -87,7 +90,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
   return (
     <div className="mx-auto w-full max-w-7xl 2xl:max-w-8xl">
       <div className="mt-10 sm:mt-0">
-        <div className="m-5 md:grid md:grid-cols-3 md:gap-6">
+        <Card className="m-5 bg-card md:grid md:grid-cols-3 md:gap-6">
           <div className="mt-5 md:col-span-3 md:mt-0">
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -95,17 +98,23 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
             >
               <div className="overflow-hidden shadow sm:rounded-md">
                 <div className="px-4 py-5 sm:p-6">
-                  <p className="my-4 text-3xl font-light tracking-widest text-neutral-800 underline decoration-2 underline-offset-2 sm:text-4xl">
+                  <p className="my-4 text-3xl font-light tracking-widest text-foreground underline decoration-2 underline-offset-2 sm:text-4xl">
                     Your profile
                   </p>
-
                   <div className="grid grid-cols-6 gap-6 pb-20">
+                    <Avatar className="col-span-5 h-24 w-24">
+                      <AvatarImage
+                        src={user?.image ?? '/no-profile-picture.svg'}
+                        alt="Avatar image"
+                      />
+                      <AvatarFallback>B</AvatarFallback>
+                    </Avatar>
                     <div className="relative z-0 col-span-6 min-w-[16rem] sm:col-span-3">
                       <input
                         type="text"
                         id="first-name"
                         autoComplete="given-name"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('firstName')}
                       />
@@ -127,7 +136,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="last-name"
                         autoComplete="family-name"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('lastName')}
                       />
@@ -149,7 +158,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="email"
                         id="email"
                         autoComplete="email"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('email')}
                       />
@@ -171,7 +180,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="date"
                         id="bday"
                         autoComplete="bday"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('dateOfBirth')}
                       />
@@ -193,7 +202,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="tel"
                         autoComplete="tel"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('phoneNumber')}
                       />
@@ -233,30 +242,10 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                           )
                         )}
                       </select>
-                      {/* <Select>
-                        <SelectTrigger className="absolute top-6 left-0 mt-1">
-                          <SelectValue placeholder="Select a role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Role</SelectLabel>
-                            {userAccountDetailsSchema.shape.role.options.map(
-                              (op) => (
-                                <SelectItem
-                                  key={op.value}
-                                  value={op.value}
-                                >
-                                  {RolesMap[op.value]}
-                                </SelectItem>
-                              )
-                            )}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select> */}
                     </div>
                   </div>
 
-                  <p className="col-span-6 mt-12 mb-4 text-3xl font-light tracking-widest text-neutral-800 underline decoration-2 underline-offset-2 sm:text-4xl">
+                  <p className="col-span-6 mt-12 mb-4 text-3xl font-light tracking-widest text-foreground underline decoration-2 underline-offset-2 sm:text-4xl">
                     Your address details
                   </p>
                   <div className="grid grid-cols-6 gap-6">
@@ -265,7 +254,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="address"
                         autoComplete="street-address"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('address')}
                       />
@@ -287,7 +276,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="city"
                         autoComplete="address-level2"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('city')}
                       />
@@ -309,7 +298,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="state"
                         autoComplete="address-level1"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('state')}
                       />
@@ -331,7 +320,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="postal-code"
                         autoComplete="postal-code"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('postCode')}
                       />
@@ -353,7 +342,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="country"
                         autoComplete="country-name"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('country')}
                       />
@@ -371,7 +360,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-neutral-0 px-4 py-3 text-left sm:px-6 sm:py-6">
+                <div className="px-4 py-3 text-left sm:px-6 sm:py-6">
                   <button
                     type="submit"
                     className="inline-flex justify-center rounded-md border border-transparent bg-primary-400/90 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -385,7 +374,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
               </div>
             </form>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

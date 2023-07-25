@@ -29,9 +29,7 @@ const PageLayout: React.FC<IPageLayout> = ({
         {...divProps}
         className={`mx-auto flex min-h-screen w-full flex-col ${justify}`}
       >
-        <div className="w-full">
-          <Header />
-        </div>
+        <Header />
         <main className="flex w-full flex-grow flex-col font-sans">
           {children}
         </main>

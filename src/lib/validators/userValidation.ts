@@ -12,11 +12,11 @@ export const userAccountDetailsSchema = z.object({
     .string()
     .min(1, 'Phone number is required')
     .max(13, 'Phone number is invalid'),
-  address: z.string().min(1, 'Address is required'),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  postCode: z.string().min(1, 'Post code is required'),
-  country: z.string().min(1, 'Country is required'),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  postCode: z.string().optional(),
+  country: z.string().optional(),
   role: z.union([
     z.literal('Adopter'),
     z.literal('Shelter'),
