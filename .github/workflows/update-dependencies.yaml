@@ -1,6 +1,7 @@
 name: Dependency Update Check
 
 on:
+  workflow_dispatch:
   # Schedule the job to run on the first day of every month at midnight
   schedule:
     - cron: '0 0 1 * *'
