@@ -17,6 +17,7 @@ import {
   Laptop,
   Loader2,
   LogIn,
+  Mail,
   Moon,
   MoreHorizontal,
   Plus,
@@ -58,6 +59,7 @@ export const Icons = {
   helpQustionMark: HelpCircle,
   more: MoreHorizontal,
   hide: EyeOff,
+  mail: Mail,
   google: (props: LucideProps) => (
     <svg
       {...props}
