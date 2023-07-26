@@ -384,3 +384,6 @@ MigrationBackup/
 
 # Auto-generated prisma docs
 prisma/docs/
+
+# React-Email Dev Preview
+.react-email/
