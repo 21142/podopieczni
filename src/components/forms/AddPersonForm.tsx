@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
+import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
-import { useToast } from '~/lib/use-toast';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,

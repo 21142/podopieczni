@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '~/components/primitives/Card';
 import { env } from '~/env.mjs';
-import type IAnimalData from '../../lib/petfinderTypes';
+import type IAnimalData from '../../types/petfinderTypes';
 import { Skeleton } from '../primitives/Skeleton';
 import BackgroundWavesFeaturedPets from './BackgroundWavesFeaturedPets';
 import PetsGrid from './PetsGrid';

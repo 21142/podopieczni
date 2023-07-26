@@ -1,6 +1,7 @@
 name: Dependency Update Check
 
 on:
+  workflow_dispatch:
   # Schedule the job to run on the first day of every month at midnight
   schedule:
     - cron: '0 0 1 * *'
@@ -13,7 +14,10 @@ env:
   PETFINDER_SECRET: 'fake'
   GOOGLE_ID: 'fake'
   GOOGLE_SECRET: 'fake'
-  EMAIL_SERVER: 'fake'
+  EMAIL_SERVER_USER: 'fake'
+  EMAIL_SERVER_PASSWORD: 'fake'
+  EMAIL_SERVER_HOST: 'fake'
+  EMAIL_SERVER_PORT: 'fake'
   EMAIL_FROM: 'fake'
 
 jobs:
@@ -38,7 +42,7 @@ jobs:
         run: npx npm-check-updates --upgrade --jsonUpgraded
         id: check
 
-      - name: Create a draft pull request
+      - name: Create a pull request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GH_PAGES_TOKEN }}
@@ -51,4 +55,3 @@ jobs:
             ```
           labels: dependencies
           base: dev
-          draft: true
