@@ -14,7 +14,10 @@ env:
   PETFINDER_SECRET: 'fake'
   GOOGLE_ID: 'fake'
   GOOGLE_SECRET: 'fake'
-  EMAIL_SERVER: 'fake'
+  EMAIL_SERVER_USER: 'fake'
+  EMAIL_SERVER_PASSWORD: 'fake'
+  EMAIL_SERVER_HOST: 'fake'
+  EMAIL_SERVER_PORT: 'fake'
   EMAIL_FROM: 'fake'
 
 jobs:
