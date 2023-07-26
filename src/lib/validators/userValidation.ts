@@ -24,4 +24,12 @@ export const userAccountDetailsSchema = z.object({
   ]),
 });
 
+export const userEmailInviteSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email({ message: 'Email is invalid' }),
+});
+
 export type IUserAccountDetails = z.infer<typeof userAccountDetailsSchema>;
+export type IUserInviteDetails = z.infer<typeof userEmailInviteSchema>;

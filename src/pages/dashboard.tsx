@@ -1,5 +1,6 @@
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
+import EmailInviteForm from '~/components/forms/EmailInviteForm';
 import { Icons } from '~/components/icons/Icons';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import { Button } from '~/components/primitives/Button';
@@ -10,6 +11,14 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/primitives/Card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '~/components/primitives/Dialog';
 import { Chart } from '~/components/utility/Chart';
 import { RecentAdoptions } from '~/components/utility/RecentAdoptions';
 import { env } from '~/env.mjs';
@@ -48,13 +57,31 @@ const Dashboard: NextPage = () => {
                   </Button>
                 </div>
               </div>
-              <Button
-                size="sm"
-                onClick={loginToast}
-              >
-                <Icons.download className="mr-2 h-4 w-4" />
-                Pobierz raport
-              </Button>
+              <div className="flex gap-2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button size="sm">
+                      <Icons.mail className="mr-2 h-4 w-4" />
+                      Zaproś użytkownika
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Invite people via email</DialogTitle>
+                      <DialogDescription>
+                        <EmailInviteForm />
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+                <Button
+                  size="sm"
+                  onClick={loginToast}
+                >
+                  <Icons.download className="mr-2 h-4 w-4" />
+                  Pobierz raport
+                </Button>
+              </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
