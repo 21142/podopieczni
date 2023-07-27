@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
+import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
-import { useToast } from '~/lib/use-toast';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
@@ -163,6 +163,36 @@ const AddPersonForm = () => {
             />
             <FormField
               control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <Select
+                    onValueChange={field.onChange as (value: string) => void}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {userAccountDetailsSchema.shape.role.options.map((op) => (
+                        <SelectItem
+                          key={op.value}
+                          value={op.value}
+                        >
+                          {RolesMap[op.value]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="address"
               render={({ field }) => (
                 <FormItem>
@@ -237,36 +267,6 @@ const AddPersonForm = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <Select
-                    onValueChange={field.onChange as (value: string) => void}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {userAccountDetailsSchema.shape.role.options.map((op) => (
-                        <SelectItem
-                          key={op.value}
-                          value={op.value}
-                        >
-                          {RolesMap[op.value]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

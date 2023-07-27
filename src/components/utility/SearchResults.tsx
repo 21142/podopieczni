@@ -1,6 +1,6 @@
 import PetCard from '~/components/cards/PetCard';
-import type IAnimalData from '../../lib/petfinderTypes';
-import { type IOrganizationData } from '../../lib/petfinderTypes';
+import type IAnimalData from '../../types/petfinderTypes';
+import { type IOrganizationData } from '../../types/petfinderTypes';
 
 export interface ISearchResults {
   results?: IAnimalData[] | IOrganizationData[];
@@ -12,7 +12,7 @@ const SearchResults: React.FC<ISearchResults> = ({
   typeOfResults,
 }) => {
   return (
-    <div className="grid grid-cols-1 gap-y-10 gap-x-6 text-center md:grid-cols-2 lg:col-span-3 lg:grid-cols-3 lg:gap-x-4">
+    <div className="grid grid-cols-1 justify-items-center gap-y-10 gap-x-6 text-center sm:grid-cols-2 lg:col-start-2 lg:col-end-5 lg:grid-cols-3 lg:gap-x-4">
       {results?.map((animal) => (
         <PetCard
           key={animal.id}

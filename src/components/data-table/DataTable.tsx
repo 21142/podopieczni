@@ -1,6 +1,8 @@
 import {
   flexRender,
   getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
@@ -11,16 +13,10 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 import React from 'react';
-import { Icons } from '../icons/Icons';
-import { Button } from './Button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from './DropdownMenu';
-import { Input } from './Input';
+import { DataTableToolbar } from './DataTableToolbar';
 
+import { useRouter } from 'next/navigation';
+import { Button } from '../primitives/Button';
 import {
   Table,
   TableBody,
@@ -28,7 +24,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './Table';
+} from '../primitives/Table';
+import { DataTablePagination } from './DataTablePagination';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,8 +40,12 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [rowSelection, setRowSelection] = React.useState({});
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+
+  const router = useRouter();
 
   const table = useReactTable({
     data,
@@ -56,54 +57,28 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
     state: {
       sorting,
       columnFilters,
+      rowSelection,
       columnVisibility,
     },
   });
 
   return (
-    <div>
-      <div className="flex flex-col items-center py-4 sm:flex-row">
-        <Input
-          placeholder="Filter by status..."
-          value={(table.getColumn('status')?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn('status')?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="ml-auto"
-            >
-              Columns <Icons.hide className="ml-1 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+    <div className="space-y-3">
+      <Button
+        onClick={() => void router.push('/animal/register')}
+        variant="primary"
+        className="my-4"
+      >
+        Dodaj zwierzaka
+      </Button>
+      <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -154,26 +129,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          <span className="sr-only">Previous</span>
-          <Icons.chevronLeft className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          <span className="sr-only">Next</span>
-          <Icons.chevronRight className="h-4 w-4" />
-        </Button>
-      </div>
+      <DataTablePagination table={table} />
     </div>
   );
 }

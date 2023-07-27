@@ -36,7 +36,7 @@ const Users: NextPage = () => {
       </DashboardLayout>
     );
 
-  if (error || sessionData.role !== Roles.Admin)
+  if (error || sessionData.role === Roles.Adopter)
     return (
       <DashboardLayout>
         <UnauthorizedPage />
@@ -67,7 +67,7 @@ const Users: NextPage = () => {
     <DashboardLayout>
       {sessionData && (
         <>
-          <AddPersonForm />
+          {sessionData.role === Roles.Admin && <AddPersonForm />}
           {users && <Grid items={users} />}
         </>
       )}

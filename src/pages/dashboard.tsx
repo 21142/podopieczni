@@ -1,5 +1,6 @@
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
+import EmailInviteForm from '~/components/forms/EmailInviteForm';
 import { Icons } from '~/components/icons/Icons';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import { Button } from '~/components/primitives/Button';
@@ -10,15 +11,25 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/primitives/Card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '~/components/primitives/Dialog';
 import { Chart } from '~/components/utility/Chart';
 import { RecentAdoptions } from '~/components/utility/RecentAdoptions';
 import { env } from '~/env.mjs';
+import { useLoginToast } from '~/hooks/use-login-toast';
 import { api } from '~/lib/api';
 import { getServerAuthSession } from '~/lib/auth';
 import { Roles } from '~/lib/constants';
 
 const Dashboard: NextPage = () => {
   const { data: session } = useSession();
+  const { loginToast } = useLoginToast();
 
   const { data: usersCount } = api.user.getUsersCount.useQuery();
   const { data: usersCountChangeFromLastMonth } =
@@ -33,7 +44,7 @@ const Dashboard: NextPage = () => {
       {session &&
         (session.user.role === Roles.Shelter ||
           session.user.role === Roles.Admin) && (
-          <div className="mx-auto w-full max-w-7xl 2xl:max-w-8xl">
+          <div className="container mx-auto w-full">
             <div className="flex-1 space-y-4 p-8 pt-6">
               <div className="flex items-center justify-between space-y-2">
                 <h2 className="text-3xl font-bold tracking-tight">
@@ -46,10 +57,31 @@ const Dashboard: NextPage = () => {
                   </Button>
                 </div>
               </div>
-              <Button size="sm">
-                <Icons.download className="mr-2 h-4 w-4" />
-                Pobierz raport
-              </Button>
+              <div className="flex gap-2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button size="sm">
+                      <Icons.mail className="mr-2 h-4 w-4" />
+                      Zaproś użytkownika
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Invite people via email</DialogTitle>
+                      <DialogDescription>
+                        <EmailInviteForm />
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+                <Button
+                  size="sm"
+                  onClick={loginToast}
+                >
+                  <Icons.download className="mr-2 h-4 w-4" />
+                  Pobierz raport
+                </Button>
+              </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

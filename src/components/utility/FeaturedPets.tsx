@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '~/components/primitives/Card';
 import { env } from '~/env.mjs';
-import type IAnimalData from '../../lib/petfinderTypes';
+import type IAnimalData from '../../types/petfinderTypes';
 import { Skeleton } from '../primitives/Skeleton';
 import BackgroundWavesFeaturedPets from './BackgroundWavesFeaturedPets';
 import PetsGrid from './PetsGrid';
@@ -38,7 +38,10 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
     <>
       <BackgroundWavesFeaturedPets className="aspect-[10/1]" />
       <div className="flex min-h-[84rem] w-full flex-col items-center justify-start bg-primary-200">
-        <p className="py-10 text-3xl font-bold text-neutral-50 sm:text-4xl md:py-10 md:text-5xl lg:text-6xl 2xl:text-7xl">
+        <p
+          id="featured"
+          className="py-10 text-3xl font-bold text-neutral-50 sm:text-4xl md:py-10 md:text-5xl lg:text-6xl 2xl:text-7xl"
+        >
           Podopieczni szukający domu
         </p>
         {isLoading ? (

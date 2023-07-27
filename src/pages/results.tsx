@@ -10,12 +10,14 @@ import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
 import type { GetServerSideProps, NextPage } from 'next';
 import Link from 'next/link';
 import { Fragment, useState } from 'react';
+import AdoptionFormCard from '~/components/cards/AdoptionFormCard';
 import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
+import SearchCategory from '~/components/utility/SearchCategory';
 import SearchResults from '~/components/utility/SearchResults';
 import { TypeOfResults } from '~/lib/constants';
-import type IAnimalData from '~/lib/petfinderTypes';
+import type IAnimalData from '~/types/petfinderTypes';
 
 export interface IResults {
   animals?: IAnimalData[];
@@ -201,8 +203,10 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
 
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 flex items-baseline justify-between border-b border-gray-200 pb-6">
-          <h1 className="text-4xl font-semibold tracking-tight">
-            {searchQuery ? `Results for ${searchQuery}` : 'Our pets'}
+          <h1 className="max-w-[300px] text-2xl font-medium tracking-tight sm:max-w-none sm:text-4xl">
+            {searchQuery
+              ? `Results for ${searchQuery}`
+              : 'Dostępni podopieczni'}
           </h1>
 
           <div className="flex items-center">
@@ -279,9 +283,10 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
             Pets
           </h2>
 
-          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-[250px_minmax(700px,_1fr)]">
+            <AdoptionFormCard />
             {/* Filters */}
-            <form className="hidden lg:block">
+            <div className="hidden lg:row-start-2 lg:row-end-3 lg:block">
               <h3 className="sr-only">Filters</h3>
 
               {filters.map((section) => (
@@ -341,8 +346,8 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
                   )}
                 </Disclosure>
               ))}
-            </form>
-
+            </div>
+            <SearchCategory />
             <SearchResults
               results={animals}
               typeOfResults="pet"
