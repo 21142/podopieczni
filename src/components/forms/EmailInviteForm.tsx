@@ -11,6 +11,7 @@ import { Button } from '../primitives/Button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -65,6 +66,9 @@ const EmailInviteForm = () => {
                     {...field}
                   />
                 </FormControl>
+                <FormDescription>
+                  The link will be valid for 24 hours
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

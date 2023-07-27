@@ -13,7 +13,7 @@ module.exports = {
       xs: '375px',
       sm: '600px',
       md: '900px',
-      lg: '1200px',
+      lg: '1296px',
       xl: '1536px',
       '2xl': '1800px',
     },
@@ -36,7 +36,7 @@ module.exports = {
       center: true,
       padding: '2rem',
       screens: {
-        '2xl': '1800px',
+        '2xl': '1600px',
       },
     },
     extend: {

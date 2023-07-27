@@ -40,7 +40,7 @@ const PetCard: React.FC<IAnimalCard> = ({
   return (
     <Card
       onClick={() => router.push(`${variant}/${id}`)}
-      className="w-[calc(20rem + 2vw)] relative min-w-[20rem] max-w-[22rem] border-0 border-none shadow-md transition hover:cursor-pointer hover:ease-out"
+      className="relative min-w-[239px] max-w-[22rem] border-0 border-none shadow-md transition hover:cursor-pointer hover:ease-out"
     >
       <CardHeader className="p-0">
         <Image

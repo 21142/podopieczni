@@ -7,7 +7,7 @@ const Favorites: NextPage = () => {
   return (
     <PageLayout>
       <div className="container flex h-[60vh] flex-col items-center justify-center gap-3 text-center">
-        <h1 className="p-2 text-3xl font-medium leading-8 text-foreground sm:text-4xl md:text-5xl lg:text-[3rem] xl:text-[3.5rem] 2xl:text-[4.5rem]">
+        <h1 className="p-2 text-3xl font-medium leading-10 text-foreground sm:text-4xl md:text-5xl lg:text-[3rem] xl:text-[3.5rem] 2xl:text-[4.5rem]">
           No favorites yet
         </h1>
         <p>
