@@ -1,5 +1,7 @@
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import ShelterStatisticsCard from '~/components/cards/ShelterStatisticsCard';
 import EmailInviteForm from '~/components/forms/EmailInviteForm';
 import { Icons } from '~/components/icons/Icons';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
@@ -30,6 +32,7 @@ import { Roles } from '~/lib/constants';
 const Dashboard: NextPage = () => {
   const { data: session } = useSession();
   const { loginToast } = useLoginToast();
+  const router = useRouter();
 
   const { data: usersCount } = api.user.getUsersCount.useQuery();
   const { data: usersCountChangeFromLastMonth } =
@@ -83,81 +86,42 @@ const Dashboard: NextPage = () => {
                 </Button>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Przyjętych zwierząt
-                    </CardTitle>
-                    <Icons.dog className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{petsCount}</div>
-                    <p className="text-xs text-muted-foreground">
-                      {petsCountChangeFromLastMonth &&
-                        (petsCountChangeFromLastMonth > 0
-                          ? '+'
-                          : petsCountChangeFromLastMonth < 0
-                          ? '-'
-                          : '')}
-                      {!!petsCountChangeFromLastMonth &&
-                        petsCountChangeFromLastMonth}{' '}
-                      from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Szczęśliwie adoptowanych
-                    </CardTitle>
-                    <Icons.home className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">42</div>
-                    <p className="text-xs text-muted-foreground">
-                      +1 from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Użytkowników
-                    </CardTitle>
-                    <Icons.user className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{usersCount}</div>
-                    <p className="text-xs text-muted-foreground">
-                      {usersCountChangeFromLastMonth &&
-                        (usersCountChangeFromLastMonth > 0
-                          ? '+'
-                          : usersCountChangeFromLastMonth < 0
-                          ? '-'
-                          : '')}
-                      {!!usersCountChangeFromLastMonth &&
-                        usersCountChangeFromLastMonth}{' '}
-                      from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
-                      Dotacje
-                    </CardTitle>
-                    <Icons.dollarSign className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">1 231.89 zł</div>
-                    <p className="text-xs text-muted-foreground">
-                      +20.1% from last month
-                    </p>
-                  </CardContent>
-                </Card>
+                <ShelterStatisticsCard
+                  title="Przyjętych zwierząt"
+                  value={petsCount}
+                  difference={petsCountChangeFromLastMonth}
+                  onClick={() => router.push('/pets')}
+                >
+                  <Icons.dog className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+                </ShelterStatisticsCard>
+                <ShelterStatisticsCard
+                  title="Szczęśliwie adoptowanych"
+                  value={42}
+                  difference={1}
+                  onClick={() => router.push('/pets')}
+                >
+                  <Icons.home className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+                </ShelterStatisticsCard>
+                <ShelterStatisticsCard
+                  title="Użytkowników"
+                  value={usersCount}
+                  difference={usersCountChangeFromLastMonth}
+                  onClick={() => router.push('/users')}
+                >
+                  <Icons.user className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+                </ShelterStatisticsCard>
+                <ShelterStatisticsCard
+                  title="Dotacje"
+                  value={1231.89}
+                  currency="zł"
+                  difference={20.1}
+                  onClick={() => router.push('/donations')}
+                >
+                  <Icons.dollarSign className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+                </ShelterStatisticsCard>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
+                <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
                   <CardHeader>
                     <CardTitle>Raport adopcji</CardTitle>
                   </CardHeader>
@@ -165,7 +129,7 @@ const Dashboard: NextPage = () => {
                     <Chart />
                   </CardContent>
                 </Card>
-                <Card className="col-span-4 lg:col-span-3">
+                <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent lg:col-span-3">
                   <CardHeader>
                     <CardTitle>Ostatnio przyjęte zwierzęta</CardTitle>
                     <CardDescription>

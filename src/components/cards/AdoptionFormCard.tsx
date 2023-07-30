@@ -23,7 +23,7 @@ const AdoptionFormCard = () => {
         </CardDescription>
         <Separator className="my-3" />
         <Button
-          variant="link"
+          variant="primaryLink"
           className="pl-0"
         >
           Przejdź do ankiety

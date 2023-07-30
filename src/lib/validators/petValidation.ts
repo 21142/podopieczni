@@ -84,5 +84,9 @@ export const fullPetDetailsSchema = z.object({
   updatedAt: z.date(),
 });
 
+export const petIdSchema = z.object({
+  id: z.string(),
+});
+
 export type IPetDetails = z.infer<typeof petDetailsSchema>;
 export type IPetFullDetails = z.infer<typeof fullPetDetailsSchema>;

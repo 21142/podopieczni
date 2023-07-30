@@ -108,4 +108,13 @@ export const petRouter = createTRPCRouter({
         },
       });
     }),
+  deletePetById: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.delete({
+        where: {
+          id: input,
+        },
+      });
+    }),
 });

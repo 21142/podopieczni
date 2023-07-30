@@ -37,7 +37,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
         className ?? ''
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-x-3 lg:gap-x-10 2xl:max-w-8xl">
+      <div className="mx-auto flex items-center justify-between gap-x-3 lg:max-w-8xl lg:gap-x-10">
         <Link href="/">
           <div className="relative flex">
             {currentTheme === 'light' ? <Logo /> : <LogoDark />}

@@ -1,18 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { AddressInfo, User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, type FC } from 'react';
+import { useEffect, useMemo, useState, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { env } from '~/env.mjs';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
+import { UploadButton } from '~/lib/uploadthing';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
 } from '~/lib/validators/userValidation';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 import { Card } from '../primitives/Card';
+import Spinner from '../spinners/Spinner';
 import { RolesMap } from './AddPersonForm';
 
 export interface Props {
@@ -28,6 +30,8 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
   const router = useRouter();
   const trpc = api.useContext();
   const { toast } = useToast();
+
+  const [avatarUrl, setAvatarUrl] = useState(user?.image ?? '');
 
   const updateUserDetailsMutation = api.user.update.useMutation({
     retry: (count, error) => {
@@ -61,6 +65,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
       postCode: user?.address?.postCode ?? '',
       state: user?.address?.state ?? '',
       country: user?.address?.country ?? '',
+      image: user?.image ?? '',
     }),
     [user]
   );
@@ -76,8 +81,13 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
   });
 
   useEffect(() => {
+    setAvatarUrl(user?.image ?? '/no-profile-picture.svg');
     reset(prefilledValues);
   }, [user, reset, prefilledValues]);
+
+  useEffect(() => {
+    register('image', { value: avatarUrl });
+  }, [register, avatarUrl]);
 
   const onSubmit: SubmitHandler<IUserAccountDetails> = async (data) => {
     await updateUserDetailsMutation.mutateAsync(data);
@@ -102,13 +112,30 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                     Your profile
                   </p>
                   <div className="grid grid-cols-6 gap-6 pb-20">
-                    <Avatar className="col-span-5 h-24 w-24">
-                      <AvatarImage
-                        src={user?.image ?? '/no-profile-picture.svg'}
-                        alt="Avatar image"
+                    <div className="col-span-6 flex gap-6">
+                      <Avatar className="col-span-5 h-24 w-24">
+                        <AvatarImage
+                          src={avatarUrl ?? '/no-profile-picture.svg'}
+                          alt="Avatar image"
+                        />
+                        <AvatarFallback>TBA</AvatarFallback>
+                      </Avatar>
+                      <UploadButton
+                        endpoint="imageUploader"
+                        onClientUploadComplete={(res) => {
+                          res && setAvatarUrl(res[0]?.fileUrl ?? '');
+                        }}
+                        onUploadError={(error: Error) => {
+                          toast({
+                            description: error.message,
+                            variant: 'destructive',
+                          });
+                        }}
+                        onUploadProgress={() => {
+                          <Spinner />;
+                        }}
                       />
-                      <AvatarFallback>B</AvatarFallback>
-                    </Avatar>
+                    </div>
                     <div className="relative z-0 col-span-6 min-w-[16rem] sm:col-span-3">
                       <input
                         type="text"

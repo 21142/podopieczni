@@ -27,6 +27,7 @@ import {
   MoreHorizontal,
   Plus,
   PlusCircle,
+  Search,
   Settings,
   SlidersHorizontalIcon,
   SunMedium,
@@ -74,6 +75,7 @@ export const Icons = {
   mail: Mail,
   cross: CrossIcon,
   mixer: SlidersHorizontalIcon,
+  search: Search,
   google: (props: LucideProps) => (
     <svg
       {...props}

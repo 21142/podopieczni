@@ -1,4 +1,6 @@
 import { type Row } from '@tanstack/react-table';
+import { api } from '~/lib/api';
+import { petIdSchema } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
 import {
@@ -6,9 +8,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '../primitives/DropdownMenu';
+import Spinner from '../spinners/Spinner';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -18,6 +20,18 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const animal = row.original;
+  const deletePetMutation = api.pet.deletePetById.useMutation();
+  const trpc = api.useContext().pet;
+
+  const deletePet = async (animal: TData) => {
+    const parsedAnimal = petIdSchema.parse(animal);
+    await deletePetMutation.mutateAsync(parsedAnimal.id);
+    trpc.getAllPetsDataForTable.invalidate();
+  };
+
+  if (deletePetMutation.status === 'loading') {
+    return <Spinner small />;
+  }
 
   return (
     <DropdownMenu>
@@ -40,9 +54,8 @@ export function DataTableRowActions<TData>({
         <DropdownMenuItem>View profile</DropdownMenuItem>
         <DropdownMenuItem>Edit details</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => console.log('delete', animal)}>
+        <DropdownMenuItem onClick={() => deletePet(animal)}>
           Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

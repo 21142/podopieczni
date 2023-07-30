@@ -20,6 +20,10 @@ const buttonVariants = cva(
         ghost:
           'bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 dark:text-neutral-100 dark:hover:text-neutral-100 data-[state=open]:bg-transparent dark:data-[state=open]:bg-transparent',
         link: 'bg-transparent dark:bg-transparent underline-offset-4 hover:underline text-neutral-900 dark:text-neutral-100 hover:bg-transparent dark:hover:bg-transparent',
+        roundedButton:
+          'cursor-pointer rounded-full border border-primary-300 dark:border-none text-primary-300 transition-colors duration-200 ease-in-out hover:bg-primary-300 hover:text-neutral-50 dark:bg-primary-300 dark:text-neutral-50 dark:hover:bg-primary-300/50',
+        primaryLink:
+          'bg-transparent dark:bg-transparent underline-offset-4 hover:underline text-primary-400 dark:text-primary-100 hover:text-primary-200 dark:hover:text-primary-200 hover:bg-transparent dark:hover:bg-transparent transition-colors',
         primary: [
           'bg-transparent',
           'text-primary-300',

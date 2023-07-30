@@ -60,6 +60,7 @@ export const userRouter = createTRPCRouter({
             dateOfBirth: new Date(input.dateOfBirth),
             phoneNumber: input.phoneNumber,
             role: input.role,
+            image: input.image,
             address: {
               create: {
                 address: input.address,
@@ -81,6 +82,7 @@ export const userRouter = createTRPCRouter({
             dateOfBirth: new Date(input.dateOfBirth),
             phoneNumber: input.phoneNumber,
             role: input.role,
+            image: input.image,
           },
         });
       }
@@ -88,34 +90,50 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(userAccountDetailsSchema)
     .mutation(async ({ input, ctx }) => {
-      await ctx.prisma.user.update({
-        where: { email: input.email },
-        data: {
-          firstName: input.firstName,
-          lastName: input.lastName,
-          email: input.email,
-          dateOfBirth: new Date(input.dateOfBirth),
-          phoneNumber: input.phoneNumber,
-          role: input.role,
-          address: {
-            upsert: {
-              update: {
-                address: input.address,
-                city: input.city,
-                postCode: input.postCode,
-                state: input.state,
-                country: input.country,
-              },
-              create: {
-                address: input.address,
-                city: input.city,
-                postCode: input.postCode,
-                state: input.state,
-                country: input.country,
+      if (input.address) {
+        await ctx.prisma.user.update({
+          where: { email: input.email },
+          data: {
+            firstName: input.firstName,
+            lastName: input.lastName,
+            email: input.email,
+            dateOfBirth: new Date(input.dateOfBirth),
+            phoneNumber: input.phoneNumber,
+            role: input.role,
+            image: input.image,
+            address: {
+              upsert: {
+                update: {
+                  address: input.address,
+                  city: input.city,
+                  postCode: input.postCode,
+                  state: input.state,
+                  country: input.country,
+                },
+                create: {
+                  address: input.address,
+                  city: input.city,
+                  postCode: input.postCode,
+                  state: input.state,
+                  country: input.country,
+                },
               },
             },
           },
-        },
-      });
+        });
+      } else {
+        await ctx.prisma.user.update({
+          where: { email: input.email },
+          data: {
+            firstName: input.firstName,
+            lastName: input.lastName,
+            email: input.email,
+            dateOfBirth: new Date(input.dateOfBirth),
+            phoneNumber: input.phoneNumber,
+            role: input.role,
+            image: input.image,
+          },
+        });
+      }
     }),
 });

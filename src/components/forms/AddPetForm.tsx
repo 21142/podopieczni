@@ -1,15 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TRPCClientError } from '@trpc/client';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodError, type z } from 'zod';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
+import { UploadButton } from '~/lib/uploadthing';
 import { cn } from '~/lib/utils';
 import {
   petDetailsSchema,
   type IPetDetails,
 } from '~/lib/validators/petValidation';
+import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 import { Button, buttonVariants } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import {
@@ -28,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../primitives/Select';
+import Spinner from '../spinners/Spinner';
 
 export const HealthStatusMap: Record<
   z.infer<typeof petDetailsSchema>['healthStatus'],
@@ -58,10 +62,30 @@ const AddPetForm = () => {
   const { toast } = useToast();
   const router = useRouter();
 
+  const [avatarUrl, setAvatarUrl] = useState('');
+
   const addPetMutation = api.pet.add.useMutation({
     onSuccess: async () => {
       await trpc.getAllPets.invalidate();
-      form.reset();
+      form.reset({
+        name: '',
+        internalId: '',
+        status: '',
+        dateOfBirth: '',
+        gender: '',
+        coat: undefined,
+        color: undefined,
+        weight: '',
+        species: undefined,
+        breed: undefined,
+        microchipNumber: '',
+        microchipBrand: undefined,
+        intakeEventDate: '',
+        intakeEventType: undefined,
+        healthStatus: undefined,
+        image: '',
+      });
+      setAvatarUrl('');
       router.push('/pets');
     },
   });
@@ -102,6 +126,31 @@ const AddPetForm = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
           >
+            <div className="col-span-6 flex gap-6">
+              <Avatar className="col-span-5 h-24 w-24">
+                <AvatarImage
+                  src={avatarUrl ?? '/no-profile-picture.svg'}
+                  alt="Avatar image"
+                />
+                <AvatarFallback>TBA</AvatarFallback>
+              </Avatar>
+              <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  res && setAvatarUrl(res[0]?.fileUrl as string);
+                  res && form.setValue('image', res[0]?.fileUrl as string);
+                }}
+                onUploadError={(error: Error) => {
+                  toast({
+                    description: error.message,
+                    variant: 'destructive',
+                  });
+                }}
+                onUploadProgress={() => {
+                  <Spinner />;
+                }}
+              />
+            </div>
             <FormField
               control={form.control}
               name="name"
