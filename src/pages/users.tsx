@@ -6,6 +6,7 @@ import Spinner from '~/components/spinners/Spinner';
 import Grid from '~/components/utility/Grid';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
+import { ssghelpers } from '~/lib/ssg';
 
 const Users: NextPage = () => {
   const {
@@ -21,13 +22,10 @@ const Users: NextPage = () => {
     },
   });
 
-  const {
-    data: users,
-    isLoading: isLoadingUsers,
-    error: errorFetchingUsers,
-  } = api.user.getAllUsers.useQuery();
+  const { data: users, error: errorFetchingUsers } =
+    api.user.getAllUsers.useQuery();
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <DashboardLayout>
         <div className="grid h-[50vh] content-center">
@@ -35,6 +33,7 @@ const Users: NextPage = () => {
         </div>
       </DashboardLayout>
     );
+  }
 
   if (error || sessionData.role === Roles.Adopter)
     return (
@@ -42,16 +41,6 @@ const Users: NextPage = () => {
         <UnauthorizedPage />
       </DashboardLayout>
     );
-
-  if (isLoadingUsers) {
-    return (
-      <DashboardLayout>
-        <div className="mx-auto w-full max-w-7xl pt-5 2xl:max-w-8xl">
-          <Spinner />
-        </div>
-      </DashboardLayout>
-    );
-  }
 
   if (errorFetchingUsers) {
     return (
@@ -76,3 +65,13 @@ const Users: NextPage = () => {
 };
 
 export default Users;
+
+export async function getStaticProps() {
+  await ssghelpers.user.getAllUsers.prefetch();
+  return {
+    props: {
+      trpcState: ssghelpers.dehydrate(),
+    },
+    revalidate: 1,
+  };
+}

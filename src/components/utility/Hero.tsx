@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import Button from 'src/components/buttons/base/Button';
+import Link from 'next/link';
+import { Button } from 'src/components/primitives/Button';
 import { TypeOfResults } from '~/lib/constants';
 import Search from '../inputs/Search';
 
@@ -25,14 +26,16 @@ const Hero: React.FC = () => {
           typeOfResults={TypeOfResults.Animal}
         />
         <div className="flex w-[19.5rem] items-center justify-center gap-x-5 pt-3">
-          <Button
-            text="Zwierzęta"
-            href={`/${TypeOfResults.Animal}#scrollToPosition`}
-          />
-          <Button
-            text="Schroniska"
-            href={`/${TypeOfResults.Organization}#scrollToPosition`}
-          />
+          <Button variant="roundedButton">
+            <Link href={`/${TypeOfResults.Animal}#scrollToPosition`}>
+              Zwierzęta
+            </Link>
+          </Button>
+          <Button variant="roundedButton">
+            <Link href={`/${TypeOfResults.Organization}#scrollToPosition`}>
+              Schroniska
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

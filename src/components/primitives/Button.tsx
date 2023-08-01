@@ -1,8 +1,8 @@
 import { cva, type VariantProps } from 'cva';
-import { Loader2 } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '~/lib/utils';
+import { Icons } from '../icons/Icons';
 
 const buttonVariants = cva(
   'active:scale-95 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 disabled:opacity-50 dark:focus:ring-neutral-400 disabled:pointer-events-none dark:focus:ring-offset-neutral-900 data-[state=open]:bg-neutral-100 dark:data-[state=open]:bg-neutral-800',
@@ -20,6 +20,10 @@ const buttonVariants = cva(
         ghost:
           'bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-800 dark:text-neutral-100 dark:hover:text-neutral-100 data-[state=open]:bg-transparent dark:data-[state=open]:bg-transparent',
         link: 'bg-transparent dark:bg-transparent underline-offset-4 hover:underline text-neutral-900 dark:text-neutral-100 hover:bg-transparent dark:hover:bg-transparent',
+        roundedButton:
+          'cursor-pointer rounded-full border border-primary-300 dark:border-none text-primary-300 transition-colors duration-200 ease-in-out hover:bg-primary-300 hover:text-neutral-50 dark:bg-primary-300 dark:text-neutral-50 dark:hover:bg-primary-300/50',
+        primaryLink:
+          'bg-transparent dark:bg-transparent underline-offset-4 hover:underline text-primary-400 dark:text-primary-100 hover:text-primary-200 dark:hover:text-primary-200 hover:bg-transparent dark:hover:bg-transparent transition-colors',
         primary: [
           'bg-transparent',
           'text-primary-300',
@@ -67,7 +71,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isLoading}
         {...props}
       >
-        {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+        {isLoading ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : null}
         {children}
       </button>
     );

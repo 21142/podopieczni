@@ -10,6 +10,7 @@ import {
   ChevronsRight,
   ChevronUp,
   Circle,
+  CircleSlashed,
   CrossIcon,
   Dog,
   DollarSign,
@@ -27,6 +28,7 @@ import {
   MoreHorizontal,
   Plus,
   PlusCircle,
+  Search,
   Settings,
   SlidersHorizontalIcon,
   SunMedium,
@@ -74,6 +76,8 @@ export const Icons = {
   mail: Mail,
   cross: CrossIcon,
   mixer: SlidersHorizontalIcon,
+  search: Search,
+  crossedCircle: CircleSlashed,
   google: (props: LucideProps) => (
     <svg
       {...props}

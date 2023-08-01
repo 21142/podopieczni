@@ -1,12 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
+import { UploadButton } from '~/lib/uploadthing';
 import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
 } from '~/lib/validators/userValidation';
+import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 import { Button } from '../primitives/Button';
 import { Card, CardHeader } from '../primitives/Card';
 import {
@@ -25,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../primitives/Select';
+import Spinner from '../spinners/Spinner';
 
 export const RolesMap: Record<
   z.infer<typeof userAccountDetailsSchema>['role'],
@@ -38,6 +42,7 @@ export const RolesMap: Record<
 const AddPersonForm = () => {
   const trpc = api.useContext().user;
   const { toast } = useToast();
+  const [avatarUrl, setAvatarUrl] = useState('');
 
   const addUserMutation = api.user.add.useMutation({
     onSuccess: async () => {
@@ -53,10 +58,9 @@ const AddPersonForm = () => {
     try {
       await addUserMutation.mutateAsync(values);
       toast({
-        description: 'Form successfully submitted!',
+        description: 'User successfully created!',
         variant: 'success',
       });
-      form.reset();
     } catch (error) {
       if (error instanceof Error) {
         toast({
@@ -64,6 +68,22 @@ const AddPersonForm = () => {
           variant: 'destructive',
         });
       }
+    } finally {
+      form.reset({
+        firstName: '',
+        lastName: '',
+        email: '',
+        dateOfBirth: '',
+        phoneNumber: '',
+        role: undefined,
+        address: '',
+        city: '',
+        postCode: '',
+        state: '',
+        country: '',
+        image: '',
+      });
+      setAvatarUrl('');
     }
   };
 
@@ -80,6 +100,31 @@ const AddPersonForm = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-y-6 md:grid md:grid-cols-3 md:gap-6"
           >
+            <div className="col-span-3 flex gap-6">
+              <Avatar className="col-span-5 h-24 w-24">
+                <AvatarImage
+                  src={avatarUrl ?? '/no-profile-picture.svg'}
+                  alt="Avatar image"
+                />
+                <AvatarFallback>TBA</AvatarFallback>
+              </Avatar>
+              <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  res && setAvatarUrl(res[0]?.fileUrl as string);
+                  res && form.setValue('image', res[0]?.fileUrl as string);
+                }}
+                onUploadError={(error: Error) => {
+                  toast({
+                    description: error.message,
+                    variant: 'destructive',
+                  });
+                }}
+                onUploadProgress={() => {
+                  <Spinner />;
+                }}
+              />
+            </div>
             <FormField
               control={form.control}
               name="firstName"

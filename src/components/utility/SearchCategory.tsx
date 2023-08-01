@@ -7,12 +7,12 @@ const SearchCategory = () => {
   const router = useRouter();
   return (
     <RadioGroup
-      defaultValue="dog"
-      className="grid grid-cols-3 gap-4 lg:col-start-2 lg:col-end-5"
+      defaultValue=""
+      className="grid grid-cols-3 gap-4 text-muted-foreground lg:col-start-2 lg:col-end-5"
     >
       <Label
         htmlFor="dog"
-        className="[&:has([data-state=checked])]:border-primary flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl hover:cursor-pointer hover:bg-accent hover:text-accent-foreground"
+        className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl transition-all hover:cursor-pointer hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary-300 [&:has([data-state=checked])]:text-primary-300"
       >
         <RadioGroupItem
           value="dog"
@@ -24,7 +24,7 @@ const SearchCategory = () => {
       </Label>
       <Label
         htmlFor="cat"
-        className="[&:has([data-state=checked])]:border-primary flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl hover:cursor-pointer hover:bg-accent hover:text-accent-foreground"
+        className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl transition-all hover:cursor-pointer hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary-300 [&:has([data-state=checked])]:text-primary-300"
       >
         <RadioGroupItem
           value="cat"
@@ -36,8 +36,8 @@ const SearchCategory = () => {
       </Label>
       <Label
         htmlFor="shelter"
-        className="[&:has([data-state=checked])]:border-primary flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl hover:cursor-pointer hover:bg-accent hover:text-accent-foreground"
-        onClick={() => router.push('/organizations')}
+        className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl transition-all hover:cursor-pointer hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary-300 [&:has([data-state=checked])]:text-primary-300"
+        // onClick={() => router.push('/organizations')}
       >
         <RadioGroupItem
           value="shelter"

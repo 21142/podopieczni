@@ -2,25 +2,15 @@ import type { NextPage } from 'next';
 import { DataTable } from '~/components/data-table/DataTable';
 import { columns } from '~/components/data-table/DataTableColumns';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
-import Spinner from '~/components/spinners/Spinner';
 import { api } from '~/lib/api';
+import { ssghelpers } from '~/lib/ssg';
 
 const Pets: NextPage = () => {
-  const { data, isLoading } = api.pet.getAllPetsDataForTable.useQuery();
-
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="mx-auto w-full max-w-7xl pt-5 2xl:max-w-8xl">
-          <Spinner />
-        </div>
-      </DashboardLayout>
-    );
-  }
+  const { data } = api.pet.getAllPetsDataForTable.useQuery();
 
   return (
     <DashboardLayout>
-      <section className="flex max-h-screen flex-col items-center justify-center">
+      <section className="flex flex-col items-center justify-center p-3">
         <div className="container">
           {data && (
             <DataTable
@@ -35,3 +25,13 @@ const Pets: NextPage = () => {
 };
 
 export default Pets;
+
+export async function getStaticProps() {
+  await ssghelpers.pet.getAllPetsDataForTable.prefetch();
+  return {
+    props: {
+      trpcState: ssghelpers.dehydrate(),
+    },
+    revalidate: 1,
+  };
+}

@@ -10,6 +10,7 @@ import { buttonVariants } from '~/components/primitives/Button';
 import { ThemeToggle } from '~/components/utility/ThemeToggle';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
+import { cn } from '~/lib/utils';
 import { Icons } from '../icons/Icons';
 import HeaderLink from '../links/HeaderLink';
 
@@ -33,11 +34,11 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   return (
     <header
       {...headerProps}
-      className={`sticky top-0 z-10 h-20 w-full border-b border-b-accent py-[14px] px-8 ${
+      className={`top-0 z-10 h-20 w-full border-b border-b-accent py-[14px] px-8 ${
         className ?? ''
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-x-3 md:gap-x-10 lg:gap-x-10 2xl:max-w-8xl">
+      <div className="mx-auto flex items-center justify-between gap-x-3 md:gap-x-10 lg:max-w-8xl lg:gap-x-10">
         <Link href="/">
           <div className="relative flex">
             {currentTheme === 'light' ? <Logo /> : <LogoDark />}
@@ -74,10 +75,13 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
             <HeaderLink
               href="/user/favorites"
               title="Ulubione"
-              className={buttonVariants({
-                size: 'sm',
-                variant: 'ghost',
-              })}
+              className={cn(
+                buttonVariants({
+                  size: 'sm',
+                  variant: 'ghost',
+                }),
+                'text-md justify-start rounded-none font-normal'
+              )}
             />
           )}
           {mobileMenuIsOpen && (

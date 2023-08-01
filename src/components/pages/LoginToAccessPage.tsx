@@ -1,8 +1,8 @@
 import { signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
-import { CvaButton } from '~/components/buttons/cva/ButtonCva';
 import { api } from '~/lib/api';
+import { Button } from '../primitives/Button';
 
 const LoginToAccessPage: FC = ({}) => {
   const router = useRouter();
@@ -21,20 +21,20 @@ const LoginToAccessPage: FC = ({}) => {
         view
       </p>
       <div className="flex justify-center gap-5">
-        <CvaButton
+        <Button
           variant="primary"
-          className="w-36 rounded-md px-4 py-2"
+          size="lg"
           onClick={sessionData ? () => void signOut() : () => void signIn()}
         >
           {sessionData ? 'Wyloguj się' : 'Zaloguj się'}
-        </CvaButton>
-        <CvaButton
-          variant="secondary"
-          className="w-36 rounded-md"
+        </Button>
+        <Button
+          variant="outline"
+          size="lg"
           onClick={() => void router.push('/')}
         >
           Strona główna
-        </CvaButton>
+        </Button>
       </div>
     </div>
   );

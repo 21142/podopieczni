@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-import { CvaButton } from '~/components/buttons/cva/ButtonCva';
+import { Button } from '../primitives/Button';
 
 const UnauthorizedPage = () => {
   const router = useRouter();
@@ -9,13 +9,13 @@ const UnauthorizedPage = () => {
         You don&apos;t have permission to access this page
       </p>
       <div className="flex justify-center gap-5">
-        <CvaButton
+        <Button
           variant="primary"
-          className="w-36 rounded-md"
+          size="lg"
           onClick={() => void router.push('/')}
         >
           Strona główna
-        </CvaButton>
+        </Button>
       </div>
     </div>
   );

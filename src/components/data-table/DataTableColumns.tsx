@@ -36,11 +36,11 @@ export const columns: ColumnDef<AnimalDto>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'photo',
+    accessorKey: 'image',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title="Photo"
+        title="Image"
       />
     ),
     cell: ({ row }) => (

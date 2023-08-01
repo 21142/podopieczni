@@ -1,9 +1,8 @@
 import type { NextPage } from 'next';
 import { signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { CvaButton } from 'src/components/buttons/cva/ButtonCva';
-import { LinkButton } from 'src/components/buttons/link/LinkButton';
 import PageLayout from '~/components/layouts/PageLayout';
+import { Button } from '~/components/primitives/Button';
 import Spinner from '~/components/spinners/Spinner';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
@@ -62,20 +61,20 @@ const Welcome: NextPage = () => {
             Zaloguj się, aby wybrać w czym możemy Ci pomóc?
           </p>
           <div className="flex justify-center gap-5">
-            <CvaButton
+            <Button
               variant="primary"
-              className="w-36 rounded-md px-4 py-2"
+              size="lg"
               onClick={sessionData ? () => void signOut() : () => void signIn()}
             >
               {sessionData ? 'Wyloguj się' : 'Zaloguj się'}
-            </CvaButton>
-            <CvaButton
-              variant="secondary"
-              className="w-36 rounded-md"
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
               onClick={() => void router.push('/')}
             >
               Strona główna
-            </CvaButton>
+            </Button>
           </div>
         </div>
       </PageLayout>
@@ -85,16 +84,20 @@ const Welcome: NextPage = () => {
     <PageLayout>
       {sessionData && !hasRole && (
         <div className="grid h-80 place-items-center content-center">
-          <p className="text-lg">Please, tell us what are you here for</p>
+          <p className="text-lg">Powiedz nam w jakim celu tworzysz konto</p>
           <div className="grid gap-5 p-5 sm:grid-cols-2">
-            <LinkButton
-              value="I want to adopt a pet"
+            <Button
+              variant="roundedButton"
               onClick={setAdopterRole}
-            />
-            <LinkButton
-              value="I work in a shelter"
+            >
+              Szukam podopiecznego
+            </Button>
+            <Button
+              variant="roundedButton"
               onClick={setShelterRole}
-            />
+            >
+              Pracuję w schronisku
+            </Button>
           </div>
         </div>
       )}
