@@ -1,11 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { useToast } from '~/hooks/use-toast';
 import {
-  userEmailInviteSchema,
-  type IUserInviteDetails,
-} from '~/lib/validators/userValidation';
+  petFilterOptionsSchema,
+  type IPetFilterOptions,
+} from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
 import {
   Form,
@@ -27,29 +26,16 @@ import {
 const FilterResultsForm = () => {
   const { toast } = useToast();
 
-  const form = useForm<IUserInviteDetails>({
-    resolver: zodResolver(userEmailInviteSchema),
+  const form = useForm<IPetFilterOptions>({
+    resolver: zodResolver(petFilterOptionsSchema),
   });
 
-  const onSubmit = async (values: IUserInviteDetails) => {
-    try {
-      await signIn('email', {
-        callbackUrl: '/',
-        redirect: false,
-        email: form.getValues('email'),
-      });
-      toast({
-        description: `Invitation email successfully sent to ${values.email}!`,
-        variant: 'success',
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({
-          description: error.message,
-          variant: 'destructive',
-        });
-      }
-    }
+  const onSubmit = (values: IPetFilterOptions) => {
+    console.log(values);
+    toast({
+      description: `Loading new results...`,
+      variant: 'success',
+    });
   };
 
   return (
