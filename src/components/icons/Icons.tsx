@@ -10,6 +10,7 @@ import {
   ChevronsRight,
   ChevronUp,
   Circle,
+  CircleSlashed,
   CrossIcon,
   Dog,
   DollarSign,
@@ -76,6 +77,7 @@ export const Icons = {
   cross: CrossIcon,
   mixer: SlidersHorizontalIcon,
   search: Search,
+  crossedCircle: CircleSlashed,
   google: (props: LucideProps) => (
     <svg
       {...props}

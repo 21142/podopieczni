@@ -1,11 +1,10 @@
 import Image from 'next/image';
-import logoDark from '/public/images/logo-dark.svg';
 
-const Logo: React.FC<{ className?: string }> = (className) => {
+const LogoDark = () => {
   return (
     <Image
-      src={logoDark}
-      className={`cursor-pointer object-contain ${className}`}
+      src="/images/logo-dark.svg"
+      className="cursor-pointer object-contain"
       alt="podopieczni logo"
       height={51}
       width={230}
@@ -14,4 +13,4 @@ const Logo: React.FC<{ className?: string }> = (className) => {
   );
 };
 
-export default Logo;
+export default LogoDark;

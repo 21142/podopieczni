@@ -1,11 +1,10 @@
-import type { FC } from 'react';
 import AccountSettingsForm from '~/components/forms/AccountSettingsForm';
 import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import Spinner from '~/components/spinners/Spinner';
 import { api } from '~/lib/api';
 
-const settings: FC = ({}) => {
+const UserSettings = () => {
   const {
     data: me,
     isLoading,
@@ -19,7 +18,7 @@ const settings: FC = ({}) => {
     },
   });
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <PageLayout>
         <div className="grid h-[50vh] content-center">
@@ -27,6 +26,7 @@ const settings: FC = ({}) => {
         </div>
       </PageLayout>
     );
+  }
 
   if (error)
     return (
@@ -42,4 +42,4 @@ const settings: FC = ({}) => {
   );
 };
 
-export default settings;
+export default UserSettings;

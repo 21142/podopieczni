@@ -1,4 +1,5 @@
 import { type Row } from '@tanstack/react-table';
+import { useRouter } from 'next/navigation';
 import { api } from '~/lib/api';
 import { petIdSchema } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
@@ -10,7 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../primitives/DropdownMenu';
-import Spinner from '../spinners/Spinner';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -22,6 +22,7 @@ export function DataTableRowActions<TData>({
   const animal = row.original;
   const deletePetMutation = api.pet.deletePetById.useMutation();
   const trpc = api.useContext().pet;
+  const router = useRouter();
 
   const deletePet = async (animal: TData) => {
     const parsedAnimal = petIdSchema.parse(animal);
@@ -29,8 +30,15 @@ export function DataTableRowActions<TData>({
     trpc.getAllPetsDataForTable.invalidate();
   };
 
+  const goToProfile = (animal: TData) => {
+    const parsedAnimal = petIdSchema.parse(animal);
+    router.push(`/animal/${parsedAnimal.id}`);
+  };
+
   if (deletePetMutation.status === 'loading') {
-    return <Spinner small />;
+    return (
+      <Icons.spinner className="ml-2 h-4 w-4 animate-spin text-primary-200" />
+    );
   }
 
   return (
@@ -45,14 +53,12 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem
-          onClick={() => console.log('list for adoption', animal)}
-        >
-          List for adoption
-        </DropdownMenuItem>
+        <DropdownMenuItem disabled>List for adoption</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>View profile</DropdownMenuItem>
-        <DropdownMenuItem>Edit details</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => goToProfile(animal)}>
+          View profile
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled>Edit details</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => deletePet(animal)}>
           Delete

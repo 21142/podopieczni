@@ -1,7 +1,9 @@
+import { z } from 'zod';
 import { userAccountDetailsSchema } from '~/lib/validators/userValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
+import publicProcedure from '../procedures/publicProcedure';
 
 export const userRouter = createTRPCRouter({
   me: protectedProcedure.query(async ({ ctx }) => {
@@ -15,7 +17,7 @@ export const userRouter = createTRPCRouter({
     });
     return user;
   }),
-  getAllUsers: protectedProcedure.query(async ({ ctx }) => {
+  getAllUsers: publicProcedure.query(async ({ ctx }) => {
     const allUsers = await ctx.prisma.user.findMany({
       include: {
         address: true,
@@ -23,30 +25,40 @@ export const userRouter = createTRPCRouter({
     });
     return allUsers;
   }),
-  getUsersCount: protectedProcedure.query(async ({ ctx }) => {
+  getUserById: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: input.id },
+      });
+      return user;
+    }),
+  getUsersCount: publicProcedure.query(async ({ ctx }) => {
     const count = await ctx.prisma.user.count();
     return count;
   }),
-  getUsersCountChangeFromLastMonth: protectedProcedure.query(
-    async ({ ctx }) => {
-      const thisMonthsCount = await ctx.prisma.user.count({
-        where: {
-          createdAt: {
-            gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-          },
+  getUsersCountChangeFromLastMonth: publicProcedure.query(async ({ ctx }) => {
+    const thisMonthsCount = await ctx.prisma.user.count({
+      where: {
+        createdAt: {
+          gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         },
-      });
-      const lastMonthsCount = await ctx.prisma.user.count({
-        where: {
-          createdAt: {
-            gt: new Date(new Date().setMonth(new Date().getMonth() - 2)),
-            lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-          },
+      },
+    });
+    const lastMonthsCount = await ctx.prisma.user.count({
+      where: {
+        createdAt: {
+          gt: new Date(new Date().setMonth(new Date().getMonth() - 2)),
+          lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         },
-      });
-      return thisMonthsCount - lastMonthsCount;
-    }
-  ),
+      },
+    });
+    return thisMonthsCount - lastMonthsCount;
+  }),
   add: adminProcedure
     .input(userAccountDetailsSchema)
     .mutation(async ({ input, ctx }) => {

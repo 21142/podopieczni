@@ -9,7 +9,7 @@ export const petRouter = createTRPCRouter({
     const pets = await ctx.prisma.pet.findMany();
     return pets;
   }),
-  getAllPetsDataForTable: protectedProcedure.query(async ({ ctx }) => {
+  getAllPetsDataForTable: publicProcedure.query(async ({ ctx }) => {
     const pets = await ctx.prisma.pet.findMany({
       select: {
         id: true,
@@ -22,7 +22,7 @@ export const petRouter = createTRPCRouter({
     });
     return pets;
   }),
-  getPetById: protectedProcedure
+  getPetById: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -34,11 +34,11 @@ export const petRouter = createTRPCRouter({
       });
       return pet;
     }),
-  getPetsCount: protectedProcedure.query(async ({ ctx }) => {
+  getPetsCount: publicProcedure.query(async ({ ctx }) => {
     const count = await ctx.prisma.pet.count();
     return count;
   }),
-  getPetsCountChangeFromLastMonth: protectedProcedure.query(async ({ ctx }) => {
+  getPetsCountChangeFromLastMonth: publicProcedure.query(async ({ ctx }) => {
     const thisMonthsCount = await ctx.prisma.pet.count({
       where: {
         createdAt: {
@@ -56,10 +56,35 @@ export const petRouter = createTRPCRouter({
     });
     return thisMonthsCount - lastMonthsCount;
   }),
+  getPetsAddedInTheLastMonth: publicProcedure.query(async ({ ctx }) => {
+    const pets = await ctx.prisma.pet.findMany({
+      where: {
+        createdAt: {
+          gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+        },
+      },
+      orderBy: {
+        // TODO: change to desc
+        createdAt: 'asc',
+      },
+      take: 5,
+    });
+    return pets;
+  }),
+  getPetsAddedInTheLastMonthCount: publicProcedure.query(async ({ ctx }) => {
+    const count = await ctx.prisma.pet.count({
+      where: {
+        createdAt: {
+          gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+        },
+      },
+    });
+    return count;
+  }),
   add: protectedProcedure
     .input(petDetailsSchema)
     .mutation(async ({ input, ctx }) => {
-      await ctx.prisma.pet.create({
+      const pet = await ctx.prisma.pet.create({
         data: {
           internalId: input.internalId,
           name: input.name,
@@ -107,6 +132,7 @@ export const petRouter = createTRPCRouter({
           // },
         },
       });
+      return pet;
     }),
   deletePetById: protectedProcedure
     .input(z.string())

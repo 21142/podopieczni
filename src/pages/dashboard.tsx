@@ -1,10 +1,11 @@
-import type { GetServerSidePropsContext, NextPage } from 'next';
+import type { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import ShelterStatisticsCard from '~/components/cards/ShelterStatisticsCard';
 import EmailInviteForm from '~/components/forms/EmailInviteForm';
 import { Icons } from '~/components/icons/Icons';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
+import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import { Button } from '~/components/primitives/Button';
 import {
   Card,
@@ -22,12 +23,11 @@ import {
   DialogTrigger,
 } from '~/components/primitives/Dialog';
 import { Chart } from '~/components/utility/Chart';
-import { RecentAdoptions } from '~/components/utility/RecentAdoptions';
-import { env } from '~/env.mjs';
+import RecentAdoptions from '~/components/utility/RecentAdoptions';
 import { useLoginToast } from '~/hooks/use-login-toast';
 import { api } from '~/lib/api';
-import { getServerAuthSession } from '~/lib/auth';
 import { Roles } from '~/lib/constants';
+import { ssghelpers } from '~/lib/ssg';
 
 const Dashboard: NextPage = () => {
   const { data: session } = useSession();
@@ -42,12 +42,19 @@ const Dashboard: NextPage = () => {
   const { data: petsCountChangeFromLastMonth } =
     api.pet.getPetsCountChangeFromLastMonth.useQuery();
 
+  const { data: recentlyAddedPets } =
+    api.pet.getPetsAddedInTheLastMonth.useQuery();
+  const { data: petsAddedLastMonthCount } =
+    api.pet.getPetsCountChangeFromLastMonth.useQuery();
+
+  if (!session) return <LoginToAccessPage />;
+
   return (
     <DashboardLayout>
       {session &&
         (session.user.role === Roles.Shelter ||
           session.user.role === Roles.Admin) && (
-          <div className="container mx-auto w-full">
+          <div className="container">
             <div className="flex-1 space-y-4 p-8 pt-6">
               <div className="flex items-center justify-between space-y-2">
                 <h2 className="text-3xl font-bold tracking-tight">
@@ -133,11 +140,12 @@ const Dashboard: NextPage = () => {
                   <CardHeader>
                     <CardTitle>Ostatnio przyjęte zwierzęta</CardTitle>
                     <CardDescription>
-                      5 zwierząt przyjętych w ostatnim miesiącu
+                      {petsAddedLastMonthCount} zwierząt przyjętych w ostatnim
+                      miesiącu
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <RecentAdoptions />
+                    <RecentAdoptions animals={recentlyAddedPets} />
                   </CardContent>
                 </Card>
               </div>
@@ -150,21 +158,36 @@ const Dashboard: NextPage = () => {
 
 export default Dashboard;
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const session = await getServerAuthSession(ctx);
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/api/auth/signin?callbackUrl=${env.NEXT_PUBLIC_BASE_URL}/dashboard&error=SessionRequired`,
-      },
-    };
-  }
-  if (session.user?.role === Roles.Adopter) {
-    return {
-      redirect: {
-        destination: `${env.NEXT_PUBLIC_BASE_URL}/unauthorized`,
-      },
-    };
-  }
-  return { props: {} };
+export async function getStaticProps() {
+  await ssghelpers.user.getUsersCount.prefetch();
+  await ssghelpers.user.getUsersCountChangeFromLastMonth.prefetch();
+  await ssghelpers.pet.getPetsCount.prefetch();
+  await ssghelpers.pet.getPetsCountChangeFromLastMonth.prefetch();
+  await ssghelpers.pet.getPetsAddedInTheLastMonth.prefetch();
+  await ssghelpers.pet.getPetsAddedInTheLastMonthCount.prefetch();
+  return {
+    props: {
+      trpcState: ssghelpers.dehydrate(),
+    },
+    revalidate: 1,
+  };
 }
+
+// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+//   const session = await getServerAuthSession(ctx);
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: `/api/auth/signin?callbackUrl=${env.NEXT_PUBLIC_BASE_URL}/dashboard&error=SessionRequired`,
+//       },
+//     };
+//   }
+//   if (session.user?.role === Roles.Adopter) {
+//     return {
+//       redirect: {
+//         destination: `${env.NEXT_PUBLIC_BASE_URL}/unauthorized`,
+//       },
+//     };
+//   }
+//   return { props: {} };
+// }

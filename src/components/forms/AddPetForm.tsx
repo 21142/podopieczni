@@ -63,35 +63,30 @@ const AddPetForm = () => {
   const router = useRouter();
 
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [addingAnotherAnimal, setAddingAnotherAnimal] = useState(false);
 
   const addPetMutation = api.pet.add.useMutation({
     onSuccess: async () => {
       await trpc.getAllPets.invalidate();
-      form.reset({
-        name: '',
-        internalId: '',
-        status: '',
-        dateOfBirth: '',
-        gender: '',
-        coat: undefined,
-        color: undefined,
-        weight: '',
-        species: undefined,
-        breed: undefined,
-        microchipNumber: '',
-        microchipBrand: undefined,
-        intakeEventDate: '',
-        intakeEventType: undefined,
-        healthStatus: undefined,
-        image: '',
-      });
+    },
+    onSettled(data) {
+      form.reset();
       setAvatarUrl('');
-      router.push('/pets');
+      if (data && !addingAnotherAnimal) {
+        router.push(`/animal/${data.id}`);
+      }
+      if (addingAnotherAnimal) {
+        router.refresh();
+      }
     },
   });
 
   const form = useForm<IPetDetails>({
     resolver: zodResolver(petDetailsSchema),
+    defaultValues: {
+      //TODO: decide if any should be set as default values
+      intakeEventDate: new Date().toISOString().slice(0, 10),
+    },
   });
 
   const onSubmit = async (values: IPetDetails) => {
@@ -479,7 +474,6 @@ const AddPetForm = () => {
                           {HealthStatusMap[op.value]}
                         </SelectItem>
                       ))}
-                      <SelectItem value="healthy">Healthy</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -490,7 +484,7 @@ const AddPetForm = () => {
               <Button
                 type="submit"
                 className="col-span-6 justify-self-start"
-                onClick={async () => await trpc.getAllPets.invalidate()}
+                onClick={() => setAddingAnotherAnimal(false)}
                 disabled={addPetMutation.isLoading}
               >
                 {addPetMutation.isLoading ? 'Ładowanie...' : 'Zapisz'}
@@ -500,8 +494,8 @@ const AddPetForm = () => {
                 className={`${cn(
                   buttonVariants({ variant: 'secondary' })
                 )} justify-self-start`}
-                onClick={async () => await trpc.getAllPets.invalidate()}
                 disabled={addPetMutation.isLoading}
+                onClick={() => setAddingAnotherAnimal(true)}
               >
                 {addPetMutation.isLoading
                   ? 'Ładowanie...'

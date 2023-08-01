@@ -1,10 +1,9 @@
 import Image from 'next/image';
-import logo from '/public/images/logo.svg';
 
 const Logo: React.FC = () => {
   return (
     <Image
-      src={logo}
+      src="/images/logo.svg"
       className="cursor-pointer object-contain"
       alt="podopieczni logo"
       height={51}
