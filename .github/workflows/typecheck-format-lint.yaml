@@ -16,6 +16,8 @@ env:
   EMAIL_SERVER_HOST: 'fake'
   EMAIL_SERVER_PORT: 'fake'
   EMAIL_FROM: 'fake'
+  UPLOADTHING_SECRET: 'fake'
+  UPLOADTHING_APP_ID: 'fake'
 
 jobs:
   build:
