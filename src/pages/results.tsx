@@ -2,6 +2,9 @@ import { Dialog, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, FilterIcon, XIcon } from '@heroicons/react/outline';
 import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
 import type { GetServerSideProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { Fragment, useState } from 'react';
 import AdoptionFormCard from '~/components/cards/AdoptionFormCard';
@@ -12,6 +15,7 @@ import BackgroundWave from '~/components/utility/BackgroundWave';
 import SearchCategory from '~/components/utility/SearchCategory';
 import SearchResults from '~/components/utility/SearchResults';
 import { TypeOfResults } from '~/lib/constants';
+import { cn } from '~/lib/utils';
 import type IAnimalData from '~/types/petfinderTypes';
 
 export interface IResults {
@@ -29,12 +33,10 @@ const sortOptions = [
   { name: 'Oldest addition', href: '#scrollToPosition', current: false },
 ];
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
 const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const { t } = useTranslation('common');
 
   return (
     <PageLayout>
@@ -104,11 +106,11 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
       </Transition.Root>
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 flex items-baseline justify-between border-b border-gray-200 pb-6">
+        <div className="relative z-10 flex items-baseline justify-between pb-6">
           <h1 className="max-w-[300px] text-2xl font-medium tracking-tight sm:max-w-none sm:text-4xl">
             {searchQuery
-              ? `Results for ${searchQuery}`
-              : 'Dostępni podopieczni'}
+              ? `${t('results_for')}${searchQuery}`
+              : `${t('results_title')}`}
           </h1>
 
           <div className="flex items-center">
@@ -142,7 +144,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
                         {({ active }) => (
                           <a
                             href={option.href}
-                            className={classNames(
+                            className={cn(
                               option.current
                                 ? 'font-medium text-gray-900'
                                 : 'text-gray-500',
@@ -220,6 +222,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const baseUrl = context.req
     ? `${protocol as string}://${host as string}`
     : '';
+  const locale = context.locale ?? 'en';
+
   const petfindetOauthData = (await fetch(
     `${baseUrl}/api/petfinder-oauth-token`
   ).then((res) => res.json())) as PetfinderOauth;
@@ -241,6 +245,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
           animals: null,
           searchQuery: search,
+          ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
         },
       };
 
@@ -248,6 +253,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         animals: animals,
         searchQuery: search,
+        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
   } else {
@@ -255,6 +261,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         animals: ['no animals found'],
         searchQuery: search,
+        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
   }

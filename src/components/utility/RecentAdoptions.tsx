@@ -1,11 +1,9 @@
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
-import { type RouterOutputs } from '~/lib/api';
 import { Icons } from '../icons/Icons';
+import { type RecentlyAddedAnimals } from '../pages/ShelterDashboard';
 import { Button } from '../primitives/Button';
 import RecentlyAddedAnimalsRow from './RecentlyAddedAnimalsRow';
-
-type RecentlyAddedAnimals = RouterOutputs['pet']['getPetsAddedInTheLastMonth'];
 
 interface RecentAdoptionsProps {
   animals?: RecentlyAddedAnimals;
@@ -20,7 +18,7 @@ const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
           <RecentlyAddedAnimalsRow
             key={animal.id}
             animal={animal}
-            className="h-16 cursor-pointer hover:bg-card"
+            className="h-16 cursor-pointer pr-3 hover:bg-card"
             onClick={() => void router.push(`/animal/${animal.id}`)}
           />
         ))

@@ -1,4 +1,6 @@
 import type { GetServerSideProps, NextPage } from 'next';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
@@ -29,7 +31,7 @@ const Organizations: NextPage<IResults> = ({ organizations, searchQuery }) => {
       <BackgroundWave />
 
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 flex items-baseline justify-between border-b border-gray-200 pb-6">
+        <div className="justify-betweenpb-6 relative z-10 flex items-baseline">
           <SearchResults
             results={organizations}
             typeOfResults="organization"
@@ -50,6 +52,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const baseUrl = context.req
     ? `${protocol as string}://${host as string}`
     : '';
+  const locale = context.locale ?? 'en';
+
   const petfindetOauthData = (await fetch(
     `${baseUrl}/api/petfinder-oauth-token`
   ).then((res) => res.json())) as PetfinderOauth;
@@ -69,6 +73,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         organizations: organizations,
         searchQuery: search,
+        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
   } else {
@@ -76,6 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         organizations: ['no organizations found'],
         searchQuery: search,
+        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
   }

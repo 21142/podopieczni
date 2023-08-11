@@ -1,29 +1,21 @@
 import type { NextPage } from 'next';
 import { signIn, signOut } from 'next-auth/react';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/navigation';
 import PageLayout from '~/components/layouts/PageLayout';
 import { Button } from '~/components/primitives/Button';
 import Spinner from '~/components/spinners/Spinner';
+import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
 
 const Welcome: NextPage = () => {
   const router = useRouter();
 
-  const {
-    data: sessionData,
-    isLoading,
-    error,
-  } = api.auth.getSession.useQuery(undefined, {
-    retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+  const { data: userFromSession, isLoading, error } = useUserFromSessionQuery();
 
-  const hasRole = sessionData?.role ? true : false;
+  const hasRole = userFromSession?.role ? true : false;
 
   const setRoleAsAdopter = api.auth.setAdoptingRole.useMutation();
   const setRoleAsShelter = api.auth.setShelterWorkerRole.useMutation();
@@ -38,12 +30,13 @@ const Welcome: NextPage = () => {
     router.replace('/dashboard');
   };
 
-  if (sessionData?.role) {
+  if (userFromSession?.role) {
     const redirectSlug: string =
-      sessionData?.role == Roles.Adopter ? '/' : '/dashboard';
+      userFromSession?.role == Roles.Adopter ? '/' : '/dashboard';
     router.replace(redirectSlug);
   }
 
+  // TODO: Clean up this mess - no low level html in pages (extract into components)
   if (isLoading)
     return (
       <PageLayout>
@@ -64,9 +57,11 @@ const Welcome: NextPage = () => {
             <Button
               variant="primary"
               size="lg"
-              onClick={sessionData ? () => void signOut() : () => void signIn()}
+              onClick={
+                userFromSession ? () => void signOut() : () => void signIn()
+              }
             >
-              {sessionData ? 'Wyloguj się' : 'Zaloguj się'}
+              {userFromSession ? 'Wyloguj się' : 'Zaloguj się'}
             </Button>
             <Button
               variant="outline"
@@ -82,7 +77,7 @@ const Welcome: NextPage = () => {
 
   return (
     <PageLayout>
-      {sessionData && !hasRole && (
+      {userFromSession && !hasRole && (
         <div className="grid h-80 place-items-center content-center">
           <p className="text-lg">Powiedz nam w jakim celu tworzysz konto</p>
           <div className="grid gap-5 p-5 sm:grid-cols-2">
@@ -106,3 +101,9 @@ const Welcome: NextPage = () => {
 };
 
 export default Welcome;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+  },
+});

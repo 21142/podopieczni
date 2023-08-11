@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next';
 import { type FC } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../primitives/Card';
 
@@ -18,6 +19,7 @@ const ShelterStatisticsCard: FC<ShelterStatisticsCardProps> = ({
   currency,
   onClick,
 }) => {
+  const { t } = useTranslation('common');
   return (
     <Card
       className="transition-colors hover:cursor-pointer hover:border-border/60 hover:bg-transparent"
@@ -33,7 +35,8 @@ const ShelterStatisticsCard: FC<ShelterStatisticsCardProps> = ({
         </div>
         <p className="text-xs text-muted-foreground">
           {difference && (difference > 0 ? '+' : difference < 0 ? '-' : '')}
-          {!!difference && difference} from last month
+          {!!difference && difference}
+          {t('dashboard_statistics_card_change_from_last_month')}
         </p>
       </CardContent>
     </Card>

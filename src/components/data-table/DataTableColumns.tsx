@@ -5,13 +5,11 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '~/components/primitives/Avatar';
-import { type RouterOutputs } from '~/lib/api';
 import { statuses } from '~/lib/constants';
+import { type AnimalDto } from '~/types';
 import { Checkbox } from '../primitives/Checkbox';
 import { DataTableColumnHeader } from './DataTableHeaders';
 import { DataTableRowActions } from './DataTableRowActions';
-
-type AnimalDto = RouterOutputs['pet']['getAllPetsDataForTable'][number];
 
 export const columns: ColumnDef<AnimalDto>[] = [
   {

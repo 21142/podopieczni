@@ -1,4 +1,6 @@
 import type { NextPage } from 'next';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { DataTable } from '~/components/data-table/DataTable';
 import { columns } from '~/components/data-table/DataTableColumns';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
@@ -26,11 +28,12 @@ const Pets: NextPage = () => {
 
 export default Pets;
 
-export async function getStaticProps() {
+export async function getStaticProps({ locale }: { locale: string }) {
   await ssghelpers.pet.getAllPetsDataForTable.prefetch();
   return {
     props: {
       trpcState: ssghelpers.dehydrate(),
+      ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
     },
     revalidate: 1,
   };

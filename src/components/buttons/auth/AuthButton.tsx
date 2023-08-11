@@ -1,4 +1,5 @@
 import { signIn, signOut } from 'next-auth/react';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { Icons } from '~/components/icons/Icons';
 import {
@@ -13,74 +14,69 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/primitives/DropdownMenu';
-import { api } from '~/lib/api';
+import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { Roles } from '~/lib/constants';
 
 //TODO: Consider renaming to AuthDropdownMenu
 const AuthButton: React.FC = () => {
-  const { data: sessionData } = api.auth.getSession.useQuery(undefined, {
-    retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
-
+  const { data: userFromSession } = useUserFromSessionQuery();
+  const { t } = useTranslation('common');
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
           <AvatarImage
-            src={sessionData?.image as string}
-            alt={sessionData?.name ?? 'User avatar'}
+            src={userFromSession?.image as string}
+            alt={userFromSession?.name ?? 'User avatar'}
           />
           <AvatarFallback>
-            <span className="sr-only">{sessionData?.name}</span>
+            <span className="sr-only">{userFromSession?.name}</span>
             <Icons.user className="h-4 w-4" />
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {sessionData && (
+        {userFromSession && (
           <div className="flex items-center justify-start gap-2 p-2">
             <div className="flex flex-col space-y-1 leading-none">
-              {sessionData.name && (
-                <p className="font-medium">{sessionData.name}</p>
+              {userFromSession.name && (
+                <p className="pb-0.5 font-medium">{userFromSession.name}</p>
               )}
-              {sessionData.email && (
-                <p className="w-[200px] truncate text-sm text-muted-foreground">
-                  {sessionData.email}
+              {userFromSession.email && (
+                <p className="w-[200px] truncate pb-0.5 text-sm text-muted-foreground">
+                  {userFromSession.email}
                 </p>
               )}
             </div>
           </div>
         )}
-        {sessionData && <DropdownMenuSeparator />}
+        {userFromSession && <DropdownMenuSeparator />}
         <DropdownMenuItem asChild>
-          {(sessionData?.role === Roles.Shelter ||
-            sessionData?.role === Roles.Admin) && (
-            <Link href="/dashboard">Dashboard</Link>
+          {(userFromSession?.role === Roles.Shelter ||
+            userFromSession?.role === Roles.Admin) && (
+            <Link href="/dashboard">{t('nav_shelter')}</Link>
           )}
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          {(sessionData?.role === Roles.Shelter ||
-            sessionData?.role === Roles.Admin) && (
-            <Link href="/pets">Pets</Link>
+          {(userFromSession?.role === Roles.Shelter ||
+            userFromSession?.role === Roles.Admin) && (
+            <Link href="/pets">{t('nav_animals')}</Link>
           )}
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          {sessionData && <Link href="/user/settings">Settings</Link>}
+          {userFromSession && (
+            <Link href="/user/settings">{t('settings')}</Link>
+          )}
         </DropdownMenuItem>
-        {sessionData && <DropdownMenuSeparator />}
+        {userFromSession && <DropdownMenuSeparator />}
         <DropdownMenuItem
           className="cursor-pointer"
           onSelect={(event) => {
             event.preventDefault();
-            sessionData ? signOut() : signIn();
+            userFromSession ? signOut() : signIn();
           }}
         >
-          {sessionData ? 'Sign out' : 'Log in'}
+          {userFromSession ? `${t('nav_signout')}` : `${t('nav_login')}`}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

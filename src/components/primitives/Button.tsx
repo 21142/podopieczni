@@ -73,8 +73,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : null}
-        {children}
+        ) : (
+          children
+        )}
       </button>
     );
   }

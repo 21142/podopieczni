@@ -1,4 +1,5 @@
 import { SearchIcon } from '@heroicons/react/outline';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +11,7 @@ export interface ISearch {
 const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
+  const { t } = useTranslation('common');
 
   useEffect(() => {
     if (query) {
@@ -37,12 +39,12 @@ const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
       <input
         className="flex-grow border-none bg-transparent pl-3 pr-2 outline-none transition-colors duration-200 ease-in-out focus:ring-0 dark:placeholder-neutral-50"
         type="text"
-        placeholder="California or 22-152"
+        placeholder={t('hero_search_placeholder')}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
       <button
-        aria-label="Przycisk szukaj"
+        aria-label="Search button"
         type="submit"
       >
         <SearchIcon className="duration-50 h-14 cursor-pointer rounded-full bg-primary-300 p-2 text-white transition-transform ease-in-out hover:scale-95" />
