@@ -15,6 +15,7 @@ import {
 import React from 'react';
 import { DataTableToolbar } from './DataTableToolbar';
 
+import { useTranslation } from 'next-i18next';
 import {
   Table,
   TableBody,
@@ -34,6 +35,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation('common');
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -111,7 +113,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t('animals_table_no_results')}
                 </TableCell>
               </TableRow>
             )}

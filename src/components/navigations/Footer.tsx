@@ -1,6 +1,8 @@
+import { useTranslation } from 'next-i18next';
 import BackgroundWavesFooter from '~/components/utility/BackgroundWavesFooter';
 
 const Footer = () => {
+  const { t } = useTranslation('common');
   return (
     <>
       <BackgroundWavesFooter className="-mt-40 aspect-[10/1] sm:mt-0" />
@@ -9,7 +11,7 @@ const Footer = () => {
           <div className="mt-2 grid max-w-[77.5rem] grid-cols-2 gap-6 py-8 px-6 text-neutral-50 md:grid-cols-4">
             <div>
               <h2 className="mb-6 text-sm font-semibold uppercase">
-                Mapa strony
+                {t('footer_sitemap')}
               </h2>
               <ul className="">
                 <li className="mb-4">
@@ -17,7 +19,7 @@ const Footer = () => {
                     href="#"
                     className=" hover:underline"
                   >
-                    Główna
+                    {t('nav_home')}
                   </a>
                 </li>
                 <li className="mb-4">
@@ -25,7 +27,7 @@ const Footer = () => {
                     href="#"
                     className="hover:underline"
                   >
-                    Adopcja
+                    {t('nav_adopt')}
                   </a>
                 </li>
                 <li className="mb-4">
@@ -33,28 +35,22 @@ const Footer = () => {
                     href="#"
                     className="hover:underline"
                   >
-                    Edukacja
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a
-                    href="#"
-                    className="hover:underline"
-                  >
-                    Kontakt
+                    {t('nav_about')}
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase">Adopcja</h2>
+              <h2 className="mb-6 text-sm font-semibold uppercase">
+                {t('nav_adopt')}
+              </h2>
               <ul className="">
                 <li className="mb-4">
                   <a
                     href="#"
                     className="hover:underline"
                   >
-                    Poznaj proces
+                    {t('footer_find_dogs')}
                   </a>
                 </li>
                 <li className="mb-4">
@@ -62,7 +58,7 @@ const Footer = () => {
                     href="#"
                     className="hover:underline"
                   >
-                    Adoptuj psa
+                    {t('footer_find_cats')}
                   </a>
                 </li>
                 <li className="mb-4">
@@ -70,21 +66,15 @@ const Footer = () => {
                     href="#"
                     className="hover:underline"
                   >
-                    Adoptuj kota
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a
-                    href="#"
-                    className="hover:underline"
-                  >
-                    Znajdź schroniska
+                    {t('footer_find_shelters')}
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase">Kontakt</h2>
+              <h2 className="mb-6 text-sm font-semibold uppercase">
+                {t('footer_contact')}
+              </h2>
               <ul className="">
                 <li className="mb-4">
                   <a
@@ -99,28 +89,22 @@ const Footer = () => {
                     href="#"
                     className="hover:underline"
                   >
-                    Adres email
-                  </a>
-                </li>
-                <li className="mb-4">
-                  <a
-                    href="#"
-                    className="hover:underline"
-                  >
-                    Numery telefonu
+                    {t('footer_how_to_contact')}
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h2 className="mb-6 text-sm font-semibold uppercase">Prawne</h2>
+              <h2 className="mb-6 text-sm font-semibold uppercase">
+                {t('footer_legal')}
+              </h2>
               <ul className="">
                 <li className="mb-4">
                   <a
                     href="#"
                     className="hover:underline"
                   >
-                    Polityka prywatności
+                    {t('footer_terms_of_service')}
                   </a>
                 </li>
                 <li className="mb-4">
@@ -128,7 +112,7 @@ const Footer = () => {
                     href="#"
                     className="hover:underline"
                   >
-                    Przetwarzanie danych osobowych
+                    {t('footer_privacy_policy')}
                   </a>
                 </li>
               </ul>

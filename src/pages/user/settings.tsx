@@ -1,22 +1,13 @@
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import AccountSettingsForm from '~/components/forms/AccountSettingsForm';
 import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import Spinner from '~/components/spinners/Spinner';
-import { api } from '~/lib/api';
+import useMeQuery from '~/hooks/useMeQuery';
 
 const UserSettings = () => {
-  const {
-    data: me,
-    isLoading,
-    error,
-  } = api.user.me.useQuery(undefined, {
-    retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+  const { data: me, isLoading, error } = useMeQuery();
 
   if (isLoading) {
     return (
@@ -43,3 +34,9 @@ const UserSettings = () => {
 };
 
 export default UserSettings;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+  },
+});

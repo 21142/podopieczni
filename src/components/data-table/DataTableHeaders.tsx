@@ -1,5 +1,6 @@
 import { type Column } from '@tanstack/react-table';
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
+import { useTranslation } from 'next-i18next';
 import { cn } from '~/lib/utils';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
@@ -22,6 +23,8 @@ export function DataTableColumnHeader<TData, TValue>({
   title,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
+  const { t } = useTranslation('common');
+
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
   }
@@ -48,16 +51,16 @@ export function DataTableColumnHeader<TData, TValue>({
         <DropdownMenuContent align="start">
           <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
             <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Asc
+            {t('sort_asc')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
             <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Desc
+            {t('sort_dsc')}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
             <Icons.hide className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-            Hide
+            {t('sort_hide')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
@@ -9,6 +10,7 @@ import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
 } from '~/lib/validators/userValidation';
+import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 import { Button } from '../primitives/Button';
 import { Card, CardHeader } from '../primitives/Card';
@@ -43,6 +45,7 @@ const AddPersonForm = () => {
   const trpc = api.useContext().user;
   const { toast } = useToast();
   const [avatarUrl, setAvatarUrl] = useState('');
+  const { t } = useTranslation('common');
 
   const addUserMutation = api.user.add.useMutation({
     onSuccess: async () => {
@@ -58,7 +61,7 @@ const AddPersonForm = () => {
     try {
       await addUserMutation.mutateAsync(values);
       toast({
-        description: 'User successfully created!',
+        description: t('add_person_form_toast_success'),
         variant: 'success',
       });
     } catch (error) {
@@ -92,7 +95,7 @@ const AddPersonForm = () => {
       <Card className="mx-auto w-full max-w-7xl p-4 px-4 py-5 sm:mt-10 sm:p-6 2xl:max-w-8xl">
         <CardHeader className="px-0 pt-2">
           <h1 className="text-3xl font-medium text-foreground underline">
-            Add a new person
+            {t('add_person_form_title')}
           </h1>
         </CardHeader>
         <Form {...form}>
@@ -130,7 +133,7 @@ const AddPersonForm = () => {
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First name</FormLabel>
+                  <FormLabel>{t('add_person_form_label_first_name')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -146,7 +149,7 @@ const AddPersonForm = () => {
               name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last name</FormLabel>
+                  <FormLabel>{t('add_person_form_label_last_name')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -162,7 +165,7 @@ const AddPersonForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t('add_person_form_label_email')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -178,7 +181,7 @@ const AddPersonForm = () => {
               name="dateOfBirth"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Date of birth</FormLabel>
+                  <FormLabel>{t('form_label_dob')}</FormLabel>
                   <FormControl>
                     <Input
                       type="date"
@@ -195,7 +198,7 @@ const AddPersonForm = () => {
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone number</FormLabel>
+                  <FormLabel>{t('add_person_form_label_phone')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -211,14 +214,16 @@ const AddPersonForm = () => {
               name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Role</FormLabel>
+                  <FormLabel>{t('add_person_form_label_role')}</FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
+                        <SelectValue
+                          placeholder={t('add_person_form_placeholder_role')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -241,7 +246,7 @@ const AddPersonForm = () => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>{t('add_person_form_label_address')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -257,7 +262,7 @@ const AddPersonForm = () => {
               name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>City</FormLabel>
+                  <FormLabel>{t('add_person_form_label_city')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -273,7 +278,7 @@ const AddPersonForm = () => {
               name="postCode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Post code</FormLabel>
+                  <FormLabel>{t('add_person_form_label_zip_code')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -289,7 +294,7 @@ const AddPersonForm = () => {
               name="state"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>State</FormLabel>
+                  <FormLabel>{t('add_person_form_label_state')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -305,7 +310,7 @@ const AddPersonForm = () => {
               name="country"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Country</FormLabel>
+                  <FormLabel>{t('add_person_form_label_country')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -322,7 +327,11 @@ const AddPersonForm = () => {
               onClick={async () => await trpc.getAllUsers.invalidate()}
               disabled={addUserMutation.isLoading}
             >
-              {addUserMutation.isLoading ? 'Ładowanie...' : 'Dodaj'}
+              {addUserMutation.isLoading ? (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                t('form_button_save')
+              )}
             </Button>
           </form>
         </Form>

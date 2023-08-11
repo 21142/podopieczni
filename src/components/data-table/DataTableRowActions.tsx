@@ -1,4 +1,5 @@
 import { type Row } from '@tanstack/react-table';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { api } from '~/lib/api';
 import { petIdSchema } from '~/lib/validators/petValidation';
@@ -23,6 +24,7 @@ export function DataTableRowActions<TData>({
   const deletePetMutation = api.pet.deletePetById.useMutation();
   const trpc = api.useContext().pet;
   const router = useRouter();
+  const { t } = useTranslation('common');
 
   const deletePet = async (animal: TData) => {
     const parsedAnimal = petIdSchema.parse(animal);
@@ -53,15 +55,19 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem disabled>List for adoption</DropdownMenuItem>
+        <DropdownMenuItem disabled>
+          {t('animals_table_row_action_list_for_adoption')}
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => goToProfile(animal)}>
-          View profile
+          {t('animals_table_row_action_view_profile')}
         </DropdownMenuItem>
-        <DropdownMenuItem disabled>Edit details</DropdownMenuItem>
+        <DropdownMenuItem disabled>
+          {t('animals_table_row_action_edit_details')}
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => deletePet(animal)}>
-          Delete
+          {t('animals_table_row_action_delete')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

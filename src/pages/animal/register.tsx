@@ -1,27 +1,28 @@
 import type { NextPage } from 'next';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import AddPetForm from '~/components/forms/AddPetForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
-import { api } from '~/lib/api';
+import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 
 const Register: NextPage = () => {
-  const { data: sessionData } = api.auth.getSession.useQuery(undefined, {
-    retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+  const { data: userFromSession } = useUserFromSessionQuery();
 
-  if (!sessionData)
+  if (!userFromSession)
     return (
       <DashboardLayout>
         <LoginToAccessPage />
       </DashboardLayout>
     );
 
-  return <DashboardLayout>{sessionData && <AddPetForm />}</DashboardLayout>;
+  return <DashboardLayout>{userFromSession && <AddPetForm />}</DashboardLayout>;
 };
 
 export default Register;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+  },
+});

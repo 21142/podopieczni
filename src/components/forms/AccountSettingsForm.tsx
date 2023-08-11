@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { AddressInfo, User } from '@prisma/client';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -12,6 +13,7 @@ import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
 } from '~/lib/validators/userValidation';
+import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 import { Card } from '../primitives/Card';
 import Spinner from '../spinners/Spinner';
@@ -30,6 +32,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
   const router = useRouter();
   const trpc = api.useContext();
   const { toast } = useToast();
+  const { t } = useTranslation('common');
 
   const [avatarUrl, setAvatarUrl] = useState(user?.image ?? '');
 
@@ -92,7 +95,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
   const onSubmit: SubmitHandler<IUserAccountDetails> = async (data) => {
     await updateUserDetailsMutation.mutateAsync(data);
     toast({
-      description: 'Personal details successfully updated!',
+      description: t('update_user_details_toast_success'),
       variant: 'success',
     });
   };
@@ -109,7 +112,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
               <div className="overflow-hidden shadow sm:rounded-md">
                 <div className="px-4 py-5 sm:p-6">
                   <p className="my-4 text-3xl font-light tracking-widest text-foreground underline decoration-2 underline-offset-2 sm:text-4xl">
-                    Your profile
+                    {t('update_user_details_form_title')}
                   </p>
                   <div className="grid grid-cols-6 gap-6 pb-20">
                     <div className="col-span-6 flex gap-6">
@@ -149,7 +152,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="first-name"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 font-sans text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        First name
+                        {t('add_person_form_label_first_name')}
                       </label>
                       {errors.firstName && (
                         <p className="my-2 text-sm text-red-600">
@@ -171,7 +174,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="last-name"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 font-sans text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        Last name
+                        {t('add_person_form_label_last_name')}
                       </label>
                       {errors.lastName && (
                         <p className="my-2 text-sm text-red-600">
@@ -193,7 +196,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="email"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 font-sans text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        Email address
+                        {t('add_person_form_label_email')}
                       </label>
                       {errors.email && (
                         <p className="my-2 text-sm text-red-600">
@@ -215,7 +218,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="bday"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 font-sans text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        Date of birth
+                        {t('form_label_dob')}
                       </label>
                       {errors.dateOfBirth && (
                         <p className="my-2 text-sm text-red-600">
@@ -237,7 +240,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="tel"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        Phone number
+                        {t('add_person_form_label_phone')}
                       </label>
                       {errors.phoneNumber && (
                         <p className="my-2 text-sm text-red-600">
@@ -251,7 +254,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="role"
                         className="absolute top-4 left-0 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 text-sm font-semibold uppercase tracking-[0.25rem] text-primary-400/80"
                       >
-                        Role
+                        {t('add_person_form_label_role')}
                       </label>
                       <select
                         id="role"
@@ -273,7 +276,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                   </div>
 
                   <p className="col-span-6 mt-12 mb-4 text-3xl font-light tracking-widest text-foreground underline decoration-2 underline-offset-2 sm:text-4xl">
-                    Your address details
+                    {t('update_user_details_form_title_address')}
                   </p>
                   <div className="grid grid-cols-6 gap-6">
                     <div className="relative z-0 col-span-6 min-w-[16rem] sm:col-span-4">
@@ -289,7 +292,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="address"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 font-sans text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        Correspondence address
+                        {t('add_person_form_label_address')}
                       </label>
                       {errors.address && (
                         <p className="my-2 text-sm text-red-600">
@@ -311,7 +314,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="city"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 font-sans text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        City
+                        {t('add_person_form_label_city')}
                       </label>
                       {errors.city && (
                         <p className="my-2 text-sm text-red-600">
@@ -333,7 +336,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="state"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 font-sans text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        State
+                        {t('add_person_form_label_state')}
                       </label>
                       {errors.state && (
                         <p className="my-2 text-sm text-red-600">
@@ -355,7 +358,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="postal-code"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 font-sans text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        Post code
+                        {t('add_person_form_label_zip_code')}
                       </label>
                       {errors.postCode && (
                         <p className="my-2 text-sm text-red-600">
@@ -377,7 +380,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         htmlFor="country"
                         className="absolute top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 transform cursor-text p-2 font-sans text-sm font-light uppercase tracking-[0.25rem] text-neutral-600 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-valid:text-primary-400 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-primary-400/80"
                       >
-                        Country
+                        {t('add_person_form_label_country')}
                       </label>
                       {errors.country && (
                         <p className="my-2 text-sm text-red-600">
@@ -393,9 +396,11 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                     className="inline-flex justify-center rounded-md border border-transparent bg-primary-400/90 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     disabled={updateUserDetailsMutation.isLoading}
                   >
-                    {updateUserDetailsMutation.isLoading
-                      ? 'Zapisuje...'
-                      : 'Zapisz zmiany'}{' '}
+                    {updateUserDetailsMutation.isLoading ? (
+                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      t('form_button_save')
+                    )}
                   </button>
                 </div>
               </div>

@@ -1,26 +1,18 @@
 import type { NextPage } from 'next';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import AddPersonForm from '~/components/forms/AddPersonForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinners/Spinner';
 import Grid from '~/components/utility/Grid';
+import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
 import { ssghelpers } from '~/lib/ssg';
 
 const Users: NextPage = () => {
-  const {
-    data: sessionData,
-    isLoading,
-    error,
-  } = api.auth.getSession.useQuery(undefined, {
-    retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+  const { data: sessionData, isLoading, error } = useUserFromSessionQuery();
 
   const { data: users, error: errorFetchingUsers } =
     api.user.getAllUsers.useQuery();
@@ -66,11 +58,12 @@ const Users: NextPage = () => {
 
 export default Users;
 
-export async function getStaticProps() {
+export async function getStaticProps({ locale }: { locale: string }) {
   await ssghelpers.user.getAllUsers.prefetch();
   return {
     props: {
       trpcState: ssghelpers.dehydrate(),
+      ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
     },
     revalidate: 1,
   };

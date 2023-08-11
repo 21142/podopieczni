@@ -1,3 +1,4 @@
+import i18nConfig from './next-i18next.config.mjs';
 import './src/env.mjs';
 
 /** @type {import("next").NextConfig} */
@@ -12,14 +13,13 @@ const config = {
       'uploadthing.com',
     ],
   },
-  i18n: {
-    locales: ['pl'],
-    defaultLocale: 'pl',
-  },
+  i18n: i18nConfig.i18n,
   eslint: {
+    // linting on typecheck-format-lint github action
     ignoreDuringBuilds: true,
   },
   typescript: {
+    // type checking on typecheck-format-lint github action
     ignoreBuildErrors: true,
   },
   swcMinify: true,
@@ -50,7 +50,7 @@ const config = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin',
           },
           {
             key: 'Content-Security-Policy',

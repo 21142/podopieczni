@@ -22,9 +22,12 @@
     }
   },
   "include": [
+    "next-env.d.ts",
     ".eslintrc.cjs",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
     "**/*.cjs",
     "**/*.mjs",
     "lighthouserc.js"

@@ -1,4 +1,6 @@
 import { TRPCError } from '@trpc/server';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import {
   type GetStaticPaths,
@@ -54,6 +56,7 @@ export default UserProfilePage;
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   const userId = context.params?.id as string;
+  const locale = context.locale ?? 'en';
   if (!userId)
     throw new TRPCError({
       code: 'NOT_FOUND',
@@ -65,6 +68,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     props: {
       trpcState: ssghelpers.dehydrate(),
       userId,
+      ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
     },
     revalidate: 1,
   };

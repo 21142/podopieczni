@@ -1,4 +1,5 @@
 import { type Table } from '@tanstack/react-table';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { species, statuses } from '~/lib/constants';
 import { Icons } from '../icons/Icons';
@@ -16,11 +17,12 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
   const router = useRouter();
   const isFiltered = table.getState().columnFilters.length > 0;
+  const { t } = useTranslation('common');
 
   return (
     <div className="flex flex-1 flex-col items-center justify-between space-y-2 space-x-2 sm:flex-row sm:space-y-0">
       <Input
-        placeholder="Search animals by name..."
+        placeholder={t('animals_table_input_placeholder')}
         value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
         onChange={(event) =>
           table.getColumn('name')?.setFilterValue(event.target.value)
@@ -31,14 +33,14 @@ export function DataTableToolbar<TData>({
         {table.getColumn('status') && (
           <DataTableFilter
             column={table.getColumn('status')}
-            title="Status"
+            title={t('animals_table_status_column')}
             options={statuses}
           />
         )}
         {table.getColumn('species') && (
           <DataTableFilter
             column={table.getColumn('species')}
-            title="Species"
+            title={t('animals_table_species_column')}
             options={species}
           />
         )}
@@ -48,7 +50,7 @@ export function DataTableToolbar<TData>({
             onClick={() => table.resetColumnFilters()}
             className="h-8 px-2 lg:px-3"
           >
-            Reset
+            {t('animals_table_reset_filters')}
             <Icons.close className="ml-2 h-4 w-4" />
           </Button>
         )}
@@ -60,7 +62,7 @@ export function DataTableToolbar<TData>({
         >
           <span className="flex items-center gap-1">
             <Icons.add className="h-4 w-4" />
-            Add new
+            {t('animals_table_add_button')}
           </span>
         </Button>
       </div>

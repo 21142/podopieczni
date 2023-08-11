@@ -1,9 +1,6 @@
 import { type FC } from 'react';
-import { type RouterOutputs } from '~/lib/api';
+import { type RecentlyAddedAnimal } from '~/types';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
-
-type RecentlyAddedAnimal =
-  RouterOutputs['pet']['getPetsAddedInTheLastMonth'][number];
 
 interface RecentlyAddedAnimalsRowProps {
   animal: RecentlyAddedAnimal;

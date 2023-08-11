@@ -1,10 +1,10 @@
-import { useRouter } from 'next/navigation';
+import { useTranslation } from 'next-i18next';
 import { Icons } from '../icons/Icons';
 import { Label } from '../primitives/Label';
 import { RadioGroup, RadioGroupItem } from '../primitives/RadioButton';
 
 const SearchCategory = () => {
-  const router = useRouter();
+  const { t } = useTranslation('common');
   return (
     <RadioGroup
       defaultValue=""
@@ -20,7 +20,7 @@ const SearchCategory = () => {
           className="sr-only"
         />
         <Icons.dog className="mb-3 h-14 w-14" />
-        Dogs
+        {t('search_category_dogs')}
       </Label>
       <Label
         htmlFor="cat"
@@ -32,7 +32,7 @@ const SearchCategory = () => {
           className="sr-only"
         />
         <Icons.cat className="mb-3 h-14 w-14" />
-        Cats
+        {t('search_category_cats')}
       </Label>
       <Label
         htmlFor="shelter"
@@ -45,7 +45,7 @@ const SearchCategory = () => {
           className="sr-only"
         />
         <Icons.home className="mb-3 h-14 w-14" />
-        Shelters
+        {t('search_category_shelters')}
       </Label>
     </RadioGroup>
   );
