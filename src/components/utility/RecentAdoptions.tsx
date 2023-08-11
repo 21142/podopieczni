@@ -1,7 +1,7 @@
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
+import { type RecentlyAddedAnimals } from '~/types';
 import { Icons } from '../icons/Icons';
-import { type RecentlyAddedAnimals } from '../pages/ShelterDashboard';
 import { Button } from '../primitives/Button';
 import RecentlyAddedAnimalsRow from './RecentlyAddedAnimalsRow';
 
