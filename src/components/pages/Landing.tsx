@@ -25,7 +25,10 @@ const Landing: React.FC = () => {
       <div className="mt-10 flex flex-col items-center justify-center pt-12 text-center">
         <h1 className="p-2 text-3xl font-extrabold leading-[1.25] text-foreground sm:text-4xl md:text-5xl lg:text-[3rem] xl:text-[3.5rem] 2xl:text-[4.5rem]">
           {t('search')}{' '}
-          <span className="text-primary-300">{t('hero_title_pet')}</span>,
+          <span className="bg-gradient-to-r from-primary-200 to-indigo-600 bg-clip-text text-transparent">
+            {t('hero_title_pet')}
+          </span>
+          ,
           <br />
           {t('hero_title')}
         </h1>

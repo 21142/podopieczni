@@ -46,14 +46,16 @@ export function DataTableVisibilityOptions<TData>({
               typeof column.accessorFn !== 'undefined' && column.getCanHide()
           )
           .map((column) => {
+            const translationKey = `column_${column.id}`;
+            const translatedColumnName = t(translationKey);
+
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
-                className="capitalize"
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {translatedColumnName || column.id}
               </DropdownMenuCheckboxItem>
             );
           })}

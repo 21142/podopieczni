@@ -38,7 +38,7 @@
    "theme_light": "Jasny",
    "theme_dark": "Ciemny",
    "theme_system": "Systemowy",
-   "langugage_toggle": "Zmień język",
+   "language_toggle": "Zmień język",
    "language_english": "Angielski",
    "language_polish": "Polski",
    "results_title": "Podopieczni szukający domu",
@@ -136,5 +136,10 @@
    "update_user_details_toast_success": "Dane zostały zaktualizowane!",
    "add_person_form_toast_success": "Osoba została poprawnie dodana!",
    "add_pet_form_toast_success": "{{name}} poprawnie dodany/a!",
-   "invite_user_form_toast_success": "Zaproszenie zostało wysłane na adres {{email}}"
+   "invite_user_form_toast_success": "Zaproszenie zostało wysłane na adres {{email}}",
+   "column_image": "Zdjęcie",
+   "column_name": "Imię",
+   "column_status": "Status",
+   "column_species": "Gatunek",
+   "column_breed": "Rasa"
 }

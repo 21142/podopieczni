@@ -9,7 +9,7 @@
    "nav_login": "Log in",
    "nav_signout": "Sign out",
    "settings": "Settings",
-   "search": "Find a new ",
+   "search": "Find your new ",
    "hero_title": "discover your perfect match.",
    "hero_title_pet": "best friend",
    "hero_subtitle": "Matching hearts, managing data & making a difference.",
@@ -38,7 +38,7 @@
    "theme_light": "Light",
    "theme_dark": "Dark",
    "theme_system": "System",
-   "langugage_toggle": "Toggle language",
+   "language_toggle": "Toggle language",
    "language_english": "English",
    "language_polish": "Polish",
    "results_title": "Pets looking for a home",
@@ -136,5 +136,10 @@
    "update_user_details_toast_success": "Personal details successfully updated!",
    "add_person_form_toast_success": "User successfully created!",
    "add_pet_form_toast_success": "{{name}} successfully added!",
-   "invite_user_form_toast_success": "Invitation email successfully sent to {{email}}"
+   "invite_user_form_toast_success": "Invitation email successfully sent to {{email}}",
+   "column_image": "Image",
+   "column_name": "Name",
+   "column_status": "Status",
+   "column_species": "Species",
+   "column_breed": "Breed"
 }
