@@ -7,7 +7,9 @@ const SearchByState: React.FC = () => {
     <div className="mt-[22rem] min-h-screen 2xl:mt-[25rem]">
       <p className="mb-5 text-lg text-neutral-700 dark:text-muted-foreground md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl">
         {t('search_by_state_title')}{' '}
-        <span className="font-bold text-primary-300">{t('state')}</span>
+        <span className="bg-gradient-to-r from-primary-200 to-indigo-600 bg-clip-text font-bold text-transparent">
+          {t('state')}
+        </span>
       </p>
       <div className="grid grid-cols-2 content-center gap-10 pt-5 text-center sm:grid-cols-3 md:gap-14 md:pt-10 lg:w-full lg:gap-20">
         <HeaderLink
