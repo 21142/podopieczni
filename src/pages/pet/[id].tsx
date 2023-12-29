@@ -1,3 +1,5 @@
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { type GetServerSideProps, type NextPage } from 'next/types';
@@ -61,6 +63,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const baseUrl = context.req
     ? `${protocol as string}://${host as string}`
     : '';
+  const locale = context.locale ?? 'en';
+
   const petfindetOauthData = (await fetch(
     `${baseUrl}/api/petfinder-oauth-token`
   ).then((res) => res.json())) as PetfinderOauth;
@@ -82,6 +86,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
           pet: pet,
           message: 'success',
+          ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
         },
       };
     } else {
@@ -89,6 +94,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
           pet: null,
           message: `no animal found for id: ${id}`,
+          ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
         },
       };
     }
@@ -97,6 +103,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         pet: null,
         message: 'no access token',
+        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
   }

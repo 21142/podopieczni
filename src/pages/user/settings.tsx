@@ -1,25 +1,15 @@
-import type { FC } from 'react';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import AccountSettingsForm from '~/components/forms/AccountSettingsForm';
 import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import Spinner from '~/components/spinners/Spinner';
-import { api } from '~/lib/api';
+import useMeQuery from '~/hooks/useMeQuery';
 
-const settings: FC = ({}) => {
-  const {
-    data: me,
-    isLoading,
-    error,
-  } = api.user.me.useQuery(undefined, {
-    retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+const UserSettings = () => {
+  const { data: me, isLoading, error } = useMeQuery();
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <PageLayout>
         <div className="grid h-[50vh] content-center">
@@ -27,6 +17,7 @@ const settings: FC = ({}) => {
         </div>
       </PageLayout>
     );
+  }
 
   if (error)
     return (
@@ -42,4 +33,10 @@ const settings: FC = ({}) => {
   );
 };
 
-export default settings;
+export default UserSettings;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+  },
+});

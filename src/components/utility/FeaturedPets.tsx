@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import {
   Card,
@@ -33,6 +34,7 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
     ['animals'],
     animalFetcher
   );
+  const { t } = useTranslation('common');
 
   return (
     <>
@@ -42,7 +44,7 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
           id="featured"
           className="py-10 text-3xl font-bold text-neutral-50 sm:text-4xl md:py-10 md:text-5xl lg:text-6xl 2xl:text-7xl"
         >
-          Podopieczni szukający domu
+          {t('featured_pets_title')}
         </p>
         {isLoading ? (
           <div className="grid max-w-7xl gap-3 p-5 md:grid-cols-2 lg:grid-cols-3">

@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
+import { useTranslation } from 'next-i18next';
 import { useForm } from 'react-hook-form';
 import { useToast } from '~/hooks/use-toast';
 import {
@@ -21,6 +22,7 @@ import { Input } from '../primitives/Input';
 
 const EmailInviteForm = () => {
   const { toast } = useToast();
+  const { t } = useTranslation('common');
 
   const form = useForm<IUserInviteDetails>({
     resolver: zodResolver(userEmailInviteSchema),
@@ -34,7 +36,9 @@ const EmailInviteForm = () => {
         email: form.getValues('email'),
       });
       toast({
-        description: `Invitation email successfully sent to ${values.email}!`,
+        description: t('invite_user_form_toast_success', {
+          email: values.email,
+        }),
         variant: 'success',
       });
     } catch (error) {
@@ -59,7 +63,7 @@ const EmailInviteForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Enter email</FormLabel>
+                <FormLabel>{t('invite_user_form_title')}</FormLabel>
                 <FormControl>
                   <Input
                     placeholder=""
@@ -67,7 +71,7 @@ const EmailInviteForm = () => {
                   />
                 </FormControl>
                 <FormDescription>
-                  The link will be valid for 24 hours
+                  {t('invite_user_form_subtitle')}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -78,7 +82,7 @@ const EmailInviteForm = () => {
             className="w-48 justify-self-start"
           >
             <Icons.mail className="mr-2 h-4 w-4" />
-            Wyślij zaproszenie
+            {t('invite_user_form_button')}
           </Button>
         </form>
       </Form>

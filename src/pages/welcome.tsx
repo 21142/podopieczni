@@ -1,30 +1,21 @@
 import type { NextPage } from 'next';
 import { signIn, signOut } from 'next-auth/react';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/navigation';
-import { CvaButton } from 'src/components/buttons/cva/ButtonCva';
-import { LinkButton } from 'src/components/buttons/link/LinkButton';
 import PageLayout from '~/components/layouts/PageLayout';
+import { Button } from '~/components/primitives/Button';
 import Spinner from '~/components/spinners/Spinner';
+import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
 
 const Welcome: NextPage = () => {
   const router = useRouter();
 
-  const {
-    data: sessionData,
-    isLoading,
-    error,
-  } = api.auth.getSession.useQuery(undefined, {
-    retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+  const { data: userFromSession, isLoading, error } = useUserFromSessionQuery();
 
-  const hasRole = sessionData?.role ? true : false;
+  const hasRole = userFromSession?.role ? true : false;
 
   const setRoleAsAdopter = api.auth.setAdoptingRole.useMutation();
   const setRoleAsShelter = api.auth.setShelterWorkerRole.useMutation();
@@ -39,12 +30,13 @@ const Welcome: NextPage = () => {
     router.replace('/dashboard');
   };
 
-  if (sessionData?.role) {
+  if (userFromSession?.role) {
     const redirectSlug: string =
-      sessionData?.role == Roles.Adopter ? '/' : '/dashboard';
+      userFromSession?.role == Roles.Adopter ? '/' : '/dashboard';
     router.replace(redirectSlug);
   }
 
+  // TODO: Clean up this mess - no low level html in pages (extract into components)
   if (isLoading)
     return (
       <PageLayout>
@@ -62,20 +54,22 @@ const Welcome: NextPage = () => {
             Zaloguj się, aby wybrać w czym możemy Ci pomóc?
           </p>
           <div className="flex justify-center gap-5">
-            <CvaButton
+            <Button
               variant="primary"
-              className="w-36 rounded-md px-4 py-2"
-              onClick={sessionData ? () => void signOut() : () => void signIn()}
+              size="lg"
+              onClick={
+                userFromSession ? () => void signOut() : () => void signIn()
+              }
             >
-              {sessionData ? 'Wyloguj się' : 'Zaloguj się'}
-            </CvaButton>
-            <CvaButton
-              variant="secondary"
-              className="w-36 rounded-md"
+              {userFromSession ? 'Wyloguj się' : 'Zaloguj się'}
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
               onClick={() => void router.push('/')}
             >
               Strona główna
-            </CvaButton>
+            </Button>
           </div>
         </div>
       </PageLayout>
@@ -83,18 +77,22 @@ const Welcome: NextPage = () => {
 
   return (
     <PageLayout>
-      {sessionData && !hasRole && (
+      {userFromSession && !hasRole && (
         <div className="grid h-80 place-items-center content-center">
-          <p className="text-lg">Please, tell us what are you here for</p>
+          <p className="text-lg">Powiedz nam w jakim celu tworzysz konto</p>
           <div className="grid gap-5 p-5 sm:grid-cols-2">
-            <LinkButton
-              value="I want to adopt a pet"
+            <Button
+              variant="roundedButton"
               onClick={setAdopterRole}
-            />
-            <LinkButton
-              value="I work in a shelter"
+            >
+              Szukam podopiecznego
+            </Button>
+            <Button
+              variant="roundedButton"
               onClick={setShelterRole}
-            />
+            >
+              Pracuję w schronisku
+            </Button>
           </div>
         </div>
       )}
@@ -103,3 +101,9 @@ const Welcome: NextPage = () => {
 };
 
 export default Welcome;
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+  },
+});

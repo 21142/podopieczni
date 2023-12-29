@@ -22,6 +22,7 @@ export const userAccountDetailsSchema = z.object({
     z.literal('Shelter'),
     z.literal('Admin'),
   ]),
+  image: z.string().optional(),
 });
 
 export const userEmailInviteSchema = z.object({

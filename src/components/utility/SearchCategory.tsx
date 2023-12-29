@@ -1,18 +1,18 @@
-import { useRouter } from 'next/navigation';
+import { useTranslation } from 'next-i18next';
 import { Icons } from '../icons/Icons';
 import { Label } from '../primitives/Label';
 import { RadioGroup, RadioGroupItem } from '../primitives/RadioButton';
 
 const SearchCategory = () => {
-  const router = useRouter();
+  const { t } = useTranslation('common');
   return (
     <RadioGroup
-      defaultValue="dog"
-      className="grid grid-cols-3 gap-4 lg:col-start-2 lg:col-end-5"
+      defaultValue=""
+      className="grid grid-cols-3 gap-4 text-muted-foreground lg:col-start-2 lg:col-end-5"
     >
       <Label
         htmlFor="dog"
-        className="[&:has([data-state=checked])]:border-primary flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl hover:cursor-pointer hover:bg-accent hover:text-accent-foreground"
+        className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl transition-all hover:cursor-pointer hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary-300 [&:has([data-state=checked])]:text-primary-300"
       >
         <RadioGroupItem
           value="dog"
@@ -20,11 +20,11 @@ const SearchCategory = () => {
           className="sr-only"
         />
         <Icons.dog className="mb-3 h-14 w-14" />
-        Dogs
+        {t('search_category_dogs')}
       </Label>
       <Label
         htmlFor="cat"
-        className="[&:has([data-state=checked])]:border-primary flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl hover:cursor-pointer hover:bg-accent hover:text-accent-foreground"
+        className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl transition-all hover:cursor-pointer hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary-300 [&:has([data-state=checked])]:text-primary-300"
       >
         <RadioGroupItem
           value="cat"
@@ -32,12 +32,12 @@ const SearchCategory = () => {
           className="sr-only"
         />
         <Icons.cat className="mb-3 h-14 w-14" />
-        Cats
+        {t('search_category_cats')}
       </Label>
       <Label
         htmlFor="shelter"
-        className="[&:has([data-state=checked])]:border-primary flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl hover:cursor-pointer hover:bg-accent hover:text-accent-foreground"
-        onClick={() => router.push('/organizations')}
+        className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl transition-all hover:cursor-pointer hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary-300 [&:has([data-state=checked])]:text-primary-300"
+        // onClick={() => router.push('/organizations')}
       >
         <RadioGroupItem
           value="shelter"
@@ -45,7 +45,7 @@ const SearchCategory = () => {
           className="sr-only"
         />
         <Icons.home className="mb-3 h-14 w-14" />
-        Shelters
+        {t('search_category_shelters')}
       </Label>
     </RadioGroup>
   );

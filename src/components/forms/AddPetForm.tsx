@@ -1,15 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TRPCClientError } from '@trpc/client';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodError, type z } from 'zod';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
+import { UploadButton } from '~/lib/uploadthing';
 import { cn } from '~/lib/utils';
 import {
   petDetailsSchema,
   type IPetDetails,
 } from '~/lib/validators/petValidation';
+import { Icons } from '../icons/Icons';
+import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 import { Button, buttonVariants } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import {
@@ -28,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../primitives/Select';
+import Spinner from '../spinners/Spinner';
 
 export const HealthStatusMap: Record<
   z.infer<typeof petDetailsSchema>['healthStatus'],
@@ -57,24 +63,40 @@ const AddPetForm = () => {
   const trpc = api.useContext().pet;
   const { toast } = useToast();
   const router = useRouter();
+  const { t } = useTranslation('common');
+
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [addingAnotherAnimal, setAddingAnotherAnimal] = useState(false);
 
   const addPetMutation = api.pet.add.useMutation({
     onSuccess: async () => {
       await trpc.getAllPets.invalidate();
+    },
+    onSettled(data) {
       form.reset();
-      router.push('/pets');
+      setAvatarUrl('');
+      if (data && !addingAnotherAnimal) {
+        router.push(`/animal/${data.id}`);
+      }
+      if (addingAnotherAnimal) {
+        router.refresh();
+      }
     },
   });
 
   const form = useForm<IPetDetails>({
     resolver: zodResolver(petDetailsSchema),
+    defaultValues: {
+      //TODO: decide if any should be set as default values
+      intakeEventDate: new Date().toISOString().slice(0, 10),
+    },
   });
 
   const onSubmit = async (values: IPetDetails) => {
     try {
       await addPetMutation.mutateAsync(values);
       toast({
-        description: `${values.name} successfully added!`,
+        description: t('add_pet_form_toast_success', { name: values.name }),
         variant: 'success',
       });
     } catch (error) {
@@ -95,19 +117,44 @@ const AddPetForm = () => {
     <div className="p-4">
       <Card className="mx-auto w-full max-w-7xl p-4 px-4 py-5 sm:mt-10 sm:p-6 2xl:max-w-8xl">
         <p className="mb-4 text-2xl font-light tracking-widest text-foreground underline decoration-2 underline-offset-2 sm:text-4xl">
-          Register a new pet
+          {t('add_pet_form_title')}
         </p>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
           >
+            <div className="col-span-6 flex gap-6">
+              <Avatar className="col-span-5 h-24 w-24">
+                <AvatarImage
+                  src={avatarUrl ?? '/no-profile-picture.svg'}
+                  alt="Avatar image"
+                />
+                <AvatarFallback>TBA</AvatarFallback>
+              </Avatar>
+              <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  res && setAvatarUrl(res[0]?.fileUrl as string);
+                  res && form.setValue('image', res[0]?.fileUrl as string);
+                }}
+                onUploadError={(error: Error) => {
+                  toast({
+                    description: error.message,
+                    variant: 'destructive',
+                  });
+                }}
+                onUploadProgress={() => {
+                  <Spinner />;
+                }}
+              />
+            </div>
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_name')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -123,7 +170,7 @@ const AddPetForm = () => {
               name="internalId"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Identifier</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_internal_id')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -139,14 +186,16 @@ const AddPetForm = () => {
               name="status"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_status')}</FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
+                        <SelectValue
+                          placeholder={t('add_pet_form_placeholder_status')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -163,7 +212,7 @@ const AddPetForm = () => {
               name="dateOfBirth"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Date of birth</FormLabel>
+                  <FormLabel>{t('form_label_dob')}</FormLabel>
                   <FormControl>
                     <Input
                       type="date"
@@ -180,14 +229,16 @@ const AddPetForm = () => {
               name="gender"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Gender</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_gender')}</FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select gender" />
+                        <SelectValue
+                          placeholder={t('add_pet_form_placeholder_gender')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -204,14 +255,16 @@ const AddPetForm = () => {
               name="coat"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Coat</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_coat')}</FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select coat" />
+                        <SelectValue
+                          placeholder={t('add_pet_form_placeholder_coat')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -232,14 +285,16 @@ const AddPetForm = () => {
               name="color"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Color</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_color')}</FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select color" />
+                        <SelectValue
+                          placeholder={t('add_pet_form_placeholder_color')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -256,7 +311,7 @@ const AddPetForm = () => {
               name="weight"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Weight</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_weight')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -273,14 +328,16 @@ const AddPetForm = () => {
               name="species"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Species</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_species')}</FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select species" />
+                        <SelectValue
+                          placeholder={t('add_pet_form_placeholder_species')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -297,14 +354,16 @@ const AddPetForm = () => {
               name="breed"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Breed</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_breed')}</FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select breed" />
+                        <SelectValue
+                          placeholder={t('add_pet_form_placeholder_breed')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -322,7 +381,7 @@ const AddPetForm = () => {
               name="microchipNumber"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Microchip number</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_microchip')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -338,14 +397,18 @@ const AddPetForm = () => {
               name="microchipBrand"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Microchip brand</FormLabel>
+                  <FormLabel>
+                    {t('add_pet_form_label_microchip_brand')}
+                  </FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a brand" />
+                        <SelectValue
+                          placeholder={t('add_pet_form_placeholder_microchip')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -362,7 +425,7 @@ const AddPetForm = () => {
               name="intakeEventDate"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Intake date</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_intake_date')}</FormLabel>
                   <FormControl>
                     <Input
                       type="date"
@@ -379,14 +442,16 @@ const AddPetForm = () => {
               name="intakeEventType"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Intake type</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_intake_type')}</FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select intake type" />
+                        <SelectValue
+                          placeholder={t('add_pet_form_placeholder_intake')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -411,14 +476,16 @@ const AddPetForm = () => {
               name="healthStatus"
               render={({ field }) => (
                 <FormItem className="col-span-6 sm:col-span-3">
-                  <FormLabel>Health condition on arrival</FormLabel>
+                  <FormLabel>{t('add_pet_form_label_health')}</FormLabel>
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select condition" />
+                        <SelectValue
+                          placeholder={t('add_pet_form_placeholder_health')}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -430,7 +497,6 @@ const AddPetForm = () => {
                           {HealthStatusMap[op.value]}
                         </SelectItem>
                       ))}
-                      <SelectItem value="healthy">Healthy</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -441,22 +507,28 @@ const AddPetForm = () => {
               <Button
                 type="submit"
                 className="col-span-6 justify-self-start"
-                onClick={async () => await trpc.getAllPets.invalidate()}
+                onClick={() => setAddingAnotherAnimal(false)}
                 disabled={addPetMutation.isLoading}
               >
-                {addPetMutation.isLoading ? 'Ładowanie...' : 'Zapisz'}
+                {addPetMutation.isLoading ? (
+                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  t('form_button_save')
+                )}
               </Button>
               <Button
                 type="submit"
                 className={`${cn(
                   buttonVariants({ variant: 'secondary' })
                 )} justify-self-start`}
-                onClick={async () => await trpc.getAllPets.invalidate()}
                 disabled={addPetMutation.isLoading}
+                onClick={() => setAddingAnotherAnimal(true)}
               >
-                {addPetMutation.isLoading
-                  ? 'Ładowanie...'
-                  : 'Zapisz i dodaj kolejne'}
+                {addPetMutation.isLoading ? (
+                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  t('form_button_save_add_another')
+                )}
               </Button>
             </div>
           </form>

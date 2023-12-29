@@ -1,21 +1,22 @@
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
-import { CvaButton } from '~/components/buttons/cva/ButtonCva';
+import { Button } from '../primitives/Button';
 
 const UnauthorizedPage = () => {
   const router = useRouter();
+  const { t } = useTranslation('common');
+
   return (
     <div className="grid h-[50vh] content-center">
-      <p className="p-12 text-center">
-        You don&apos;t have permission to access this page
-      </p>
+      <p className="p-12 text-center">{t('unauthorized_title')}</p>
       <div className="flex justify-center gap-5">
-        <CvaButton
+        <Button
           variant="primary"
-          className="w-36 rounded-md"
+          size="lg"
           onClick={() => void router.push('/')}
         >
-          Strona główna
-        </CvaButton>
+          {t('button_navigate_home')}
+        </Button>
       </div>
     </div>
   );

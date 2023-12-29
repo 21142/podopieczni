@@ -1,5 +1,7 @@
 import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
 import type { GetServerSideProps, NextPage } from 'next';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
@@ -32,7 +34,7 @@ const SearchPage: NextPage<IResults> = ({ animals, searchQuery }) => {
       <BackgroundWave />
 
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 flex items-baseline justify-between border-b border-gray-200 pb-6">
+        <div className="relative z-10 flex items-baseline justify-between pb-6">
           <h1 className="text-4xl font-semibold tracking-tight">
             {searchQuery ? `Results for ${searchQuery}` : 'Our pets'}
           </h1>
@@ -80,6 +82,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const baseUrl = context.req
     ? `${protocol as string}://${host as string}`
     : '';
+  const locale = context.locale ?? 'en';
+
   const petfindetOauthData = (await fetch(
     `${baseUrl}/api/petfinder-oauth-token`
   ).then((res) => res.json())) as PetfinderOauth;
@@ -103,6 +107,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
           animals: null,
           searchQuery: search,
+          ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
         },
       };
 
@@ -110,6 +115,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         animals: animals,
         searchQuery: search,
+        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
   } else {
@@ -117,6 +123,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         animals: ['no animals found'],
         searchQuery: search,
+        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
   }

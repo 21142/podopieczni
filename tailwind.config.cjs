@@ -34,9 +34,8 @@ module.exports = {
     },
     container: {
       center: true,
-      padding: '2rem',
       screens: {
-        '2xl': '1600px',
+        '2xl': '1800px',
       },
     },
     extend: {
@@ -142,7 +141,7 @@ module.exports = {
         144: '36rem',
       },
       maxWidth: {
-        '8xl': '96rem',
+        '8xl': '112.5rem',
       },
       borderRadius: {
         lg: 'var(--radius)',

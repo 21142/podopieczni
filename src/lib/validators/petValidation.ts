@@ -33,6 +33,29 @@ export const petDetailsSchema = z.object({
   ]),
 });
 
+export const petFilterOptionsSchema = z.object({
+  name: z.string().optional(),
+  species: z.string().optional(),
+  breed: z.string().optional(),
+  gender: z.string().optional(),
+  color: z.string().optional(),
+  coat: z.string().optional(),
+  weight: z.string().optional(),
+  age: z.string().optional(),
+  size: z.string().optional(),
+  characteristics: z.string().optional(),
+  goodWith: z.string().optional(),
+  status: z.string().optional(),
+  healthStatus: z.union([
+    z.literal('HEALTHY'),
+    z.literal('INJURED'),
+    z.literal('SICK'),
+    z.literal('TREATED'),
+    z.literal('QUARANTINE'),
+    z.literal('DEAD'),
+  ]),
+});
+
 export const fullPetDetailsSchema = z.object({
   internalId: z.string().optional(),
   image: z.string().optional(),
@@ -84,5 +107,10 @@ export const fullPetDetailsSchema = z.object({
   updatedAt: z.date(),
 });
 
+export const petIdSchema = z.object({
+  id: z.string(),
+});
+
 export type IPetDetails = z.infer<typeof petDetailsSchema>;
 export type IPetFullDetails = z.infer<typeof fullPetDetailsSchema>;
+export type IPetFilterOptions = z.infer<typeof petFilterOptionsSchema>;

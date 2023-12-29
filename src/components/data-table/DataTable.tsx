@@ -15,8 +15,7 @@ import {
 import React from 'react';
 import { DataTableToolbar } from './DataTableToolbar';
 
-import { useRouter } from 'next/navigation';
-import { Button } from '../primitives/Button';
+import { useTranslation } from 'next-i18next';
 import {
   Table,
   TableBody,
@@ -36,6 +35,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation('common');
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -44,8 +44,6 @@ export function DataTable<TData, TValue>({
 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-
-  const router = useRouter();
 
   const table = useReactTable({
     data,
@@ -70,14 +68,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-3">
-      <Button
-        onClick={() => void router.push('/animal/register')}
-        variant="primary"
-        className="my-4"
-      >
-        Dodaj zwierzaka
-      </Button>
+    <div className="space-y-3 pt-6">
       <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
@@ -122,7 +113,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t('animals_table_no_results')}
                 </TableCell>
               </TableRow>
             )}

@@ -1,3 +1,5 @@
+import { useTranslation } from 'next-i18next';
+
 export interface IGlobalStatistics {
   adopted: number;
   waiting: number;
@@ -6,6 +8,7 @@ export interface IGlobalStatistics {
 
 const GlobalStatistics: React.FC<IGlobalStatistics> = (mock) => {
   const { adopted, waiting, shelters } = mock;
+  const { t } = useTranslation('common');
   return (
     <div className="flex min-h-[80%] items-center justify-center gap-[1rem] sm:gap-[3rem] md:gap-[5rem]">
       <div className="text-center">
@@ -13,7 +16,7 @@ const GlobalStatistics: React.FC<IGlobalStatistics> = (mock) => {
           {adopted}
         </p>
         <p className="text-md font-light text-foreground sm:text-lg md:text-2xl">
-          Zaadoptowanych
+          {t('global_statistics_adopted_count')}
         </p>
       </div>
       <div className="text-center">
@@ -21,7 +24,7 @@ const GlobalStatistics: React.FC<IGlobalStatistics> = (mock) => {
           {waiting}
         </p>
         <p className="text-md font-light text-foreground sm:text-lg md:text-2xl">
-          Czeka na dom
+          {t('global_statistics_adoptable_count')}
         </p>
       </div>
       <div className="text-center">
@@ -29,7 +32,7 @@ const GlobalStatistics: React.FC<IGlobalStatistics> = (mock) => {
           {shelters}
         </p>
         <p className="text-md font-light text-foreground sm:text-lg md:text-2xl">
-          Schronisk
+          {t('global_statistics_shelters_count')}
         </p>
       </div>
     </div>

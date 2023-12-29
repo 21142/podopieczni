@@ -1,5 +1,6 @@
 import { MenuAlt2Icon, XIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
+import { useTranslation } from 'next-i18next';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -9,35 +10,32 @@ import Logo from '~/components/logos/Logo';
 import LogoDark from '~/components/logos/LogoDark';
 import { buttonVariants } from '~/components/primitives/Button';
 import { ThemeToggle } from '~/components/utility/ThemeToggle';
-import { api } from '~/lib/api';
+import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { Roles } from '~/lib/constants';
+import { cn } from '~/lib/utils';
 import HeaderLink from '../links/HeaderLink';
+import { LanguageToggle } from '../utility/LanguageToggle';
 
 const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
   className,
   ...headerProps
 }) => {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
-  const { data: sessionData } = api.auth.getSession.useQuery(undefined, {
-    retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+  const { data: userFromSession } = useUserFromSessionQuery();
 
   const { systemTheme, theme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
 
+  const { t } = useTranslation('common');
+
   return (
     <header
       {...headerProps}
-      className={`sticky top-0 z-10 w-screen border-b border-b-accent py-[14px] px-8 ${
+      className={`top-0 z-10 h-20 w-full border-b border-b-accent py-[14px] px-8 ${
         className ?? ''
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-x-3 lg:gap-x-10 2xl:max-w-8xl">
+      <div className="mx-auto flex items-center justify-between gap-x-3 md:gap-x-10 lg:max-w-8xl lg:gap-x-10">
         <Link href="/">
           <div className="relative flex">
             {currentTheme === 'light' ? <Logo /> : <LogoDark />}
@@ -52,50 +50,54 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
         >
           <HeaderLink
             href="/"
-            title="Główna"
+            title={t('nav_home')}
           />
-          {sessionData &&
-          (sessionData.role === Roles.Shelter ||
-            sessionData.role === Roles.Admin) ? (
+          {userFromSession &&
+          (userFromSession.role === Roles.Shelter ||
+            userFromSession.role === Roles.Admin) ? (
             <>
               <HeaderLink
                 href="/dashboard"
-                title="Schronisko"
+                title={t('nav_shelter')}
               />
               <HeaderLink
                 href="/pets"
-                title="Zwierzęta"
+                title={t('nav_animals')}
               />
               <HeaderLink
                 href="/users"
-                title="Użytkownicy"
+                title={t('nav_people')}
               />
             </>
           ) : (
             <>
               <HeaderLink
                 href="/"
-                title="Adopcja"
+                title={t('nav_adopt')}
               />
               <HeaderLink
                 href="/"
-                title="Kontakt"
+                title={t('nav_about')}
               />
             </>
           )}
           {mobileMenuIsOpen && (
             <HeaderLink
               href="/user/favorites"
-              title="Ulubione"
-              className={buttonVariants({
-                size: 'sm',
-                variant: 'ghost',
-              })}
+              title={t('nav_favorites')}
+              className={cn(
+                buttonVariants({
+                  size: 'sm',
+                  variant: 'ghost',
+                }),
+                'text-md justify-start rounded-none font-normal'
+              )}
             />
           )}
           {mobileMenuIsOpen && (
             <div className="flex items-center gap-x-5 border-t border-neutral-50 pl-4 pt-3 sm:hidden">
               <AuthButton />
+              <LanguageToggle />
               <ThemeToggle />
             </div>
           )}
@@ -113,6 +115,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
               <Icons.heart className="h-8 w-8" />
             </Link>
             <ThemeToggle />
+            <LanguageToggle />
             <AuthButton />
           </div>
           <button

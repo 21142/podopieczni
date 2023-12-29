@@ -1,19 +1,13 @@
 import { signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
-import { CvaButton } from '~/components/buttons/cva/ButtonCva';
-import { api } from '~/lib/api';
+import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
+import { Button } from '../primitives/Button';
 
 const LoginToAccessPage: FC = ({}) => {
   const router = useRouter();
-  const { data: sessionData } = api.auth.getSession.useQuery(undefined, {
-    retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+  const { data: userFromSession } = useUserFromSessionQuery();
+
   return (
     <div className="grid h-[50vh] content-center">
       <p className="p-12 text-center">
@@ -21,20 +15,20 @@ const LoginToAccessPage: FC = ({}) => {
         view
       </p>
       <div className="flex justify-center gap-5">
-        <CvaButton
+        <Button
           variant="primary"
-          className="w-36 rounded-md px-4 py-2"
-          onClick={sessionData ? () => void signOut() : () => void signIn()}
+          size="lg"
+          onClick={userFromSession ? () => void signOut() : () => void signIn()}
         >
-          {sessionData ? 'Wyloguj się' : 'Zaloguj się'}
-        </CvaButton>
-        <CvaButton
-          variant="secondary"
-          className="w-36 rounded-md"
+          {userFromSession ? 'Wyloguj się' : 'Zaloguj się'}
+        </Button>
+        <Button
+          variant="outline"
+          size="lg"
           onClick={() => void router.push('/')}
         >
           Strona główna
-        </CvaButton>
+        </Button>
       </div>
     </div>
   );

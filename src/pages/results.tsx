@@ -1,22 +1,21 @@
-import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react';
-import {
-  ChevronDownIcon,
-  FilterIcon,
-  MinusSmIcon,
-  PlusSmIcon,
-  XIcon,
-} from '@heroicons/react/outline';
+import { Dialog, Menu, Transition } from '@headlessui/react';
+import { ChevronDownIcon, FilterIcon, XIcon } from '@heroicons/react/outline';
 import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
 import type { GetServerSideProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { Fragment, useState } from 'react';
 import AdoptionFormCard from '~/components/cards/AdoptionFormCard';
+import FilterResultsForm from '~/components/forms/FilterResultsForm';
 import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
 import SearchCategory from '~/components/utility/SearchCategory';
 import SearchResults from '~/components/utility/SearchResults';
 import { TypeOfResults } from '~/lib/constants';
+import { cn } from '~/lib/utils';
 import type IAnimalData from '~/types/petfinderTypes';
 
 export interface IResults {
@@ -28,51 +27,16 @@ export interface PetfinderOauth {
   access_token: string;
 }
 
-const filters = [
-  {
-    id: 'color',
-    name: 'Color',
-    options: [
-      { value: 'white', label: 'White', checked: false },
-      { value: 'beige', label: 'Beige', checked: false },
-      { value: 'brown', label: 'Brown', checked: false },
-      { value: 'black', label: 'Black', checked: false },
-    ],
-  },
-  {
-    id: 'age',
-    name: 'Age',
-    options: [
-      { value: 'puppy', label: 'Puppy', checked: false },
-      { value: 'young', label: 'Young', checked: false },
-      { value: 'adult', label: 'Adult', checked: false },
-      { value: 'senior', label: 'Senior', checked: false },
-    ],
-  },
-  {
-    id: 'size',
-    name: 'Size',
-    options: [
-      { value: 'small', label: 'Small', checked: false },
-      { value: 'medium', label: 'Medium', checked: false },
-      { value: 'large', label: 'Large', checked: false },
-      { value: 'extra large', label: 'Extra Large', checked: false },
-    ],
-  },
-];
-
 const sortOptions = [
   { name: 'Most Popular', href: '#scrollToPosition', current: true },
   { name: 'Newest addition', href: '#scrollToPosition', current: false },
   { name: 'Oldest addition', href: '#scrollToPosition', current: false },
 ];
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
-
 const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const { t } = useTranslation('common');
 
   return (
     <PageLayout>
@@ -133,80 +97,20 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
                   />
                 </button>
               </div>
-
-              {/* Filters */}
-              <form className="mt-4 border-t border-gray-200">
-                <h3 className="sr-only">Categories</h3>
-
-                {filters.map((section) => (
-                  <Disclosure
-                    as="div"
-                    key={section.id}
-                    className="border-t border-gray-200 px-4 py-6"
-                  >
-                    {({ open }) => (
-                      <>
-                        <h3 className="-mx-2 -my-3 flow-root">
-                          <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                            <span className="font-medium text-gray-900">
-                              {section.name}
-                            </span>
-                            <span className="ml-6 flex items-center">
-                              {open ? (
-                                <MinusSmIcon
-                                  className="h-5 w-5"
-                                  aria-hidden="true"
-                                />
-                              ) : (
-                                <PlusSmIcon
-                                  className="h-5 w-5"
-                                  aria-hidden="true"
-                                />
-                              )}
-                            </span>
-                          </Disclosure.Button>
-                        </h3>
-                        <Disclosure.Panel className="pt-6">
-                          <div className="gap-y-6">
-                            {section.options.map((option, optionIdx) => (
-                              <div
-                                key={option.value}
-                                className="flex items-center"
-                              >
-                                <input
-                                  id={`filter-mobile-${section.id}-${optionIdx}`}
-                                  name={`${section.id}[]`}
-                                  defaultValue={option.value}
-                                  type="checkbox"
-                                  defaultChecked={option.checked}
-                                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                />
-                                <label
-                                  htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                  className="ml-3 min-w-0 flex-1 text-gray-500"
-                                >
-                                  {option.label}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
-                        </Disclosure.Panel>
-                      </>
-                    )}
-                  </Disclosure>
-                ))}
-              </form>
+              <div className="p-4">
+                <FilterResultsForm />
+              </div>
             </div>
           </Transition.Child>
         </Dialog>
       </Transition.Root>
 
-      <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 flex items-baseline justify-between border-b border-gray-200 pb-6">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 flex items-baseline justify-between pb-6">
           <h1 className="max-w-[300px] text-2xl font-medium tracking-tight sm:max-w-none sm:text-4xl">
             {searchQuery
-              ? `Results for ${searchQuery}`
-              : 'Dostępni podopieczni'}
+              ? `${t('results_for')}${searchQuery}`
+              : `${t('results_title')}`}
           </h1>
 
           <div className="flex items-center">
@@ -240,7 +144,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
                         {({ active }) => (
                           <a
                             href={option.href}
-                            className={classNames(
+                            className={cn(
                               option.current
                                 ? 'font-medium text-gray-900'
                                 : 'text-gray-500',
@@ -285,67 +189,8 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
 
           <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-[250px_minmax(700px,_1fr)]">
             <AdoptionFormCard />
-            {/* Filters */}
             <div className="hidden lg:row-start-2 lg:row-end-3 lg:block">
-              <h3 className="sr-only">Filters</h3>
-
-              {filters.map((section) => (
-                <Disclosure
-                  as="div"
-                  key={section.id}
-                  className="border-b border-gray-200 py-6"
-                >
-                  {({ open }) => (
-                    <>
-                      <h3 className="-my-3 flow-root">
-                        <Disclosure.Button className="flex w-full items-center justify-between bg-neutral-50/30 py-3 text-sm text-gray-400 hover:text-gray-500">
-                          <span className="font-medium text-gray-900">
-                            {section.name}
-                          </span>
-                          <span className="ml-6 flex items-center">
-                            {open ? (
-                              <MinusSmIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <PlusSmIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            )}
-                          </span>
-                        </Disclosure.Button>
-                      </h3>
-                      <Disclosure.Panel className="pt-6">
-                        <div className="gap-y-4">
-                          {section.options.map((option, optionIdx) => (
-                            <div
-                              key={option.value}
-                              className="flex items-center"
-                            >
-                              <input
-                                id={`filter-${section.id}-${optionIdx}`}
-                                name={`${section.id}[]`}
-                                defaultValue={option.value}
-                                type="checkbox"
-                                defaultChecked={option.checked}
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                              />
-                              <label
-                                htmlFor={`filter-${section.id}-${optionIdx}`}
-                                className="ml-3 text-sm text-gray-600"
-                              >
-                                {option.label}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      </Disclosure.Panel>
-                    </>
-                  )}
-                </Disclosure>
-              ))}
+              <FilterResultsForm />
             </div>
             <SearchCategory />
             <SearchResults
@@ -377,6 +222,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const baseUrl = context.req
     ? `${protocol as string}://${host as string}`
     : '';
+  const locale = context.locale ?? 'en';
+
   const petfindetOauthData = (await fetch(
     `${baseUrl}/api/petfinder-oauth-token`
   ).then((res) => res.json())) as PetfinderOauth;
@@ -398,6 +245,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
           animals: null,
           searchQuery: search,
+          ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
         },
       };
 
@@ -405,6 +253,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         animals: animals,
         searchQuery: search,
+        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
   } else {
@@ -412,6 +261,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       props: {
         animals: ['no animals found'],
         searchQuery: search,
+        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
   }

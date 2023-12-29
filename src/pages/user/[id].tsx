@@ -1,102 +1,94 @@
+import { TRPCError } from '@trpc/server';
+import i18nConfig from 'next-i18next.config.mjs';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
-import { type GetServerSideProps, type NextPage } from 'next/types';
-import PageLayout from '~/components/layouts/PageLayout';
-import type IAnimalData from '~/types/petfinderTypes';
-import { type PetfinderOauth } from '../results';
+import {
+  type GetStaticPaths,
+  type GetStaticPropsContext,
+  type InferGetStaticPropsType,
+  type NextPage,
+} from 'next/types';
+import DashboardLayout from '~/components/layouts/DashboardLayout';
+import { api } from '~/lib/api';
+import { prisma } from '~/lib/db';
+import { ssghelpers } from '~/lib/ssg';
 
-type IPetProfilePage = {
-  pet: IAnimalData;
-  message: string;
-};
+type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
-type PetfinderData = {
-  animal: IAnimalData;
-};
+const UserProfilePage: NextPage<PageProps> = ({ userId }) => {
+  const { data: user, isLoading } = api.user.getUserById.useQuery({
+    id: userId,
+  });
 
-const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
-  const id = useSearchParams().get('id');
+  if (isLoading) console.log('loading');
 
   return (
-    <PageLayout>
-      <div className="grid h-full items-center justify-center">
-        {pet === null ? (
-          <p>{message}</p>
-        ) : (
-          <>
-            <Image
-              src={pet.photos[0]?.large ?? '/no-profile-picture.svg'}
-              alt="profile picture"
-              className="rounded-md"
-              width="600"
-              height="400"
-            />
-            <p>
-              <strong>id:</strong> {id}
-            </p>
-            <p>
-              <strong>name:</strong> {pet.name}
-            </p>
-            <p>
-              <strong>role:</strong> {pet.status}
-            </p>
-            <p>
-              <strong>description:</strong> {pet.description}
-            </p>
-          </>
-        )}
-      </div>
-    </PageLayout>
+    <DashboardLayout>
+      {user && (
+        <div className="grid h-full content-center justify-center">
+          <Image
+            src={user.image ?? '/no-profile-picture.svg'}
+            alt="profile picture"
+            className="rounded-md"
+            width="600"
+            height="400"
+            priority={true}
+          />
+          <p>
+            <strong>id:</strong> {userId}
+          </p>
+          <p>
+            <strong>name:</strong> {user.name}
+          </p>
+          <p>
+            <strong>email:</strong> {user.email}
+          </p>
+          <p>
+            <strong>status:</strong> {user.role}
+          </p>
+        </div>
+      )}
+    </DashboardLayout>
   );
 };
 
-export default PetProfilePage;
+export default UserProfilePage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { query } = context;
-  const id = query.id ?? '';
-  const { host } = context.req.headers;
-  const protocol = context.req.headers['x-forwarded-proto'] || 'http';
-  const baseUrl = context.req
-    ? `${protocol as string}://${host as string}`
-    : '';
-  const petfindetOauthData = (await fetch(
-    `${baseUrl}/api/petfinder-oauth-token`
-  ).then((res) => res.json())) as PetfinderOauth;
-  const accessToken = petfindetOauthData.access_token;
-  if (accessToken) {
-    let url = 'https://api.petfinder.com/v2/animals?location=22152';
-    if (id) {
-      url = `https://api.petfinder.com/v2/animals/${id}`;
-    }
-    const petfindetData = (await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }).then((res) => res.json())) as PetfinderData;
-    const pet = petfindetData?.animal;
+export async function getStaticProps(context: GetStaticPropsContext) {
+  const userId = context.params?.id as string;
+  const locale = context.locale ?? 'en';
+  if (!userId)
+    throw new TRPCError({
+      code: 'NOT_FOUND',
+      message: `User not found for id: ${userId}`,
+    });
 
-    if (pet) {
-      return {
-        props: {
-          pet: pet,
-          message: 'success',
-        },
-      };
-    } else {
-      return {
-        props: {
-          pet: null,
-          message: `no animal found for id: ${id}`,
-        },
-      };
-    }
-  } else {
-    return {
-      props: {
-        pet: null,
-        message: 'no access token',
+  await ssghelpers.user.getUserById.prefetch({ id: userId });
+  return {
+    props: {
+      trpcState: ssghelpers.dehydrate(),
+      userId,
+      ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+    },
+    revalidate: 1,
+  };
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+    },
+  });
+
+  if (!users) return { paths: [], fallback: 'blocking' };
+
+  return {
+    paths: users.map((user) => ({
+      params: {
+        id: user.id,
       },
-    };
-  }
+    })),
+    fallback: 'blocking',
+  };
 };

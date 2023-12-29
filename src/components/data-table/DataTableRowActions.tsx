@@ -1,4 +1,8 @@
 import { type Row } from '@tanstack/react-table';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/navigation';
+import { api } from '~/lib/api';
+import { petIdSchema } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
 import {
@@ -6,7 +10,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '../primitives/DropdownMenu';
 
@@ -18,6 +21,27 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const animal = row.original;
+  const deletePetMutation = api.pet.deletePetById.useMutation();
+  const trpc = api.useContext().pet;
+  const router = useRouter();
+  const { t } = useTranslation('common');
+
+  const deletePet = async (animal: TData) => {
+    const parsedAnimal = petIdSchema.parse(animal);
+    await deletePetMutation.mutateAsync(parsedAnimal.id);
+    trpc.getAllPetsDataForTable.invalidate();
+  };
+
+  const goToProfile = (animal: TData) => {
+    const parsedAnimal = petIdSchema.parse(animal);
+    router.push(`/animal/${parsedAnimal.id}`);
+  };
+
+  if (deletePetMutation.status === 'loading') {
+    return (
+      <Icons.spinner className="ml-2 h-4 w-4 animate-spin text-primary-200" />
+    );
+  }
 
   return (
     <DropdownMenu>
@@ -31,18 +55,19 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem
-          onClick={() => console.log('list for adoption', animal)}
-        >
-          List for adoption
+        <DropdownMenuItem disabled>
+          {t('animals_table_row_action_list_for_adoption')}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>View profile</DropdownMenuItem>
-        <DropdownMenuItem>Edit details</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => goToProfile(animal)}>
+          {t('animals_table_row_action_view_profile')}
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled>
+          {t('animals_table_row_action_edit_details')}
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => console.log('delete', animal)}>
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+        <DropdownMenuItem onClick={() => deletePet(animal)}>
+          {t('animals_table_row_action_delete')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
