@@ -1,5 +1,6 @@
 import '@uploadthing/react/styles.css';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { appWithTranslation } from 'next-i18next';
@@ -57,6 +58,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         </ThemeProvider>
       </SessionProvider>
       <Analytics />
+      <SpeedInsights />
     </>
   );
 };
