@@ -11,6 +11,7 @@ export default interface IAnimalData {
   size: Size;
   coat?: string;
   attributes: IAttributes;
+  environment: IEnvironment;
   tags: string[];
   name: string;
   description?: string | undefined;
@@ -21,6 +22,26 @@ export default interface IAnimalData {
   status_changed_at: string;
   published_at: string;
   distance: number;
+  contact: IContact;
+}
+
+export interface IEnvironment {
+  children?: boolean;
+  dogs?: boolean;
+  cats?: boolean;
+}
+
+export interface IContact {
+  email: string;
+  phone: string;
+  address: IAddress;
+}
+
+export interface IAddress {
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
 }
 
 export interface IBreeds {

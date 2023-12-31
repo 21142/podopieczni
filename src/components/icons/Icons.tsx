@@ -16,6 +16,7 @@ import {
   DollarSign,
   Download,
   EyeOff,
+  Facebook,
   Globe,
   Heart,
   HeartHandshake,
@@ -25,8 +26,10 @@ import {
   Loader2,
   LogIn,
   Mail,
+  MapPinIcon,
   Moon,
   MoreHorizontal,
+  PhoneIcon,
   Plus,
   PlusCircle,
   Search,
@@ -80,6 +83,9 @@ export const Icons = {
   search: Search,
   crossedCircle: CircleSlashed,
   globe: Globe,
+  facebook: Facebook,
+  map: MapPinIcon,
+  phone: PhoneIcon,
   google: (props: LucideProps) => (
     <svg
       {...props}
