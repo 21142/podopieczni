@@ -1,8 +1,8 @@
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
 import { type GetServerSideProps, type NextPage } from 'next/types';
+import { Icons } from '~/components/icons/Icons';
 import PageLayout from '~/components/layouts/PageLayout';
 import { type IOrganizationData } from '~/types/petfinderTypes';
 import { type PetfinderOauth } from '../results';
@@ -20,36 +20,51 @@ const PetProfilePage: NextPage<IOrganizationProfilePage> = ({
   organization,
   message,
 }) => {
-  const id = useSearchParams().get('id');
-
   return (
     <PageLayout>
       <div className="grid h-full items-center justify-center">
         {organization === null ? (
           <p>{message}</p>
         ) : (
-          <>
-            <Image
-              src={organization.photos[0]?.large ?? '/no-profile-picture.svg'}
-              alt="profile picture"
-              className="rounded-md"
-              width="600"
-              height="400"
-            />
-            <p>
-              <strong>id:</strong> {id}
-            </p>
-            <p>
-              <strong>name:</strong> {organization.name}
-            </p>
-            <p>
-              <strong>phone:</strong> {organization.phone}
-            </p>
-            <p>
-              <strong>address:</strong> {organization.address.city}{' '}
-              {organization.address.state} {organization.address.country}
-            </p>
-          </>
+          <div className="flex min-h-screen flex-col">
+            <div className="container mx-auto flex items-center justify-between px-6 py-8">
+              <div className="flex items-center">
+                <Image
+                  alt="Shelter Logo"
+                  src={
+                    organization.photos[0]?.full ?? '/no-profile-picture.svg'
+                  }
+                  width={300}
+                  height={300}
+                />
+                <h1 className="ml-4 text-3xl font-semibold">
+                  {organization.name}
+                </h1>
+              </div>
+            </div>
+            <main className="container mx-auto flex-1 px-6">
+              <section className="mt-8">
+                <div className="flex items-center space-x-4">
+                  <Icons.map className="h-6 w-6" />
+                  <p>1234 Main St, Anytown, USA</p>
+                </div>
+                <div className="mt-2 flex items-center space-x-4">
+                  <Icons.phone className="h-6 w-6" />
+                  <p>(123) 456-7890</p>
+                </div>
+                <div className="mt-2 flex items-center space-x-4">
+                  <Icons.mail className="h-6 w-6" />
+                  <p>contact@sheltername.org</p>
+                </div>
+              </section>
+              <section className="mt-12">
+                <h2 className="text-2xl font-bold">Our Mission</h2>
+                <p className="mt-2 text-gray-600">
+                  {organization.mission_statement}
+                </p>
+              </section>
+            </main>
+          </div>
         )}
       </div>
     </PageLayout>

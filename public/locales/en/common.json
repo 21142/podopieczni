@@ -141,5 +141,7 @@
    "column_name": "Name",
    "column_status": "Status",
    "column_species": "Species",
-   "column_breed": "Breed"
+   "column_breed": "Breed",
+   "carousel_slide": "Photo",
+   "carousel_slide_of": "of"
 }
