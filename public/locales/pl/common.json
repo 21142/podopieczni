@@ -42,7 +42,7 @@
    "language_english": "Angielski",
    "language_polish": "Polski",
    "results_title": "Podopieczni szukający domu",
-   "results_for": "Podopieczni szukający domu z ",
+   "results_for": "Podopieczni szukający domu w ",
    "adoption_form_card_title": "Znajdź pasującego podopiecznego!",
    "adoption_form_card_description": "Wypełnij interaktywną ankietę przedadopcyjną.",
    "adoption_form_card_button": "Przejdź do ankiety",
@@ -141,5 +141,7 @@
    "column_name": "Imię",
    "column_status": "Status",
    "column_species": "Gatunek",
-   "column_breed": "Rasa"
+   "column_breed": "Rasa",
+   "carousel_slide": "Zdjęcie",
+   "carousel_slide_of": "z"
 }
