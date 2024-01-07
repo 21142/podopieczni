@@ -16,7 +16,7 @@ const AdoptionFormCard = () => {
   return (
     <Card className="lg: hidden lg:block">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg leading-6 text-primary-300 md:text-xl">
+        <CardTitle className="bg-gradient-to-r from-primary-200 to-primary-600 bg-clip-text text-lg leading-6 text-transparent md:text-xl">
           {t('adoption_form_card_title')}
         </CardTitle>
       </CardHeader>

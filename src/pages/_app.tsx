@@ -52,7 +52,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           enableSystem
         >
           {isPageLoading ? (
-            <div className="grid h-[80vh] content-center">
+            <div className="grid h-[80vh] content-center overflow-x-hidden">
               <Spinner />
             </div>
           ) : (

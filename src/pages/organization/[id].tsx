@@ -1,9 +1,15 @@
+import { useLoadScript } from '@react-google-maps/api';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { type GetServerSideProps, type NextPage } from 'next/types';
 import { Icons } from '~/components/icons/Icons';
 import PageLayout from '~/components/layouts/PageLayout';
+import { Button } from '~/components/primitives/Button';
+import Spinner from '~/components/spinners/Spinner';
+import Map from '~/components/utility/Map';
 import { type IOrganizationData } from '~/types/petfinderTypes';
 import { type PetfinderOauth } from '../results';
 
@@ -20,53 +26,113 @@ const PetProfilePage: NextPage<IOrganizationProfilePage> = ({
   organization,
   message,
 }) => {
+  const router = useRouter();
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
+    libraries: ['places'],
+  });
+
+  const organizationAddress = `${
+    organization.address.address1 ? `${organization.address.address1}, ` : ''
+  }${organization.address.city}, ${organization.address.state}, ${
+    organization.address.country
+  }`;
+  if (!isLoaded)
+    return (
+      <PageLayout>
+        <Spinner />
+      </PageLayout>
+    );
+
   return (
     <PageLayout>
-      <div className="grid h-full items-center justify-center">
+      <>
         {organization === null ? (
           <p>{message}</p>
         ) : (
-          <div className="flex min-h-screen flex-col">
-            <div className="container mx-auto flex items-center justify-between px-6 py-8">
-              <div className="flex items-center">
+          <div className="mx-auto flex min-h-screen flex-col">
+            <div className="flex items-center justify-start py-8 px-6 sm:px-12 lg:px-48">
+              <div className="flex flex-col justify-center gap-10 lg:flex-row lg:items-center">
                 <Image
                   alt="Shelter Logo"
                   src={
                     organization.photos[0]?.full ?? '/no-profile-picture.svg'
                   }
-                  width={300}
-                  height={300}
+                  width={400}
+                  height={400}
+                  className="rounded-sm"
                 />
-                <h1 className="ml-4 text-3xl font-semibold">
-                  {organization.name}
-                </h1>
+                <div className="flex flex-col gap-6">
+                  <h1 className="text-3xl font-semibold">
+                    {organization.name}
+                  </h1>
+                  <Link href="#">
+                    <Button
+                      size="lg"
+                      variant="primary"
+                      className="underline underline-offset-1 sm:no-underline"
+                    >
+                      Zobacz naszych podopiecznych
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
-            <main className="container mx-auto flex-1 px-6">
-              <section className="mt-8">
-                <div className="flex items-center space-x-4">
-                  <Icons.map className="h-6 w-6" />
-                  <p>1234 Main St, Anytown, USA</p>
-                </div>
+            <section className="flex flex-col items-start justify-center gap-4 py-8 px-6 sm:px-12 lg:px-48">
+              <div className="flex space-x-4">
+                <Icons.map className="h-6 w-6" />
+                <p>{organizationAddress}</p>
+              </div>
+              {organization.phone && (
                 <div className="mt-2 flex items-center space-x-4">
                   <Icons.phone className="h-6 w-6" />
-                  <p>(123) 456-7890</p>
+                  <a
+                    className="bg-transparent text-neutral-900 underline-offset-4 hover:bg-transparent hover:underline dark:bg-transparent dark:text-neutral-100 dark:hover:bg-transparent"
+                    href={`tel:${organization.phone}`}
+                  >
+                    {organization.phone}
+                  </a>
                 </div>
+              )}
+              {organization.email && (
                 <div className="mt-2 flex items-center space-x-4">
                   <Icons.mail className="h-6 w-6" />
-                  <p>contact@sheltername.org</p>
+                  <a
+                    href={`mailto:${organization.email}`}
+                    className="bg-transparent text-neutral-900 underline-offset-4 hover:bg-transparent hover:underline dark:bg-transparent dark:text-neutral-100 dark:hover:bg-transparent"
+                  >
+                    {organization.email}
+                  </a>
                 </div>
-              </section>
-              <section className="mt-12">
+              )}
+            </section>
+            {organization.mission_statement && (
+              <section className="py-8 px-6 sm:px-12 lg:px-48">
                 <h2 className="text-2xl font-bold">Our Mission</h2>
-                <p className="mt-2 text-gray-600">
-                  {organization.mission_statement}
-                </p>
+                <p className="mt-2">{organization.mission_statement}</p>
               </section>
-            </main>
+            )}
+            <section className="mt-8">
+              <h2 className="mb-4 py-8 px-6 text-2xl font-bold sm:px-12 lg:px-48">
+                Where are we located at?
+              </h2>
+              <Map address={`${organization.name}, ${organizationAddress}`} />
+            </section>
+            <section className="mt-12">
+              <div className="py-6 px-6 sm:px-12 lg:px-48">
+                <Button
+                  onClick={() => router.back()}
+                  className="hover:text-primary focus:text-primary text-md group flex items-center justify-center gap-x-0.5 font-sans text-gray-600 transition ease-out focus:outline-none"
+                  variant="link"
+                >
+                  <Icons.chevronLeft className="h-5 w-5" />
+                  Wróć
+                </Button>
+              </div>
+            </section>
           </div>
         )}
-      </div>
+      </>
     </PageLayout>
   );
 };
