@@ -1,8 +1,19 @@
 import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+  WhatsappIcon,
+  WhatsappShareButton,
+} from 'next-share';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { type GetServerSideProps, type NextPage } from 'next/types';
 import React from 'react';
 import { Icons } from '~/components/icons/Icons';
@@ -37,6 +48,7 @@ type PetfinderData = {
 
 const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
   const { t } = useTranslation('common');
+  const router = useRouter();
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
@@ -56,13 +68,13 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
 
   return (
     <PageLayout>
-      <div className="p-10">
+      <div className="p-6">
         {pet === null ? (
           <p>{message}</p>
         ) : (
           <div className="flex h-full flex-col items-center justify-center">
             <Carousel
-              className="w-full max-w-xs lg:max-w-lg xl:max-w-xl"
+              className="w-full max-w-[15rem] md:max-w-xs lg:max-w-lg xl:max-w-xl"
               setApi={setApi}
               opts={{
                 loop: true,
@@ -94,8 +106,8 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                 {t('carousel_slide')} {current} {t('carousel_slide_of')} {count}
               </div>
             )}
-            <div className="flex w-full gap-6">
-              <Card className="rounded-lg bg-transparent p-6 lg:w-2/3">
+            <div className="flex w-full flex-col gap-6 lg:flex-row">
+              <Card className="rounded-lg bg-transparent lg:w-2/3 lg:p-6">
                 <CardHeader>
                   <CardTitle>
                     <div className="flex items-center">
@@ -107,15 +119,15 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                         <Icons.heart className="h-6 w-6 fill-none text-primary-400 transition hover:scale-110 hover:fill-current" />
                       </span>
                     </div>
-                    <p className="pt-4 text-lg text-gray-700">
-                      {pet.type} - {pet.breeds.primary} •{' '}
+                    <p className="pt-4 text-lg ">
+                      {pet.type} • {pet.breeds.primary} •{' '}
                       {pet.contact.address.city}, {pet.contact.address.state}
                     </p>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Separator className="mb-6" />
-                  <ul className="flex items-center space-x-4 text-lg text-gray-800">
+                  <ul className="flex flex-col items-start space-y-4 text-lg md:flex-row md:space-x-4 md:space-y-0">
                     <li className="flex items-center">
                       <span className="mr-2">Age:</span>
                       <span className="font-bold text-primary-300">
@@ -148,7 +160,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                       <h2 className="mb-2 text-2xl font-bold">
                         About {pet.name}
                       </h2>
-                      <p className="text-gray-700">{pet.description}</p>
+                      <p className="">{pet.description}</p>
                     </div>
                   )}
 
@@ -161,7 +173,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                       <h2 className="mb-2 text-2xl font-bold">
                         Good in a home with
                       </h2>
-                      <p className="text-gray-700">
+                      <p className="">
                         {[
                           pet.environment.children && 'Children',
                           pet.environment.dogs && 'Dogs',
@@ -172,44 +184,80 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                       </p>
                     </div>
                   )}
+                  <Separator className="mt-6" />
+                  <div className="flex flex-col justify-between pt-6">
+                    <h2 className="mb-2 text-xl font-bold">
+                      How else can you help?
+                    </h2>
+                    <div className="flex items-end gap-4">
+                      <span className="text-lg">Share on</span>
+                      <FacebookShareButton url={pet.url}>
+                        <FacebookIcon
+                          size={32}
+                          round
+                        />
+                      </FacebookShareButton>
+                      <LinkedinShareButton url={pet.url}>
+                        <LinkedinIcon
+                          size={32}
+                          round
+                        />
+                      </LinkedinShareButton>
+                      <TwitterShareButton url={pet.url}>
+                        <TwitterIcon
+                          size={32}
+                          round
+                        />
+                      </TwitterShareButton>
+                      <WhatsappShareButton url={pet.url}>
+                        <WhatsappIcon
+                          size={32}
+                          round
+                        />
+                      </WhatsappShareButton>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
-              <Card className="rounded-lg bg-transparent p-6 lg:w-1/3">
+              <Card className="rounded-lg bg-transparent lg:w-1/3 lg:p-6">
+                <CardHeader>
+                  <CardTitle className="mb-4 text-3xl font-bold">
+                    Want to adopt {pet.name}?
+                  </CardTitle>
+                  <Button
+                    className="w-fit rounded-full px-5 md:px-12"
+                    variant="primary"
+                    onClick={() => console.log(pet.id)}
+                  >
+                    Inquire About Adoption
+                  </Button>
+                </CardHeader>
                 <CardContent>
-                  <div className="mt-8 flex w-fit flex-col">
-                    <h2 className="mb-2 text-2xl font-bold">
-                      Considering adopting {pet.name}?
-                    </h2>
-                    <Button
-                      className="w-fit rounded-full bg-primary-300 py-2 px-4 text-white hover:bg-primary-400"
-                      onClick={() => console.log(pet.id)}
-                    >
-                      Inquire About Adoption
-                    </Button>
-
-                    <div className="flex items-center space-x-2 pt-6">
-                      <span className="text-lg text-gray-900">Share:</span>
-                      <Button
-                        variant={'ghost'}
-                        className="text-blue-600 hover:text-blue-700"
-                        aria-label="Share on Facebook"
-                      >
-                        <Icons.facebook className="" />
-                      </Button>
-                    </div>
+                  <Separator className="my-6" />
+                  <div className="flex w-fit flex-col">
                     <div className="mt-6">
                       <h2 className="mb-2 text-2xl font-bold">
                         Organization Details
                       </h2>
-                      <p className="w-fit text-base text-gray-700 decoration-primary-300 underline-offset-4 transition hover:text-primary-300 hover:underline">
+                      <p className="w-fit text-base decoration-primary-300 underline-offset-4 transition hover:text-primary-300 hover:underline">
                         <Link href={`/organization/${pet.organization_id}`}>
-                          {pet.organization_id} - Go to Organization Page
+                          {pet.organization_id} • Go to Organization Page
                         </Link>
                       </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
+            </div>
+            <div className="py-6 px-6 sm:px-12 lg:px-48">
+              <Button
+                onClick={() => router.back()}
+                className="hover:text-primary focus:text-primary text-md group flex items-center justify-center gap-x-0.5 font-sans text-gray-600 transition ease-out focus:outline-none"
+                variant="link"
+              >
+                <Icons.chevronLeft className="h-5 w-5" />
+                Wróć
+              </Button>
             </div>
           </div>
         )}
@@ -245,7 +293,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     }).then((res) => res.json())) as PetfinderData;
     const pet = petfindetData?.animal;
-    console.log(pet);
 
     if (pet) {
       return {

@@ -9,6 +9,7 @@ const LogoDark = () => {
       height={51}
       width={230}
       loading="eager"
+      priority
     />
   );
 };
