@@ -93,6 +93,7 @@ export interface IOrganizationData {
 }
 
 export interface Address {
+  address1: string;
   city: string;
   country: string;
   state: string;

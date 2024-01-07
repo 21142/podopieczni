@@ -31,6 +31,8 @@ const buttonVariants = cva(
           'border-primary-300',
           'hover:bg-primary-400',
           'hover:text-white',
+          'dark:hover:bg-primary-400',
+          'dark:text-primary-300',
         ],
         secondary: [
           'bg-transparent',
