@@ -61,7 +61,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
                 title={t('nav_shelter')}
               />
               <HeaderLink
-                href="/pets"
+                href="/animals"
                 title={t('nav_animals')}
               />
               <HeaderLink

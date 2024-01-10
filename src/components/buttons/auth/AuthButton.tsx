@@ -60,7 +60,7 @@ const AuthButton: React.FC = () => {
         <DropdownMenuItem asChild>
           {(userFromSession?.role === Roles.Shelter ||
             userFromSession?.role === Roles.Admin) && (
-            <Link href="/pets">{t('nav_animals')}</Link>
+            <Link href="/animals">{t('nav_animals')}</Link>
           )}
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

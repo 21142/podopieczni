@@ -8,14 +8,13 @@ import { ZodError, type z } from 'zod';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
-import { cn } from '~/lib/utils';
 import {
   petDetailsSchema,
   type IPetDetails,
 } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
-import { Button, buttonVariants } from '../primitives/Button';
+import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import {
   Form,
@@ -508,6 +507,7 @@ const AddPetForm = () => {
                 type="submit"
                 className="col-span-6 justify-self-start"
                 onClick={() => setAddingAnotherAnimal(false)}
+                size="lg"
                 disabled={addPetMutation.isLoading}
               >
                 {addPetMutation.isLoading ? (
@@ -518,16 +518,15 @@ const AddPetForm = () => {
               </Button>
               <Button
                 type="submit"
-                className={`${cn(
-                  buttonVariants({ variant: 'secondary' })
-                )} justify-self-start`}
+                className="justify-self-start"
+                size="lg"
                 disabled={addPetMutation.isLoading}
                 onClick={() => setAddingAnotherAnimal(true)}
               >
                 {addPetMutation.isLoading ? (
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  t('form_button_save_add_another')
+                  t('add_pet_form_button_save_add_another')
                 )}
               </Button>
             </div>

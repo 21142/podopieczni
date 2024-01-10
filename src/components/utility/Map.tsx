@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 interface MapProps {
   address: string;
+  exactAddress?: boolean;
 }
 
 type Location = google.maps.LatLngLiteral;
@@ -67,7 +68,7 @@ const Map = (props: MapProps) => {
           onLoad={onMapLoad}
           mapContainerClassName="h-[50vh]"
         >
-          {location && <Marker position={location} />}
+          {props.exactAddress && <Marker position={location} />}
         </GoogleMap>
       )}
     </div>
