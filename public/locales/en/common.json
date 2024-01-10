@@ -143,5 +143,13 @@
    "column_species": "Species",
    "column_breed": "Breed",
    "carousel_slide": "Photo",
-   "carousel_slide_of": "of"
+   "carousel_slide_of": "of",
+   "404_title": "Page not found",
+   "404_subtitle": "Sorry, we couldn’t find the page you’re looking for.",
+   "404_button": "Go back home",
+   "404_contact": "Contact us",
+   "500_title": "Internal server error",
+   "500_subtitle": "Oops, something went wrong. Please try again, or contact us.",
+   "500_button": "Go back home",
+   "500_contact": "Contact support"
 }

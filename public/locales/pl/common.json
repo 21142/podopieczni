@@ -143,5 +143,9 @@
    "column_species": "Gatunek",
    "column_breed": "Rasa",
    "carousel_slide": "Zdjęcie",
-   "carousel_slide_of": "z"
+   "carousel_slide_of": "z",
+   "404_title": "Strona nie została znaleziona",
+   "404_subtitle": "Przepraszamy, nie możemy odnaleźć szukanej strony.",
+   "404_button": "Wróć do strony głównej",
+   "404_contact": "Skontaktuj się z nami"
 }

@@ -12,7 +12,7 @@ const NoFavoritesYet = () => {
         {t('no_favorites_yet')}
       </h1>
       <p className="px-4">{t('no_favorites_description')}</p>
-      <Icons.heart className="h-6 w-6 fill-none text-primary-400 hover:fill-current" />
+      <Icons.heart className="h-6 w-6 fill-primary-300 sm:fill-none sm:hover:fill-primary-300" />
 
       <div className="flex w-[19.5rem] flex-col items-center justify-center gap-3 pt-3 sm:flex-row">
         <Button variant="roundedButton">

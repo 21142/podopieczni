@@ -90,7 +90,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             title={t('dashboard_statistics_card_admitted_title')}
             value={petsCount}
             difference={petsCountChangeFromLastMonth}
-            onClick={() => router.push('/pets')}
+            onClick={() => router.push('/animals')}
           >
             <Icons.dog className="h-4 w-4 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
@@ -98,7 +98,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             title={t('dashboard_statistics_card_adopted_title')}
             value={42}
             difference={1}
-            onClick={() => router.push('/pets')}
+            onClick={() => router.push('/animals')}
           >
             <Icons.home className="h-4 w-4 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
