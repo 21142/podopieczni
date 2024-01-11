@@ -22,6 +22,8 @@ const Dashboard: NextPage = () => {
 
   const { data: recentlyAddedPets } =
     api.pet.getPetsAddedInTheLastMonth.useQuery();
+  const { data: mostRecentlyAddedPets } =
+    api.pet.getMostRecentlyAddedPets.useQuery();
   const { data: petsAddedLastMonthCount } =
     api.pet.getPetsCountChangeFromLastMonth.useQuery();
 
@@ -38,7 +40,11 @@ const Dashboard: NextPage = () => {
             usersCount={usersCount}
             usersCountChangeFromLastMonth={usersCountChangeFromLastMonth}
             petsAddedLastMonthCount={petsAddedLastMonthCount}
-            recentlyAddedPets={recentlyAddedPets}
+            recentlyAddedPets={
+              recentlyAddedPets && recentlyAddedPets?.length > 0
+                ? recentlyAddedPets
+                : mostRecentlyAddedPets
+            }
           />
         )}
     </DashboardLayout>

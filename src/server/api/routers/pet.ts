@@ -64,11 +64,21 @@ export const petRouter = createTRPCRouter({
         },
       },
       orderBy: {
-        // TODO: change to desc
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
       take: 5,
     });
+
+    return pets;
+  }),
+  getMostRecentlyAddedPets: publicProcedure.query(async ({ ctx }) => {
+    const pets = await ctx.prisma.pet.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 5,
+    });
+
     return pets;
   }),
   getPetsAddedInTheLastMonthCount: publicProcedure.query(async ({ ctx }) => {
