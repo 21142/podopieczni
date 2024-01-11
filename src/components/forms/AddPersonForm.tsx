@@ -324,6 +324,7 @@ const AddPersonForm = () => {
             <Button
               type="submit"
               className="col-span-3 justify-self-start"
+              size="lg"
               onClick={async () => await trpc.getAllUsers.invalidate()}
               disabled={addUserMutation.isLoading}
             >

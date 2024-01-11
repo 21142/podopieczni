@@ -147,5 +147,9 @@
    "404_title": "Strona nie została znaleziona",
    "404_subtitle": "Przepraszamy, nie możemy odnaleźć szukanej strony.",
    "404_button": "Wróć do strony głównej",
-   "404_contact": "Skontaktuj się z nami"
+   "404_contact": "Skontaktuj się z nami",
+   "500_title": "Błąd po stronie serwera",
+   "500_subtitle": "Ups, coś poszło nie tak. Spróbuj ponownie lub skontaktuj się z nami.",
+   "500_button": "Wróć do strony głównej",
+   "500_contact": "Skontaktuj się z nami"
 }
