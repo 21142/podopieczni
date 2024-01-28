@@ -1,6 +1,11 @@
 name: Security Scan
 
+permissions:
+  issues: write
+  pull-requests: write
+
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 0 * * 0' # generate report in an issue once a week, every Sunday at midnight
 
@@ -23,3 +28,20 @@ jobs:
           token: ${{ secrets.GH_PAGES_TOKEN }}
           target: 'https://podopieczni-21142.vercel.app'
           fail_action: false
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: zap_scan
+
+      - name: Create gh-pages branch
+        run: |
+          git checkout -b gh-pages
+          git add zap_scan/report_html.html
+          git commit -m "Deploy OWASP ZAP Baseline Scan report"
+
+      - name: Push to gh-pages
+        uses: ad-m/github-push-action@master
+        with:
+          branch: owasp-zap-scan-report
+          github_token: ${{ secrets.GH_PAGES_TOKEN }}

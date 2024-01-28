@@ -21,6 +21,7 @@ import '~/styles/globals.css';
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  preload: true,
 });
 
 const MyApp: AppType<{ session: Session | null }> = ({

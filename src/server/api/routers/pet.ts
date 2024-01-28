@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
 import { petDetailsSchema } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import protectedProcedure from '../procedures/protectedProcedure';
@@ -94,6 +95,10 @@ export const petRouter = createTRPCRouter({
   add: protectedProcedure
     .input(petDetailsSchema)
     .mutation(async ({ input, ctx }) => {
+      await checkIfRateLimitHasExceeded({
+        rateLimiterName: 'main',
+        identifier: ctx.session?.user.id ?? '',
+      });
       const pet = await ctx.prisma.pet.create({
         data: {
           internalId: input.internalId,

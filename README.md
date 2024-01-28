@@ -15,7 +15,7 @@
    <img alt="Website status" src="https://img.shields.io/website?label=website%20status&url=https%3A%2F%2Fpodopieczni-21142.vercel.app%2F">
   </a>
   <a href="https://codecov.io/gh/21142/podopieczni" target="_blank" rel="noopener">
-    <img src="https://codecov.io/gh/21142/podopieczni/branch/main/graph/badge.svg" alt="Codecov Coverage">
+    <img src="https://codecov.io/gh/21142/podopieczni/graph/badge.svg?token=PLMEIQ6USW" alt="Codecov Coverage">
   </a>
   <a href="https://github.com/microsoft/TypeScript" target="_blank" rel="noopener">
     <img src="https://badges.frapsoft.com/typescript/version/typescript-next.svg?v=103" alt="TypeScript">
@@ -34,7 +34,7 @@
    </a>
 
    <h1 align="center">podopieczni.pl</h1>
-   
+
    <p align="center">
        <br />
        The perfect data managment app and animal promotion platform.
