@@ -67,7 +67,8 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         if: success()
         with:
-          workflow: nextjs-bundle-analysis.yml
+          name: bundle
+          workflow: nextjs_bundle_analysis.yml
           branch: ${{ github.event.pull_request.base.ref }}
           path: .next/analyze/base
 
