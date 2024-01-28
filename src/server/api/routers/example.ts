@@ -22,7 +22,7 @@ export const exampleRouter = createTRPCRouter({
     return 'you can now see this secret message!';
   }),
 
-  expensive: protectedProcedure.query(async ({ ctx }) => {
+  expensive: publicProcedure.query(async ({ ctx }) => {
     const remaining = await checkIfRateLimitHasExceeded({
       rateLimiterName: 'main',
       identifier: ctx.session?.user.id ?? '',
