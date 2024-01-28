@@ -4,10 +4,10 @@ import { api } from '~/lib/api';
 export function useMeQuery() {
   const me = api.user.me.useQuery(undefined, {
     retry: (failureCount, error) => {
-      if (error?.message === 'UNAUTHORIZED') {
+      if (error?.data?.code === 'UNAUTHORIZED') {
         return false;
       }
-      return failureCount < 2;
+      return failureCount > 3 ? false : true;
     },
   });
 
