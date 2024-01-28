@@ -8,7 +8,7 @@ on:
       - main
 
 env:
-  DATABASE_URL: 'https://fake.com'
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
   NEXTAUTH_SECRET: 'fake'
   NEXTAUTH_URL: 'https://fake.com'
   PETFINDER_KEY: 'fake'
