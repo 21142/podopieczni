@@ -40,6 +40,7 @@ import {
   fullPetDetailsSchema,
   type IPetFullDetails,
 } from '~/lib/validators/petValidation';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../primitives/Tabs';
 
 interface Props {
   animalId: string;
@@ -98,448 +99,492 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
 
   return (
     <DashboardLayout>
-      <div className="absolute w-full">
-        <div className="h-28 bg-primary-300" />
-        <BackgroundWave />
-      </div>
-      {pet && (
-        <div className="p-4">
-          <div className="mx-auto w-full max-w-7xl p-4 px-4 py-5 sm:mt-10 sm:p-6 2xl:max-w-8xl">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
-              >
-                <div className="col-span-6 flex flex-col gap-6 md:flex-row">
-                  <Avatar className="col-span-5 h-80 w-80">
-                    <AvatarImage
-                      src={avatarUrl ?? '/no-profile-picture.svg'}
-                      alt="Avatar image"
-                    />
-                    <AvatarFallback>TBA</AvatarFallback>
-                  </Avatar>
-                  <UploadButton
-                    endpoint="imageUploader"
-                    onClientUploadComplete={(res) => {
-                      if (res) {
-                        setAvatarUrl(res[0]?.fileUrl as string);
-                        form.setValue('image', res[0]?.fileUrl as string);
-                        toast({
-                          description: t('pet_image_toast_upload_success'),
-                          variant: 'success',
-                        });
-                      }
-                    }}
-                    onUploadError={(error: Error) => {
-                      toast({
-                        description: error.message,
-                        variant: 'destructive',
-                      });
-                    }}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_name')}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder=""
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="internalId"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>
-                        {t('add_pet_form_label_internal_id')}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder=""
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_status')}</FormLabel>
-                      <Select
-                        onValueChange={
-                          field.onChange as (value: string) => void
-                        }
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t('add_pet_form_placeholder_status')}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="adoptable">Adoptable</SelectItem>
-                          <SelectItem value="quarantined">
-                            Quarantined
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="dateOfBirth"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('form_label_dob')}</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="date"
-                          className="border-b-2 border-t-0 border-l-0 border-r-0"
-                          placeholder=""
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="gender"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_gender')}</FormLabel>
-                      <Select
-                        onValueChange={
-                          field.onChange as (value: string) => void
-                        }
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t('add_pet_form_placeholder_gender')}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="female">Female</SelectItem>
-                          <SelectItem value="male">Male</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="coat"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_coat')}</FormLabel>
-                      <Select
-                        onValueChange={
-                          field.onChange as (value: string) => void
-                        }
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t('add_pet_form_placeholder_coat')}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="hairless">Hairless</SelectItem>
-                          <SelectItem value="short">Short</SelectItem>
-                          <SelectItem value="medium">Medium</SelectItem>
-                          <SelectItem value="long">Long</SelectItem>
-                          <SelectItem value="wire">Wire</SelectItem>
-                          <SelectItem value="curly">Curly</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="color"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_color')}</FormLabel>
-                      <Select
-                        onValueChange={
-                          field.onChange as (value: string) => void
-                        }
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t('add_pet_form_placeholder_color')}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="white">White</SelectItem>
-                          <SelectItem value="black">Black</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="weight"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_weight')}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder=""
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="col-span-6" />
-                <FormField
-                  control={form.control}
-                  name="species"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_species')}</FormLabel>
-                      <Select
-                        onValueChange={
-                          field.onChange as (value: string) => void
-                        }
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t(
-                                'add_pet_form_placeholder_species'
-                              )}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="dog">Dog</SelectItem>
-                          <SelectItem value="cat">Cat</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="breed"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_breed')}</FormLabel>
-                      <Select
-                        onValueChange={
-                          field.onChange as (value: string) => void
-                        }
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t('add_pet_form_placeholder_breed')}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="cockerSpaniel">
-                            Cocker Spaniel
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="microchipNumber"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_microchip')}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder=""
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="microchipBrand"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>
-                        {t('add_pet_form_label_microchip_brand')}
-                      </FormLabel>
-                      <Select
-                        onValueChange={
-                          field.onChange as (value: string) => void
-                        }
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t(
-                                'add_pet_form_placeholder_microchip'
-                              )}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="AVID">AVID</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="col-span-6" />
-                <FormField
-                  control={form.control}
-                  name="intakeEventDate"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>
-                        {t('add_pet_form_label_intake_date')}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="date"
-                          className="border-b-2 border-t-0 border-l-0 border-r-0"
-                          placeholder=""
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="intakeEventType"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>
-                        {t('add_pet_form_label_intake_type')}
-                      </FormLabel>
-                      <Select
-                        onValueChange={
-                          field.onChange as (value: string) => void
-                        }
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t('add_pet_form_placeholder_intake')}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {fullPetDetailsSchema.shape.intakeEventType.options.map(
-                            (op) => (
-                              <SelectItem
-                                key={op.value}
-                                value={op.value}
-                              >
-                                {IntakeEventTypeMap[op.value]}
-                              </SelectItem>
-                            )
-                          )}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="healthStatus"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6 sm:col-span-3">
-                      <FormLabel>{t('add_pet_form_label_health')}</FormLabel>
-                      <Select
-                        onValueChange={
-                          field.onChange as (value: string) => void
-                        }
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t('add_pet_form_placeholder_health')}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {fullPetDetailsSchema.shape.healthStatus.options.map(
-                            (op) => (
-                              <SelectItem
-                                key={op.value}
-                                value={op.value}
-                              >
-                                {HealthStatusMap[op.value]}
-                              </SelectItem>
-                            )
-                          )}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="col-span-6 mt-2 flex gap-3">
-                  <Button
-                    type="submit"
-                    className="col-span-6 justify-self-start"
-                    size="lg"
-                  >
-                    Update {pet.name}&apos;s details
-                  </Button>
-                </div>
-              </form>
-            </Form>
+      <Tabs defaultValue="details">
+        <div className="absolute w-full">
+          <div className="flex h-28 items-center justify-center bg-primary-300">
+            <TabsList>
+              <TabsTrigger value="details">{t('tabs_details')}</TabsTrigger>
+              <TabsTrigger value="documents">{t('tabs_documents')}</TabsTrigger>
+              <TabsTrigger value="events">{t('tabs_events')}</TabsTrigger>
+              <TabsTrigger value="medical">{t('tabs_medical')}</TabsTrigger>
+              <TabsTrigger value="notes">{t('tabs_notes')}</TabsTrigger>
+            </TabsList>
           </div>
+          <BackgroundWave />
         </div>
-      )}
+        {pet && (
+          <div className="p-4">
+            <div className="mx-auto w-full max-w-7xl p-4 px-4 py-5 sm:mt-10 sm:p-6 2xl:max-w-8xl">
+              <TabsContent value="details">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
+                  >
+                    <div className="col-span-6 flex flex-col items-center gap-6 md:flex-row">
+                      <Avatar className="col-span-5 mt-16 h-80 w-80 md:mt-0">
+                        <AvatarImage
+                          src={avatarUrl ?? '/no-profile-picture.svg'}
+                          alt="Avatar image"
+                        />
+                        <AvatarFallback>TBA</AvatarFallback>
+                      </Avatar>
+                      <UploadButton
+                        endpoint="imageUploader"
+                        onClientUploadComplete={(res) => {
+                          if (res) {
+                            setAvatarUrl(res[0]?.fileUrl as string);
+                            form.setValue('image', res[0]?.fileUrl as string);
+                            toast({
+                              description: t('pet_image_toast_upload_success'),
+                              variant: 'success',
+                            });
+                          }
+                        }}
+                        onUploadError={(error: Error) => {
+                          toast({
+                            description: error.message,
+                            variant: 'destructive',
+                          });
+                        }}
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>{t('add_pet_form_label_name')}</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder=""
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="internalId"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_internal_id')}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder=""
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_status')}
+                          </FormLabel>
+                          <Select
+                            onValueChange={
+                              field.onChange as (value: string) => void
+                            }
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={t(
+                                    'add_pet_form_placeholder_status'
+                                  )}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="adoptable">
+                                Adoptable
+                              </SelectItem>
+                              <SelectItem value="quarantined">
+                                Quarantined
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="dateOfBirth"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>{t('form_label_dob')}</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="date"
+                              className="border-b-2 border-t-0 border-l-0 border-r-0"
+                              placeholder=""
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_gender')}
+                          </FormLabel>
+                          <Select
+                            onValueChange={
+                              field.onChange as (value: string) => void
+                            }
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={t(
+                                    'add_pet_form_placeholder_gender'
+                                  )}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="female">Female</SelectItem>
+                              <SelectItem value="male">Male</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="coat"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>{t('add_pet_form_label_coat')}</FormLabel>
+                          <Select
+                            onValueChange={
+                              field.onChange as (value: string) => void
+                            }
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={t(
+                                    'add_pet_form_placeholder_coat'
+                                  )}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="hairless">Hairless</SelectItem>
+                              <SelectItem value="short">Short</SelectItem>
+                              <SelectItem value="medium">Medium</SelectItem>
+                              <SelectItem value="long">Long</SelectItem>
+                              <SelectItem value="wire">Wire</SelectItem>
+                              <SelectItem value="curly">Curly</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="color"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>{t('add_pet_form_label_color')}</FormLabel>
+                          <Select
+                            onValueChange={
+                              field.onChange as (value: string) => void
+                            }
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={t(
+                                    'add_pet_form_placeholder_color'
+                                  )}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="white">White</SelectItem>
+                              <SelectItem value="black">Black</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="weight"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_weight')}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder=""
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="col-span-6" />
+                    <FormField
+                      control={form.control}
+                      name="species"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_species')}
+                          </FormLabel>
+                          <Select
+                            onValueChange={
+                              field.onChange as (value: string) => void
+                            }
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={t(
+                                    'add_pet_form_placeholder_species'
+                                  )}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="dog">Dog</SelectItem>
+                              <SelectItem value="cat">Cat</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="breed"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>{t('add_pet_form_label_breed')}</FormLabel>
+                          <Select
+                            onValueChange={
+                              field.onChange as (value: string) => void
+                            }
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={t(
+                                    'add_pet_form_placeholder_breed'
+                                  )}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="cockerSpaniel">
+                                Cocker Spaniel
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="microchipNumber"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_microchip')}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder=""
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="microchipBrand"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_microchip_brand')}
+                          </FormLabel>
+                          <Select
+                            onValueChange={
+                              field.onChange as (value: string) => void
+                            }
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={t(
+                                    'add_pet_form_placeholder_microchip'
+                                  )}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="AVID">AVID</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="col-span-6" />
+                    <FormField
+                      control={form.control}
+                      name="intakeEventDate"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_intake_date')}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="date"
+                              className="border-b-2 border-t-0 border-l-0 border-r-0"
+                              placeholder=""
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="intakeEventType"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_intake_type')}
+                          </FormLabel>
+                          <Select
+                            onValueChange={
+                              field.onChange as (value: string) => void
+                            }
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={t(
+                                    'add_pet_form_placeholder_intake'
+                                  )}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {fullPetDetailsSchema.shape.intakeEventType.options.map(
+                                (op) => (
+                                  <SelectItem
+                                    key={op.value}
+                                    value={op.value}
+                                  >
+                                    {IntakeEventTypeMap[op.value]}
+                                  </SelectItem>
+                                )
+                              )}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="healthStatus"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 sm:col-span-3">
+                          <FormLabel>
+                            {t('add_pet_form_label_health')}
+                          </FormLabel>
+                          <Select
+                            onValueChange={
+                              field.onChange as (value: string) => void
+                            }
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={t(
+                                    'add_pet_form_placeholder_health'
+                                  )}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {fullPetDetailsSchema.shape.healthStatus.options.map(
+                                (op) => (
+                                  <SelectItem
+                                    key={op.value}
+                                    value={op.value}
+                                  >
+                                    {HealthStatusMap[op.value]}
+                                  </SelectItem>
+                                )
+                              )}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="col-span-6 mt-2 flex gap-3">
+                      <Button
+                        type="submit"
+                        className="col-span-6 justify-self-start"
+                        size="lg"
+                      >
+                        Update {pet.name}&apos;s details
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </TabsContent>
+              <TabsContent value="documents"></TabsContent>
+              <TabsContent value="events"></TabsContent>
+              <TabsContent value="medical"></TabsContent>
+              <TabsContent value="notes"></TabsContent>
+            </div>
+          </div>
+        )}
+      </Tabs>
     </DashboardLayout>
   );
 };
