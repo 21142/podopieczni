@@ -64,7 +64,7 @@ export const userRouter = createTRPCRouter({
     .input(userAccountDetailsSchema)
     .mutation(async ({ input, ctx }) => {
       await checkIfRateLimitHasExceeded({
-        rateLimiterName: 'main',
+        rateLimiterName: 'admin',
         identifier: ctx.session?.user.id ?? '',
       });
       if (input.address) {

@@ -185,6 +185,7 @@ const AddPersonForm = () => {
                   <FormControl>
                     <Input
                       type="date"
+                      className="border-b-2 border-t-0 border-l-0 border-r-0"
                       placeholder=""
                       {...field}
                     />

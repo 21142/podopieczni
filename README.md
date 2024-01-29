@@ -10,6 +10,9 @@
   <a href="https://github.com/21142/podopieczni/actions/workflows/security-scan.yaml" target="_blank" rel="noopener">
     <img src="https://github.com/21142/podopieczni/actions/workflows/security-scan.yaml/badge.svg" alt="OWASP Security Scan badge">
   </a>
+  <a href="https://github.com/21142/podopieczni/actions/workflows/unit-tests.yaml" target="_blank" rel="noopener">
+    <img src="https://github.com/21142/podopieczni/actions/workflows/unit-tests.yaml/badge.svg" alt="Unit tests">
+  </a>
   <br>
   <a href="https://codecov.io/gh/21142/podopieczni" target="_blank" rel="noopener">
    <img alt="Website status" src="https://img.shields.io/website?label=website%20status&url=https%3A%2F%2Fpodopieczni-21142.vercel.app%2F">

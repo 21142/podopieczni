@@ -8,6 +8,7 @@ import { ZodError, type z } from 'zod';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
+import { mapIntakeEventDate } from '~/lib/utils';
 import {
   petDetailsSchema,
   type IPetDetails,
@@ -93,6 +94,9 @@ const AddPetForm = () => {
 
   const onSubmit = async (values: IPetDetails) => {
     try {
+      if (values.intakeEventDate) {
+        values.intakeEventDate = mapIntakeEventDate(values.intakeEventDate);
+      }
       await addPetMutation.mutateAsync(values);
       toast({
         description: t('add_pet_form_toast_success', { name: values.name }),
@@ -136,6 +140,10 @@ const AddPetForm = () => {
                 onClientUploadComplete={(res) => {
                   res && setAvatarUrl(res[0]?.fileUrl as string);
                   res && form.setValue('image', res[0]?.fileUrl as string);
+                  toast({
+                    description: t('pet_image_toast_upload_success'),
+                    variant: 'success',
+                  });
                 }}
                 onUploadError={(error: Error) => {
                   toast({
@@ -215,6 +223,7 @@ const AddPetForm = () => {
                   <FormControl>
                     <Input
                       type="date"
+                      className="border-b-2 border-t-0 border-l-0 border-r-0"
                       placeholder=""
                       {...field}
                     />
@@ -428,6 +437,7 @@ const AddPetForm = () => {
                   <FormControl>
                     <Input
                       type="date"
+                      className="border-b-2 border-t-0 border-l-0 border-r-0"
                       placeholder=""
                       {...field}
                     />

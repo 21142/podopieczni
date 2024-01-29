@@ -1,6 +1,9 @@
 import { z } from 'zod';
 import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
-import { petDetailsSchema } from '~/lib/validators/petValidation';
+import {
+  fullPetDetailsSchema,
+  petDetailsSchema,
+} from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
@@ -108,6 +111,7 @@ export const petRouter = createTRPCRouter({
           gender: input.gender,
           color: input.color,
           coat: input.coat,
+          //TODO: remove this parsing
           weight: parseFloat(input.weight ?? '0.0'),
           image: input.image,
           // adoptionFee: input.adoptionFee,
@@ -133,9 +137,8 @@ export const petRouter = createTRPCRouter({
           // medicalEvents: {
           //   create: { ...input.medicalEvents },
           // },
-          // intakeEvent: {
-          //   create: { ...input.intakeEvent },
-          // },
+          intakeEventDate: input.intakeEventDate,
+          intakeEventType: input.intakeEventType,
           // outcomeEvents: {
           //   create: input.outcomeEvents,
           // },
@@ -148,6 +151,63 @@ export const petRouter = createTRPCRouter({
         },
       });
       return pet;
+    }),
+  updatePetById: protectedProcedure
+    .input(z.object({ id: z.string(), pet: fullPetDetailsSchema }))
+    .mutation(async ({ input, ctx }) => {
+      await checkIfRateLimitHasExceeded({
+        rateLimiterName: 'main',
+        identifier: ctx.session?.user.id ?? '',
+      });
+      await ctx.prisma.pet.update({
+        where: { id: input.id },
+        data: {
+          internalId: input.pet.internalId,
+          name: input.pet.name,
+          species: input.pet.species,
+          breed: input.pet.breed,
+          gender: input.pet.gender,
+          color: input.pet.color,
+          coat: input.pet.coat,
+          //TODO: remove this parsing
+          weight: parseFloat(input.pet.weight ?? '0.0'),
+          image: input.pet.image,
+          // adoptionFee: input.pet.adoptionFee,
+          dateOfBirth: new Date(input.pet.dateOfBirth as string).toISOString(),
+          status: input.pet.status,
+          // description: input.pet.description,
+          // houseTrained: input.pet.houseTrained,
+          // specialNeeds: input.pet.specialNeeds,
+          // neutered: input.pet.neutered,
+          // declawed: input.pet.declawed,
+          // aggressive: input.pet.aggressive,
+          // friendlyWithDogs: input.pet.friendlyWithDogs,
+          // friendlyWithCats: input.pet.friendlyWithCats,
+          // friendlyWithChildren: input.pet.friendlyWithChildren,
+          microchipBrand: input.pet.microchipBrand,
+          microchipNumber: input.pet.microchipNumber,
+          healthStatus: input.pet.healthStatus,
+          shelter: {
+            connect: {
+              id: 'clkg0af0j0000tw7lqiwgvsl9',
+            },
+          },
+          // medicalEvents: {
+          //   create: { ...input.pet.medicalEvents },
+          // },
+          intakeEventDate: input.pet.intakeEventDate,
+          intakeEventType: input.pet.intakeEventType,
+          // outcomeEvents: {
+          //   create: input.pet.outcomeEvents,
+          // },
+          // photos: {
+          //   create: input.pet.photos,
+          // },
+          // documents: {
+          //   create: input.pet.documents,
+          // },
+        },
+      });
     }),
   deletePetById: protectedProcedure
     .input(z.string())

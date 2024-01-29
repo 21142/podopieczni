@@ -16,3 +16,17 @@ export function getBaseUrl(): string {
 
   return `${protocol}${hostname}`;
 }
+
+export function mapIntakeEventDate(value: string) {
+  if (value) {
+    const inputDate = new Date(value);
+
+    if (!isNaN(inputDate.getTime())) {
+      return inputDate.toISOString();
+    } else {
+      console.error('Invalid mapping date string:', value);
+    }
+  }
+
+  return undefined;
+}
