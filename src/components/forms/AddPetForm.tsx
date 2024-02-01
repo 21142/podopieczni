@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TRPCClientError } from '@trpc/client';
 import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -8,14 +9,14 @@ import { ZodError, type z } from 'zod';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
-import { cn } from '~/lib/utils';
+import { mapIntakeEventDate } from '~/lib/utils';
 import {
   petDetailsSchema,
   type IPetDetails,
 } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
-import { Button, buttonVariants } from '../primitives/Button';
+import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import {
   Form,
@@ -34,6 +35,7 @@ import {
   SelectValue,
 } from '../primitives/Select';
 import Spinner from '../spinners/Spinner';
+import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
 export const HealthStatusMap: Record<
   z.infer<typeof petDetailsSchema>['healthStatus'],
@@ -94,6 +96,9 @@ const AddPetForm = () => {
 
   const onSubmit = async (values: IPetDetails) => {
     try {
+      if (values.intakeEventDate) {
+        values.intakeEventDate = mapIntakeEventDate(values.intakeEventDate);
+      }
       await addPetMutation.mutateAsync(values);
       toast({
         description: t('add_pet_form_toast_success', { name: values.name }),
@@ -114,9 +119,10 @@ const AddPetForm = () => {
   };
 
   return (
-    <div className="p-4">
-      <Card className="mx-auto w-full max-w-7xl p-4 px-4 py-5 sm:mt-10 sm:p-6 2xl:max-w-8xl">
-        <p className="mb-4 text-2xl font-light tracking-widest text-foreground underline decoration-2 underline-offset-2 sm:text-4xl">
+    <div className="px-4 pb-4">
+      <BackgroundWavesFeaturedPets className="absolute -z-10 aspect-[10/1] w-full rotate-180" />
+      <Card className="mx-auto mt-4 w-full max-w-7xl p-4 px-4 py-5 sm:mt-6 sm:p-10 2xl:max-w-8xl">
+        <p className="mb-6 font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
           {t('add_pet_form_title')}
         </p>
         <Form {...form}>
@@ -124,30 +130,56 @@ const AddPetForm = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
           >
-            <div className="col-span-6 flex gap-6">
-              <Avatar className="col-span-5 h-24 w-24">
+            <div className="col-span-6 flex flex-col items-center gap-6 md:flex-row">
+              <Avatar className="col-span-5 mt-16 h-64 w-64 md:mt-0">
                 <AvatarImage
                   src={avatarUrl ?? '/no-profile-picture.svg'}
                   alt="Avatar image"
                 />
-                <AvatarFallback>TBA</AvatarFallback>
+                <AvatarFallback>
+                  <Image
+                    className="opacity-70"
+                    width="400"
+                    height="400"
+                    src="/no-profile-picture.svg"
+                    alt="Default avatar image"
+                  />
+                </AvatarFallback>
               </Avatar>
-              <UploadButton
-                endpoint="imageUploader"
-                onClientUploadComplete={(res) => {
-                  res && setAvatarUrl(res[0]?.fileUrl as string);
-                  res && form.setValue('image', res[0]?.fileUrl as string);
-                }}
-                onUploadError={(error: Error) => {
-                  toast({
-                    description: error.message,
-                    variant: 'destructive',
-                  });
-                }}
-                onUploadProgress={() => {
-                  <Spinner />;
-                }}
-              />
+              <div className="items-center justify-center space-y-4 md:z-10 md:mt-10">
+                <UploadButton
+                  endpoint="imageUploader"
+                  onClientUploadComplete={(res) => {
+                    res && setAvatarUrl(res[0]?.fileUrl as string);
+                    res && form.setValue('image', res[0]?.fileUrl as string);
+                    toast({
+                      description: t('pet_image_toast_upload_success'),
+                      variant: 'success',
+                    });
+                  }}
+                  onUploadError={(error: Error) => {
+                    toast({
+                      description: error.message,
+                      variant: 'destructive',
+                    });
+                  }}
+                  onUploadProgress={() => {
+                    <Spinner />;
+                  }}
+                />
+                <Button
+                  className="text-base"
+                  variant={'destructive'}
+                  size="lg"
+                  disabled={!avatarUrl || avatarUrl === ''}
+                  onClick={() => {
+                    setAvatarUrl('');
+                    form.setValue('image', '');
+                  }}
+                >
+                  Remove Image
+                </Button>
+              </div>
             </div>
             <FormField
               control={form.control}
@@ -216,6 +248,7 @@ const AddPetForm = () => {
                   <FormControl>
                     <Input
                       type="date"
+                      className="border-b-2 border-t-0 border-l-0 border-r-0"
                       placeholder=""
                       {...field}
                     />
@@ -429,6 +462,7 @@ const AddPetForm = () => {
                   <FormControl>
                     <Input
                       type="date"
+                      className="border-b-2 border-t-0 border-l-0 border-r-0"
                       placeholder=""
                       {...field}
                     />
@@ -508,6 +542,7 @@ const AddPetForm = () => {
                 type="submit"
                 className="col-span-6 justify-self-start"
                 onClick={() => setAddingAnotherAnimal(false)}
+                size="lg"
                 disabled={addPetMutation.isLoading}
               >
                 {addPetMutation.isLoading ? (
@@ -518,16 +553,15 @@ const AddPetForm = () => {
               </Button>
               <Button
                 type="submit"
-                className={`${cn(
-                  buttonVariants({ variant: 'secondary' })
-                )} justify-self-start`}
+                className="justify-self-start"
+                size="lg"
                 disabled={addPetMutation.isLoading}
                 onClick={() => setAddingAnotherAnimal(true)}
               >
                 {addPetMutation.isLoading ? (
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  t('form_button_save_add_another')
+                  t('add_pet_form_button_save_add_another')
                 )}
               </Button>
             </div>

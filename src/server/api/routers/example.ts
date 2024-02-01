@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
 
 import { createTRPCRouter } from '~/server/api/trpc';
 import protectedProcedure from '../procedures/protectedProcedure';
@@ -19,5 +20,13 @@ export const exampleRouter = createTRPCRouter({
 
   getSecretMessage: protectedProcedure.query(() => {
     return 'you can now see this secret message!';
+  }),
+
+  expensive: publicProcedure.query(async ({ ctx }) => {
+    const remaining = await checkIfRateLimitHasExceeded({
+      rateLimiterName: 'main',
+      identifier: ctx.session?.user.id ?? '',
+    });
+    return `Running an expensive query! You have ${remaining} requests remaining!`;
   }),
 });

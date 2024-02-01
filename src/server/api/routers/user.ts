@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
 import { userAccountDetailsSchema } from '~/lib/validators/userValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import adminProcedure from '../procedures/adminProcedure';
@@ -62,6 +63,10 @@ export const userRouter = createTRPCRouter({
   add: adminProcedure
     .input(userAccountDetailsSchema)
     .mutation(async ({ input, ctx }) => {
+      await checkIfRateLimitHasExceeded({
+        rateLimiterName: 'admin',
+        identifier: ctx.session?.user.id ?? '',
+      });
       if (input.address) {
         await ctx.prisma.user.create({
           data: {
@@ -102,6 +107,10 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(userAccountDetailsSchema)
     .mutation(async ({ input, ctx }) => {
+      await checkIfRateLimitHasExceeded({
+        rateLimiterName: 'main',
+        identifier: ctx.session?.user.id ?? '',
+      });
       if (input.address) {
         await ctx.prisma.user.update({
           where: { email: input.email },

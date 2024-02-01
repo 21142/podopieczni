@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from 'src/components/primitives/Button';
+import { buttonVariants } from 'src/components/primitives/Button';
 import { TypeOfResults } from '~/lib/constants';
 import Search from '../inputs/Search';
 
@@ -28,16 +28,18 @@ const Hero: React.FC = () => {
           typeOfResults={TypeOfResults.Animal}
         />
         <div className="flex w-[19.5rem] items-center justify-center gap-x-5 pt-3">
-          <Button variant="roundedButton">
-            <Link href={`/${TypeOfResults.Animal}#scrollToPosition`}>
-              {t('hero_search_button_pets')}
-            </Link>
-          </Button>
-          <Button variant="roundedButton">
-            <Link href={`/${TypeOfResults.Organization}#scrollToPosition`}>
-              {t('hero_search_button_shelters')}
-            </Link>
-          </Button>
+          <Link
+            href={`/${TypeOfResults.Animal}#scrollToPosition`}
+            className={buttonVariants({ variant: 'roundedButton' })}
+          >
+            {t('hero_search_button_pets')}
+          </Link>
+          <Link
+            href={`/${TypeOfResults.Organization}#scrollToPosition`}
+            className={buttonVariants({ variant: 'roundedButton' })}
+          >
+            {t('hero_search_button_shelters')}
+          </Link>
         </div>
       </div>
     </div>
