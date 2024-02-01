@@ -1,10 +1,16 @@
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
+import { useState } from 'react';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
 
 const NoFavoritesYet = () => {
   const { t } = useTranslation('common');
+  const [isLikeClicked, setIsLikeClicked] = useState(false);
+
+  const handleFakeLikeClick = () => {
+    setIsLikeClicked((prev) => !prev);
+  };
 
   return (
     <div className="container flex h-[60vh] flex-col items-center justify-center gap-3 text-center">
@@ -12,7 +18,12 @@ const NoFavoritesYet = () => {
         {t('no_favorites_yet')}
       </h1>
       <p className="px-4">{t('no_favorites_description')}</p>
-      <Icons.heart className="h-6 w-6 fill-primary-300 sm:fill-none sm:hover:fill-primary-300" />
+      <Icons.heart
+        onClick={handleFakeLikeClick}
+        className={`cursor-pointer transition-all ease-in-out hover:scale-110 ${
+          isLikeClicked ? 'fill-primary-300 text-primary-300' : ''
+        }`}
+      />
 
       <div className="flex w-[19.5rem] flex-col items-center justify-center gap-3 pt-3 sm:flex-row">
         <Button variant="roundedButton">

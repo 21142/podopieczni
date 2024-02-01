@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from '../primitives/Select';
 import Spinner from '../spinners/Spinner';
+import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
 export const RolesMap: Record<
   z.infer<typeof userAccountDetailsSchema>['role'],
@@ -91,42 +92,61 @@ const AddPersonForm = () => {
   };
 
   return (
-    <div className="p-4">
-      <Card className="mx-auto w-full max-w-7xl p-4 px-4 py-5 sm:mt-10 sm:p-6 2xl:max-w-8xl">
+    <div className="px-4 pb-4">
+      <BackgroundWavesFeaturedPets className="absolute -z-10 aspect-[10/1] w-full rotate-180" />
+      <Card className="mx-auto mt-4 w-full max-w-7xl p-4 px-4 py-5 sm:mt-6 sm:p-10 2xl:max-w-8xl">
         <CardHeader className="px-0 pt-2">
-          <h1 className="text-3xl font-medium text-foreground underline">
+          <h1 className="mb-6 font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
             {t('add_person_form_title')}
           </h1>
         </CardHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-y-6 md:grid md:grid-cols-3 md:gap-6"
+            className="flex flex-col gap-y-6 md:grid md:grid-cols-2 md:gap-6"
           >
-            <div className="col-span-3 flex gap-6">
-              <Avatar className="col-span-5 h-24 w-24">
-                <AvatarImage
-                  src={avatarUrl ?? '/no-profile-picture.svg'}
-                  alt="Avatar image"
-                />
-                <AvatarFallback>TBA</AvatarFallback>
-              </Avatar>
-              <UploadButton
-                endpoint="imageUploader"
-                onClientUploadComplete={(res) => {
-                  res && setAvatarUrl(res[0]?.fileUrl as string);
-                  res && form.setValue('image', res[0]?.fileUrl as string);
-                }}
-                onUploadError={(error: Error) => {
-                  toast({
-                    description: error.message,
-                    variant: 'destructive',
-                  });
-                }}
-                onUploadProgress={() => {
-                  <Spinner />;
-                }}
-              />
+            <div className="col-span-2 flex justify-center gap-6 md:justify-start">
+              <div className="flex flex-col items-center gap-6 md:flex-row">
+                <Avatar className="col-span-5 h-64 w-64">
+                  <AvatarImage
+                    src={avatarUrl ?? '/no-profile-picture.svg'}
+                    alt="Avatar image"
+                  />
+                  <AvatarFallback>
+                    <Icons.user className="h-24 w-24 opacity-70" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="items-center justify-center space-y-4 md:z-10 md:mt-10">
+                  <UploadButton
+                    endpoint="imageUploader"
+                    onClientUploadComplete={(res) => {
+                      res && setAvatarUrl(res[0]?.fileUrl as string);
+                      res && form.setValue('image', res[0]?.fileUrl as string);
+                    }}
+                    onUploadError={(error: Error) => {
+                      toast({
+                        description: error.message,
+                        variant: 'destructive',
+                      });
+                    }}
+                    onUploadProgress={() => {
+                      <Spinner />;
+                    }}
+                  />
+                  <Button
+                    className="text-base"
+                    variant={'destructive'}
+                    size="lg"
+                    disabled={!avatarUrl || avatarUrl === ''}
+                    onClick={() => {
+                      setAvatarUrl('');
+                      form.setValue('image', '');
+                    }}
+                  >
+                    Remove Image
+                  </Button>
+                </div>
+              </div>
             </div>
             <FormField
               control={form.control}
@@ -324,7 +344,7 @@ const AddPersonForm = () => {
             />
             <Button
               type="submit"
-              className="col-span-3 justify-self-start"
+              className="col-span-2 justify-self-start"
               size="lg"
               onClick={async () => await trpc.getAllUsers.invalidate()}
               disabled={addUserMutation.isLoading}

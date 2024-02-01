@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -37,6 +38,32 @@ const PetCard: React.FC<IAnimalCard> = ({
   type,
 }) => {
   const router = useRouter();
+  const [isLikeClicked, setIsLikeClicked] = useState(false);
+  const [isDonationClicked, setIsDonationClicked] = useState(false);
+
+  const handleLikeClick = () => {
+    if (!isLikeClicked) {
+      console.log('TODO: add mutation to tag as favorite pet with id: ', id);
+    } else {
+      console.log(
+        'TODO: add mutation to remove from favorites pet with id: ',
+        id
+      );
+    }
+    setIsLikeClicked((prev) => !prev);
+    setTimeout(() => {
+      router.push(`/user/favorites`);
+    }, 1000);
+  };
+
+  const handleDonationClick = () => {
+    console.log('TODO: add mutation to donate for a pet with id: ', id);
+    setIsDonationClicked((prev) => !prev);
+    setTimeout(() => {
+      router.push(`/donate/${id}`);
+    }, 1000);
+  };
+
   return (
     <Card
       key={id}
@@ -75,18 +102,16 @@ const PetCard: React.FC<IAnimalCard> = ({
         </CardContent>
         <CardFooter className="flex justify-end gap-2 pt-2 pb-3">
           <Icons.heart
-            onClick={() => {
-              console.log(
-                'TODO: add mutation to tag as favorite for a user',
-                id
-              );
-              router.push('/user/favorites');
-            }}
-            className="hover:scale-110 hover:fill-primary-300"
+            onClick={handleLikeClick}
+            className={`transition-all ease-in-out hover:scale-110 ${
+              isLikeClicked ? 'fill-primary-300 text-primary-300' : ''
+            }`}
           />
           <Icons.heartDonate
-            onClick={() => router.push(`/donations/${id}`)}
-            className="hover:scale-110 hover:fill-success-300"
+            onClick={handleDonationClick}
+            className={`transition-all ease-in-out hover:scale-110 ${
+              isDonationClicked ? 'fill-success-200 text-success-400' : ''
+            }`}
           />
         </CardFooter>
       </>

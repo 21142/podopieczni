@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TRPCClientError } from '@trpc/client';
 import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
 import { useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodError } from 'zod';
@@ -31,7 +32,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/primitives/Select';
-import BackgroundWave from '~/components/utility/BackgroundWave';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
@@ -40,7 +40,10 @@ import {
   fullPetDetailsSchema,
   type IPetFullDetails,
 } from '~/lib/validators/petValidation';
+import { Icons } from '../icons/Icons';
+import { Card } from '../primitives/Card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../primitives/Tabs';
+import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
 interface Props {
   animalId: string;
@@ -56,6 +59,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
   });
 
   const [avatarUrl, setAvatarUrl] = useState(pet?.image ?? '');
+  const [isAddingOutcome, setIsAddingOutcome] = useState(false);
 
   const updatePetMutation = api.pet.updatePetById.useMutation({
     onSuccess: async () => {
@@ -101,16 +105,47 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     <DashboardLayout>
       <Tabs defaultValue="details">
         <div className="absolute w-full">
-          <div className="flex h-28 items-center justify-center bg-primary-300">
-            <TabsList>
-              <TabsTrigger value="details">{t('tabs_details')}</TabsTrigger>
-              <TabsTrigger value="documents">{t('tabs_documents')}</TabsTrigger>
-              <TabsTrigger value="events">{t('tabs_events')}</TabsTrigger>
-              <TabsTrigger value="medical">{t('tabs_medical')}</TabsTrigger>
-              <TabsTrigger value="notes">{t('tabs_notes')}</TabsTrigger>
+          <div className="flex items-center justify-center bg-primary-200">
+            <TabsList className="absolute top-5 m-2 flex flex-wrap">
+              <TabsTrigger
+                value="details"
+                className="w-1/2 sm:w-1/6"
+              >
+                {t('tabs_details')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="photos"
+                className="w-1/2 sm:w-1/6"
+              >
+                {t('tabs_photos')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="documents"
+                className="w-1/2 sm:w-1/6"
+              >
+                {t('tabs_documents')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="events"
+                className="w-1/2 sm:w-1/6"
+              >
+                {t('tabs_events')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="medical"
+                className="w-1/2 sm:w-1/6"
+              >
+                {t('tabs_medical')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="notes"
+                className="w-1/2 sm:w-1/6"
+              >
+                {t('tabs_notes')}
+              </TabsTrigger>
             </TabsList>
           </div>
-          <BackgroundWave />
+          <BackgroundWavesFeaturedPets className="absolute -z-10 aspect-[10/1] w-full rotate-180" />
         </div>
         {pet && (
           <div className="p-4">
@@ -122,32 +157,56 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                     className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
                   >
                     <div className="col-span-6 flex flex-col items-center gap-6 md:flex-row">
-                      <Avatar className="col-span-5 mt-16 h-80 w-80 md:mt-0">
+                      <Avatar className="col-span-5 mt-24 h-80 w-80 md:mt-0">
                         <AvatarImage
-                          src={avatarUrl ?? '/no-profile-picture.svg'}
+                          src={avatarUrl}
                           alt="Avatar image"
                         />
-                        <AvatarFallback>TBA</AvatarFallback>
+                        <AvatarFallback>
+                          <Image
+                            className="opacity-70"
+                            width="400"
+                            height="400"
+                            src="/no-profile-picture.svg"
+                            alt="Default avatar image"
+                          />
+                        </AvatarFallback>
                       </Avatar>
-                      <UploadButton
-                        endpoint="imageUploader"
-                        onClientUploadComplete={(res) => {
-                          if (res) {
-                            setAvatarUrl(res[0]?.fileUrl as string);
-                            form.setValue('image', res[0]?.fileUrl as string);
+                      <div className="items-center justify-center space-y-4 md:z-10 md:mt-10">
+                        <UploadButton
+                          endpoint="imageUploader"
+                          onClientUploadComplete={(res) => {
+                            if (res) {
+                              setAvatarUrl(res[0]?.fileUrl as string);
+                              form.setValue('image', res[0]?.fileUrl as string);
+                              toast({
+                                description: t(
+                                  'pet_image_toast_upload_success'
+                                ),
+                                variant: 'success',
+                              });
+                            }
+                          }}
+                          onUploadError={(error: Error) => {
                             toast({
-                              description: t('pet_image_toast_upload_success'),
-                              variant: 'success',
+                              description: error.message,
+                              variant: 'destructive',
                             });
-                          }
-                        }}
-                        onUploadError={(error: Error) => {
-                          toast({
-                            description: error.message,
-                            variant: 'destructive',
-                          });
-                        }}
-                      />
+                          }}
+                        />
+                        <Button
+                          className="text-base"
+                          variant={'destructive'}
+                          size="lg"
+                          disabled={!avatarUrl || avatarUrl === ''}
+                          onClick={() => {
+                            setAvatarUrl('');
+                            form.setValue('image', '');
+                          }}
+                        >
+                          Remove Image
+                        </Button>
+                      </div>
                     </div>
                     <FormField
                       control={form.control}
@@ -464,112 +523,12 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         </FormItem>
                       )}
                     />
-                    <div className="col-span-6" />
-                    <FormField
-                      control={form.control}
-                      name="intakeEventDate"
-                      render={({ field }) => (
-                        <FormItem className="col-span-6 sm:col-span-3">
-                          <FormLabel>
-                            {t('add_pet_form_label_intake_date')}
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="date"
-                              className="border-b-2 border-t-0 border-l-0 border-r-0"
-                              placeholder=""
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="intakeEventType"
-                      render={({ field }) => (
-                        <FormItem className="col-span-6 sm:col-span-3">
-                          <FormLabel>
-                            {t('add_pet_form_label_intake_type')}
-                          </FormLabel>
-                          <Select
-                            onValueChange={
-                              field.onChange as (value: string) => void
-                            }
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue
-                                  placeholder={t(
-                                    'add_pet_form_placeholder_intake'
-                                  )}
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {fullPetDetailsSchema.shape.intakeEventType.options.map(
-                                (op) => (
-                                  <SelectItem
-                                    key={op.value}
-                                    value={op.value}
-                                  >
-                                    {IntakeEventTypeMap[op.value]}
-                                  </SelectItem>
-                                )
-                              )}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="healthStatus"
-                      render={({ field }) => (
-                        <FormItem className="col-span-6 sm:col-span-3">
-                          <FormLabel>
-                            {t('add_pet_form_label_health')}
-                          </FormLabel>
-                          <Select
-                            onValueChange={
-                              field.onChange as (value: string) => void
-                            }
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue
-                                  placeholder={t(
-                                    'add_pet_form_placeholder_health'
-                                  )}
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {fullPetDetailsSchema.shape.healthStatus.options.map(
-                                (op) => (
-                                  <SelectItem
-                                    key={op.value}
-                                    value={op.value}
-                                  >
-                                    {HealthStatusMap[op.value]}
-                                  </SelectItem>
-                                )
-                              )}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                     <div className="col-span-6 mt-2 flex gap-3">
                       <Button
                         type="submit"
                         className="col-span-6 justify-self-start"
                         size="lg"
+                        disabled={!form.formState.isDirty}
                       >
                         Update {pet.name}&apos;s details
                       </Button>
@@ -577,8 +536,243 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                   </form>
                 </Form>
               </TabsContent>
+              <TabsContent value="photos"></TabsContent>
               <TabsContent value="documents"></TabsContent>
-              <TabsContent value="events"></TabsContent>
+              <TabsContent value="events">
+                <div className="md:mt-38 mt-32 flex flex-col gap-3 p-4 lg:mt-40">
+                  <div className="flex items-center justify-center">
+                    <Button
+                      size="lg"
+                      className="text-base"
+                      onClick={() => setIsAddingOutcome(true)}
+                      disabled={isAddingOutcome}
+                    >
+                      <Icons.plus className="mr-2 h-4 w-4" />{' '}
+                      {t('pet_events_outcome_event_button')}
+                    </Button>
+                  </div>
+                  {isAddingOutcome && (
+                    <Card className="mt-12 flex flex-col gap-3 p-10">
+                      <div className="flex items-center justify-between pb-4">
+                        <h2 className="flex items-center text-3xl font-semibold">
+                          {t('pet_details_form_outcome_event')}
+                          <Icons.arrowUpRight className="ml-2" />
+                        </h2>
+                      </div>
+                      <Form {...form}>
+                        <form
+                          onSubmit={form.handleSubmit(onSubmit)}
+                          className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
+                        >
+                          <FormField
+                            control={form.control}
+                            name="intakeEventType"
+                            render={({ field }) => (
+                              <FormItem className="col-span-6 sm:col-span-3">
+                                <FormLabel>
+                                  {t('add_pet_form_label_outcome_type')}
+                                </FormLabel>
+                                <Select
+                                  onValueChange={
+                                    field.onChange as (value: string) => void
+                                  }
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue
+                                        placeholder={t(
+                                          'add_pet_form_placeholder_intake'
+                                        )}
+                                      />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {fullPetDetailsSchema.shape.intakeEventType.options.map(
+                                      (op) => (
+                                        <SelectItem
+                                          key={op.value}
+                                          value={op.value}
+                                        >
+                                          {IntakeEventTypeMap[op.value]}
+                                        </SelectItem>
+                                      )
+                                    )}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="intakeEventDate"
+                            render={({ field }) => (
+                              <FormItem className="col-span-6 sm:col-span-3">
+                                <FormLabel>
+                                  {t('add_pet_form_label_outcome_date')}
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="date"
+                                    className="border-b-2 border-t-0 border-l-0 border-r-0"
+                                    placeholder=""
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                            <Button
+                              type="submit"
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              disabled={!form.formState.isDirty}
+                            >
+                              {t('pet_events_add_button')}
+                            </Button>
+                            <Button
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              variant="destructive"
+                              onClick={() => setIsAddingOutcome(false)}
+                            >
+                              {t('pet_events_cancel_button')}
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </Card>
+                  )}
+                  <Card className="mt-12 flex flex-col gap-3 p-10">
+                    <div className="flex items-center justify-between pb-4">
+                      <h2 className="flex items-center text-3xl font-semibold">
+                        {t('pet_details_form_intake_event')}
+                        <Icons.arrowDownRight className="ml-2" />
+                      </h2>
+                    </div>
+                    <Form {...form}>
+                      <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
+                      >
+                        <FormField
+                          control={form.control}
+                          name="intakeEventDate"
+                          render={({ field }) => (
+                            <FormItem className="col-span-6 sm:col-span-3">
+                              <FormLabel>
+                                {t('add_pet_form_label_intake_date')}
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="date"
+                                  className="border-b-2 border-t-0 border-l-0 border-r-0"
+                                  placeholder=""
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="intakeEventType"
+                          render={({ field }) => (
+                            <FormItem className="col-span-6 sm:col-span-3">
+                              <FormLabel>
+                                {t('add_pet_form_label_intake_type')}
+                              </FormLabel>
+                              <Select
+                                onValueChange={
+                                  field.onChange as (value: string) => void
+                                }
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue
+                                      placeholder={t(
+                                        'add_pet_form_placeholder_intake'
+                                      )}
+                                    />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {fullPetDetailsSchema.shape.intakeEventType.options.map(
+                                    (op) => (
+                                      <SelectItem
+                                        key={op.value}
+                                        value={op.value}
+                                      >
+                                        {IntakeEventTypeMap[op.value]}
+                                      </SelectItem>
+                                    )
+                                  )}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="healthStatus"
+                          render={({ field }) => (
+                            <FormItem className="col-span-6 sm:col-span-3">
+                              <FormLabel>
+                                {t('add_pet_form_label_health')}
+                              </FormLabel>
+                              <Select
+                                onValueChange={
+                                  field.onChange as (value: string) => void
+                                }
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue
+                                      placeholder={t(
+                                        'add_pet_form_placeholder_health'
+                                      )}
+                                    />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {fullPetDetailsSchema.shape.healthStatus.options.map(
+                                    (op) => (
+                                      <SelectItem
+                                        key={op.value}
+                                        value={op.value}
+                                      >
+                                        {HealthStatusMap[op.value]}
+                                      </SelectItem>
+                                    )
+                                  )}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="col-span-6 mt-2 flex gap-3">
+                          <Button
+                            type="submit"
+                            className="col-span-6 justify-self-start"
+                            size="lg"
+                            disabled={!form.formState.isDirty}
+                          >
+                            {t('pet_details_form_edit_button')}
+                          </Button>
+                        </div>
+                      </form>
+                    </Form>
+                  </Card>
+                </div>
+              </TabsContent>
               <TabsContent value="medical"></TabsContent>
               <TabsContent value="notes"></TabsContent>
             </div>

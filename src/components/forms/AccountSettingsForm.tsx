@@ -15,8 +15,10 @@ import {
 } from '~/lib/validators/userValidation';
 import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
+import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import Spinner from '../spinners/Spinner';
+import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 import { RolesMap } from './AddPersonForm';
 
 export interface Props {
@@ -78,6 +80,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
     handleSubmit,
     reset,
     formState: { errors },
+    setValue,
   } = useForm<IUserAccountDetails>({
     defaultValues: prefilledValues,
     resolver: zodResolver(userAccountDetailsSchema),
@@ -102,6 +105,9 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
 
   return (
     <div className="mx-auto w-full max-w-7xl 2xl:max-w-8xl">
+      <div className="absolute -z-10 w-full">
+        <BackgroundWavesFeaturedPets className="aspect-[10/1] rotate-180" />
+      </div>
       <div className="mt-10 sm:mt-0">
         <Card className="m-5 bg-card md:grid md:grid-cols-3 md:gap-6">
           <div className="mt-5 md:col-span-3 md:mt-0">
@@ -110,34 +116,51 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
               noValidate
             >
               <div className="overflow-hidden shadow sm:rounded-md">
-                <div className="px-4 py-5 sm:p-6">
-                  <p className="my-4 text-3xl font-light tracking-widest text-foreground underline decoration-2 underline-offset-2 sm:text-4xl">
+                <div className="px-4 py-5 sm:p-10">
+                  <p className="mb-6 text-6xl font-light tracking-wide text-foreground underline decoration-2 underline-offset-4">
                     {t('update_user_details_form_title')}
                   </p>
                   <div className="grid grid-cols-6 gap-6 pb-20">
-                    <div className="col-span-6 flex gap-6">
-                      <Avatar className="col-span-5 h-24 w-24">
+                    <div className="col-span-6 flex flex-col items-center justify-center gap-6 md:flex-row md:justify-start">
+                      <Avatar className="col-span-5 h-64 w-64">
                         <AvatarImage
                           src={avatarUrl ?? '/no-profile-picture.svg'}
                           alt="Avatar image"
                         />
-                        <AvatarFallback>TBA</AvatarFallback>
+                        <AvatarFallback>
+                          <span className="sr-only">{user?.name}</span>
+                          <Icons.user className="h-24 w-24 opacity-70" />
+                        </AvatarFallback>
                       </Avatar>
-                      <UploadButton
-                        endpoint="imageUploader"
-                        onClientUploadComplete={(res) => {
-                          res && setAvatarUrl(res[0]?.fileUrl ?? '');
-                        }}
-                        onUploadError={(error: Error) => {
-                          toast({
-                            description: error.message,
-                            variant: 'destructive',
-                          });
-                        }}
-                        onUploadProgress={() => {
-                          <Spinner />;
-                        }}
-                      />
+                      <div className="items-center justify-center space-y-4 md:z-10">
+                        <UploadButton
+                          endpoint="imageUploader"
+                          onClientUploadComplete={(res) => {
+                            res && setAvatarUrl(res[0]?.fileUrl ?? '');
+                          }}
+                          onUploadError={(error: Error) => {
+                            toast({
+                              description: error.message,
+                              variant: 'destructive',
+                            });
+                          }}
+                          onUploadProgress={() => {
+                            <Spinner />;
+                          }}
+                        />
+                        <Button
+                          className="text-base"
+                          variant={'destructive'}
+                          size="lg"
+                          disabled={!avatarUrl || avatarUrl === ''}
+                          onClick={() => {
+                            setAvatarUrl('');
+                            setValue('image', '');
+                          }}
+                        >
+                          Remove Image
+                        </Button>
+                      </div>
                     </div>
                     <div className="relative z-0 col-span-6 min-w-[16rem] sm:col-span-3">
                       <input
@@ -390,7 +413,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                     </div>
                   </div>
                 </div>
-                <div className="px-4 py-3 text-left sm:px-6 sm:py-6">
+                <div className="px-4 py-3 text-left sm:p-10">
                   <button
                     type="submit"
                     className="inline-flex justify-center rounded-md border border-transparent bg-primary-400/90 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
