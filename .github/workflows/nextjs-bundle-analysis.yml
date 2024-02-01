@@ -67,7 +67,7 @@ jobs:
         if: success()
         with:
           name: bundle
-          workflow: nextjs-bundle-analysis.yml
+          workflow: nextjs-bundle-analysis
           branch: ${{ github.event.pull_request.base.ref }}
           path: .next/analyze/base
 
