@@ -50,7 +50,11 @@ export const columnsInPolish: ColumnDef<AnimalDto>[] = [
           alt="zdjęcie profilowe zwierzęcia"
         />
         <AvatarFallback>
-          <Icons.dog className="h-6 w-6 text-muted-foreground" />
+          {row.getValue('species') === 'dog' ? (
+            <Icons.dog className="h-6 w-6 text-muted-foreground" />
+          ) : (
+            <Icons.cat className="h-6 w-6 text-muted-foreground" />
+          )}
         </AvatarFallback>
       </Avatar>
     ),

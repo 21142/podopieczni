@@ -22,7 +22,7 @@ type PetfinderData = {
   organization: IOrganizationData;
 };
 
-const PetProfilePage: NextPage<IOrganizationProfilePage> = ({
+const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
   organization,
   message,
 }) => {
@@ -137,7 +137,7 @@ const PetProfilePage: NextPage<IOrganizationProfilePage> = ({
   );
 };
 
-export default PetProfilePage;
+export default OrganizationProfilePage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { query } = context;

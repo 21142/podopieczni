@@ -9,6 +9,7 @@ import {
   type NextPage,
 } from 'next/types';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
+import Spinner from '~/components/spinners/Spinner';
 import { api } from '~/lib/api';
 import { prisma } from '~/lib/db';
 import { ssghelpers } from '~/lib/ssg';
@@ -20,7 +21,15 @@ const UserProfilePage: NextPage<PageProps> = ({ userId }) => {
     id: userId,
   });
 
-  if (isLoading) console.log('loading');
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="grid h-[50vh] content-center">
+          <Spinner />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

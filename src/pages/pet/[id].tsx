@@ -52,6 +52,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
+  const [isLikeClicked, setIsLikeClicked] = React.useState(false);
 
   React.useEffect(() => {
     if (!api) {
@@ -65,6 +66,21 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
       setCurrent(api.selectedScrollSnap() + 1);
     });
   }, [api]);
+
+  const handleLikeClick = () => {
+    if (!isLikeClicked) {
+      console.log(
+        'TODO: add mutation to tag as favorite pet with id: ',
+        pet.id
+      );
+    } else {
+      console.log(
+        'TODO: add mutation to remove from favorites pet with id: ',
+        pet.id
+      );
+    }
+    setIsLikeClicked((prev) => !prev);
+  };
 
   return (
     <PageLayout>
@@ -112,11 +128,13 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                   <CardTitle>
                     <div className="flex items-center">
                       <h1 className="text-4xl font-bold">{pet.name}</h1>
-                      <span
-                        className="ml-4 cursor-pointer"
-                        onClick={() => console.log(pet.id)}
-                      >
-                        <Icons.heart className="h-6 w-6 fill-none text-primary-400 transition hover:scale-110 hover:fill-current" />
+                      <span className="ml-4">
+                        <Icons.heart
+                          onClick={handleLikeClick}
+                          className={`cursor-pointer text-primary-400 transition-all ease-in-out hover:scale-110 ${
+                            isLikeClicked ? 'fill-primary-300' : ''
+                          }`}
+                        />
                       </span>
                     </div>
                     <p className="pt-4 text-lg ">

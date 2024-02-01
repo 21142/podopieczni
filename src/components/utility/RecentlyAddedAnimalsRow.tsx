@@ -1,5 +1,6 @@
 import { type FC } from 'react';
 import { type RecentlyAddedAnimal } from '~/types';
+import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 
 interface RecentlyAddedAnimalsRowProps {
@@ -19,11 +20,19 @@ const RecentlyAddedAnimalsRow: FC<RecentlyAddedAnimalsRowProps> = ({
       className={`flex items-center ${className}`}
     >
       <Avatar className="h-9 w-9">
-        <AvatarImage
-          src={animal.image ?? '/no-profile-picture.svg'}
-          alt="Avatar"
-        />
-        <AvatarFallback>TBA</AvatarFallback>
+        {animal.image && (
+          <AvatarImage
+            src={animal.image}
+            alt="Avatar"
+          />
+        )}
+        <AvatarFallback>
+          {animal.breed === 'dog' ? (
+            <Icons.dog className="h-6 w-6 text-muted-foreground" />
+          ) : (
+            <Icons.cat className="h-6 w-6 text-muted-foreground" />
+          )}
+        </AvatarFallback>
       </Avatar>
       <div className="ml-4 space-y-1">
         <p className="text-sm font-medium leading-none">{animal.name}</p>
