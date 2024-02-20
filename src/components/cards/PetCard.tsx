@@ -75,7 +75,7 @@ const PetCard: React.FC<IAnimalCard> = ({
           className="p-0"
         >
           <Image
-            src={photo ?? '/no-profile-picture.svg'}
+            src={photo ?? '/images/no-profile-picture.svg'}
             alt="card__image"
             className="block h-96 max-w-full rounded-t-lg object-cover"
             width="360"

@@ -8,7 +8,7 @@ import { type GetServerSideProps, type NextPage } from 'next/types';
 import { Icons } from '~/components/icons/Icons';
 import PageLayout from '~/components/layouts/PageLayout';
 import { Button } from '~/components/primitives/Button';
-import Spinner from '~/components/spinners/Spinner';
+import Spinner from '~/components/spinner/Spinner';
 import Map from '~/components/utility/Map';
 import { type IOrganizationData } from '~/types/petfinderTypes';
 import { type PetfinderOauth } from '../results';
@@ -56,7 +56,8 @@ const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
                 <Image
                   alt="Shelter Logo"
                   src={
-                    organization.photos[0]?.full ?? '/no-profile-picture.svg'
+                    organization.photos[0]?.full ??
+                    '/images/no-profile-picture.svg'
                   }
                   width={400}
                   height={400}

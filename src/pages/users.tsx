@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import AddPersonForm from '~/components/forms/AddPersonForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
-import Spinner from '~/components/spinners/Spinner';
+import Spinner from '~/components/spinner/Spinner';
 import Grid from '~/components/utility/Grid';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { api } from '~/lib/api';

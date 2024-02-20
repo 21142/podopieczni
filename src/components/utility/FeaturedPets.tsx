@@ -55,7 +55,7 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
               >
                 <CardHeader className="p-0">
                   <Image
-                    src="/no-profile-picture.svg"
+                    src="/images/no-profile-picture.svg"
                     alt="card__image"
                     className="block h-96 max-w-full rounded-t-lg object-cover"
                     width="352"

@@ -17,7 +17,7 @@ import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
-import Spinner from '../spinners/Spinner';
+import Spinner from '../spinner/Spinner';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 import { RolesMap } from './AddPersonForm';
 
@@ -87,7 +87,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
   });
 
   useEffect(() => {
-    setAvatarUrl(user?.image ?? '/no-profile-picture.svg');
+    setAvatarUrl(user?.image ?? '/images/no-profile-picture.svg');
     reset(prefilledValues);
   }, [user, reset, prefilledValues]);
 
@@ -124,7 +124,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                     <div className="col-span-6 flex flex-col items-center justify-center gap-6 md:flex-row md:justify-start">
                       <Avatar className="col-span-5 h-64 w-64">
                         <AvatarImage
-                          src={avatarUrl ?? '/no-profile-picture.svg'}
+                          src={avatarUrl ?? '/images/no-profile-picture.svg'}
                           alt="Avatar image"
                         />
                         <AvatarFallback>

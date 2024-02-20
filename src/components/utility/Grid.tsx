@@ -13,7 +13,7 @@ const Grid: React.FC<IGrid> = ({ items }) => {
         <UserCard
           key={user.id}
           id={user.id}
-          image={user.image ?? '/no-profile-picture.svg'}
+          image={user.image ?? '/images/no-profile-picture.svg'}
           name={
             user.name
               ? user.name ?? `${user.firstName} ${user.lastName}`

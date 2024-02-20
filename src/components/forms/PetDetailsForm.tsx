@@ -167,7 +167,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                             className="opacity-70"
                             width="400"
                             height="400"
-                            src="/no-profile-picture.svg"
+                            src="/images/no-profile-picture.svg"
                             alt="Default avatar image"
                           />
                         </AvatarFallback>

@@ -3,7 +3,7 @@ import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import PageLayout from '~/components/layouts/PageLayout';
 import { Card, CardContent, CardTitle } from '~/components/primitives/Card';
-import Spinner from '~/components/spinners/Spinner';
+import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
 
 const Expensive: NextPage = () => {
