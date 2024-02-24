@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TRPCClientError } from '@trpc/client';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodError } from 'zod';
@@ -52,6 +53,7 @@ interface Props {
 const PetDetailsForm: FC<Props> = ({ animalId }) => {
   const trpc = api.useContext().pet;
   const { toast } = useToast();
+  const router = useRouter();
   const { t } = useTranslation('common');
 
   const { data: pet } = api.pet.getPetById.useQuery({
@@ -63,9 +65,20 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
 
   const updatePetMutation = api.pet.updatePetById.useMutation({
     onSuccess: async () => {
+      form.reset();
       await trpc.getPetById.invalidate();
     },
   });
+
+  const deletePetMutation = api.pet.deletePetById.useMutation({
+    onSuccess: () => {
+      router.push('/animals');
+    },
+  });
+
+  const deleteAnimal = async (animalId: string) => {
+    await deletePetMutation.mutateAsync(animalId);
+  };
 
   const form = useForm<IPetFullDetails>({
     resolver: zodResolver(fullPetDetailsSchema),
@@ -114,10 +127,10 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                 {t('tabs_details')}
               </TabsTrigger>
               <TabsTrigger
-                value="photos"
+                value="adoption"
                 className="w-1/2 sm:w-1/6"
               >
-                {t('tabs_photos')}
+                {t('tabs_adoption')}
               </TabsTrigger>
               <TabsTrigger
                 value="documents"
@@ -523,20 +536,28 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         </FormItem>
                       )}
                     />
-                    <div className="col-span-6 mt-2 flex gap-3">
+                    <div className="col-span-6 mt-2 flex flex-col gap-3 md:flex-row">
                       <Button
                         type="submit"
-                        className="col-span-6 justify-self-start"
+                        className="justify-self-start"
                         size="lg"
                         disabled={!form.formState.isDirty}
                       >
                         Update {pet.name}&apos;s details
                       </Button>
+                      <Button
+                        className="justify-self-start"
+                        size="lg"
+                        onClick={() => deleteAnimal(pet.id)}
+                        variant={'destructive'}
+                      >
+                        {t('pet_details_form_delete_button')}
+                      </Button>
                     </div>
                   </form>
                 </Form>
               </TabsContent>
-              <TabsContent value="photos"></TabsContent>
+              <TabsContent value="adoption"></TabsContent>
               <TabsContent value="documents"></TabsContent>
               <TabsContent value="events">
                 <div className="md:mt-38 mt-32 flex flex-col gap-3 p-4 lg:mt-40">

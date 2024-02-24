@@ -24,7 +24,6 @@ export const exampleRouter = createTRPCRouter({
 
   expensive: publicProcedure.query(async ({ ctx }) => {
     const remaining = await checkIfRateLimitHasExceeded({
-      rateLimiterName: 'main',
       identifier: ctx.session?.user.id ?? '',
     });
     return `Running an expensive query! You have ${remaining} requests remaining!`;
