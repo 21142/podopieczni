@@ -23,7 +23,7 @@ const UserCard: React.FC<IUserCard> = ({ id, name, image, role }) => {
     >
       <CardHeader className="grid place-items-center px-2 py-6">
         <Image
-          src={image ?? '/no-profile-picture.svg'}
+          src={image ?? '/images/no-profile-picture.svg'}
           alt="card__image"
           className="h-48 w-48 rounded-full object-cover"
           width="320"

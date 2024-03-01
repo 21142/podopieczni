@@ -33,7 +33,7 @@
 <br />
 <div align="center">
    <a href="https://github.com/21142/podopieczni">
-      <img src="public/no-profile-picture.svg" alt="Logo podopieczni" width="80" height="80">
+      <img src="public/images/no-profile-picture.svg" alt="Logo podopieczni" width="80" height="80">
    </a>
 
    <h1 align="center">podopieczni.pl</h1>
@@ -176,7 +176,7 @@ TODO: Add acknowledgments
 
 <p align="right"><a href="#readme-beginning">&#9650;</a></p>
 
-[product-screenshot]: public/product-screenshot.png
+[product-screenshot]: public/images/product-screenshot.png
 [product-url]: https://podopieczni-21142.vercel.app
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/

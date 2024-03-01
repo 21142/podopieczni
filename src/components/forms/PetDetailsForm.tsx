@@ -2,9 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TRPCClientError } from '@trpc/client';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { ZodError } from 'zod';
+import { ZodError, type z } from 'zod';
 import {
   HealthStatusMap,
   IntakeEventTypeMap,
@@ -38,10 +39,15 @@ import { UploadButton } from '~/lib/uploadthing';
 import { mapIntakeEventDate } from '~/lib/utils';
 import {
   fullPetDetailsSchema,
+  medicalEvent,
+  outcomeEvent,
   type IPetFullDetails,
+  type IPetMedicalEvent,
+  type IPetOutcomeEvent,
 } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
 import { Card } from '../primitives/Card';
+import { Label } from '../primitives/Label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../primitives/Tabs';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
@@ -49,23 +55,120 @@ interface Props {
   animalId: string;
 }
 
+export const MedicalEventTypeMap: Record<
+  z.infer<typeof medicalEvent>['medicalEventType'],
+  string
+> = {
+  VACCINATION: 'Vaccination',
+  TREATMENT: 'Treatment',
+  DIAGNOSIS: 'Diagnosis',
+  MEDICATION: 'Medication',
+  SURGERY: 'Surgery',
+};
+
+export const OutcomeEventTypeMap: Record<
+  z.infer<typeof outcomeEvent>['eventType'],
+  string
+> = {
+  ADOPTION: 'Adoption',
+  TRANSFER: 'Transfer',
+  EUTHANIZED: 'Euthanized',
+  DIED: 'Died',
+  RETURN: 'Return to Owner',
+};
+
 const PetDetailsForm: FC<Props> = ({ animalId }) => {
   const trpc = api.useContext().pet;
   const { toast } = useToast();
+  const router = useRouter();
   const { t } = useTranslation('common');
 
   const { data: pet } = api.pet.getPetById.useQuery({
     id: animalId,
   });
 
+  const { data: medicalEvents } = api.pet.getPetMedicalEvents.useQuery({
+    id: animalId,
+  });
+
+  const { data: outcomeEvents } = api.pet.getPetOutcomeEvents.useQuery({
+    id: animalId,
+  });
+
   const [avatarUrl, setAvatarUrl] = useState(pet?.image ?? '');
   const [isAddingOutcome, setIsAddingOutcome] = useState(false);
+  const [isAddingMedical, setIsAddingMedical] = useState(false);
 
   const updatePetMutation = api.pet.updatePetById.useMutation({
     onSuccess: async () => {
+      form.reset();
       await trpc.getPetById.invalidate();
     },
   });
+
+  const updatePetMedicalEventMutation =
+    api.pet.updatePetMedicalEventMutation.useMutation({
+      onSuccess: async () => {
+        medicalEventForm.reset();
+        setIsAddingMedical(false);
+        await trpc.getPetMedicalEvents.invalidate();
+      },
+    });
+
+  const updatePetOutcomeEventMutation =
+    api.pet.updatePetOutcomeEventMutation.useMutation({
+      onSuccess: async () => {
+        outcomeEventForm.reset();
+        setIsAddingOutcome(false);
+        await trpc.getPetOutcomeEvents.invalidate();
+      },
+    });
+
+  const deletePetMutation = api.pet.deletePetById.useMutation({
+    onSuccess: () => {
+      router.push('/animals');
+    },
+  });
+
+  const deletePetMedicalEventMutation =
+    api.pet.deletePetMedicalEventMutation.useMutation({
+      onSuccess: async () => {
+        await trpc.getPetMedicalEvents.invalidate();
+      },
+    });
+
+  const deleteOutcomeEventMutation =
+    api.pet.deletePetOutcomeEventMutation.useMutation({
+      onSuccess: async () => {
+        await trpc.getPetOutcomeEvents.invalidate();
+      },
+    });
+
+  const deleteAnimal = async (animalId: string) => {
+    await deletePetMutation.mutateAsync(animalId);
+  };
+
+  const deleteMedicalEvent = async (eventId: string, animalId: string) => {
+    await deletePetMedicalEventMutation.mutateAsync({
+      petId: animalId,
+      eventId: eventId,
+    });
+    toast({
+      description: t('delete_pet_medical_event_toast'),
+      variant: 'success',
+    });
+  };
+
+  const deleteOutcomeEvent = async (eventId: string, animalId: string) => {
+    await deleteOutcomeEventMutation.mutateAsync({
+      petId: animalId,
+      eventId: eventId,
+    });
+    toast({
+      description: t('delete_pet_outcome_event_toast'),
+      variant: 'success',
+    });
+  };
 
   const form = useForm<IPetFullDetails>({
     resolver: zodResolver(fullPetDetailsSchema),
@@ -101,6 +204,80 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     }
   };
 
+  const medicalEventForm = useForm<IPetMedicalEvent>({
+    resolver: zodResolver(medicalEvent),
+    defaultValues: {
+      eventDate: new Date().toISOString().split('T')[0],
+    },
+  });
+
+  const onMedicalEventSubmit = async (values: IPetMedicalEvent) => {
+    try {
+      if (values.eventDate) {
+        values.eventDate =
+          mapIntakeEventDate(values.eventDate) ?? new Date().toISOString();
+      }
+      await updatePetMedicalEventMutation.mutateAsync({
+        petId: animalId,
+        event: { ...values },
+      });
+      toast({
+        description: t('update_pet_form_toast_success', {
+          name: values.medicalEventType,
+        }),
+        variant: 'success',
+      });
+    } catch (error) {
+      if (
+        error instanceof Error ||
+        error instanceof ZodError ||
+        error instanceof TRPCClientError
+      ) {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
+  const outcomeEventForm = useForm<IPetOutcomeEvent>({
+    resolver: zodResolver(outcomeEvent),
+    defaultValues: {
+      eventDate: new Date().toISOString().split('T')[0],
+    },
+  });
+
+  const onOutcomeEventFormSubmit = async (values: IPetOutcomeEvent) => {
+    try {
+      if (values.eventDate) {
+        values.eventDate =
+          mapIntakeEventDate(values.eventDate) ?? new Date().toISOString();
+      }
+      await updatePetOutcomeEventMutation.mutateAsync({
+        petId: animalId,
+        event: { ...values },
+      });
+      toast({
+        description: t('update_pet_form_toast_success', {
+          name: values.eventType,
+        }),
+        variant: 'success',
+      });
+    } catch (error) {
+      if (
+        error instanceof Error ||
+        error instanceof ZodError ||
+        error instanceof TRPCClientError
+      ) {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
   return (
     <DashboardLayout>
       <Tabs defaultValue="details">
@@ -114,10 +291,10 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                 {t('tabs_details')}
               </TabsTrigger>
               <TabsTrigger
-                value="photos"
+                value="adoption"
                 className="w-1/2 sm:w-1/6"
               >
-                {t('tabs_photos')}
+                {t('tabs_adoption')}
               </TabsTrigger>
               <TabsTrigger
                 value="documents"
@@ -167,7 +344,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                             className="opacity-70"
                             width="400"
                             height="400"
-                            src="/no-profile-picture.svg"
+                            src="/images/no-profile-picture.svg"
                             alt="Default avatar image"
                           />
                         </AvatarFallback>
@@ -523,20 +700,28 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         </FormItem>
                       )}
                     />
-                    <div className="col-span-6 mt-2 flex gap-3">
+                    <div className="col-span-6 mt-2 flex flex-col gap-3 md:flex-row">
                       <Button
                         type="submit"
-                        className="col-span-6 justify-self-start"
+                        className="justify-self-start"
                         size="lg"
                         disabled={!form.formState.isDirty}
                       >
                         Update {pet.name}&apos;s details
                       </Button>
+                      <Button
+                        className="justify-self-start"
+                        size="lg"
+                        onClick={() => deleteAnimal(pet.id)}
+                        variant={'destructive'}
+                      >
+                        {t('pet_details_form_delete_button')}
+                      </Button>
                     </div>
                   </form>
                 </Form>
               </TabsContent>
-              <TabsContent value="photos"></TabsContent>
+              <TabsContent value="adoption"></TabsContent>
               <TabsContent value="documents"></TabsContent>
               <TabsContent value="events">
                 <div className="md:mt-38 mt-32 flex flex-col gap-3 p-4 lg:mt-40">
@@ -559,14 +744,16 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                           <Icons.arrowUpRight className="ml-2" />
                         </h2>
                       </div>
-                      <Form {...form}>
+                      <Form {...outcomeEventForm}>
                         <form
-                          onSubmit={form.handleSubmit(onSubmit)}
+                          onSubmit={outcomeEventForm.handleSubmit(
+                            onOutcomeEventFormSubmit
+                          )}
                           className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
                         >
                           <FormField
-                            control={form.control}
-                            name="intakeEventType"
+                            control={outcomeEventForm.control}
+                            name="eventType"
                             render={({ field }) => (
                               <FormItem className="col-span-6 sm:col-span-3">
                                 <FormLabel>
@@ -582,19 +769,19 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     <SelectTrigger>
                                       <SelectValue
                                         placeholder={t(
-                                          'add_pet_form_placeholder_intake'
+                                          'add_pet_form_placeholder_outcome'
                                         )}
                                       />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    {fullPetDetailsSchema.shape.intakeEventType.options.map(
+                                    {outcomeEvent.shape.eventType.options.map(
                                       (op) => (
                                         <SelectItem
                                           key={op.value}
                                           value={op.value}
                                         >
-                                          {IntakeEventTypeMap[op.value]}
+                                          {OutcomeEventTypeMap[op.value]}
                                         </SelectItem>
                                       )
                                     )}
@@ -605,8 +792,8 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                             )}
                           />
                           <FormField
-                            control={form.control}
-                            name="intakeEventDate"
+                            control={outcomeEventForm.control}
+                            name="eventDate"
                             render={({ field }) => (
                               <FormItem className="col-span-6 sm:col-span-3">
                                 <FormLabel>
@@ -629,7 +816,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               type="submit"
                               className="w-fit justify-self-start"
                               size="lg"
-                              disabled={!form.formState.isDirty}
+                              disabled={!outcomeEventForm.formState.isDirty}
                             >
                               {t('pet_events_add_button')}
                             </Button>
@@ -646,6 +833,51 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                       </Form>
                     </Card>
                   )}
+                  {outcomeEvents &&
+                    outcomeEvents.map((event) => (
+                      <Card
+                        key={event.id}
+                        className="mt-12 flex flex-col gap-3 p-10"
+                      >
+                        <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
+                          <div className="col-span-6 sm:col-span-3">
+                            <Label className="text-lg">
+                              {t('add_pet_form_label_medical_type')}
+                            </Label>
+                            <Input
+                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                              placeholder=""
+                              value={event.eventType}
+                            />
+                          </div>
+                          <div className="col-span-6 sm:col-span-3">
+                            <Label className="text-lg">
+                              {t('add_pet_form_label_medical_date')}
+                            </Label>
+                            <Input
+                              type="text"
+                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                              placeholder=""
+                              value={
+                                event.eventDate.toISOString().split('T')[0]
+                              }
+                            />
+                          </div>
+                        </div>
+                        <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                          <Button
+                            className="w-fit justify-self-start"
+                            size="lg"
+                            variant="destructive"
+                            onClick={() =>
+                              deleteOutcomeEvent(event.id, animalId)
+                            }
+                          >
+                            {t('pet_medical_events_delete_button')}
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
                   <Card className="mt-12 flex flex-col gap-3 p-10">
                     <div className="flex items-center justify-between pb-4">
                       <h2 className="flex items-center text-3xl font-semibold">
@@ -773,7 +1005,163 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                   </Card>
                 </div>
               </TabsContent>
-              <TabsContent value="medical"></TabsContent>
+              <TabsContent value="medical">
+                <div className="md:mt-38 mt-32 flex flex-col gap-3 p-4 lg:mt-40">
+                  <div className="flex items-center justify-center">
+                    <Button
+                      size="lg"
+                      className="text-base"
+                      onClick={() => setIsAddingMedical(true)}
+                      disabled={isAddingMedical}
+                    >
+                      <Icons.plus className="mr-2 h-4 w-4" />{' '}
+                      {t('pet_events_medical_event_button')}
+                    </Button>
+                  </div>
+                  {isAddingMedical && (
+                    <Card className="mt-12 flex flex-col gap-3 p-10">
+                      <div className="flex items-center justify-between pb-4">
+                        <h2 className="flex items-center text-3xl font-semibold">
+                          {t('pet_details_form_medical_event')}
+                          <Icons.arrowUpRight className="ml-2" />
+                        </h2>
+                      </div>
+                      <Form {...medicalEventForm}>
+                        <form
+                          onSubmit={medicalEventForm.handleSubmit(
+                            onMedicalEventSubmit
+                          )}
+                          className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
+                        >
+                          <FormField
+                            control={medicalEventForm.control}
+                            name="medicalEventType"
+                            render={({ field }) => (
+                              <FormItem className="col-span-6 sm:col-span-3">
+                                <FormLabel>
+                                  {t('add_pet_form_label_medical_type')}
+                                </FormLabel>
+                                <Select
+                                  onValueChange={
+                                    field.onChange as (value: string) => void
+                                  }
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue
+                                        placeholder={t(
+                                          'add_pet_form_placeholder_medical_type'
+                                        )}
+                                      />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {medicalEvent.shape.medicalEventType.options.map(
+                                      (op) => (
+                                        <SelectItem
+                                          key={op.value}
+                                          value={op.value}
+                                        >
+                                          {MedicalEventTypeMap[op.value]}
+                                        </SelectItem>
+                                      )
+                                    )}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={medicalEventForm.control}
+                            name="eventDate"
+                            render={({ field }) => (
+                              <FormItem className="col-span-6 sm:col-span-3">
+                                <FormLabel>
+                                  {t('add_pet_form_label_medical_date')}
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="date"
+                                    className="border-b-2 border-t-0 border-l-0 border-r-0"
+                                    placeholder=""
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                            <Button
+                              type="submit"
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              disabled={!medicalEventForm.formState.isDirty}
+                            >
+                              {t('pet_events_add_button')}
+                            </Button>
+                            <Button
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              variant="destructive"
+                              onClick={() => setIsAddingMedical(false)}
+                            >
+                              {t('pet_events_cancel_button')}
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </Card>
+                  )}
+                  {medicalEvents &&
+                    medicalEvents.map((event) => (
+                      <Card
+                        key={event.id}
+                        className="mt-12 flex flex-col gap-3 p-10"
+                      >
+                        <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
+                          <div className="col-span-6 sm:col-span-3">
+                            <Label className="text-lg">
+                              {t('add_pet_form_label_medical_type')}
+                            </Label>
+                            <Input
+                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                              placeholder=""
+                              value={event.medicalEventType}
+                            />
+                          </div>
+                          <div className="col-span-6 sm:col-span-3">
+                            <Label className="text-lg">
+                              {t('add_pet_form_label_medical_date')}
+                            </Label>
+                            <Input
+                              type="text"
+                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                              placeholder=""
+                              value={
+                                event.eventDate.toISOString().split('T')[0]
+                              }
+                            />
+                          </div>
+                        </div>
+                        <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                          <Button
+                            className="w-fit justify-self-start"
+                            size="lg"
+                            variant="destructive"
+                            onClick={() =>
+                              deleteMedicalEvent(event.id, animalId)
+                            }
+                          >
+                            {t('pet_medical_events_delete_button')}
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
+                </div>
+              </TabsContent>
               <TabsContent value="notes"></TabsContent>
             </div>
           </div>

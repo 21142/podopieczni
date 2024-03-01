@@ -17,13 +17,13 @@ const PetsGrid: React.FC<IPetsGrid> = ({ featuredAnimals }) => {
             animal.photos[0]?.large ??
             animal.photos[0]?.medium ??
             animal.photos[0]?.small ??
-            '/no-profile-picture.svg'
+            '/images/no-profile-picture.svg'
           }
           tag={animal.status}
           title={animal.name}
           body={animal.description}
           avatar={animal.organization_id}
-          author={animal.photos[0]?.small ?? '/no-profile-picture.svg'}
+          author={animal.photos[0]?.small ?? '/images/no-profile-picture.svg'}
           variant={Variant.Animal}
           age={animal.age}
           breeds={animal.breeds}

@@ -9,7 +9,7 @@ import {
   type NextPage,
 } from 'next/types';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
-import Spinner from '~/components/spinners/Spinner';
+import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
 import { prisma } from '~/lib/db';
 import { ssghelpers } from '~/lib/ssg';
@@ -36,7 +36,7 @@ const UserProfilePage: NextPage<PageProps> = ({ userId }) => {
       {user && (
         <div className="grid h-full content-center justify-center">
           <Image
-            src={user.image ?? '/no-profile-picture.svg'}
+            src={user.image ?? '/images/no-profile-picture.svg'}
             alt="profile picture"
             className="rounded-md"
             width="600"

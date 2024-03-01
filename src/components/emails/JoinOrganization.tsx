@@ -90,7 +90,7 @@ const InviteToOrganizationEmail = ({
                 </Column>
                 <Column align="center">
                   <Img
-                    src={`${baseUrl}/no-profile-picture.svg`}
+                    src={`${baseUrl}/images/no-profile-picture.svg`}
                     width="12"
                     height="9"
                     alt="invited you to"

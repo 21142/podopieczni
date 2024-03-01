@@ -34,7 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../primitives/Select';
-import Spinner from '../spinners/Spinner';
+import Spinner from '../spinner/Spinner';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
 export const HealthStatusMap: Record<
@@ -58,7 +58,6 @@ export const IntakeEventTypeMap: Record<
   SURRENDER: 'Surrender',
   BORN: 'Born',
   RETURN: 'Return',
-  OTHER: 'Other',
 };
 
 const AddPetForm = () => {
@@ -133,7 +132,7 @@ const AddPetForm = () => {
             <div className="col-span-6 flex flex-col items-center gap-6 md:flex-row">
               <Avatar className="col-span-5 mt-16 h-64 w-64 md:mt-0">
                 <AvatarImage
-                  src={avatarUrl ?? '/no-profile-picture.svg'}
+                  src={avatarUrl ?? '/images/no-profile-picture.svg'}
                   alt="Avatar image"
                 />
                 <AvatarFallback>
@@ -141,7 +140,7 @@ const AddPetForm = () => {
                     className="opacity-70"
                     width="400"
                     height="400"
-                    src="/no-profile-picture.svg"
+                    src="/images/no-profile-picture.svg"
                     alt="Default avatar image"
                   />
                 </AvatarFallback>
