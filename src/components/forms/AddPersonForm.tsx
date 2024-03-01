@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../primitives/Select';
-import Spinner from '../spinners/Spinner';
+import Spinner from '../spinner/Spinner';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
 export const RolesMap: Record<
@@ -109,7 +109,7 @@ const AddPersonForm = () => {
               <div className="flex flex-col items-center gap-6 md:flex-row">
                 <Avatar className="col-span-5 h-64 w-64">
                   <AvatarImage
-                    src={avatarUrl ?? '/no-profile-picture.svg'}
+                    src={avatarUrl ?? '/images/no-profile-picture.svg'}
                     alt="Avatar image"
                   />
                   <AvatarFallback>

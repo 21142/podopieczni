@@ -3,7 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import AccountSettingsForm from '~/components/forms/AccountSettingsForm';
 import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
-import Spinner from '~/components/spinners/Spinner';
+import Spinner from '~/components/spinner/Spinner';
 import useMeQuery from '~/hooks/useMeQuery';
 
 const UserSettings = () => {

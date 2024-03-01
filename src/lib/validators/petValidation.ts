@@ -1,19 +1,41 @@
 import * as z from 'zod';
 
+export const medicalEvent = z.object({
+  eventDate: z.string(),
+  medicalEventType: z.union([
+    z.literal('VACCINATION'),
+    z.literal('DIAGNOSIS'),
+    z.literal('TREATMENT'),
+    z.literal('MEDICATION'),
+    z.literal('SURGERY'),
+  ]),
+});
+
+export const outcomeEvent = z.object({
+  eventDate: z.string(),
+  eventType: z.union([
+    z.literal('ADOPTION'),
+    z.literal('TRANSFER'),
+    z.literal('EUTHANIZED'),
+    z.literal('DIED'),
+    z.literal('RETURN'),
+  ]),
+});
+
 export const petDetailsSchema = z.object({
-  internalId: z.string().optional().nullable(),
-  image: z.string().optional().nullable(),
+  internalId: z.string().optional(),
+  image: z.string().optional(),
   name: z.string().optional(),
-  species: z.string().optional().nullable(),
-  breed: z.string().optional().nullable(),
+  species: z.string().optional(),
+  breed: z.string().optional(),
   gender: z.string().optional(),
-  color: z.string().optional().nullable(),
-  coat: z.string().optional().nullable(),
+  color: z.string().optional(),
+  coat: z.string().optional(),
   weight: z.string().optional(),
   dateOfBirth: z.string().optional(),
   status: z.string().optional(),
-  microchipBrand: z.string().optional().nullable(),
-  microchipNumber: z.string().optional().nullable(),
+  microchipBrand: z.string().optional(),
+  microchipNumber: z.string().optional(),
   healthStatus: z.union([
     z.literal('HEALTHY'),
     z.literal('INJURED'),
@@ -29,7 +51,6 @@ export const petDetailsSchema = z.object({
     z.literal('SURRENDER'),
     z.literal('BORN'),
     z.literal('RETURN'),
-    z.literal('OTHER'),
   ]),
 });
 
@@ -57,20 +78,20 @@ export const petFilterOptionsSchema = z.object({
 });
 
 export const fullPetDetailsSchema = z.object({
-  internalId: z.string().optional().nullable(),
-  image: z.string().optional().nullable(),
+  internalId: z.string().optional(),
+  image: z.string().optional(),
   name: z.string().optional(),
-  species: z.string().optional().nullable(),
-  breed: z.string().optional().nullable(),
+  species: z.string().optional(),
+  breed: z.string().optional(),
   gender: z.string().optional(),
-  color: z.string().optional().nullable(),
-  coat: z.string().optional().nullable(),
+  color: z.string().optional(),
+  coat: z.string().optional(),
   weight: z.string().optional(),
   adoptionFee: z.number().optional().nullable(),
   dateOfBirth: z.string().optional(),
   status: z.string().optional(),
-  microchipBrand: z.string().optional().nullable(),
-  microchipNumber: z.string().optional().nullable(),
+  microchipBrand: z.string().optional(),
+  microchipNumber: z.string().optional(),
   description: z.string().optional().nullable(),
   houseTrained: z.boolean().optional().nullable(),
   specialNeeds: z.boolean().optional().nullable(),
@@ -90,7 +111,7 @@ export const fullPetDetailsSchema = z.object({
     z.literal('QUARANTINE'),
     z.literal('DEAD'),
   ]),
-  medicalEvents: z.array(z.object({})).optional(),
+  medicalEvents: z.array(medicalEvent).optional(),
   intakeEventDate: z.string().optional(),
   intakeEventType: z.union([
     z.literal('STRAY'),
@@ -98,9 +119,8 @@ export const fullPetDetailsSchema = z.object({
     z.literal('SURRENDER'),
     z.literal('BORN'),
     z.literal('RETURN'),
-    z.literal('OTHER'),
   ]),
-  outcomeEvents: z.array(z.object({})).optional(),
+  outcomeEvents: z.array(outcomeEvent).optional(),
   photos: z.array(z.object({})).optional(),
   documents: z.array(z.object({})).optional(),
   createdAt: z.date(),
@@ -114,3 +134,5 @@ export const petIdSchema = z.object({
 export type IPetDetails = z.infer<typeof petDetailsSchema>;
 export type IPetFullDetails = z.infer<typeof fullPetDetailsSchema>;
 export type IPetFilterOptions = z.infer<typeof petFilterOptionsSchema>;
+export type IPetMedicalEvent = z.infer<typeof medicalEvent>;
+export type IPetOutcomeEvent = z.infer<typeof outcomeEvent>;

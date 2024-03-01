@@ -100,7 +100,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                 {pet.photos?.map((photo, index) => (
                   <CarouselItem key={index}>
                     <Image
-                      src={photo.large ?? '/no-profile-picture.svg'}
+                      src={photo.large ?? '/images/no-profile-picture.svg'}
                       alt={`Pet photo ${index + 1}`}
                       className="rounded-md"
                       width={600}

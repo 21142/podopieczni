@@ -23,11 +23,9 @@ const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
   const onSearchEvent = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery) {
-      void router.push(`/${typeOfResults}#scrollToPosition`);
+      router.push(`/${typeOfResults}#scrollToPosition`);
     } else {
-      void router.push(
-        `/${typeOfResults}?search=${searchQuery}#scrollToPosition`
-      );
+      router.push(`/${typeOfResults}?search=${searchQuery}#scrollToPosition`);
     }
   };
 

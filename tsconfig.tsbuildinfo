@@ -1063,7 +1063,7 @@
       "./node_modules/date-fns/typings.d.ts",
       "./node_modules/react-day-picker/dist/index.d.ts",
       "./src/components/primitives/calendar.tsx",
-      "./src/components/date-pickers/datepicker.tsx",
+      "./src/components/date-picker/datepicker.tsx",
       "./src/components/emails/joinorganization.tsx",
       "./src/components/spinners/spinner.tsx",
       "./src/components/forms/addpersonform.tsx",

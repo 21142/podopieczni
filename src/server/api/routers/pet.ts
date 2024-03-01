@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
 import {
   fullPetDetailsSchema,
+  medicalEvent,
+  outcomeEvent,
   petDetailsSchema,
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
@@ -37,6 +39,36 @@ export const petRouter = createTRPCRouter({
         where: { id: input.id },
       });
       return pet;
+    }),
+  getPetMedicalEvents: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const pet = await ctx.prisma.pet.findUnique({
+        where: { id: input.id },
+        include: {
+          medicalEvents: true,
+        },
+      });
+      return pet?.medicalEvents;
+    }),
+  getPetOutcomeEvents: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const pet = await ctx.prisma.pet.findUnique({
+        where: { id: input.id },
+        include: {
+          outcomeEvents: true,
+        },
+      });
+      return pet?.outcomeEvents;
     }),
   getPetsCount: publicProcedure.query(async ({ ctx }) => {
     const count = await ctx.prisma.pet.count();
@@ -215,6 +247,78 @@ export const petRouter = createTRPCRouter({
       await ctx.prisma.pet.delete({
         where: {
           id: input,
+        },
+      });
+    }),
+  updatePetMedicalEventMutation: protectedProcedure
+    .input(
+      z.object({
+        petId: z.string(),
+        event: medicalEvent,
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.update({
+        where: { id: input.petId },
+        data: {
+          medicalEvents: {
+            create: input.event,
+          },
+        },
+      });
+    }),
+  updatePetOutcomeEventMutation: protectedProcedure
+    .input(
+      z.object({
+        petId: z.string(),
+        event: outcomeEvent,
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.update({
+        where: { id: input.petId },
+        data: {
+          outcomeEvents: {
+            create: input.event,
+          },
+        },
+      });
+    }),
+  deletePetMedicalEventMutation: protectedProcedure
+    .input(
+      z.object({
+        petId: z.string(),
+        eventId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.update({
+        where: { id: input.petId },
+        data: {
+          medicalEvents: {
+            delete: {
+              id: input.eventId,
+            },
+          },
+        },
+      });
+    }),
+  deletePetOutcomeEventMutation: protectedProcedure
+    .input(
+      z.object({
+        petId: z.string(),
+        eventId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.update({
+        where: { id: input.petId },
+        data: {
+          outcomeEvents: {
+            delete: {
+              id: input.eventId,
+            },
+          },
         },
       });
     }),

@@ -12,10 +12,9 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/react-table';
-import React from 'react';
-import { DataTableToolbar } from './DataTableToolbar';
-
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 import {
   Table,
   TableBody,
@@ -25,17 +24,19 @@ import {
   TableRow,
 } from '../primitives/Table';
 import { DataTablePagination } from './DataTablePagination';
+import { DataTableToolbar } from './DataTableToolbar';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends { id: string }, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
   const { t } = useTranslation('common');
+  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -95,6 +96,12 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  className="hover:cursor-pointer"
+                  onClick={() => {
+                    if (row.original && row.original.id) {
+                      router.push(`/animal/${row.original.id}`);
+                    }
+                  }}
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
