@@ -58,7 +58,6 @@ export const IntakeEventTypeMap: Record<
   SURRENDER: 'Surrender',
   BORN: 'Born',
   RETURN: 'Return',
-  OTHER: 'Other',
 };
 
 const AddPetForm = () => {
