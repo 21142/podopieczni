@@ -94,6 +94,7 @@
     "@babel/core": "^7.23.9",
     "@babel/preset-typescript": "^7.23.3",
     "@lhci/cli": "^0.12.0",
+    "@playwright/test": "^1.42.0",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.9",
     "@testing-library/react": "^14.1.2",
