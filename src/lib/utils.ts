@@ -30,3 +30,13 @@ export function mapIntakeEventDate(value: string) {
 
   return undefined;
 }
+
+export function getDocumentType(url: string): string {
+  const fileExtension = url.split('.').pop();
+
+  if (!fileExtension) {
+    return 'unknown';
+  }
+
+  return fileExtension;
+}

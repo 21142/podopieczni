@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TRPCClientError } from '@trpc/client';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,7 +17,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '~/components/primitives/Avatar';
-import { Button } from '~/components/primitives/Button';
+import { Button, buttonVariants } from '~/components/primitives/Button';
 import {
   Form,
   FormControl,
@@ -36,11 +37,13 @@ import {
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
-import { mapIntakeEventDate } from '~/lib/utils';
+import { cn, getDocumentType, mapIntakeEventDate } from '~/lib/utils';
 import {
+  document,
   fullPetDetailsSchema,
   medicalEvent,
   outcomeEvent,
+  type IDocument,
   type IPetFullDetails,
   type IPetMedicalEvent,
   type IPetOutcomeEvent,
@@ -95,9 +98,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     id: animalId,
   });
 
+  const { data: documents } = api.pet.getPetDocuments.useQuery({
+    id: animalId,
+  });
+
   const [avatarUrl, setAvatarUrl] = useState(pet?.image ?? '');
   const [isAddingOutcome, setIsAddingOutcome] = useState(false);
   const [isAddingMedical, setIsAddingMedical] = useState(false);
+  const [isAddingDocument, setIsAddingDocument] = useState(false);
 
   const updatePetMutation = api.pet.updatePetById.useMutation({
     onSuccess: async () => {
@@ -124,6 +132,15 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
       },
     });
 
+  const updatePetDocumentMutation =
+    api.pet.updatePetDocumentEventMutation.useMutation({
+      onSuccess: async () => {
+        documentForm.reset();
+        setIsAddingDocument(false);
+        await trpc.getPetDocuments.invalidate();
+      },
+    });
+
   const deletePetMutation = api.pet.deletePetById.useMutation({
     onSuccess: () => {
       router.push('/animals');
@@ -141,6 +158,13 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     api.pet.deletePetOutcomeEventMutation.useMutation({
       onSuccess: async () => {
         await trpc.getPetOutcomeEvents.invalidate();
+      },
+    });
+
+  const deletePetDocumentMutation =
+    api.pet.deletePetDocumentMutation.useMutation({
+      onSuccess: async () => {
+        await trpc.getPetDocuments.invalidate();
       },
     });
 
@@ -166,6 +190,17 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     });
     toast({
       description: t('delete_pet_outcome_event_toast'),
+      variant: 'success',
+    });
+  };
+
+  const deleteDocument = async (documentId: string, animalId: string) => {
+    await deletePetDocumentMutation.mutateAsync({
+      petId: animalId,
+      documentId: documentId,
+    });
+    toast({
+      description: t('delete_pet_document_toast'),
       variant: 'success',
     });
   };
@@ -278,6 +313,37 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     }
   };
 
+  const documentForm = useForm<IDocument>({
+    resolver: zodResolver(document),
+  });
+
+  const onDocumentFormSubmit = async (values: IDocument) => {
+    try {
+      values.type = getDocumentType(values.url);
+      await updatePetDocumentMutation.mutateAsync({
+        petId: animalId,
+        document: { ...values },
+      });
+      toast({
+        description: t('update_pet_form_toast_success', {
+          name: values.name,
+        }),
+        variant: 'success',
+      });
+    } catch (error) {
+      if (
+        error instanceof Error ||
+        error instanceof ZodError ||
+        error instanceof TRPCClientError
+      ) {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
   return (
     <DashboardLayout>
       <Tabs defaultValue="details">
@@ -289,18 +355,6 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                 className="w-1/2 sm:w-1/6"
               >
                 {t('tabs_details')}
-              </TabsTrigger>
-              <TabsTrigger
-                value="adoption"
-                className="w-1/2 sm:w-1/6"
-              >
-                {t('tabs_adoption')}
-              </TabsTrigger>
-              <TabsTrigger
-                value="documents"
-                className="w-1/2 sm:w-1/6"
-              >
-                {t('tabs_documents')}
               </TabsTrigger>
               <TabsTrigger
                 value="events"
@@ -315,10 +369,22 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                 {t('tabs_medical')}
               </TabsTrigger>
               <TabsTrigger
+                value="documents"
+                className="w-1/2 sm:w-1/6"
+              >
+                {t('tabs_documents')}
+              </TabsTrigger>
+              <TabsTrigger
                 value="notes"
                 className="w-1/2 sm:w-1/6"
               >
                 {t('tabs_notes')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="adoption"
+                className="w-1/2 sm:w-1/6"
+              >
+                {t('tabs_adoption')}
               </TabsTrigger>
             </TabsList>
           </div>
@@ -721,8 +787,6 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                   </form>
                 </Form>
               </TabsContent>
-              <TabsContent value="adoption"></TabsContent>
-              <TabsContent value="documents"></TabsContent>
               <TabsContent value="events">
                 <div className="md:mt-38 mt-32 flex flex-col gap-3 p-4 lg:mt-40">
                   <div className="flex items-center justify-center">
@@ -837,8 +901,9 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                     outcomeEvents.map((event) => (
                       <Card
                         key={event.id}
-                        className="mt-12 flex flex-col gap-3 p-10"
+                        className="relative mt-12 flex flex-col gap-3 p-10"
                       >
+                        <Icons.arrowUpRight className="absolute -top-3 -left-3" />
                         <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
                           <div className="col-span-6 sm:col-span-3">
                             <Label className="text-lg">
@@ -1023,7 +1088,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                       <div className="flex items-center justify-between pb-4">
                         <h2 className="flex items-center text-3xl font-semibold">
                           {t('pet_details_form_medical_event')}
-                          <Icons.arrowUpRight className="ml-2" />
+                          <Icons.health className="ml-2" />
                         </h2>
                       </div>
                       <Form {...medicalEventForm}>
@@ -1119,8 +1184,9 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                     medicalEvents.map((event) => (
                       <Card
                         key={event.id}
-                        className="mt-12 flex flex-col gap-3 p-10"
+                        className="relative mt-12 flex flex-col gap-3 p-10"
                       >
+                        <Icons.health className="absolute -top-3 -left-3" />
                         <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
                           <div className="col-span-6 sm:col-span-3">
                             <Label className="text-lg">
@@ -1162,7 +1228,194 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                     ))}
                 </div>
               </TabsContent>
+              <TabsContent value="documents">
+                <div className="md:mt-38 mt-32 flex flex-col gap-3 p-4 lg:mt-40">
+                  <div className="flex items-center justify-center">
+                    <Button
+                      size="lg"
+                      className="text-base"
+                      onClick={() => setIsAddingDocument(true)}
+                      disabled={isAddingDocument}
+                    >
+                      <Icons.plus className="mr-2 h-4 w-4" />{' '}
+                      {t('pet_add_document_button')}
+                    </Button>
+                  </div>
+                  {isAddingDocument && (
+                    <Card className="mt-12 flex flex-col gap-3 p-10">
+                      <div className="flex items-center justify-between pb-4">
+                        <h2 className="flex items-center text-3xl font-semibold">
+                          {t('pet_details_form_document')}
+                          <Icons.document className="ml-2" />
+                        </h2>
+                      </div>
+                      <Form {...documentForm}>
+                        <form
+                          onSubmit={documentForm.handleSubmit(
+                            onDocumentFormSubmit
+                          )}
+                          className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
+                        >
+                          <FormField
+                            control={documentForm.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem className="col-span-6 sm:col-span-3">
+                                <FormLabel>
+                                  {t('pet_form_document_name')}
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder=""
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          {documentForm.getValues('url') && (
+                            <FormField
+                              control={documentForm.control}
+                              name="url"
+                              render={({ field }) => (
+                                <FormItem className="col-span-6 sm:col-span-3">
+                                  <FormLabel>
+                                    {t('pet_form_document_url')}
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder=""
+                                      disabled
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+                          <div className="col-span-6 flex flex-col items-center gap-6 md:flex-row">
+                            <div className="items-center justify-center space-x-4 space-y-4 md:z-10">
+                              <UploadButton
+                                endpoint="documentUploader"
+                                onClientUploadComplete={(res) => {
+                                  if (res) {
+                                    documentForm.setValue(
+                                      'url',
+                                      res[0]?.fileUrl as string
+                                    );
+                                    toast({
+                                      description: t(
+                                        'pet_image_toast_upload_success'
+                                      ),
+                                      variant: 'success',
+                                    });
+                                  }
+                                }}
+                                onUploadError={(error: Error) => {
+                                  toast({
+                                    description: error.message,
+                                    variant: 'destructive',
+                                  });
+                                }}
+                              />
+                              <Button
+                                className="text-base"
+                                variant={'destructive'}
+                                size="lg"
+                                onClick={() => {
+                                  documentForm.setValue('url', '');
+                                }}
+                              >
+                                {t('pet_document_remove_button')}
+                              </Button>
+                              {documentForm.getValues('url') && (
+                                <Link
+                                  href={documentForm.getValues('url')}
+                                  target="_blank"
+                                  className={cn(
+                                    buttonVariants({
+                                      variant: 'default',
+                                      size: 'lg',
+                                    }),
+                                    'text-base'
+                                  )}
+                                >
+                                  Preview document
+                                </Link>
+                              )}
+                            </div>
+                          </div>
+                          <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                            <Button
+                              type="submit"
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              disabled={!documentForm.formState.isDirty}
+                            >
+                              {t('pet_documents_add_button')}
+                            </Button>
+                            <Button
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              variant="destructive"
+                              onClick={() => setIsAddingDocument(false)}
+                            >
+                              {t('pet_events_cancel_button')}
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </Card>
+                  )}
+                  {documents &&
+                    documents.map((document) => (
+                      <Card
+                        key={document.id}
+                        className="relative mt-12 flex flex-col gap-3 p-10"
+                      >
+                        <Icons.document className="absolute -top-3 -left-3" />
+                        <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
+                          <div className="col-span-6 sm:col-span-3">
+                            <Label className="text-lg">
+                              {t('pet_form_document_name')}
+                            </Label>
+                            <Input
+                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                              placeholder=""
+                              value={document.name}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                          <Link
+                            href={document.url}
+                            target="_blank"
+                            className={buttonVariants({
+                              variant: 'default',
+                              size: 'lg',
+                            })}
+                          >
+                            {t('pet_document_preview_button')}
+                          </Link>
+                          <Button
+                            className="w-fit justify-self-start"
+                            size="lg"
+                            variant="destructive"
+                            onClick={() =>
+                              deleteDocument(document.id, animalId)
+                            }
+                          >
+                            {t('pet_document_delete_button')}
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
+                </div>
+              </TabsContent>
               <TabsContent value="notes"></TabsContent>
+              <TabsContent value="adoption"></TabsContent>
             </div>
           </div>
         )}

@@ -172,12 +172,12 @@ model Photo {
 model Document {
   id        String   @id @default(cuid())
   name      String
-  type      String
+  type      String?
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   pet       Pet?     @relation(fields: [petId], references: [id], onDelete: Cascade)
-  petId     String?  @unique
+  petId     String?
 
   @@index([name])
   @@index([type])

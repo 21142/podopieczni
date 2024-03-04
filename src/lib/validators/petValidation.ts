@@ -22,6 +22,12 @@ export const outcomeEvent = z.object({
   ]),
 });
 
+export const document = z.object({
+  name: z.string(),
+  url: z.string(),
+  type: z.string().optional(),
+});
+
 export const petDetailsSchema = z.object({
   internalId: z.string().optional(),
   image: z.string().optional(),
@@ -122,7 +128,7 @@ export const fullPetDetailsSchema = z.object({
   ]),
   outcomeEvents: z.array(outcomeEvent).optional(),
   photos: z.array(z.object({})).optional(),
-  documents: z.array(z.object({})).optional(),
+  documents: z.array(document).optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -136,3 +142,4 @@ export type IPetFullDetails = z.infer<typeof fullPetDetailsSchema>;
 export type IPetFilterOptions = z.infer<typeof petFilterOptionsSchema>;
 export type IPetMedicalEvent = z.infer<typeof medicalEvent>;
 export type IPetOutcomeEvent = z.infer<typeof outcomeEvent>;
+export type IDocument = z.infer<typeof document>;
