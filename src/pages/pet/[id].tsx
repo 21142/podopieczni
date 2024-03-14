@@ -13,7 +13,7 @@ import {
 } from 'next-share';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { type GetServerSideProps, type NextPage } from 'next/types';
 import React from 'react';
 import { Icons } from '~/components/icons/Icons';
@@ -34,6 +34,7 @@ import {
   type CarouselApi,
 } from '~/components/primitives/Carousel';
 import { Separator } from '~/components/primitives/Separator';
+import dayjs from '~/lib/dayjs';
 import type IAnimalData from '~/types/petfinderTypes';
 import { type PetfinderOauth } from '../results';
 
@@ -49,10 +50,13 @@ type PetfinderData = {
 const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
   const { t } = useTranslation('common');
   const router = useRouter();
+  const { locale } = router;
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
   const [isLikeClicked, setIsLikeClicked] = React.useState(false);
+
+  dayjs.locale(locale);
 
   React.useEffect(() => {
     if (!api) {
@@ -147,25 +151,29 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                   <Separator className="mb-6" />
                   <ul className="flex flex-col items-start space-y-4 text-lg md:flex-row md:space-x-4 md:space-y-0">
                     <li className="flex items-center">
-                      <span className="mr-2">Age:</span>
+                      <span className="mr-2">{t('pet_profile_page_age')}</span>
                       <span className="font-bold text-primary-300">
                         {pet.age}
                       </span>
                     </li>
                     <li className="flex items-center">
-                      <span className="mr-2">Gender:</span>
+                      <span className="mr-2">
+                        {t('pet_profile_page_gender')}
+                      </span>
                       <span className="font-bold text-primary-300">
                         {pet.gender}
                       </span>
                     </li>
                     <li className="flex items-center">
-                      <span className="mr-2">Size:</span>
+                      <span className="mr-2">{t('pet_profile_page_size')}</span>
                       <span className="font-bold text-primary-300">
                         {pet.size}
                       </span>
                     </li>
                     <li className="flex items-center">
-                      <span className="mr-2">Color:</span>
+                      <span className="mr-2">
+                        {t('pet_profile_page_color')}
+                      </span>
                       <span className="font-bold text-primary-300">
                         {pet.colors.primary ?? 'Unknown'}
                       </span>
@@ -176,26 +184,34 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                   {pet.description && (
                     <div className="mt-6">
                       <h2 className="mb-2 text-2xl font-bold">
-                        About {pet.name}
+                        {t('pet_profile_page_pet_description', {
+                          name: pet.name,
+                        })}
                       </h2>
                       <p className="">{pet.description}</p>
                     </div>
                   )}
 
                   {[
-                    pet.environment.children && 'Children',
-                    pet.environment.dogs && 'Dogs',
-                    pet.environment.cats && 'Cats',
+                    pet.environment.children &&
+                      t('pet_profile_page_good_with_children'),
+                    pet.environment.dogs &&
+                      t('pet_profile_page_good_with_dogs'),
+                    pet.environment.cats &&
+                      t('pet_profile_page_good_with_cats'),
                   ].filter(Boolean).length > 0 && (
                     <div className="mt-6">
                       <h2 className="mb-2 text-2xl font-bold">
-                        Good in a home with
+                        {t('pet_profile_page_good_with')}
                       </h2>
                       <p className="">
                         {[
-                          pet.environment.children && 'Children',
-                          pet.environment.dogs && 'Dogs',
-                          pet.environment.cats && 'Cats',
+                          pet.environment.children &&
+                            t('pet_profile_page_good_with_children'),
+                          pet.environment.dogs &&
+                            t('pet_profile_page_good_with_dogs'),
+                          pet.environment.cats &&
+                            t('pet_profile_page_good_with_cats'),
                         ]
                           .filter(Boolean)
                           .join(' / ')}
@@ -205,10 +221,25 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                   <Separator className="mt-6" />
                   <div className="flex flex-col justify-between pt-6">
                     <h2 className="mb-2 text-xl font-bold">
-                      How else can you help?
+                      {t('pet_profile_page_how_long', { name: pet.name })}
                     </h2>
                     <div className="flex items-end gap-4">
-                      <span className="text-lg">Share on</span>
+                      <p className="text-lg">
+                        {t('pet_profile_page_for_how_long', {
+                          date: dayjs(pet.published_at).fromNow(true),
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <Separator className="mt-6" />
+                  <div className="flex flex-col justify-between pt-6">
+                    <h2 className="mb-2 text-xl font-bold">
+                      {t('pet_profile_page_help')}
+                    </h2>
+                    <div className="flex items-end gap-4">
+                      <span className="text-lg">
+                        {t('pet_profile_page_share')}
+                      </span>
                       <FacebookShareButton url={pet.url}>
                         <FacebookIcon
                           size={32}
@@ -240,14 +271,14 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
               <Card className="rounded-lg bg-transparent lg:w-1/3 lg:p-6">
                 <CardHeader>
                   <CardTitle className="mb-4 text-3xl font-bold">
-                    Want to adopt {pet.name}?
+                    {t('pet_profile_want_to_adopt', { name: pet.name })}
                   </CardTitle>
                   <Button
                     className="w-fit rounded-full px-5 md:px-12"
                     variant="primary"
                     onClick={() => console.log(pet.id)}
                   >
-                    Inquire About Adoption
+                    {t('pet_profile_inquire_about_adoption')}
                   </Button>
                 </CardHeader>
                 <CardContent>
@@ -255,11 +286,12 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                   <div className="flex w-fit flex-col">
                     <div className="mt-6">
                       <h2 className="mb-2 text-2xl font-bold">
-                        Organization Details
+                        {t('pet_profile_shelter')}
                       </h2>
                       <p className="w-fit text-base decoration-primary-300 underline-offset-4 transition hover:text-primary-300 hover:underline">
                         <Link href={`/organization/${pet.organization_id}`}>
-                          {pet.organization_id} • Go to Organization Page
+                          {pet.organization_id} •{' '}
+                          {t('pet_profile_shelter_link')}
                         </Link>
                       </p>
                     </div>
@@ -274,7 +306,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                 variant="link"
               >
                 <Icons.chevronLeft className="h-5 w-5" />
-                Wróć
+                {t('go_back')}
               </Button>
             </div>
           </div>

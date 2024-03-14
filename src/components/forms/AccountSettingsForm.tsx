@@ -158,7 +158,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                             setValue('image', '');
                           }}
                         >
-                          Remove Image
+                          {t('remove_image')}
                         </Button>
                       </div>
                     </div>
