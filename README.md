@@ -7,8 +7,8 @@
   <a href="https://github.com/21142/podopieczni/actions/workflows/lighthouse-check.yaml" target="_blank" rel="noopener">
     <img src="https://github.com/21142/podopieczni/actions/workflows/lighthouse-check.yaml/badge.svg" alt="Lighthouse Audits badge">
   </a>
-  <a href="https://github.com/21142/podopieczni/actions/workflows/security-scan.yaml" target="_blank" rel="noopener">
-    <img src="https://github.com/21142/podopieczni/actions/workflows/security-scan.yaml/badge.svg" alt="OWASP Security Scan badge">
+  <a href="https://github.com/21142/podopieczni/actions/workflows/e2e.yml" target="_blank" rel="noopener">
+    <img src="https://github.com/21142/podopieczni/actions/workflows/e2e.yml/badge.svg" alt="End to end tests">
   </a>
   <a href="https://github.com/21142/podopieczni/actions/workflows/unit-tests.yaml" target="_blank" rel="noopener">
     <img src="https://github.com/21142/podopieczni/actions/workflows/unit-tests.yaml/badge.svg" alt="Unit tests">
