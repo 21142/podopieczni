@@ -124,14 +124,14 @@ model Pet {
   dateOfBirth          DateTime         @db.Date
   status               String?
   description          String?
-  houseTrained         Boolean?
-  specialNeeds         Boolean?
-  neutered             Boolean?
-  declawed             Boolean?
-  aggressive           Boolean?
-  friendlyWithDogs     Boolean?
-  friendlyWithCats     Boolean?
-  friendlyWithChildren Boolean?
+  houseTrained         String?          @db.VarChar(5)
+  specialNeeds         String?          @db.VarChar(5)
+  neutered             String?          @db.VarChar(5)
+  declawed             String?          @db.VarChar(5)
+  aggressive           String?          @db.VarChar(5)
+  friendlyWithDogs     String?          @db.VarChar(5)
+  friendlyWithCats     String?          @db.VarChar(5)
+  friendlyWithChildren String?          @db.VarChar(5)
   microchipBrand       String?
   microchipNumber      String?
   shelter              Shelter          @relation(fields: [shelterId], references: [id], onDelete: Cascade)
@@ -172,12 +172,12 @@ model Photo {
 model Document {
   id        String   @id @default(cuid())
   name      String
-  type      String
+  type      String?
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   pet       Pet?     @relation(fields: [petId], references: [id], onDelete: Cascade)
-  petId     String?  @unique
+  petId     String?
 
   @@index([name])
   @@index([type])

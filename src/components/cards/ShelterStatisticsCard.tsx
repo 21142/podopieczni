@@ -34,7 +34,7 @@ const ShelterStatisticsCard: FC<ShelterStatisticsCardProps> = ({
           {value} {currency ?? ''}
         </div>
         <p className="text-xs text-muted-foreground">
-          {difference && (difference > 0 ? '+' : difference < 0 ? '-' : '')}
+          {difference && (difference > 0 ? '+' : '')}
           {!!difference && difference}
           {t('dashboard_statistics_card_change_from_last_month')}
         </p>

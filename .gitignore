@@ -387,3 +387,9 @@ prisma/docs/
 
 # React-Email Dev Preview
 .react-email/
+
+# Playwright
+/e2e/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

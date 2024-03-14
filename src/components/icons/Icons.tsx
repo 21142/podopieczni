@@ -19,9 +19,11 @@ import {
   Download,
   EyeOff,
   Facebook,
+  FileTextIcon,
   Globe,
   Heart,
   HeartHandshake,
+  HeartPulseIcon,
   HelpCircle,
   Home,
   Laptop,
@@ -90,6 +92,8 @@ export const Icons = {
   facebook: Facebook,
   map: MapPinIcon,
   phone: PhoneIcon,
+  health: HeartPulseIcon,
+  document: FileTextIcon,
   google: (props: LucideProps) => (
     <svg
       {...props}

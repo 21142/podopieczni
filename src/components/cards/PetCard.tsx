@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -37,6 +38,7 @@ const PetCard: React.FC<IAnimalCard> = ({
   breeds,
   type,
 }) => {
+  const { t } = useTranslation('common');
   const router = useRouter();
   const [isLikeClicked, setIsLikeClicked] = useState(false);
   const [isDonationClicked, setIsDonationClicked] = useState(false);
@@ -84,7 +86,7 @@ const PetCard: React.FC<IAnimalCard> = ({
           <CardTitle className="pt-5 pb-1">{title}</CardTitle>
           <CardDescription>
             {variant === 'organization'
-              ? 'Zobacz podopiecznych organizacji'
+              ? t('organization_card_default_description')
               : `${age} • ${breeds?.primary} ${type ? `• ${type}` : ''}`}
           </CardDescription>
         </CardHeader>
