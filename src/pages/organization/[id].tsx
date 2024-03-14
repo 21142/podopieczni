@@ -1,4 +1,5 @@
 import { useLoadScript } from '@react-google-maps/api';
+import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
@@ -26,6 +27,7 @@ const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
   organization,
   message,
 }) => {
+  const { t } = useTranslation('common');
   const router = useRouter();
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
@@ -73,7 +75,7 @@ const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
                       variant="primary"
                       className="underline underline-offset-1 sm:no-underline"
                     >
-                      Zobacz naszych podopiecznych
+                      {t('organization_see_our_pets')}
                     </Button>
                   </Link>
                 </div>
@@ -109,13 +111,15 @@ const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
             </section>
             {organization.mission_statement && (
               <section className="py-8 px-6 sm:px-12 lg:px-48">
-                <h2 className="text-2xl font-bold">Our Mission</h2>
+                <h2 className="text-2xl font-bold">
+                  {t('organization_mission')}
+                </h2>
                 <p className="mt-2">{organization.mission_statement}</p>
               </section>
             )}
             <section className="mt-8">
               <h2 className="mb-4 py-8 px-6 text-2xl font-bold sm:px-12 lg:px-48">
-                Where are we located at?
+                {t('organization_location')}
               </h2>
               <Map address={`${organization.name}, ${organizationAddress}`} />
             </section>
@@ -127,7 +131,7 @@ const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
                   variant="link"
                 >
                   <Icons.chevronLeft className="h-5 w-5" />
-                  Wróć
+                  {t('go_back')}
                 </Button>
               </div>
             </section>

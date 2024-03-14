@@ -43,14 +43,17 @@ import {
   fullPetDetailsSchema,
   medicalEvent,
   outcomeEvent,
+  photo,
   type IDocument,
   type IPetFullDetails,
   type IPetMedicalEvent,
   type IPetOutcomeEvent,
+  type IPhoto,
 } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
 import { Card } from '../primitives/Card';
 import { Label } from '../primitives/Label';
+import { RadioGroup, RadioGroupItem } from '../primitives/RadioButton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../primitives/Tabs';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
@@ -102,6 +105,10 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     id: animalId,
   });
 
+  const { data: photos } = api.pet.getPetPhotos.useQuery({
+    id: animalId,
+  });
+
   const [avatarUrl, setAvatarUrl] = useState(pet?.image ?? '');
   const [isAddingOutcome, setIsAddingOutcome] = useState(false);
   const [isAddingMedical, setIsAddingMedical] = useState(false);
@@ -141,6 +148,13 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
       },
     });
 
+  const addPetPhotoMutation = api.pet.addPetPhotoMutation.useMutation({
+    onSuccess: async () => {
+      photoForm.reset();
+      await trpc.getPetPhotos.invalidate();
+    },
+  });
+
   const deletePetMutation = api.pet.deletePetById.useMutation({
     onSuccess: () => {
       router.push('/animals');
@@ -167,6 +181,12 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
         await trpc.getPetDocuments.invalidate();
       },
     });
+
+  const deletePetPhotoMutation = api.pet.deletePetPhotoMutation.useMutation({
+    onSuccess: async () => {
+      await trpc.getPetPhotos.invalidate();
+    },
+  });
 
   const deleteAnimal = async (animalId: string) => {
     await deletePetMutation.mutateAsync(animalId);
@@ -201,6 +221,17 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     });
     toast({
       description: t('delete_pet_document_toast'),
+      variant: 'success',
+    });
+  };
+
+  const deletePetPhoto = async (photoId: string, animalId: string) => {
+    await deletePetPhotoMutation.mutateAsync({
+      petId: animalId,
+      photoId: photoId,
+    });
+    toast({
+      description: t('delete_pet_photo_toast'),
       variant: 'success',
     });
   };
@@ -257,7 +288,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
         event: { ...values },
       });
       toast({
-        description: t('update_pet_form_toast_success', {
+        description: t('update_pet_medical_toast_success', {
           name: values.medicalEventType,
         }),
         variant: 'success',
@@ -294,7 +325,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
         event: { ...values },
       });
       toast({
-        description: t('update_pet_form_toast_success', {
+        description: t('update_pet_outcome_toast_success', {
           name: values.eventType,
         }),
         variant: 'success',
@@ -325,9 +356,37 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
         document: { ...values },
       });
       toast({
-        description: t('update_pet_form_toast_success', {
+        description: t('update_pet_document_toast_success', {
           name: values.name,
         }),
+        variant: 'success',
+      });
+    } catch (error) {
+      if (
+        error instanceof Error ||
+        error instanceof ZodError ||
+        error instanceof TRPCClientError
+      ) {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
+  const photoForm = useForm<IPhoto>({
+    resolver: zodResolver(photo),
+  });
+
+  const onPhotoFormSubmit = async (values: IPhoto) => {
+    try {
+      await addPetPhotoMutation.mutateAsync({
+        petId: animalId,
+        photo: { ...values },
+      });
+      toast({
+        description: t('update_pet_photos_toast_success'),
         variant: 'success',
       });
     } catch (error) {
@@ -447,7 +506,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                             form.setValue('image', '');
                           }}
                         >
-                          Remove Image
+                          {t('remove_image')}
                         </Button>
                       </div>
                     </div>
@@ -766,6 +825,394 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         </FormItem>
                       )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="friendlyWithDogs"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 space-y-1 sm:col-span-3">
+                          <FormLabel>
+                            {t('pet_form_friendly_dogs', { name: pet.name })}
+                          </FormLabel>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value?.toString()}
+                            className="max-w grid grid-cols-2 gap-8 pt-2"
+                          >
+                            <FormItem>
+                              <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="true"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_yes')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem>
+                              <FormLabel className="transition-all ease-linear [&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="false"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_no')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="friendlyWithCats"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 space-y-1 sm:col-span-3">
+                          <FormLabel>
+                            {t('pet_form_friendly_cats', { name: pet.name })}
+                          </FormLabel>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value?.toString()}
+                            className="max-w grid grid-cols-2 gap-8 pt-2"
+                          >
+                            <FormItem>
+                              <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="true"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_yes')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem>
+                              <FormLabel className="transition-all ease-linear [&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="false"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_no')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="friendlyWithChildren"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 space-y-1 sm:col-span-3">
+                          <FormLabel>
+                            {t('pet_form_friendly_children', {
+                              name: pet.name,
+                            })}
+                          </FormLabel>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value?.toString()}
+                            className="max-w grid grid-cols-2 gap-8 pt-2"
+                          >
+                            <FormItem>
+                              <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="true"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_yes')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem>
+                              <FormLabel className="transition-all ease-linear [&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="false"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_no')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="neutered"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 space-y-1 sm:col-span-3">
+                          <FormLabel>
+                            {t('pet_form_neutered', { name: pet.name })}
+                          </FormLabel>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value?.toString()}
+                            className="max-w grid grid-cols-2 gap-8 pt-2"
+                          >
+                            <FormItem>
+                              <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="true"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_yes')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem>
+                              <FormLabel className="transition-all ease-linear [&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="false"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_no')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="houseTrained"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 space-y-1 sm:col-span-3">
+                          <FormLabel>
+                            {t('pet_form_house_trained', { name: pet.name })}
+                          </FormLabel>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value?.toString()}
+                            className="max-w grid grid-cols-2 gap-8 pt-2"
+                          >
+                            <FormItem>
+                              <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="true"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_yes')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem>
+                              <FormLabel className="transition-all ease-linear [&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="false"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_no')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="specialNeeds"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 space-y-1 sm:col-span-3">
+                          <FormLabel>
+                            {t('pet_form_special_needs', { name: pet.name })}
+                          </FormLabel>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value?.toString()}
+                            className="max-w grid grid-cols-2 gap-8 pt-2"
+                          >
+                            <FormItem>
+                              <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="true"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_yes')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem>
+                              <FormLabel className="transition-all ease-linear [&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="false"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_no')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="aggressive"
+                      render={({ field }) => (
+                        <FormItem className="col-span-6 space-y-1 sm:col-span-3">
+                          <FormLabel>
+                            {t('pet_form_aggresive', { name: pet.name })}
+                          </FormLabel>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value?.toString()}
+                            className="max-w grid grid-cols-2 gap-8 pt-2"
+                          >
+                            <FormItem>
+                              <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="true"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_yes')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem>
+                              <FormLabel className="transition-all ease-linear [&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                <FormControl>
+                                  <RadioGroupItem
+                                    value="false"
+                                    className="sr-only"
+                                  />
+                                </FormControl>
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <span className="block w-full p-2 text-center text-base font-normal">
+                                    {t('pet_form_no')}
+                                  </span>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {pet.species === 'cat' && (
+                      <FormField
+                        control={form.control}
+                        name="declawed"
+                        render={({ field }) => (
+                          <FormItem className="col-span-6 space-y-1 sm:col-span-3">
+                            <FormLabel>
+                              {t('pet_form_declawed', { name: pet.name })}
+                            </FormLabel>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value?.toString()}
+                              className="max-w grid grid-cols-2 gap-8 pt-2"
+                            >
+                              <FormItem>
+                                <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                  <FormControl>
+                                    <RadioGroupItem
+                                      value="true"
+                                      className="sr-only"
+                                    />
+                                  </FormControl>
+                                  <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                    <span className="block w-full p-2 text-center text-base font-normal">
+                                      {t('pet_form_yes')}
+                                    </span>
+                                  </div>
+                                </FormLabel>
+                              </FormItem>
+                              <FormItem>
+                                <FormLabel className="transition-all ease-linear [&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                  <FormControl>
+                                    <RadioGroupItem
+                                      value="false"
+                                      className="sr-only"
+                                    />
+                                  </FormControl>
+                                  <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                    <span className="block w-full p-2 text-center text-base font-normal">
+                                      {t('pet_form_no')}
+                                    </span>
+                                  </div>
+                                </FormLabel>
+                              </FormItem>
+                            </RadioGroup>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
                     <div className="col-span-6 mt-2 flex flex-col gap-3 md:flex-row">
                       <Button
                         type="submit"
@@ -773,7 +1220,9 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         size="lg"
                         disabled={!form.formState.isDirty}
                       >
-                        Update {pet.name}&apos;s details
+                        {t('pet_details_form_update_button', {
+                          name: pet.name,
+                        })}
                       </Button>
                       <Button
                         className="justify-self-start"
@@ -781,7 +1230,9 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         onClick={() => deleteAnimal(pet.id)}
                         variant={'destructive'}
                       >
-                        {t('pet_details_form_delete_button')}
+                        {t('pet_details_form_delete_button', {
+                          name: pet.name,
+                        })}
                       </Button>
                     </div>
                   </form>
@@ -1075,7 +1526,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                   <div className="flex items-center justify-center">
                     <Button
                       size="lg"
-                      className="text-base"
+                      className="text-sm md:text-base"
                       onClick={() => setIsAddingMedical(true)}
                       disabled={isAddingMedical}
                     >
@@ -1279,7 +1730,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               control={documentForm.control}
                               name="url"
                               render={({ field }) => (
-                                <FormItem className="col-span-6 sm:col-span-3">
+                                <FormItem className="col-span-6 hidden sm:col-span-3">
                                   <FormLabel>
                                     {t('pet_form_document_url')}
                                   </FormLabel>
@@ -1415,7 +1866,109 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                 </div>
               </TabsContent>
               <TabsContent value="notes"></TabsContent>
-              <TabsContent value="adoption"></TabsContent>
+              <TabsContent value="adoption">
+                <div className="lg:mt-38 mt-32 flex flex-col gap-3 p-4 md:mt-36">
+                  <Form {...photoForm}>
+                    <form onSubmit={photoForm.handleSubmit(onPhotoFormSubmit)}>
+                      <FormField
+                        control={photoForm.control}
+                        name="url"
+                        render={({ field }) => (
+                          <FormItem className="col-span-6 hidden sm:col-span-3">
+                            <FormLabel>{t('pet_form_photo_url')}</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder=""
+                                disabled
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {photoForm.getValues('url') && (
+                        <div className="flex w-full justify-center pb-6">
+                          <Card className="flex flex-col gap-3 p-10">
+                            <Image
+                              width="400"
+                              height="400"
+                              className="h-full w-full rounded-lg object-cover"
+                              src={photoForm.getValues('url')}
+                              alt={''}
+                            />
+                          </Card>
+                        </div>
+                      )}
+                      <UploadButton
+                        endpoint="imageUploader"
+                        onClientUploadComplete={(res) => {
+                          if (res) {
+                            photoForm.setValue(
+                              'url',
+                              res[0]?.fileUrl as string
+                            );
+                            toast({
+                              description: t('pet_image_toast_upload_success'),
+                              variant: 'success',
+                            });
+                          }
+                        }}
+                        onUploadError={(error: Error) => {
+                          toast({
+                            description: error.message,
+                            variant: 'destructive',
+                          });
+                        }}
+                      />
+                      <div className="flex w-full flex-col items-center justify-center gap-6">
+                        {photoForm.getValues('url') && (
+                          <Button
+                            className="my-4 w-fit text-base"
+                            variant={'default'}
+                            size="lg"
+                            type="submit"
+                          >
+                            {t('pet_photo_save_button')}
+                          </Button>
+                        )}
+                      </div>
+                    </form>
+                  </Form>
+                  {photos && (
+                    <>
+                      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                        {photos.map((photo) => (
+                          <Card
+                            key={photo.id}
+                            className="flex flex-col gap-3 p-10"
+                          >
+                            <Image
+                              width="400"
+                              height="400"
+                              className="h-full w-full rounded-lg object-cover"
+                              src={photo.url}
+                              alt="Pet photo"
+                            />
+                            <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                              <Button
+                                className="w-fit justify-self-start"
+                                size="lg"
+                                variant="destructive"
+                                onClick={() =>
+                                  deletePetPhoto(photo.id, animalId)
+                                }
+                              >
+                                {t('pet_photo_delete_button')}
+                              </Button>
+                            </div>
+                          </Card>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </TabsContent>
             </div>
           </div>
         )}

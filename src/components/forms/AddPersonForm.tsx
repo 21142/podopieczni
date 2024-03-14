@@ -143,7 +143,7 @@ const AddPersonForm = () => {
                       form.setValue('image', '');
                     }}
                   >
-                    Remove Image
+                    {t('remove_image')}
                   </Button>
                 </div>
               </div>

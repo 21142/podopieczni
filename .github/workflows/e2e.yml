@@ -49,7 +49,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npm run e2e
         env:
           PLAYWRIGHT_BASE_URL: ${{ needs.setup.outputs.preview_url }}
       - uses: actions/upload-artifact@v3

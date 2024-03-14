@@ -51,7 +51,7 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
             {Array.from({ length: 6 }).map((_, index) => (
               <Card
                 key={index}
-                className="w-[calc(20rem + 2vw)] relative min-h-[585px] border-0 shadow-md transition hover:cursor-pointer hover:ease-out dark:border-2 dark:shadow-primary-300/20 md:w-[352px]"
+                className="w-[calc(20rem + 2vw)] relative min-h-[585px] border-0 shadow-md transition hover:cursor-pointer hover:ease-out dark:shadow-primary-300/20 md:w-[352px]"
               >
                 <CardHeader className="p-0">
                   <Image

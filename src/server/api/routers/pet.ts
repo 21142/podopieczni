@@ -6,6 +6,7 @@ import {
   medicalEvent,
   outcomeEvent,
   petDetailsSchema,
+  photo,
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import protectedProcedure from '../procedures/protectedProcedure';
@@ -98,6 +99,21 @@ export const petRouter = createTRPCRouter({
       });
       return pet?.documents;
     }),
+  getPetPhotos: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const pet = await ctx.prisma.pet.findUnique({
+        where: { id: input.id },
+        include: {
+          photos: true,
+        },
+      });
+      return pet?.photos;
+    }),
   getPetsCount: publicProcedure.query(async ({ ctx }) => {
     const count = await ctx.prisma.pet.count();
     return count;
@@ -177,15 +193,6 @@ export const petRouter = createTRPCRouter({
           // adoptionFee: input.adoptionFee,
           dateOfBirth: new Date(input.dateOfBirth as string).toISOString(),
           status: input.status,
-          // description: input.description,
-          // houseTrained: input.houseTrained,
-          // specialNeeds: input.specialNeeds,
-          // neutered: input.neutered,
-          // declawed: input.declawed,
-          // aggressive: input.aggressive,
-          // friendlyWithDogs: input.friendlyWithDogs,
-          // friendlyWithCats: input.friendlyWithCats,
-          // friendlyWithChildren: input.friendlyWithChildren,
           microchipBrand: input.microchipBrand,
           microchipNumber: input.microchipNumber,
           healthStatus: input.healthStatus,
@@ -194,20 +201,8 @@ export const petRouter = createTRPCRouter({
               id: 'clkg0af0j0000tw7lqiwgvsl9',
             },
           },
-          // medicalEvents: {
-          //   create: { ...input.medicalEvents },
-          // },
           intakeEventDate: input.intakeEventDate,
           intakeEventType: input.intakeEventType,
-          // outcomeEvents: {
-          //   create: input.outcomeEvents,
-          // },
-          // photos: {
-          //   create: input.photos,
-          // },
-          // documents: {
-          //   create: input.documents,
-          // },
         },
       });
       return pet;
@@ -219,6 +214,7 @@ export const petRouter = createTRPCRouter({
         rateLimiterName: 'main',
         identifier: ctx.session?.user.id ?? '',
       });
+
       await ctx.prisma.pet.update({
         where: { id: input.id },
         data: {
@@ -236,14 +232,14 @@ export const petRouter = createTRPCRouter({
           dateOfBirth: new Date(input.pet.dateOfBirth as string).toISOString(),
           status: input.pet.status,
           // description: input.pet.description,
-          // houseTrained: input.pet.houseTrained,
-          // specialNeeds: input.pet.specialNeeds,
-          // neutered: input.pet.neutered,
-          // declawed: input.pet.declawed,
-          // aggressive: input.pet.aggressive,
-          // friendlyWithDogs: input.pet.friendlyWithDogs,
-          // friendlyWithCats: input.pet.friendlyWithCats,
-          // friendlyWithChildren: input.pet.friendlyWithChildren,
+          houseTrained: input.pet.houseTrained,
+          specialNeeds: input.pet.specialNeeds,
+          neutered: input.pet.neutered,
+          declawed: input.pet.declawed,
+          aggressive: input.pet.aggressive,
+          friendlyWithDogs: input.pet.friendlyWithDogs,
+          friendlyWithCats: input.pet.friendlyWithCats,
+          friendlyWithChildren: input.pet.friendlyWithChildren,
           microchipBrand: input.pet.microchipBrand,
           microchipNumber: input.pet.microchipNumber,
           healthStatus: input.pet.healthStatus,
@@ -252,20 +248,8 @@ export const petRouter = createTRPCRouter({
               id: 'clkg0af0j0000tw7lqiwgvsl9',
             },
           },
-          // medicalEvents: {
-          //   create: { ...input.pet.medicalEvents },
-          // },
           intakeEventDate: input.pet.intakeEventDate,
           intakeEventType: input.pet.intakeEventType,
-          // outcomeEvents: {
-          //   create: input.pet.outcomeEvents,
-          // },
-          // photos: {
-          //   create: input.pet.photos,
-          // },
-          // documents: {
-          //   create: input.pet.documents,
-          // },
         },
       });
     }),
@@ -329,6 +313,23 @@ export const petRouter = createTRPCRouter({
         },
       });
     }),
+  addPetPhotoMutation: protectedProcedure
+    .input(
+      z.object({
+        petId: z.string(),
+        photo: photo,
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.update({
+        where: { id: input.petId },
+        data: {
+          photos: {
+            create: input.photo,
+          },
+        },
+      });
+    }),
   deletePetDocumentMutation: protectedProcedure
     .input(
       z.object({
@@ -343,6 +344,25 @@ export const petRouter = createTRPCRouter({
           documents: {
             delete: {
               id: input.documentId,
+            },
+          },
+        },
+      });
+    }),
+  deletePetPhotoMutation: protectedProcedure
+    .input(
+      z.object({
+        petId: z.string(),
+        photoId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.update({
+        where: { id: input.petId },
+        data: {
+          photos: {
+            delete: {
+              id: input.photoId,
             },
           },
         },

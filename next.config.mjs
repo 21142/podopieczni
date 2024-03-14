@@ -9,6 +9,7 @@ const config = {
       'i.pravatar.cc',
       'i.postimg.cc',
       'dl5zpyw5k3jeb.cloudfront.net',
+      'dbw3zep4prcju.cloudfront.net',
       'lh3.googleusercontent.com',
       'uploadthing.com',
       'anitar.dev',

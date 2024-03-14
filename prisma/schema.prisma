@@ -124,14 +124,14 @@ model Pet {
   dateOfBirth          DateTime         @db.Date
   status               String?
   description          String?
-  houseTrained         Boolean?
-  specialNeeds         Boolean?
-  neutered             Boolean?
-  declawed             Boolean?
-  aggressive           Boolean?
-  friendlyWithDogs     Boolean?
-  friendlyWithCats     Boolean?
-  friendlyWithChildren Boolean?
+  houseTrained         String?
+  specialNeeds         String?
+  neutered             String?
+  declawed             String?
+  aggressive           String?
+  friendlyWithDogs     String?
+  friendlyWithCats     String?
+  friendlyWithChildren String?
   microchipBrand       String?
   microchipNumber      String?
   shelter              Shelter          @relation(fields: [shelterId], references: [id], onDelete: Cascade)

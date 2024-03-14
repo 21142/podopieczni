@@ -28,6 +28,10 @@ export const document = z.object({
   type: z.string().optional(),
 });
 
+export const photo = z.object({
+  url: z.string(),
+});
+
 export const petDetailsSchema = z.object({
   internalId: z.string().optional(),
   image: z.string().optional(),
@@ -99,14 +103,14 @@ export const fullPetDetailsSchema = z.object({
   microchipBrand: z.string().optional(),
   microchipNumber: z.string().optional(),
   description: z.string().optional().nullable(),
-  houseTrained: z.boolean().optional().nullable(),
-  specialNeeds: z.boolean().optional().nullable(),
-  neutered: z.boolean().optional().nullable(),
-  declawed: z.boolean().optional().nullable(),
-  aggressive: z.boolean().optional().nullable(),
-  friendlyWithDogs: z.boolean().optional().nullable(),
-  friendlyWithCats: z.boolean().optional().nullable(),
-  friendlyWithChildren: z.boolean().optional().nullable(),
+  houseTrained: z.string().optional().nullable(),
+  specialNeeds: z.string().optional().nullable(),
+  neutered: z.string().optional().nullable(),
+  declawed: z.string().optional().nullable(),
+  aggressive: z.string().optional().nullable(),
+  friendlyWithDogs: z.string().optional().nullable(),
+  friendlyWithCats: z.string().optional().nullable(),
+  friendlyWithChildren: z.string().optional().nullable(),
   shelter: z.object({}).optional(),
   shelterId: z.string().optional(),
   healthStatus: z.union([
@@ -127,7 +131,7 @@ export const fullPetDetailsSchema = z.object({
     z.literal('RETURN'),
   ]),
   outcomeEvents: z.array(outcomeEvent).optional(),
-  photos: z.array(z.object({})).optional(),
+  photos: z.array(photo).optional(),
   documents: z.array(document).optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -143,3 +147,4 @@ export type IPetFilterOptions = z.infer<typeof petFilterOptionsSchema>;
 export type IPetMedicalEvent = z.infer<typeof medicalEvent>;
 export type IPetOutcomeEvent = z.infer<typeof outcomeEvent>;
 export type IDocument = z.infer<typeof document>;
+export type IPhoto = z.infer<typeof photo>;
