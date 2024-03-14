@@ -30,7 +30,7 @@ const AuthButton: React.FC = () => {
             alt={userFromSession?.name ?? 'User avatar'}
           />
           <AvatarFallback>
-            <span className="sr-only">{userFromSession?.name}</span>
+            <span className="sr-only">Log in dropdown</span>
             <Icons.user className="h-4 w-4" />
           </AvatarFallback>
         </Avatar>
