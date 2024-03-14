@@ -34,6 +34,7 @@ jobs:
         id: waitForVercelPreviewDeployment
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 1200
   e2e:
     needs: setup
     timeout-minutes: 5
