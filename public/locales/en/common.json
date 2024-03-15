@@ -213,6 +213,8 @@
    "organization_see_our_pets": "Check out our pets",
    "organization_mission": "Our mission",
    "organization_location": "Where are we located at?",
+   "pet_form_delete_confirmation": "Are you sure you want to delete {{name}}?",
+   "pet_form_delete_confirmation_description": "This action cannot be undone. This will permanently delete details of {{name}} from our server.",
    "column_image": "Image",
    "column_name": "Name",
    "column_status": "Status",

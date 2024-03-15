@@ -202,7 +202,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
         <Link
           href="#scrollToPosition"
           scroll={false}
-          className="-mt-6 flex justify-center"
+          className="z-50 mx-auto -mt-6 flex w-fit justify-center"
         >
           <span className="sr-only">Scroll to top</span>
           <ChevronDoubleUpIcon className="duration-50 h-12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />

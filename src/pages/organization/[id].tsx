@@ -63,7 +63,7 @@ const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
                   }
                   width={400}
                   height={400}
-                  className="rounded-sm"
+                  className="h-96 w-96 rounded-sm object-cover"
                 />
                 <div className="flex flex-col gap-6">
                   <h1 className="text-3xl font-semibold">

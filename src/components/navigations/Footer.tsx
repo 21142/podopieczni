@@ -5,7 +5,7 @@ const Footer = () => {
   const { t } = useTranslation('common');
   return (
     <>
-      <BackgroundWavesFooter className="-mt-40 aspect-[10/1] sm:mt-0" />
+      <BackgroundWavesFooter className="-z-10 -mt-40 aspect-[10/1] sm:mt-0" />
       <footer className="w-full bg-primary-300">
         <div className="flex flex-col items-center justify-center">
           <div className="mt-2 grid max-w-[77.5rem] grid-cols-2 gap-6 py-8 px-6 text-neutral-50 md:grid-cols-4">

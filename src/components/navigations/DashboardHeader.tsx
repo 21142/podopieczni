@@ -44,7 +44,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
         <nav
           className={classNames(
             mobileMenuIsOpen
-              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-neutral-50 [&_a]:pl-5'
+              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-muted-foreground [&_a]:pl-5'
               : 'hidden items-center gap-x-10 md:inline-flex'
           )}
         >
