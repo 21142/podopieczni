@@ -31,20 +31,20 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   return (
     <header
       {...headerProps}
-      className={`top-0 z-10 h-20 w-full border-b border-b-accent py-[14px] px-8 ${
+      className={`top-0 z-30 h-20 w-full border-b border-b-accent py-[14px] px-8 ${
         className ?? ''
       }`}
     >
       <div className="mx-auto flex items-center justify-between gap-x-3 md:gap-x-10 lg:max-w-8xl lg:gap-x-10">
         <Link href="/">
-          <div className="relative flex">
+          <div className="relative z-30 flex">
             {currentTheme === 'light' ? <Logo /> : <LogoDark />}
           </div>
         </Link>
         <nav
           className={classNames(
             mobileMenuIsOpen
-              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-neutral-50 [&_a]:pl-5'
+              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:pl-10'
               : 'hidden items-center gap-x-10 md:inline-flex'
           )}
         >
@@ -82,7 +82,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
             />
           )}
           {mobileMenuIsOpen && (
-            <div className="flex items-center gap-x-5 border-t border-neutral-50 pl-4 pt-3 sm:hidden">
+            <div className="flex items-center gap-x-5 pl-10 pt-3 sm:hidden">
               <ThemeToggle />
               <LanguageToggle />
               <AuthButton />

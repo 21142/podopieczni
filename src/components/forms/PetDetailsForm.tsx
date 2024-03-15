@@ -51,6 +51,17 @@ import {
   type IPhoto,
 } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../primitives/AlertDialog';
 import { Card } from '../primitives/Card';
 import { Label } from '../primitives/Label';
 import { RadioGroup, RadioGroupItem } from '../primitives/RadioButton';
@@ -1224,16 +1235,48 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                           name: pet.name,
                         })}
                       </Button>
-                      <Button
-                        className="justify-self-start"
-                        size="lg"
-                        onClick={() => deleteAnimal(pet.id)}
-                        variant={'destructive'}
-                      >
-                        {t('pet_details_form_delete_button', {
-                          name: pet.name,
-                        })}
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            className="justify-self-start"
+                            size="lg"
+                            variant={'destructive'}
+                          >
+                            {t('pet_details_form_delete_button', {
+                              name: pet.name,
+                            })}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              {t('pet_form_delete_confirmation', {
+                                name: pet.name,
+                              })}
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {t('pet_form_delete_confirmation_description', {
+                                name: pet.name,
+                              })}
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>
+                              {t('pet_events_cancel_button')}
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deleteAnimal(pet.id)}
+                              className={buttonVariants({
+                                variant: 'destructive',
+                              })}
+                            >
+                              {t('pet_details_form_delete_button', {
+                                name: pet.name,
+                              })}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </form>
                 </Form>

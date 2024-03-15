@@ -86,9 +86,39 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
     setIsLikeClicked((prev) => !prev);
   };
 
+  const iconsAndText = [
+    pet.environment.children && {
+      icon: (
+        <Icons.baby
+          key="baby"
+          className="h-6 w-6"
+        />
+      ),
+      text: t('pet_profile_page_good_with_children'),
+    },
+    pet.environment.dogs && {
+      icon: (
+        <Icons.dog
+          key="dog"
+          className="h-6 w-6"
+        />
+      ),
+      text: t('pet_profile_page_good_with_dogs'),
+    },
+    pet.environment.cats && {
+      icon: (
+        <Icons.cat
+          key="cat"
+          className="h-6 w-6"
+        />
+      ),
+      text: t('pet_profile_page_good_with_cats'),
+    },
+  ];
+
   return (
     <PageLayout>
-      <div className="p-6">
+      <div className="mx-auto w-full max-w-8xl p-6">
         {pet === null ? (
           <p>{message}</p>
         ) : (
@@ -106,9 +136,9 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                     <Image
                       src={photo.large ?? '/images/no-profile-picture.svg'}
                       alt={`Pet photo ${index + 1}`}
-                      className="rounded-md"
+                      className="h-full w-full rounded-sm object-cover"
                       width={600}
-                      height={400}
+                      height={600}
                       priority={true}
                     />
                   </CarouselItem>
@@ -192,32 +222,27 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                     </div>
                   )}
 
-                  {[
-                    pet.environment.children &&
-                      t('pet_profile_page_good_with_children'),
-                    pet.environment.dogs &&
-                      t('pet_profile_page_good_with_dogs'),
-                    pet.environment.cats &&
-                      t('pet_profile_page_good_with_cats'),
-                  ].filter(Boolean).length > 0 && (
+                  {iconsAndText.length > 0 && (
                     <div className="mt-6">
-                      <h2 className="mb-2 text-2xl font-bold">
+                      <h2 className="mb-4 text-2xl font-bold">
                         {t('pet_profile_page_good_with')}
                       </h2>
-                      <p className="">
-                        {[
-                          pet.environment.children &&
-                            t('pet_profile_page_good_with_children'),
-                          pet.environment.dogs &&
-                            t('pet_profile_page_good_with_dogs'),
-                          pet.environment.cats &&
-                            t('pet_profile_page_good_with_cats'),
-                        ]
-                          .filter(Boolean)
-                          .join(' / ')}
-                      </p>
+                      <div className="flex flex-wrap">
+                        {iconsAndText.map((item, index) => (
+                          <div
+                            className="mr-4 flex flex-col items-center"
+                            key={index}
+                          >
+                            {typeof item !== 'boolean' && item?.icon}
+                            {typeof item !== 'boolean' && item?.text && (
+                              <span className="text-base">{item.text}</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
+
                   <Separator className="mt-6" />
                   <div className="flex flex-col justify-between pt-6">
                     <h2 className="mb-2 text-xl font-bold">
@@ -236,8 +261,8 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                     <h2 className="mb-2 text-xl font-bold">
                       {t('pet_profile_page_help')}
                     </h2>
-                    <div className="flex items-end gap-4">
-                      <span className="text-lg">
+                    <div className="flex items-center gap-4">
+                      <span className="text-base md:text-lg">
                         {t('pet_profile_page_share')}
                       </span>
                       <FacebookShareButton url={pet.url}>
