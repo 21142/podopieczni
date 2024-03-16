@@ -274,7 +274,10 @@ export const petRouter = createTRPCRouter({
         where: { id: input.petId },
         data: {
           medicalEvents: {
-            create: input.event,
+            create: {
+              ...input.event,
+              cost: parseFloat(input.event.cost ?? ''),
+            },
           },
         },
       });
