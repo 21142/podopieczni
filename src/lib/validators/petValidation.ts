@@ -9,6 +9,13 @@ export const medicalEvent = z.object({
     z.literal('MEDICATION'),
     z.literal('SURGERY'),
   ]),
+  knownCost: z.string().optional().nullable(),
+  cost: z
+    .string()
+    .refine((val) => !val || !isNaN(Number(val)), {
+      message: 'Cost must be a number',
+    })
+    .optional(),
 });
 
 export const outcomeEvent = z.object({

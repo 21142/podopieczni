@@ -250,9 +250,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                     </h2>
                     <div className="flex items-end gap-4">
                       <p className="text-lg">
-                        {t('pet_profile_page_for_how_long', {
-                          date: dayjs(pet.published_at).fromNow(true),
-                        })}
+                        {dayjs(pet.published_at).fromNow(true)}
                       </p>
                     </div>
                   </div>
