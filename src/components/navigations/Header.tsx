@@ -82,7 +82,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
             />
           )}
           {mobileMenuIsOpen && (
-            <div className="flex items-center gap-x-5 pl-10 pt-3 sm:hidden">
+            <div className="flex items-center gap-x-5 pl-10 pt-3 md:hidden">
               <ThemeToggle />
               <LanguageToggle />
               <AuthButton />
@@ -90,10 +90,8 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
           )}
         </nav>
         <div className="flex items-center justify-between gap-x-2 sm:gap-x-5">
-          <div className="mr-12 hidden items-center gap-x-5 sm:mr-0 sm:inline-flex">
-            {mobileMenuIsOpen ? (
-              <div></div>
-            ) : (
+          <div className="mr-12 hidden items-center gap-x-5 sm:mr-0 md:inline-flex">
+            {!mobileMenuIsOpen && (
               <>
                 <Link
                   href="/user/favorites"
@@ -111,20 +109,24 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
               </>
             )}
           </div>
-          <button
-            className={classNames(
-              mobileMenuIsOpen ? 'fixed top-6 right-8' : '',
-              'z-10 md:hidden'
-            )}
-            onClick={() => setMobileMenuIsOpen((currentState) => !currentState)}
-          >
-            <span className="sr-only">Toggle navigation menu</span>
-            {mobileMenuIsOpen ? (
-              <XIcon className="h-8 w-8 cursor-pointer" />
-            ) : (
-              <MenuAlt2Icon className="h-8 w-8 cursor-pointer" />
-            )}
-          </button>
+          <div className={mobileMenuIsOpen ? '' : 'md:hidden'}>
+            <button
+              className={classNames(
+                mobileMenuIsOpen ? 'fixed top-6 right-8' : '',
+                'z-10'
+              )}
+              onClick={() =>
+                setMobileMenuIsOpen((currentState) => !currentState)
+              }
+            >
+              <span className="sr-only">Toggle navigation menu</span>
+              {mobileMenuIsOpen ? (
+                <XIcon className="h-8 w-8 cursor-pointer" />
+              ) : (
+                <MenuAlt2Icon className="h-8 w-8 cursor-pointer" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </header>
