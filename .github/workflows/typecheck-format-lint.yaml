@@ -21,7 +21,7 @@ env:
 
 jobs:
   build:
-    name: Typescript Type Check, Prettier and ESLint
+    name: Run tsc, format and lint
     runs-on: ubuntu-latest
 
     steps:

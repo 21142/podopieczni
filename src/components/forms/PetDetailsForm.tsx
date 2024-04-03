@@ -51,6 +51,17 @@ import {
   type IPhoto,
 } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../primitives/AlertDialog';
 import { Card } from '../primitives/Card';
 import { Label } from '../primitives/Label';
 import { RadioGroup, RadioGroupItem } from '../primitives/RadioButton';
@@ -113,6 +124,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
   const [isAddingOutcome, setIsAddingOutcome] = useState(false);
   const [isAddingMedical, setIsAddingMedical] = useState(false);
   const [isAddingDocument, setIsAddingDocument] = useState(false);
+  const [isCostKnown, setIsCostKnown] = useState(false);
 
   const updatePetMutation = api.pet.updatePetById.useMutation({
     onSuccess: async () => {
@@ -126,6 +138,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
       onSuccess: async () => {
         medicalEventForm.reset();
         setIsAddingMedical(false);
+        setIsCostKnown(false);
         await trpc.getPetMedicalEvents.invalidate();
       },
     });
@@ -282,6 +295,9 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
       if (values.eventDate) {
         values.eventDate =
           mapIntakeEventDate(values.eventDate) ?? new Date().toISOString();
+      }
+      if (values.knownCost !== undefined) {
+        values.knownCost = undefined;
       }
       await updatePetMedicalEventMutation.mutateAsync({
         petId: animalId,
@@ -474,7 +490,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                           />
                         </AvatarFallback>
                       </Avatar>
-                      <div className="items-center justify-center space-y-4 md:z-10 md:mt-10">
+                      <div className="z-0 items-center justify-center space-y-4 md:mt-10">
                         <UploadButton
                           endpoint="imageUploader"
                           onClientUploadComplete={(res) => {
@@ -1224,16 +1240,48 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                           name: pet.name,
                         })}
                       </Button>
-                      <Button
-                        className="justify-self-start"
-                        size="lg"
-                        onClick={() => deleteAnimal(pet.id)}
-                        variant={'destructive'}
-                      >
-                        {t('pet_details_form_delete_button', {
-                          name: pet.name,
-                        })}
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            className="justify-self-start"
+                            size="lg"
+                            variant={'destructive'}
+                          >
+                            {t('pet_details_form_delete_button', {
+                              name: pet.name,
+                            })}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              {t('pet_form_delete_confirmation', {
+                                name: pet.name,
+                              })}
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {t('pet_form_delete_confirmation_description', {
+                                name: pet.name,
+                              })}
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>
+                              {t('pet_events_cancel_button')}
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => deleteAnimal(pet.id)}
+                              className={buttonVariants({
+                                variant: 'destructive',
+                              })}
+                            >
+                              {t('pet_details_form_delete_button', {
+                                name: pet.name,
+                              })}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </form>
                 </Form>
@@ -1609,6 +1657,79 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               </FormItem>
                             )}
                           />
+                          <FormField
+                            control={medicalEventForm.control}
+                            name="knownCost"
+                            render={({ field }) => (
+                              <FormItem className="col-span-6 sm:col-span-3">
+                                <FormLabel>
+                                  {t('add_pet_form_label_medical_knownCost')}
+                                </FormLabel>
+                                <RadioGroup
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value?.toString()}
+                                  className="max-w grid grid-cols-2 gap-8 pt-2"
+                                >
+                                  <FormItem>
+                                    <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                      <FormControl>
+                                        <RadioGroupItem
+                                          value="true"
+                                          onClick={() => setIsCostKnown(true)}
+                                          className="sr-only"
+                                        />
+                                      </FormControl>
+                                      <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                        <span className="block w-full p-2 text-center text-base font-normal">
+                                          {t('pet_form_yes')}
+                                        </span>
+                                      </div>
+                                    </FormLabel>
+                                  </FormItem>
+                                  <FormItem>
+                                    <FormLabel className="transition-all ease-linear [&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
+                                      <FormControl>
+                                        <RadioGroupItem
+                                          value="false"
+                                          onClick={() => setIsCostKnown(false)}
+                                          className="sr-only"
+                                        />
+                                      </FormControl>
+                                      <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                        <span className="block w-full p-2 text-center text-base font-normal">
+                                          {t('pet_form_no')}
+                                        </span>
+                                      </div>
+                                    </FormLabel>
+                                  </FormItem>
+                                </RadioGroup>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          {isCostKnown && (
+                            <>
+                              <div className="sm:col-span-3" />
+                              <FormField
+                                control={medicalEventForm.control}
+                                name="cost"
+                                render={({ field }) => (
+                                  <FormItem className="col-span-6 sm:col-span-3">
+                                    <FormLabel>
+                                      {t('add_pet_form_label_medical_cost')}
+                                    </FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder=""
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </>
+                          )}
                           <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
                             <Button
                               type="submit"
@@ -1662,6 +1783,21 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               }
                             />
                           </div>
+                          {event.cost && (
+                            <div className="col-span-6 sm:col-span-3">
+                              <Label className="text-lg">
+                                {t('add_pet_form_label_medical_cost')}
+                              </Label>
+                              <Input
+                                type="text"
+                                className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                                placeholder=""
+                                value={
+                                  event.cost !== null ? event.cost : undefined
+                                }
+                              />
+                            </div>
+                          )}
                         </div>
                         <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
                           <Button
