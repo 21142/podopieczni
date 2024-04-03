@@ -37,14 +37,14 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
     >
       <div className="mx-auto flex items-center justify-between gap-x-3 md:gap-x-10 lg:max-w-8xl lg:gap-x-10">
         <Link href="/">
-          <div className="relative flex">
+          <div className="relative z-30 flex">
             {currentTheme === 'light' ? <Logo /> : <LogoDark />}
           </div>
         </Link>
         <nav
           className={classNames(
             mobileMenuIsOpen
-              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:border-t [&_a]:border-muted-foreground [&_a]:pl-5'
+              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:pl-10'
               : 'hidden items-center gap-x-10 md:inline-flex'
           )}
         >
@@ -95,7 +95,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
             />
           )}
           {mobileMenuIsOpen && (
-            <div className="flex items-center gap-x-5 border-t border-neutral-50 pl-4 pt-3 sm:hidden">
+            <div className="flex items-center gap-x-5 pl-10 pt-3 md:hidden">
               <AuthButton />
               <LanguageToggle />
               <ThemeToggle />
@@ -103,7 +103,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
           )}
         </nav>
         <div className="flex items-center justify-between gap-x-2 sm:gap-x-5">
-          <div className="mr-12 hidden items-center gap-x-5 sm:mr-0 sm:inline-flex">
+          <div className="mr-12 hidden items-center gap-x-5 sm:mr-0 md:inline-flex">
             <Link
               href="/user/favorites"
               className={buttonVariants({
@@ -118,20 +118,24 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
             <LanguageToggle />
             <AuthButton />
           </div>
-          <button
-            className={classNames(
-              mobileMenuIsOpen ? 'fixed top-6 right-5' : '',
-              'z-10 md:hidden'
-            )}
-            onClick={() => setMobileMenuIsOpen((currentState) => !currentState)}
-          >
-            <span className="sr-only">Toggle navigation menu</span>
-            {mobileMenuIsOpen ? (
-              <XIcon className="h-8 w-8 cursor-pointer" />
-            ) : (
-              <MenuAlt2Icon className="h-8 w-8 cursor-pointer" />
-            )}
-          </button>
+          <div className={mobileMenuIsOpen ? '' : 'md:hidden'}>
+            <button
+              className={classNames(
+                mobileMenuIsOpen ? 'fixed top-6 right-5' : '',
+                'z-10'
+              )}
+              onClick={() =>
+                setMobileMenuIsOpen((currentState) => !currentState)
+              }
+            >
+              <span className="sr-only">Toggle navigation menu</span>
+              {mobileMenuIsOpen ? (
+                <XIcon className="h-8 w-8 cursor-pointer" />
+              ) : (
+                <MenuAlt2Icon className="h-8 w-8 cursor-pointer" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </header>

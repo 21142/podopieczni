@@ -24,7 +24,7 @@ env:
 
 jobs:
   setup:
-    name: E2E Tests Setup
+    name: Setup E2E tests
     runs-on: ubuntu-latest
     outputs:
       preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
@@ -36,6 +36,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           max_timeout: 600
   e2e:
+    name: Run E2E tests
     needs: setup
     timeout-minutes: 5
     runs-on: ubuntu-latest

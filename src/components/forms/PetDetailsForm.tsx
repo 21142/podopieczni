@@ -490,7 +490,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                           />
                         </AvatarFallback>
                       </Avatar>
-                      <div className="items-center justify-center space-y-4 md:z-10 md:mt-10">
+                      <div className="z-0 items-center justify-center space-y-4 md:mt-10">
                         <UploadButton
                           endpoint="imageUploader"
                           onClientUploadComplete={(res) => {
