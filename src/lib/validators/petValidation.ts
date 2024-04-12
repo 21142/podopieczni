@@ -39,6 +39,11 @@ export const photo = z.object({
   url: z.string(),
 });
 
+export const note = z.object({
+  title: z.string().optional(),
+  content: z.string().max(500),
+});
+
 export const petDetailsSchema = z.object({
   internalId: z.string().optional(),
   image: z.string().optional(),
@@ -155,3 +160,4 @@ export type IPetMedicalEvent = z.infer<typeof medicalEvent>;
 export type IPetOutcomeEvent = z.infer<typeof outcomeEvent>;
 export type IDocument = z.infer<typeof document>;
 export type IPhoto = z.infer<typeof photo>;
+export type INote = z.infer<typeof note>;

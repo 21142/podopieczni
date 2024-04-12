@@ -42,9 +42,11 @@ import {
   document,
   fullPetDetailsSchema,
   medicalEvent,
+  note,
   outcomeEvent,
   photo,
   type IDocument,
+  type INote,
   type IPetFullDetails,
   type IPetMedicalEvent,
   type IPetOutcomeEvent,
@@ -66,6 +68,7 @@ import { Card } from '../primitives/Card';
 import { Label } from '../primitives/Label';
 import { RadioGroup, RadioGroupItem } from '../primitives/RadioButton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../primitives/Tabs';
+import { Textarea } from '../primitives/Textarea';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
 interface Props {
@@ -120,10 +123,15 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     id: animalId,
   });
 
+  const { data: notes } = api.pet.getPetNotes.useQuery({
+    id: animalId,
+  });
+
   const [avatarUrl, setAvatarUrl] = useState(pet?.image ?? '');
   const [isAddingOutcome, setIsAddingOutcome] = useState(false);
   const [isAddingMedical, setIsAddingMedical] = useState(false);
   const [isAddingDocument, setIsAddingDocument] = useState(false);
+  const [isAddingNote, setIsAddingNote] = useState(false);
   const [isCostKnown, setIsCostKnown] = useState(false);
 
   const updatePetMutation = api.pet.updatePetById.useMutation({
@@ -168,6 +176,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     },
   });
 
+  const addPetNoteMutation = api.pet.addPetNoteMutation.useMutation({
+    onSuccess: async () => {
+      notesForm.reset();
+      setIsAddingNote(false);
+      await trpc.getPetNotes.invalidate();
+    },
+  });
+
   const deletePetMutation = api.pet.deletePetById.useMutation({
     onSuccess: () => {
       router.push('/animals');
@@ -198,6 +214,12 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
   const deletePetPhotoMutation = api.pet.deletePetPhotoMutation.useMutation({
     onSuccess: async () => {
       await trpc.getPetPhotos.invalidate();
+    },
+  });
+
+  const deletePetNoteMutation = api.pet.deletePetNoteMutation.useMutation({
+    onSuccess: async () => {
+      await trpc.getPetNotes.invalidate();
     },
   });
 
@@ -245,6 +267,17 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     });
     toast({
       description: t('delete_pet_photo_toast'),
+      variant: 'success',
+    });
+  };
+
+  const deletePetNote = async (noteId: string, animalId: string) => {
+    await deletePetNoteMutation.mutateAsync({
+      petId: animalId,
+      noteId: noteId,
+    });
+    toast({
+      description: t('delete_pet_note_toast'),
       variant: 'success',
     });
   };
@@ -403,6 +436,34 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
       });
       toast({
         description: t('update_pet_photos_toast_success'),
+        variant: 'success',
+      });
+    } catch (error) {
+      if (
+        error instanceof Error ||
+        error instanceof ZodError ||
+        error instanceof TRPCClientError
+      ) {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
+  const notesForm = useForm<INote>({
+    resolver: zodResolver(note),
+  });
+
+  const onNotesFormSubmit = async (values: INote) => {
+    try {
+      await addPetNoteMutation.mutateAsync({
+        petId: animalId,
+        note: { ...values },
+      });
+      toast({
+        description: t('add_pet_note_toast_success'),
         variant: 'success',
       });
     } catch (error) {
@@ -841,6 +902,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         </FormItem>
                       )}
                     />
+                    <div className="hidden lg:col-span-6 lg:block lg:h-6" />
                     <FormField
                       control={form.control}
                       name="friendlyWithDogs"
@@ -2001,7 +2063,127 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                     ))}
                 </div>
               </TabsContent>
-              <TabsContent value="notes"></TabsContent>
+              <TabsContent value="notes">
+                <div className="md:mt-38 mt-32 flex flex-col gap-3 p-4 lg:mt-40">
+                  <div className="flex items-center justify-center">
+                    <Button
+                      size="lg"
+                      className="text-base"
+                      onClick={() => setIsAddingNote(true)}
+                      disabled={isAddingNote}
+                    >
+                      <Icons.plus className="mr-2 h-4 w-4" />{' '}
+                      {t('pet_note_add_button')}
+                    </Button>
+                  </div>
+                  {isAddingNote && (
+                    <Card className="relative mt-12 flex flex-col gap-3 p-10 lg:mx-auto lg:w-3/4">
+                      <Icons.note className="absolute -top-3 -left-3" />
+                      <Form {...notesForm}>
+                        <form
+                          onSubmit={notesForm.handleSubmit(onNotesFormSubmit)}
+                          className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6"
+                        >
+                          <FormField
+                            control={notesForm.control}
+                            name="title"
+                            render={({ field }) => (
+                              <FormItem className="col-span-5 md:col-span-4">
+                                <FormLabel>
+                                  {t('add_pet_note_label_title')}
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder=""
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={notesForm.control}
+                            name="content"
+                            render={({ field }) => (
+                              <FormItem className="col-span-6">
+                                <FormLabel>
+                                  {t('add_pet_note_label_content')}
+                                </FormLabel>
+                                <FormControl>
+                                  <Textarea
+                                    rows={5}
+                                    className="resize-none"
+                                    placeholder=""
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                            <Button
+                              type="submit"
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              disabled={!notesForm.formState.isDirty}
+                            >
+                              {t('pet_note_create_button')}
+                            </Button>
+                            <Button
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              variant="destructive"
+                              onClick={() => setIsAddingNote(false)}
+                            >
+                              {t('pet_note_cancel_button')}
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </Card>
+                  )}
+                  <div className="md:grid md:grid-cols-2 md:gap-8 md:pt-10">
+                    {notes &&
+                      notes.map((note) => (
+                        <Card
+                          key={note.id}
+                          className="relative mt-2 flex flex-col gap-3 p-10"
+                        >
+                          <Icons.note className="absolute -top-3 -left-3" />
+                          <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
+                            <div className="col-span-5 md:col-span-4">
+                              {note.title && (
+                                <h2
+                                  className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0
+                                pb-1 text-xl"
+                                >
+                                  {note.title}
+                                </h2>
+                              )}
+                            </div>
+                            <div className="col-span-6">
+                              <p className="mb-3 text-lg">{note.content}</p>
+                            </div>
+                          </div>
+                          <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                            <Button
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              variant="destructive"
+                              onClick={() =>
+                                deletePetNote(note.id as string, animalId)
+                              }
+                            >
+                              {t('pet_note_delete_button')}
+                            </Button>
+                          </div>
+                        </Card>
+                      ))}
+                  </div>
+                </div>
+              </TabsContent>
               <TabsContent value="adoption">
                 <div className="lg:mt-38 mt-32 flex flex-col gap-3 p-4 md:mt-36">
                   <Form {...photoForm}>

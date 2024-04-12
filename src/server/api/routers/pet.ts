@@ -4,6 +4,7 @@ import {
   document,
   fullPetDetailsSchema,
   medicalEvent,
+  note,
   outcomeEvent,
   petDetailsSchema,
   photo,
@@ -113,6 +114,21 @@ export const petRouter = createTRPCRouter({
         },
       });
       return pet?.photos;
+    }),
+  getPetNotes: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const pet = await ctx.prisma.pet.findUnique({
+        where: { id: input.id },
+        include: {
+          notes: true,
+        },
+      });
+      return pet?.notes;
     }),
   getPetsCount: publicProcedure.query(async ({ ctx }) => {
     const count = await ctx.prisma.pet.count();
@@ -333,6 +349,23 @@ export const petRouter = createTRPCRouter({
         },
       });
     }),
+  addPetNoteMutation: protectedProcedure
+    .input(
+      z.object({
+        petId: z.string(),
+        note: note,
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.update({
+        where: { id: input.petId },
+        data: {
+          notes: {
+            create: input.note,
+          },
+        },
+      });
+    }),
   deletePetDocumentMutation: protectedProcedure
     .input(
       z.object({
@@ -366,6 +399,25 @@ export const petRouter = createTRPCRouter({
           photos: {
             delete: {
               id: input.photoId,
+            },
+          },
+        },
+      });
+    }),
+  deletePetNoteMutation: protectedProcedure
+    .input(
+      z.object({
+        petId: z.string(),
+        noteId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.update({
+        where: { id: input.petId },
+        data: {
+          notes: {
+            delete: {
+              id: input.noteId,
             },
           },
         },
