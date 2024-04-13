@@ -144,6 +144,7 @@ model Pet {
   intakeEventDate      DateTime?
   outcomeEvents        OutcomeEvent[]
   photos               Photo[]
+  notes                Note[]
   documents            Document[]
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
@@ -212,6 +213,16 @@ model OutcomeEvent {
 
   @@index([eventType])
   @@index([eventDate])
+  @@index([petId])
+}
+
+model Note {
+  id      String  @id @default(cuid())
+  title   String?
+  content String  @db.VarChar(500)
+  pet     Pet?    @relation(fields: [petId], references: [id], onDelete: Cascade)
+  petId   String?
+
   @@index([petId])
 }
 
