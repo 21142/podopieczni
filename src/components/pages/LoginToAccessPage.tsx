@@ -1,6 +1,7 @@
 import { signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
+import { links } from '~/config/siteConfig';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { Button } from '../primitives/Button';
 
@@ -25,7 +26,7 @@ const LoginToAccessPage: FC = ({}) => {
         <Button
           variant="outline"
           size="lg"
-          onClick={() => void router.push('/')}
+          onClick={() => void router.push(links.home)}
         >
           Strona główna
         </Button>

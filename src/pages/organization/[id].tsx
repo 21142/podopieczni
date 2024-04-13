@@ -11,6 +11,7 @@ import PageLayout from '~/components/layouts/PageLayout';
 import { Button } from '~/components/primitives/Button';
 import Spinner from '~/components/spinner/Spinner';
 import Map from '~/components/utility/Map';
+import { links } from '~/config/siteConfig';
 import { type IOrganizationData } from '~/types/petfinderTypes';
 import { type PetfinderOauth } from '../results';
 
@@ -69,7 +70,7 @@ const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
                   <h1 className="text-3xl font-semibold">
                     {organization.name}
                   </h1>
-                  <Link href="#">
+                  <Link href={links.organizationPets(organization.id)}>
                     <Button
                       size="lg"
                       variant="primary"
@@ -91,7 +92,7 @@ const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
                   <Icons.phone className="h-6 w-6" />
                   <a
                     className="bg-transparent text-neutral-900 underline-offset-4 hover:bg-transparent hover:underline dark:bg-transparent dark:text-neutral-100 dark:hover:bg-transparent"
-                    href={`tel:${organization.phone}`}
+                    href={links.phone(organization.phone)}
                   >
                     {organization.phone}
                   </a>
@@ -101,7 +102,7 @@ const OrganizationProfilePage: NextPage<IOrganizationProfilePage> = ({
                 <div className="mt-2 flex items-center space-x-4">
                   <Icons.mail className="h-6 w-6" />
                   <a
-                    href={`mailto:${organization.email}`}
+                    href={links.email(organization.email)}
                     className="bg-transparent text-neutral-900 underline-offset-4 hover:bg-transparent hover:underline dark:bg-transparent dark:text-neutral-100 dark:hover:bg-transparent"
                   >
                     {organization.email}

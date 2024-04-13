@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
+import { links } from '~/config/siteConfig';
 import { useLoginToast } from '~/hooks/use-login-toast';
 import { type RecentlyAddedAnimals } from '~/types';
 import ShelterStatisticsCard from '../cards/ShelterStatisticsCard';
@@ -90,7 +91,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             title={t('dashboard_statistics_card_admitted_title')}
             value={petsCount}
             difference={petsCountChangeFromLastMonth}
-            onClick={() => router.push('/animals')}
+            onClick={() => router.push(links.animals)}
           >
             <Icons.dog className="h-4 w-4 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
@@ -98,7 +99,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             title={t('dashboard_statistics_card_adopted_title')}
             value={42}
             difference={1}
-            onClick={() => router.push('/animals')}
+            onClick={() => router.push(links.animals)}
           >
             <Icons.home className="h-4 w-4 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
@@ -106,7 +107,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             title={t('dashboard_statistics_card_users_title')}
             value={usersCount}
             difference={usersCountChangeFromLastMonth}
-            onClick={() => router.push('/users')}
+            onClick={() => router.push(links.users)}
           >
             <Icons.user className="h-4 w-4 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
@@ -115,7 +116,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             value={1231.89}
             currency="zł"
             difference={20.1}
-            onClick={() => router.push('/donations')}
+            onClick={() => router.push(links.donations)}
           >
             <Icons.dollarSign className="h-4 w-4 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>

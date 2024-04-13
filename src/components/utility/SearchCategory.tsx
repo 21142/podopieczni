@@ -37,7 +37,7 @@ const SearchCategory = () => {
       <Label
         htmlFor="shelter"
         className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 text-xl transition-all hover:cursor-pointer hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary-300 [&:has([data-state=checked])]:text-primary-300"
-        // onClick={() => router.push('/organizations')}
+        // onClick={() => router.push(links.organizations)}
       >
         <RadioGroupItem
           value="shelter"

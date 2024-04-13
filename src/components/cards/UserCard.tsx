@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { links } from '~/config/siteConfig';
 import {
   Card,
   CardDescription,
@@ -18,7 +19,7 @@ const UserCard: React.FC<IUserCard> = ({ id, name, image, role }) => {
   const router = useRouter();
   return (
     <Card
-      onClick={() => router.push(`user/${id}`)}
+      onClick={() => router.push(links.user(id))}
       className={`transform rounded-lg shadow transition duration-100 hover:scale-105 hover:cursor-pointer hover:ease-out`}
     >
       <CardHeader className="grid place-items-center px-2 py-6">

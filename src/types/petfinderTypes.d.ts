@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 export default interface IAnimalData {
-  id: number;
+  id: string;
   organization_id: string;
   url: string;
   type: Species;
@@ -72,7 +72,7 @@ export interface IColors {
 }
 
 export interface IOrganizationData {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;

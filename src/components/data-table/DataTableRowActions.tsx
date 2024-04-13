@@ -1,6 +1,7 @@
 import { type Row } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
+import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
 import { petIdSchema } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
@@ -34,7 +35,7 @@ export function DataTableRowActions<TData>({
 
   const goToProfile = (animal: TData) => {
     const parsedAnimal = petIdSchema.parse(animal);
-    router.push(`/animal/${parsedAnimal.id}`);
+    router.push(links.animal(parsedAnimal.id));
   };
 
   if (deletePetMutation.status === 'loading') {

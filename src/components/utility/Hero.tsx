@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { buttonVariants } from 'src/components/primitives/Button';
+import { links } from '~/config/siteConfig';
 import { TypeOfResults } from '~/lib/constants';
 import Search from '../inputs/Search';
 
@@ -29,13 +30,13 @@ const Hero: React.FC = () => {
         />
         <div className="flex w-[19.5rem] items-center justify-center gap-x-5 pt-3">
           <Link
-            href={`/${TypeOfResults.Animal}#scrollToPosition`}
+            href={links.results(TypeOfResults.Animal)}
             className={buttonVariants({ variant: 'roundedButton' })}
           >
             {t('hero_search_button_pets')}
           </Link>
           <Link
-            href={`/${TypeOfResults.Organization}#scrollToPosition`}
+            href={links.results(TypeOfResults.Organization)}
             className={buttonVariants({ variant: 'roundedButton' })}
           >
             {t('hero_search_button_shelters')}

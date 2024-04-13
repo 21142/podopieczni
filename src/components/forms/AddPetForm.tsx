@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodError, type z } from 'zod';
+import { links } from '~/config/siteConfig';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
@@ -77,7 +78,7 @@ const AddPetForm = () => {
       form.reset();
       setAvatarUrl('');
       if (data && !addingAnotherAnimal) {
-        router.push(`/animal/${data.id}`);
+        router.push(links.animal(data.id));
       }
       if (addingAnotherAnimal) {
         router.refresh();

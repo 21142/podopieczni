@@ -1,6 +1,7 @@
 import { type Table } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
+import { links } from '~/config/siteConfig';
 import { species, statuses } from '~/lib/constants';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
@@ -56,7 +57,7 @@ export function DataTableToolbar<TData>({
         )}
         <DataTableVisibilityOptions table={table} />
         <Button
-          onClick={() => void router.push('/animal/register')}
+          onClick={() => void router.push(links.registerAnimal)}
           variant="primary"
           size="sm"
         >

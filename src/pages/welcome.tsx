@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import PageLayout from '~/components/layouts/PageLayout';
 import { Button } from '~/components/primitives/Button';
 import Spinner from '~/components/spinner/Spinner';
+import { links } from '~/config/siteConfig';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
@@ -22,17 +23,17 @@ const Welcome: NextPage = () => {
 
   const setAdopterRole = async () => {
     await setRoleAsAdopter.mutateAsync();
-    router.replace('/results#scrollToPosition');
+    router.replace(links.resultsPosition);
   };
 
   const setShelterRole = async () => {
     await setRoleAsShelter.mutateAsync();
-    router.replace('/dashboard');
+    router.replace(links.dashboard);
   };
 
   if (userFromSession?.role) {
     const redirectSlug: string =
-      userFromSession?.role == Roles.Adopter ? '/' : '/dashboard';
+      userFromSession?.role == Roles.Adopter ? links.home : links.dashboard;
     router.replace(redirectSlug);
   }
 
@@ -66,7 +67,7 @@ const Welcome: NextPage = () => {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => void router.push('/')}
+              onClick={() => void router.push(links.home)}
             >
               Strona główna
             </Button>

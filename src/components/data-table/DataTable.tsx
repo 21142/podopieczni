@@ -15,6 +15,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { links } from '~/config/siteConfig';
 import {
   Table,
   TableBody,
@@ -99,7 +100,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                   className="hover:cursor-pointer"
                   onClick={() => {
                     if (row.original && row.original.id) {
-                      router.push(`/animal/${row.original.id}`);
+                      router.push(links.animal(row.original.id));
                     }
                   }}
                   data-state={row.getIsSelected() && 'selected'}

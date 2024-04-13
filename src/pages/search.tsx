@@ -7,6 +7,7 @@ import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
 import SearchResults from '~/components/utility/SearchResults';
+import { links } from '~/config/siteConfig';
 import { TypeOfResults } from '~/lib/constants';
 import type IAnimalData from '~/types/petfinderTypes';
 
@@ -60,7 +61,7 @@ const SearchPage: NextPage<IResults> = ({ animals, searchQuery }) => {
           </div>
         </section>
         <Link
-          href="#scrollToPosition"
+          href={links.scrollToPosition}
           scroll={false}
           className="-mt-6 flex justify-center"
         >
