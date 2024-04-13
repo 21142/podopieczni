@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/primitives/Select';
+import { links } from '~/config/siteConfig';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
@@ -186,7 +187,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
 
   const deletePetMutation = api.pet.deletePetById.useMutation({
     onSuccess: () => {
-      router.push('/animals');
+      router.push(links.animals);
     },
   });
 
@@ -556,8 +557,8 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                           endpoint="imageUploader"
                           onClientUploadComplete={(res) => {
                             if (res) {
-                              setAvatarUrl(res[0]?.fileUrl as string);
-                              form.setValue('image', res[0]?.fileUrl as string);
+                              setAvatarUrl(res[0]?.url as string);
+                              form.setValue('image', res[0]?.url as string);
                               toast({
                                 description: t(
                                   'pet_image_toast_upload_success'
@@ -1891,7 +1892,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                     </Button>
                   </div>
                   {isAddingDocument && (
-                    <Card className="mt-12 flex flex-col gap-3 p-10">
+                    <Card className="mt-12 flex flex-col gap-3 p-10 lg:mx-auto lg:w-3/4">
                       <div className="flex items-center justify-between pb-4">
                         <h2 className="flex items-center text-3xl font-semibold">
                           {t('pet_details_form_document')}
@@ -1952,7 +1953,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                   if (res) {
                                     documentForm.setValue(
                                       'url',
-                                      res[0]?.fileUrl as string
+                                      res[0]?.url as string
                                     );
                                     toast({
                                       description: t(
@@ -2018,49 +2019,51 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                       </Form>
                     </Card>
                   )}
-                  {documents &&
-                    documents.map((document) => (
-                      <Card
-                        key={document.id}
-                        className="relative mt-12 flex flex-col gap-3 p-10"
-                      >
-                        <Icons.document className="absolute -top-3 -left-3" />
-                        <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
-                          <div className="col-span-6 sm:col-span-3">
-                            <Label className="text-lg">
-                              {t('pet_form_document_name')}
-                            </Label>
-                            <Input
-                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
-                              placeholder=""
-                              value={document.name}
-                            />
+                  <div className="gap-8 md:grid md:grid-cols-2 md:pt-10">
+                    {documents &&
+                      documents.map((document) => (
+                        <Card
+                          key={document.id}
+                          className="relative mt-12 flex flex-col gap-3 p-10"
+                        >
+                          <Icons.document className="absolute -top-3 -left-3" />
+                          <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
+                            <div className="col-span-6 sm:col-span-3">
+                              <Label className="text-lg">
+                                {t('pet_form_document_name')}
+                              </Label>
+                              <Input
+                                className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                                placeholder=""
+                                value={document.name}
+                              />
+                            </div>
                           </div>
-                        </div>
-                        <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
-                          <Link
-                            href={document.url}
-                            target="_blank"
-                            className={buttonVariants({
-                              variant: 'default',
-                              size: 'lg',
-                            })}
-                          >
-                            {t('pet_document_preview_button')}
-                          </Link>
-                          <Button
-                            className="w-fit justify-self-start"
-                            size="lg"
-                            variant="destructive"
-                            onClick={() =>
-                              deleteDocument(document.id, animalId)
-                            }
-                          >
-                            {t('pet_document_delete_button')}
-                          </Button>
-                        </div>
-                      </Card>
-                    ))}
+                          <div className="col-span-6 mt-2 flex flex-col gap-3 sm:flex-row">
+                            <Link
+                              href={document.url}
+                              target="_blank"
+                              className={buttonVariants({
+                                variant: 'default',
+                                size: 'lg',
+                              })}
+                            >
+                              {t('pet_document_preview_button')}
+                            </Link>
+                            <Button
+                              className="w-fit justify-self-start"
+                              size="lg"
+                              variant="destructive"
+                              onClick={() =>
+                                deleteDocument(document.id, animalId)
+                              }
+                            >
+                              {t('pet_document_delete_button')}
+                            </Button>
+                          </div>
+                        </Card>
+                      ))}
+                  </div>
                 </div>
               </TabsContent>
               <TabsContent value="notes">
@@ -2144,12 +2147,12 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                       </Form>
                     </Card>
                   )}
-                  <div className="md:grid md:grid-cols-2 md:gap-8 md:pt-10">
+                  <div className="space-y-8 sm:space-y-0 md:grid md:grid-cols-2 md:gap-8 md:pt-10">
                     {notes &&
                       notes.map((note) => (
                         <Card
                           key={note.id}
-                          className="relative mt-2 flex flex-col gap-3 p-10"
+                          className="relative mt-4 flex flex-col gap-3 p-10 sm:mt-0"
                         >
                           <Icons.note className="absolute -top-3 -left-3" />
                           <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
@@ -2222,10 +2225,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         endpoint="imageUploader"
                         onClientUploadComplete={(res) => {
                           if (res) {
-                            photoForm.setValue(
-                              'url',
-                              res[0]?.fileUrl as string
-                            );
+                            photoForm.setValue('url', res[0]?.url as string);
                             toast({
                               description: t('pet_image_toast_upload_success'),
                               variant: 'success',

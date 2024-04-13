@@ -1,5 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import BackgroundWavesFooter from '~/components/utility/BackgroundWavesFooter';
+import { links } from '~/config/siteConfig';
+import { TypeOfResults } from '~/lib/constants';
 
 const Footer = () => {
   const { t } = useTranslation('common');
@@ -16,7 +18,7 @@ const Footer = () => {
               <ul className="">
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.home}
                     className=" hover:underline"
                   >
                     {t('nav_home')}
@@ -24,7 +26,7 @@ const Footer = () => {
                 </li>
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.adoption}
                     className="hover:underline"
                   >
                     {t('nav_adopt')}
@@ -32,7 +34,7 @@ const Footer = () => {
                 </li>
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.about}
                     className="hover:underline"
                   >
                     {t('nav_about')}
@@ -47,7 +49,7 @@ const Footer = () => {
               <ul className="">
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.results(TypeOfResults.Animal)}
                     className="hover:underline"
                   >
                     {t('footer_find_dogs')}
@@ -55,7 +57,7 @@ const Footer = () => {
                 </li>
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.results(TypeOfResults.Animal)}
                     className="hover:underline"
                   >
                     {t('footer_find_cats')}
@@ -63,7 +65,7 @@ const Footer = () => {
                 </li>
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.results(TypeOfResults.Organization)}
                     className="hover:underline"
                   >
                     {t('footer_find_shelters')}
@@ -78,7 +80,7 @@ const Footer = () => {
               <ul className="">
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.facebook}
                     className="hover:underline"
                   >
                     Facebook
@@ -86,7 +88,7 @@ const Footer = () => {
                 </li>
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.contact}
                     className="hover:underline"
                   >
                     {t('footer_how_to_contact')}
@@ -101,7 +103,7 @@ const Footer = () => {
               <ul className="">
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.termsOfService}
                     className="hover:underline"
                   >
                     {t('footer_terms_of_service')}
@@ -109,7 +111,7 @@ const Footer = () => {
                 </li>
                 <li className="mb-4">
                   <a
-                    href="#"
+                    href={links.privacyPolicy}
                     className="hover:underline"
                   >
                     {t('footer_privacy_policy')}

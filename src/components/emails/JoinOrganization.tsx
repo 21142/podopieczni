@@ -15,6 +15,7 @@ import {
   Tailwind,
   Text,
 } from '@react-email/components';
+import { links } from '~/config/siteConfig';
 
 interface InviteToOrganizationEmailProps {
   username?: string;
@@ -70,7 +71,7 @@ const InviteToOrganizationEmail = ({
             <Text className="text-[14px] leading-[24px] text-black">
               <strong>bukinoshita</strong> (
               <Link
-                href={`mailto:${invitedByEmail}`}
+                href={links.email(invitedByEmail)}
                 className="text-blue-600 no-underline"
               >
                 {invitedByEmail}

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { buttonVariants } from '~/components/primitives/Button';
+import { links } from '~/config/siteConfig';
 import { toast } from '~/hooks/use-toast';
 
 export const useLoginToast = () => {
@@ -10,7 +11,7 @@ export const useLoginToast = () => {
       variant: 'destructive',
       action: (
         <Link
-          href="/api/auth/signin"
+          href={links.signInAPI}
           onClick={() => dismiss()}
           className={buttonVariants({ variant: 'outline' })}
         >

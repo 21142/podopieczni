@@ -57,7 +57,7 @@
     "@trpc/next": "^10.36.0",
     "@trpc/react-query": "^10.36.0",
     "@trpc/server": "^10.36.0",
-    "@uploadthing/react": "^5.2.0",
+    "@uploadthing/react": "^5.7.0",
     "@upstash/ratelimit": "^1.0.0",
     "@upstash/redis": "^1.28.2",
     "@vercel/analytics": "^0.1.11",
@@ -89,7 +89,7 @@
     "sharp": "^0.33.2",
     "superjson": "1.9.1",
     "tailwind-merge": "^1.14.0",
-    "uploadthing": "^5.2.1",
+    "uploadthing": "^5.7.4",
     "zod": "^3.21.4"
   },
   "devDependencies": {

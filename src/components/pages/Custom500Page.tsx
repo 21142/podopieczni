@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { links } from '~/config/siteConfig';
 import { buttonVariants } from '../primitives/Button';
 
 const Custom500Page = () => {
@@ -27,13 +28,13 @@ const Custom500Page = () => {
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <Link
-            href="/"
+            href={links.home}
             className={buttonVariants({ variant: 'primary', size: 'lg' })}
           >
             {t('500_button')}
           </Link>
           <Link
-            href="/"
+            href={links.contact}
             className={buttonVariants({ variant: 'link' })}
           >
             {t('500_contact')}

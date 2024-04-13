@@ -1,5 +1,6 @@
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
+import { links } from '~/config/siteConfig';
 import { type RecentlyAddedAnimals } from '~/types';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
@@ -19,7 +20,7 @@ const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
             key={animal.id}
             animal={animal}
             className="h-16 cursor-pointer pr-3 hover:bg-card"
-            onClick={() => void router.push(`/animal/${animal.id}`)}
+            onClick={() => void router.push(links.animal(animal.id))}
           />
         ))
       ) : (
@@ -29,7 +30,7 @@ const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
             Brak przyjętych w ostatnim miesiącu zwierzaków
           </span>
           <Button
-            onClick={() => void router.push('/animal/register')}
+            onClick={() => void router.push(links.registerAnimal)}
             variant="primary"
             className="my-4"
           >

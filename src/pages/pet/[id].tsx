@@ -34,6 +34,7 @@ import {
   type CarouselApi,
 } from '~/components/primitives/Carousel';
 import { Separator } from '~/components/primitives/Separator';
+import { links } from '~/config/siteConfig';
 import dayjs from '~/lib/dayjs';
 import type IAnimalData from '~/types/petfinderTypes';
 import { type PetfinderOauth } from '../results';
@@ -312,7 +313,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                         {t('pet_profile_shelter')}
                       </h2>
                       <p className="w-fit text-base decoration-primary-300 underline-offset-4 transition hover:text-primary-300 hover:underline">
-                        <Link href={`/organization/${pet.organization_id}`}>
+                        <Link href={links.organization(pet.organization_id)}>
                           {pet.organization_id} •{' '}
                           {t('pet_profile_shelter_link')}
                         </Link>

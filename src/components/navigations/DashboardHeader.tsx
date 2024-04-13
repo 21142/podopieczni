@@ -10,6 +10,7 @@ import Logo from '~/components/logos/Logo';
 import LogoDark from '~/components/logos/LogoDark';
 import { buttonVariants } from '~/components/primitives/Button';
 import { ThemeToggle } from '~/components/utility/ThemeToggle';
+import { links } from '~/config/siteConfig';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { Roles } from '~/lib/constants';
 import { cn } from '~/lib/utils';
@@ -36,7 +37,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
       }`}
     >
       <div className="mx-auto flex items-center justify-between gap-x-3 md:gap-x-10 lg:max-w-8xl lg:gap-x-10">
-        <Link href="/">
+        <Link href={links.home}>
           <div className="relative z-30 flex">
             {currentTheme === 'light' ? <Logo /> : <LogoDark />}
           </div>
@@ -49,7 +50,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
           )}
         >
           <HeaderLink
-            href="/"
+            href={links.home}
             title={t('nav_home')}
           />
           {userFromSession &&
@@ -57,33 +58,33 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
             userFromSession.role === Roles.Admin) ? (
             <>
               <HeaderLink
-                href="/dashboard"
+                href={links.dashboard}
                 title={t('nav_shelter')}
               />
               <HeaderLink
-                href="/animals"
+                href={links.animals}
                 title={t('nav_animals')}
               />
               <HeaderLink
-                href="/users"
+                href={links.users}
                 title={t('nav_people')}
               />
             </>
           ) : (
             <>
               <HeaderLink
-                href="/"
+                href={links.adoption}
                 title={t('nav_adopt')}
               />
               <HeaderLink
-                href="/"
+                href={links.about}
                 title={t('nav_about')}
               />
             </>
           )}
           {mobileMenuIsOpen && (
             <HeaderLink
-              href="/user/favorites"
+              href={links.favorites}
               title={t('nav_favorites')}
               className={cn(
                 buttonVariants({
@@ -105,7 +106,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
         <div className="flex items-center justify-between gap-x-2 sm:gap-x-5">
           <div className="mr-12 hidden items-center gap-x-5 sm:mr-0 md:inline-flex">
             <Link
-              href="/user/favorites"
+              href={links.favorites}
               className={buttonVariants({
                 variant: 'ghost',
                 size: 'sm',

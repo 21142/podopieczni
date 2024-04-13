@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useState } from 'react';
+import { links } from '~/config/siteConfig';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
 
@@ -27,10 +28,10 @@ const NoFavoritesYet = () => {
 
       <div className="flex w-[19.5rem] flex-col items-center justify-center gap-3 pt-3 sm:flex-row">
         <Button variant="roundedButton">
-          <Link href="/search?search=dog">{t('footer_find_dogs')}</Link>
+          <Link href={links.searchDogs}>{t('footer_find_dogs')}</Link>
         </Button>
         <Button variant="roundedButton">
-          <Link href="/search?search=cat">{t('footer_find_cats')}</Link>
+          <Link href={links.searchCats}>{t('footer_find_cats')}</Link>
         </Button>
       </div>
     </div>

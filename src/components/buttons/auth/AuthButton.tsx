@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/primitives/DropdownMenu';
+import { links } from '~/config/siteConfig';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { Roles } from '~/lib/constants';
 
@@ -54,18 +55,18 @@ const AuthButton: React.FC = () => {
         <DropdownMenuItem asChild>
           {(userFromSession?.role === Roles.Shelter ||
             userFromSession?.role === Roles.Admin) && (
-            <Link href="/dashboard">{t('nav_shelter')}</Link>
+            <Link href={links.dashboard}>{t('nav_shelter')}</Link>
           )}
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           {(userFromSession?.role === Roles.Shelter ||
             userFromSession?.role === Roles.Admin) && (
-            <Link href="/animals">{t('nav_animals')}</Link>
+            <Link href={links.animals}>{t('nav_animals')}</Link>
           )}
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           {userFromSession && (
-            <Link href="/user/settings">{t('settings')}</Link>
+            <Link href={links.userSettings}>{t('settings')}</Link>
           )}
         </DropdownMenuItem>
         {userFromSession && <DropdownMenuSeparator />}

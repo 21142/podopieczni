@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
+import { links } from '~/config/siteConfig';
 import { Button } from '../primitives/Button';
 
 const UnauthorizedPage = () => {
@@ -13,7 +14,7 @@ const UnauthorizedPage = () => {
         <Button
           variant="primary"
           size="lg"
-          onClick={() => void router.push('/')}
+          onClick={() => void router.push(links.home)}
         >
           {t('button_navigate_home')}
         </Button>

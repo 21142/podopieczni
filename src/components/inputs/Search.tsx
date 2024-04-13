@@ -2,6 +2,7 @@ import { SearchIcon } from '@heroicons/react/outline';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { links } from '~/config/siteConfig';
 
 export interface ISearch {
   query: string;
@@ -23,9 +24,9 @@ const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
   const onSearchEvent = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery) {
-      router.push(`/${typeOfResults}#scrollToPosition`);
+      router.push(links.results(typeOfResults));
     } else {
-      router.push(`/${typeOfResults}?search=${searchQuery}#scrollToPosition`);
+      router.push(links.search(typeOfResults, searchQuery));
     }
   };
 
