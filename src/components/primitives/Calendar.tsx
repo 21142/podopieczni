@@ -49,8 +49,18 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <Icons.chevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <Icons.chevronRight className="h-4 w-4" />,
+        IconLeft: ({ ...props }) => (
+          <Icons.chevronLeft
+            className="h-4 w-4"
+            {...props}
+          />
+        ),
+        IconRight: ({ ...props }) => (
+          <Icons.chevronRight
+            className="h-4 w-4"
+            {...props}
+          />
+        ),
       }}
       {...props}
     />

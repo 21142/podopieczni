@@ -2173,7 +2173,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               size="lg"
                               variant="destructive"
                               onClick={() =>
-                                deletePetNote(note.id as string, animalId)
+                                deletePetNote(String(note.id), animalId)
                               }
                             >
                               {t('pet_note_delete_button')}
