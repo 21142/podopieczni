@@ -3,6 +3,7 @@ name: Security Scan
 permissions:
   issues: write
   pull-requests: write
+  repository-projects: write
 
 on:
   workflow_dispatch:
