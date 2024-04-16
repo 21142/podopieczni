@@ -13,9 +13,7 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/navigation';
 import React from 'react';
-import { links } from '~/config/siteConfig';
 import {
   Table,
   TableBody,
@@ -37,7 +35,6 @@ export function DataTable<TData extends { id: string }, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const { t } = useTranslation('common');
-  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -97,10 +94,9 @@ export function DataTable<TData extends { id: string }, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="hover:cursor-pointer"
                   onClick={() => {
                     if (row.original && row.original.id) {
-                      router.push(links.animal(row.original.id));
+                      // router.push(links.animal(row.original.id));
                     }
                   }}
                   data-state={row.getIsSelected() && 'selected'}

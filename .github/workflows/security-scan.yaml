@@ -1,9 +1,5 @@
 name: Security Scan
 
-permissions:
-  issues: write
-  pull-requests: write
-
 on:
   workflow_dispatch:
   schedule:
@@ -14,34 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         run: npm ci
 
       - name: OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.7.0
+        uses: zaproxy/action-full-scan@v0.10.0
         with:
           token: ${{ secrets.GH_PAGES_TOKEN }}
           target: 'https://podopieczni-21142.vercel.app'
           fail_action: false
-
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: zap_scan
-
-      - name: Create gh-pages branch
-        run: |
-          git checkout -b gh-pages
-          git add zap_scan/report_html.html
-          git commit -m "Deploy OWASP ZAP Baseline Scan report"
-
-      - name: Push to gh-pages
-        uses: ad-m/github-push-action@master
-        with:
-          branch: owasp-zap-scan-report
-          github_token: ${{ secrets.GH_PAGES_TOKEN }}

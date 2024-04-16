@@ -2152,7 +2152,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                       notes.map((note) => (
                         <Card
                           key={note.id}
-                          className="relative mt-4 flex flex-col gap-3 p-10 sm:mt-0"
+                          className="relative mt-4 flex flex-col justify-between gap-3 p-10 sm:mt-0"
                         >
                           <Icons.note className="absolute -top-3 -left-3" />
                           <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">

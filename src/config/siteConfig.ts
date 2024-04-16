@@ -21,7 +21,7 @@ export const links = {
   phone: (phoneNumber: string) => `tel:${phoneNumber}`,
   email: (email: string) => `mailto:${email}`,
   organizations: '/organizations',
-  organization: (organizationId: string) => `/organizations/${organizationId}`,
+  organization: (organizationId: string) => `/organization/${organizationId}`,
   organizationPets: (organizationId: string) =>
     `/organizations/${organizationId}/pets`,
   animal: (animalId: string) => `/animal/${animalId}`,

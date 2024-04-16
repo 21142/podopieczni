@@ -63,9 +63,6 @@ export function DataTableRowActions<TData>({
         <DropdownMenuItem onClick={() => goToProfile(animal)}>
           {t('animals_table_row_action_view_profile')}
         </DropdownMenuItem>
-        <DropdownMenuItem disabled>
-          {t('animals_table_row_action_edit_details')}
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => deletePet(animal)}>
           {t('animals_table_row_action_delete')}
