@@ -25,14 +25,3 @@ jobs:
           token: ${{ secrets.GH_PAGES_TOKEN }}
           target: 'https://podopieczni-21142.vercel.app'
           fail_action: false
-
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: zap_scan
-
-      - name: Push to gh-pages
-        uses: ad-m/github-push-action@master
-        with:
-          branch: owasp-zap-scan-report
-          github_token: ${{ secrets.GH_PAGES_TOKEN }}
