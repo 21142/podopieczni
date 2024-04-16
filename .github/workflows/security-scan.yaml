@@ -31,12 +31,6 @@ jobs:
         with:
           name: zap_scan
 
-      - name: Create gh-pages branch
-        run: |
-          git checkout -b gh-pages
-          git add report_html.html
-          git commit -m "Deploy OWASP ZAP Baseline Scan report"
-
       - name: Push to gh-pages
         uses: ad-m/github-push-action@master
         with:
