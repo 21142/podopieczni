@@ -34,7 +34,7 @@ jobs:
       - name: Create gh-pages branch
         run: |
           git checkout -b gh-pages
-          git add zap_scan/report_html.html
+          git add report_html.html
           git commit -m "Deploy OWASP ZAP Baseline Scan report"
 
       - name: Push to gh-pages
