@@ -28,11 +28,13 @@ import { DataTableToolbar } from './DataTableToolbar';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  variant?: 'animals' | 'users';
 }
 
 export function DataTable<TData extends { id: string }, TValue>({
   columns,
   data,
+  variant,
 }: DataTableProps<TData, TValue>) {
   const { t } = useTranslation('common');
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -68,7 +70,10 @@ export function DataTable<TData extends { id: string }, TValue>({
 
   return (
     <div className="space-y-3 pt-6">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar
+        variant={variant}
+        table={table}
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -94,11 +99,6 @@ export function DataTable<TData extends { id: string }, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  onClick={() => {
-                    if (row.original && row.original.id) {
-                      // router.push(links.animal(row.original.id));
-                    }
-                  }}
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (

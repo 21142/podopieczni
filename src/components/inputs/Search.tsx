@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { links } from '~/config/siteConfig';
+import useUserLocation from '~/hooks/useUserLocation';
 
 export interface ISearch {
   query: string;
@@ -13,6 +14,7 @@ const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
   const { t } = useTranslation('common');
+  const { userLocation } = useUserLocation();
 
   useEffect(() => {
     if (query) {

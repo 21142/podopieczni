@@ -21,6 +21,7 @@ const Pets: NextPage = () => {
             <DataTable
               columns={locale === 'pl' ? columnsInPolish : columns}
               data={data}
+              variant="animals"
             />
           )}
         </div>

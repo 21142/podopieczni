@@ -1,8 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
+import { links } from '~/config/siteConfig';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
@@ -44,13 +46,17 @@ export const RolesMap: Record<
 
 const AddPersonForm = () => {
   const trpc = api.useContext().user;
+  const router = useRouter();
   const { toast } = useToast();
   const [avatarUrl, setAvatarUrl] = useState('');
   const { t } = useTranslation('common');
 
   const addUserMutation = api.user.add.useMutation({
     onSuccess: async () => {
-      await trpc.getAllUsers.invalidate();
+      await trpc.getAllPeopleAssociatedWithShelter.invalidate();
+    },
+    onSettled() {
+      router.push(links.users);
     },
   });
 
@@ -205,7 +211,7 @@ const AddPersonForm = () => {
                   <FormControl>
                     <Input
                       type="date"
-                      className="border-b-2 border-t-0 border-l-0 border-r-0"
+                      className="border-b-2 border-l-0 border-r-0 border-t-0"
                       placeholder=""
                       {...field}
                     />
@@ -346,7 +352,9 @@ const AddPersonForm = () => {
               type="submit"
               className="col-span-2 justify-self-start"
               size="lg"
-              onClick={async () => await trpc.getAllUsers.invalidate()}
+              onClick={async () =>
+                await trpc.getAllPeopleAssociatedWithShelter.invalidate()
+              }
               disabled={addUserMutation.isLoading}
             >
               {addUserMutation.isLoading ? (

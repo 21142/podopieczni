@@ -1,25 +1,16 @@
 import type { NextPage } from 'next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
-import { DataTable } from '~/components/data-table/DataTable';
-import { peopleColumns } from '~/components/data-table/DataTableColumns';
-import { peopleColumnsInPolish } from '~/components/data-table/DataTableColumnsInPolish';
+import AddPersonForm from '~/components/forms/AddPersonForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinner/Spinner';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
-import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
 import { ssghelpers } from '~/lib/ssg';
 
-const People: NextPage = () => {
-  const { locale } = useRouter();
-
+const RegisterUser: NextPage = () => {
   const { data: sessionData, isLoading, error } = useUserFromSessionQuery();
-
-  const { data: users, error: errorFetchingUsers } =
-    api.user.getAllPeopleAssociatedWithShelter.useQuery();
 
   if (isLoading) {
     return (
@@ -38,34 +29,14 @@ const People: NextPage = () => {
       </DashboardLayout>
     );
 
-  if (errorFetchingUsers) {
-    return (
-      <DashboardLayout>
-        <div className="mx-auto w-full max-w-7xl pt-5 2xl:max-w-8xl">
-          <p>Fetching users form the database failed</p>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
   return (
     <DashboardLayout>
-      <section className="flex flex-col items-center justify-center p-3">
-        <div className="container">
-          {users && (
-            <DataTable
-              columns={locale === 'pl' ? peopleColumnsInPolish : peopleColumns}
-              data={users}
-              variant="users"
-            />
-          )}
-        </div>
-      </section>
+      {sessionData && sessionData.role !== Roles.Adopter && <AddPersonForm />}
     </DashboardLayout>
   );
 };
 
-export default People;
+export default RegisterUser;
 
 export async function getStaticProps({ locale }: { locale: string }) {
   await ssghelpers.user.getAllPeopleAssociatedWithShelter.prefetch();
