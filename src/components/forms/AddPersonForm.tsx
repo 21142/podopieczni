@@ -352,9 +352,6 @@ const AddPersonForm = () => {
               type="submit"
               className="col-span-2 justify-self-start"
               size="lg"
-              onClick={async () =>
-                await trpc.getAllPeopleAssociatedWithShelter.invalidate()
-              }
               disabled={addUserMutation.isLoading}
             >
               {addUserMutation.isLoading ? (
