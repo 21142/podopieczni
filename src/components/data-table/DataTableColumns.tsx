@@ -6,12 +6,12 @@ import {
   AvatarImage,
 } from '~/components/primitives/Avatar';
 import { statuses } from '~/lib/constants';
-import { type AnimalDto } from '~/types';
+import { type AnimalDto, type UserDto } from '~/types';
 import { Checkbox } from '../primitives/Checkbox';
 import { DataTableColumnHeader } from './DataTableHeaders';
 import { DataTableRowActions } from './DataTableRowActions';
 
-export const columns: ColumnDef<AnimalDto>[] = [
+export const animalsColumns: ColumnDef<AnimalDto>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -83,7 +83,7 @@ export const columns: ColumnDef<AnimalDto>[] = [
       );
 
       if (!status) {
-        return null;
+        return <span className="text-muted-foreground">N/A</span>;
       }
 
       return (
@@ -104,6 +104,16 @@ export const columns: ColumnDef<AnimalDto>[] = [
         title="Species"
       />
     ),
+    cell: ({ row }) => (
+      <span>
+        {row.getValue('species') !== '' &&
+        row.getValue('species') != undefined ? (
+          row.getValue('species')
+        ) : (
+          <span className="text-muted-foreground">N/A</span>
+        )}
+      </span>
+    ),
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
@@ -116,12 +126,141 @@ export const columns: ColumnDef<AnimalDto>[] = [
         title="Breed"
       />
     ),
+    cell: ({ row }) => (
+      <span>
+        {row.getValue('breed') !== '' &&
+        row.getValue('species') != undefined ? (
+          row.getValue('breed')
+        ) : (
+          <span className="text-muted-foreground">N/A</span>
+        )}
+      </span>
+    ),
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
   },
   {
     id: 'actions',
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <DataTableRowActions
+        variant="animals"
+        row={row}
+      />
+    ),
+  },
+];
+
+export const usersColumns: ColumnDef<UserDto>[] = [
+  {
+    accessorKey: 'image',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title=""
+      />
+    ),
+    cell: ({ row }) => (
+      <Avatar className="ml-4 h-12 w-12">
+        <AvatarImage
+          src={row.getValue('image')}
+          width={48}
+          height={48}
+          alt="animal profile picture"
+        />
+        <AvatarFallback>
+          <Icons.user className="h-6 w-6 text-muted-foreground" />
+        </AvatarFallback>
+      </Avatar>
+    ),
+    enableSorting: false,
+  },
+  {
+    accessorKey: 'name',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Name"
+      />
+    ),
+    cell: ({ row }) => (
+      <span className="text-base font-medium">{row.getValue('name')}</span>
+    ),
+  },
+  {
+    accessorKey: 'role',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Role"
+      />
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
+    id: 'address',
+    accessorKey: 'address.city',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Location"
+      />
+    ),
+    cell: ({ row }) => (
+      <span>
+        {row.getValue('address') !== undefined ? (
+          row.getValue('address')
+        ) : (
+          <span className="text-muted-foreground">N/A</span>
+        )}
+      </span>
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
+    accessorKey: 'email',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Email address"
+      />
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
+    accessorKey: 'phoneNumber',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Phone number"
+      />
+    ),
+    cell: ({ row }) => (
+      <span>
+        {row.getValue('phoneNumber') != undefined ? (
+          row.getValue('phoneNumber')
+        ) : (
+          <span className="text-muted-foreground">N/A</span>
+        )}
+      </span>
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => (
+      <DataTableRowActions
+        variant="users"
+        row={row}
+      />
+    ),
   },
 ];

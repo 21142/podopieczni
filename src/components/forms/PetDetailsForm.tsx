@@ -21,6 +21,7 @@ import { Button, buttonVariants } from '~/components/primitives/Button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -68,6 +69,7 @@ import {
 import { Card } from '../primitives/Card';
 import { Label } from '../primitives/Label';
 import { RadioGroup, RadioGroupItem } from '../primitives/RadioButton';
+import { Switch } from '../primitives/Switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../primitives/Tabs';
 import { Textarea } from '../primitives/Textarea';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
@@ -185,6 +187,13 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     },
   });
 
+  const savePetAdoptionDetailsMutation =
+    api.pet.savePetAdoptionDetailsMutation.useMutation({
+      onSuccess: async () => {
+        await trpc.getPetById.invalidate();
+      },
+    });
+
   const deletePetMutation = api.pet.deletePetById.useMutation({
     onSuccess: () => {
       router.push(links.animals);
@@ -284,12 +293,33 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
   };
 
   const form = useForm<IPetFullDetails>({
-    resolver: zodResolver(fullPetDetailsSchema),
+    resolver: async (data, context, options) => {
+      // you can debug your validation schema here
+      console.log('formData', data);
+      console.log(
+        'validation result',
+        await zodResolver(fullPetDetailsSchema)(data, context, options)
+      );
+      return zodResolver(fullPetDetailsSchema)(data, context, options);
+    },
     defaultValues: {
       ...pet,
+      image: pet?.image ?? '/images/no-profile-picture.svg',
+      name: pet?.name ?? '',
+      internalId: pet?.internalId ?? '',
+      status: pet?.status ?? '',
       dateOfBirth: pet?.dateOfBirth?.toISOString().split('T')[0],
-      intakeEventDate: pet?.intakeEventDate?.toISOString().split('T')[0],
+      gender: pet?.gender ?? '',
+      coat: pet?.coat ?? '',
+      color: pet?.color ?? '',
+      species: pet?.species ?? '',
+      breed: pet?.breed ?? '',
+      microchipNumber: pet?.microchipNumber ?? '',
+      microchipBrand: pet?.microchipBrand ?? '',
       weight: pet?.weight?.toString(),
+      adoptionFee: pet?.adoptionFee?.toString() ?? '',
+      description: pet?.description ?? '',
+      intakeEventDate: pet?.intakeEventDate?.toISOString().split('T')[0],
     } as IPetFullDetails,
   });
 
@@ -465,6 +495,35 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
       });
       toast({
         description: t('add_pet_note_toast_success'),
+        variant: 'success',
+      });
+    } catch (error) {
+      if (
+        error instanceof Error ||
+        error instanceof ZodError ||
+        error instanceof TRPCClientError
+      ) {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
+  type AdoptionFormValues = Pick<IPetFullDetails, 'availableForAdoption'> &
+    Pick<IPetFullDetails, 'description'> &
+    Pick<IPetFullDetails, 'adoptionFeeKnown'> &
+    Pick<IPetFullDetails, 'adoptionFee'>;
+
+  const onAdoptionFormSubmit = async (values: AdoptionFormValues) => {
+    try {
+      await savePetAdoptionDetailsMutation.mutateAsync({
+        petId: animalId,
+        values: { ...values },
+      });
+      toast({
+        description: t('add_pet_adoption_details_toast_success'),
         variant: 'success',
       });
     } catch (error) {
@@ -667,7 +726,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                           <FormControl>
                             <Input
                               type="date"
-                              className="border-b-2 border-t-0 border-l-0 border-r-0"
+                              className="border-b-2 border-l-0 border-r-0 border-t-0"
                               placeholder=""
                               {...field}
                             />
@@ -925,7 +984,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_yes')}
                                   </span>
@@ -940,7 +999,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_no')}
                                   </span>
@@ -973,7 +1032,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_yes')}
                                   </span>
@@ -988,7 +1047,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_no')}
                                   </span>
@@ -1023,7 +1082,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_yes')}
                                   </span>
@@ -1038,7 +1097,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_no')}
                                   </span>
@@ -1071,7 +1130,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_yes')}
                                   </span>
@@ -1086,7 +1145,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_no')}
                                   </span>
@@ -1119,7 +1178,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_yes')}
                                   </span>
@@ -1134,7 +1193,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_no')}
                                   </span>
@@ -1167,7 +1226,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_yes')}
                                   </span>
@@ -1182,7 +1241,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_no')}
                                   </span>
@@ -1215,7 +1274,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_yes')}
                                   </span>
@@ -1230,7 +1289,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                     className="sr-only"
                                   />
                                 </FormControl>
-                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                   <span className="block w-full p-2 text-center text-base font-normal">
                                     {t('pet_form_no')}
                                   </span>
@@ -1264,7 +1323,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                       className="sr-only"
                                     />
                                   </FormControl>
-                                  <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                     <span className="block w-full p-2 text-center text-base font-normal">
                                       {t('pet_form_yes')}
                                     </span>
@@ -1279,7 +1338,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                       className="sr-only"
                                     />
                                   </FormControl>
-                                  <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                  <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                     <span className="block w-full p-2 text-center text-base font-normal">
                                       {t('pet_form_no')}
                                     </span>
@@ -1428,7 +1487,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                 <FormControl>
                                   <Input
                                     type="date"
-                                    className="border-b-2 border-t-0 border-l-0 border-r-0"
+                                    className="border-b-2 border-l-0 border-r-0 border-t-0"
                                     placeholder=""
                                     {...field}
                                   />
@@ -1465,14 +1524,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         key={event.id}
                         className="relative mt-12 flex flex-col gap-3 p-10"
                       >
-                        <Icons.arrowUpRight className="absolute -top-3 -left-3" />
+                        <Icons.arrowUpRight className="absolute -left-3 -top-3" />
                         <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
                           <div className="col-span-6 sm:col-span-3">
                             <Label className="text-lg">
                               {t('add_pet_form_label_medical_type')}
                             </Label>
                             <Input
-                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                              className="mt-3 border-b-2 border-l-0 border-r-0 border-t-0 text-base"
                               placeholder=""
                               value={event.eventType}
                             />
@@ -1483,7 +1542,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                             </Label>
                             <Input
                               type="text"
-                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                              className="mt-3 border-b-2 border-l-0 border-r-0 border-t-0 text-base"
                               placeholder=""
                               value={
                                 event.eventDate.toISOString().split('T')[0]
@@ -1528,7 +1587,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               <FormControl>
                                 <Input
                                   type="date"
-                                  className="border-b-2 border-t-0 border-l-0 border-r-0"
+                                  className="border-b-2 border-l-0 border-r-0 border-t-0"
                                   placeholder=""
                                   {...field}
                                 />
@@ -1711,7 +1770,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                 <FormControl>
                                   <Input
                                     type="date"
-                                    className="border-b-2 border-t-0 border-l-0 border-r-0"
+                                    className="border-b-2 border-l-0 border-r-0 border-t-0"
                                     placeholder=""
                                     {...field}
                                   />
@@ -1742,7 +1801,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                           className="sr-only"
                                         />
                                       </FormControl>
-                                      <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                      <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                         <span className="block w-full p-2 text-center text-base font-normal">
                                           {t('pet_form_yes')}
                                         </span>
@@ -1758,7 +1817,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                           className="sr-only"
                                         />
                                       </FormControl>
-                                      <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-primary-300 hover:text-accent-foreground">
+                                      <div className="items-center rounded-md border-2 border-muted bg-popover p-1 transition-all ease-linear hover:cursor-pointer hover:border-primary-300 hover:text-accent-foreground hover:text-primary-300">
                                         <span className="block w-full p-2 text-center text-base font-normal">
                                           {t('pet_form_no')}
                                         </span>
@@ -1821,14 +1880,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         key={event.id}
                         className="relative mt-12 flex flex-col gap-3 p-10"
                       >
-                        <Icons.health className="absolute -top-3 -left-3" />
+                        <Icons.health className="absolute -left-3 -top-3" />
                         <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
                           <div className="col-span-6 sm:col-span-3">
                             <Label className="text-lg">
                               {t('add_pet_form_label_medical_type')}
                             </Label>
                             <Input
-                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                              className="mt-3 border-b-2 border-l-0 border-r-0 border-t-0 text-base"
                               placeholder=""
                               value={event.medicalEventType}
                             />
@@ -1839,7 +1898,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                             </Label>
                             <Input
                               type="text"
-                              className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                              className="mt-3 border-b-2 border-l-0 border-r-0 border-t-0 text-base"
                               placeholder=""
                               value={
                                 event.eventDate.toISOString().split('T')[0]
@@ -1853,7 +1912,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               </Label>
                               <Input
                                 type="text"
-                                className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                                className="mt-3 border-b-2 border-l-0 border-r-0 border-t-0 text-base"
                                 placeholder=""
                                 value={
                                   event.cost !== null ? event.cost : undefined
@@ -2026,14 +2085,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                           key={document.id}
                           className="relative mt-12 flex flex-col gap-3 p-10"
                         >
-                          <Icons.document className="absolute -top-3 -left-3" />
+                          <Icons.document className="absolute -left-3 -top-3" />
                           <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
                             <div className="col-span-6 sm:col-span-3">
                               <Label className="text-lg">
                                 {t('pet_form_document_name')}
                               </Label>
                               <Input
-                                className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0 text-base"
+                                className="mt-3 border-b-2 border-l-0 border-r-0 border-t-0 text-base"
                                 placeholder=""
                                 value={document.name}
                               />
@@ -2081,7 +2140,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                   </div>
                   {isAddingNote && (
                     <Card className="relative mt-12 flex flex-col gap-3 p-10 lg:mx-auto lg:w-3/4">
-                      <Icons.note className="absolute -top-3 -left-3" />
+                      <Icons.note className="absolute -left-3 -top-3" />
                       <Form {...notesForm}>
                         <form
                           onSubmit={notesForm.handleSubmit(onNotesFormSubmit)}
@@ -2117,8 +2176,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                   <Textarea
                                     rows={5}
                                     className="resize-none"
-                                    placeholder=""
-                                    {...field}
+                                    value={field.value}
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -2154,12 +2212,12 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                           key={note.id}
                           className="relative mt-4 flex flex-col justify-between gap-3 p-10 sm:mt-0"
                         >
-                          <Icons.note className="absolute -top-3 -left-3" />
+                          <Icons.note className="absolute -left-3 -top-3" />
                           <div className="flex flex-col gap-y-6 md:grid md:grid-cols-6 md:gap-6">
                             <div className="col-span-5 md:col-span-4">
                               {note.title && (
                                 <h2
-                                  className="mt-3 border-b-2 border-t-0 border-l-0 border-r-0
+                                  className="mt-3 border-b-2 border-l-0 border-r-0 border-t-0
                                 pb-1 text-xl"
                                 >
                                   {note.title}
@@ -2189,6 +2247,151 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
               </TabsContent>
               <TabsContent value="adoption">
                 <div className="lg:mt-38 mt-32 flex flex-col gap-3 p-4 md:mt-36">
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onAdoptionFormSubmit)}
+                      className="w-full space-y-6"
+                    >
+                      <div>
+                        <h3
+                          className="mb-6 scroll-m-20 text-xl font-medium
+                   tracking-tight lg:text-4xl"
+                        >
+                          {t('pet_adoption_title')}
+                        </h3>
+                        <div className="space-y-4 pb-6">
+                          <FormField
+                            control={form.control}
+                            name="availableForAdoption"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 md:w-2/3">
+                                <div className="space-y-0.5">
+                                  <FormLabel>
+                                    {t('pet_adoption_available')}
+                                  </FormLabel>
+                                  <FormDescription>
+                                    {field.value
+                                      ? t('pet_adoption_available_yes_answer', {
+                                          name: pet.name,
+                                        })
+                                      : t('pet_adoption_available_no_answer', {
+                                          name: pet.name,
+                                        })}
+                                  </FormDescription>
+                                </div>
+                                <FormControl>
+                                  <Switch
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    aria-readonly
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="adoptionFeeKnown"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 md:w-2/3">
+                                <div className="space-y-0.5">
+                                  <FormLabel>
+                                    {t('pet_adoption_fee_known')}
+                                  </FormLabel>
+                                  <FormDescription>
+                                    {field.value
+                                      ? t('pet_adoption_fee_known_yes_answer')
+                                      : t('pet_adoption_fee_known_no_answer')}
+                                  </FormDescription>
+                                </div>
+                                <FormControl>
+                                  <Switch
+                                    checked={
+                                      form.watch('availableForAdoption') &&
+                                      field.value
+                                    }
+                                    onCheckedChange={field.onChange}
+                                    disabled={
+                                      !form.watch('availableForAdoption')
+                                    }
+                                    aria-readonly
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <div className="space-y-6">
+                          {form.watch('adoptionFeeKnown') &&
+                            form.watch('availableForAdoption') && (
+                              <FormField
+                                control={form.control}
+                                name="adoptionFee"
+                                render={({ field }) => (
+                                  <FormItem className="w-full md:w-72">
+                                    <FormLabel>
+                                      {t('pet_adoption_fee_label')}
+                                    </FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder={t(
+                                          'pet_adoption_fee_placeholder'
+                                        )}
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            )}
+                          {form.watch('availableForAdoption') && (
+                            <FormField
+                              control={form.control}
+                              name="description"
+                              render={({ field }) => (
+                                <FormItem className="col-span-6">
+                                  <FormLabel>
+                                    {t('pet_adoption_description_label')}
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Textarea
+                                      rows={5}
+                                      className="resize-none"
+                                      placeholder={field.value}
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormDescription>
+                                    {t('pet_adoption_description_subtitle')}
+                                  </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <Button
+                        className="my-4 w-fit text-base"
+                        variant={'default'}
+                        size="lg"
+                        type="submit"
+                        disabled={!form.formState.isDirty}
+                      >
+                        {t('pet_save_adoption_button')}
+                      </Button>
+                    </form>
+                  </Form>
+                  <h4
+                    className="mt-24 scroll-m-20 text-xl
+                   font-medium tracking-tight lg:text-4xl"
+                  >
+                    {t('pet_adoption_photos', { name: pet.name })}
+                  </h4>
+                  <p className="mb-12 leading-7">
+                    {t('pet_adoption_photos_subtitle')}
+                  </p>
                   <Form {...photoForm}>
                     <form onSubmit={photoForm.handleSubmit(onPhotoFormSubmit)}>
                       <FormField

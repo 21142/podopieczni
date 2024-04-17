@@ -1,5 +1,7 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
+import geocode from '~/lib/geocode';
 import {
   document,
   fullPetDetailsSchema,
@@ -10,16 +12,54 @@ import {
   photo,
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
+import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
 
 export const petRouter = createTRPCRouter({
-  getAllPets: publicProcedure.query(async ({ ctx }) => {
+  getAllPets: adminProcedure.query(async ({ ctx }) => {
     const pets = await ctx.prisma.pet.findMany();
     return pets;
   }),
+  queryPetsAvailableForAdoption: publicProcedure
+    .input(
+      z.object({
+        location: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const userCoordinates = await geocode(input.location);
+
+      console.log(
+        `${input.location} : ${userCoordinates.lat} , ${userCoordinates.lng}`
+      );
+
+      const pets = await ctx.prisma.pet.findMany({
+        where: {
+          availableForAdoption: true,
+        },
+      });
+
+      return pets;
+    }),
   getAllPetsDataForTable: publicProcedure.query(async ({ ctx }) => {
+    const associatedShelter = await ctx.prisma.shelter.findFirst({
+      where: {
+        members: {
+          some: {
+            id: ctx.session?.user.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
     const pets = await ctx.prisma.pet.findMany({
+      where: {
+        shelterId: associatedShelter?.id,
+      },
       select: {
         id: true,
         name: true,
@@ -194,6 +234,27 @@ export const petRouter = createTRPCRouter({
         rateLimiterName: 'main',
         identifier: ctx.session?.user.id ?? '',
       });
+
+      const associatedShelter = await ctx.prisma.shelter.findFirst({
+        where: {
+          members: {
+            some: {
+              id: ctx.session?.user.id,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!associatedShelter) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `User with id: ${ctx.session?.user.id} is not associated with any shelter.`,
+        });
+      }
+
       const pet = await ctx.prisma.pet.create({
         data: {
           internalId: input.internalId,
@@ -203,22 +264,23 @@ export const petRouter = createTRPCRouter({
           gender: input.gender,
           color: input.color,
           coat: input.coat,
-          //TODO: remove this parsing
-          weight: parseFloat(input.weight ?? '0.0'),
           image: input.image,
-          // adoptionFee: input.adoptionFee,
           dateOfBirth: new Date(input.dateOfBirth as string).toISOString(),
           status: input.status,
           microchipBrand: input.microchipBrand,
           microchipNumber: input.microchipNumber,
           healthStatus: input.healthStatus,
+          //TODO: remove this parsing
+          weight: parseFloat(input.weight ?? '0.0'),
           shelter: {
             connect: {
-              id: 'clkg0af0j0000tw7lqiwgvsl9',
+              id: associatedShelter.id,
             },
           },
           intakeEventDate: input.intakeEventDate,
           intakeEventType: input.intakeEventType,
+          availableForAdoption: false,
+          adoptionFeeKnown: false,
         },
       });
       return pet;
@@ -230,6 +292,26 @@ export const petRouter = createTRPCRouter({
         rateLimiterName: 'main',
         identifier: ctx.session?.user.id ?? '',
       });
+
+      const associatedShelter = await ctx.prisma.shelter.findFirst({
+        where: {
+          members: {
+            some: {
+              id: ctx.session?.user.id,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!associatedShelter) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `User with id: ${ctx.session?.user.id} is not associated with any shelter.`,
+        });
+      }
 
       await ctx.prisma.pet.update({
         where: { id: input.id },
@@ -244,10 +326,10 @@ export const petRouter = createTRPCRouter({
           //TODO: remove this parsing
           weight: parseFloat(input.pet.weight ?? '0.0'),
           image: input.pet.image,
-          // adoptionFee: input.pet.adoptionFee,
+          adoptionFee: input.pet.adoptionFee,
           dateOfBirth: new Date(input.pet.dateOfBirth as string).toISOString(),
           status: input.pet.status,
-          // description: input.pet.description,
+          description: input.pet.description,
           houseTrained: input.pet.houseTrained,
           specialNeeds: input.pet.specialNeeds,
           neutered: input.pet.neutered,
@@ -261,7 +343,7 @@ export const petRouter = createTRPCRouter({
           healthStatus: input.pet.healthStatus,
           shelter: {
             connect: {
-              id: 'clkg0af0j0000tw7lqiwgvsl9',
+              id: associatedShelter.id,
             },
           },
           intakeEventDate: input.pet.intakeEventDate,
@@ -277,6 +359,36 @@ export const petRouter = createTRPCRouter({
           id: input,
         },
       });
+    }),
+  markAvailableForAdoption: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      const pet = await ctx.prisma.pet.findUnique({
+        where: { id: input },
+      });
+
+      if (!pet) {
+        return {
+          success: false,
+          message: 'Pet not found',
+        };
+      }
+
+      if (pet.availableForAdoption) {
+        return {
+          success: false,
+          message: 'Pet is already listed for adoption',
+        };
+      }
+
+      await ctx.prisma.pet.update({
+        where: { id: input },
+        data: {
+          availableForAdoption: true,
+        },
+      });
+
+      return { success: true };
     }),
   updatePetMedicalEventMutation: protectedProcedure
     .input(
@@ -363,6 +475,29 @@ export const petRouter = createTRPCRouter({
           notes: {
             create: input.note,
           },
+        },
+      });
+    }),
+  savePetAdoptionDetailsMutation: protectedProcedure
+    .input(
+      z.object({
+        petId: z.string(),
+        values: z.object({
+          availableForAdoption: z.boolean().optional(),
+          description: z.string().optional(),
+          adoptionFee: z.string().optional(),
+          adoptionFeeKnown: z.boolean().optional(),
+        }),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.pet.update({
+        where: { id: input.petId },
+        data: {
+          availableForAdoption: input.values.availableForAdoption,
+          description: input.values.description,
+          adoptionFee: input.values.adoptionFee,
+          adoptionFeeKnown: input.values.adoptionFeeKnown,
         },
       });
     }),

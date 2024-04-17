@@ -25,7 +25,9 @@ export const links = {
   organizationPets: (organizationId: string) =>
     `/organizations/${organizationId}/pets`,
   animal: (animalId: string) => `/animal/${animalId}`,
+  person: (personId: string) => `/user/${personId}`,
   registerAnimal: '/animal/register',
+  registerUser: '/user/register',
   donations: '/donations',
   donate: (petId: string) => `/donate/${petId}`,
   user: (userId: string) => `/user/${userId}`,

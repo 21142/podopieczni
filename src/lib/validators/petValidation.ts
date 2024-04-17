@@ -47,7 +47,7 @@ export const note = z.object({
 export const petDetailsSchema = z.object({
   internalId: z.string().optional(),
   image: z.string().optional(),
-  name: z.string().optional(),
+  name: z.string(),
   species: z.string().optional(),
   breed: z.string().optional(),
   gender: z.string().optional(),
@@ -65,6 +65,7 @@ export const petDetailsSchema = z.object({
     z.literal('TREATED'),
     z.literal('QUARANTINE'),
     z.literal('DEAD'),
+    z.literal('UNKNOWN'),
   ]),
   intakeEventDate: z.string().optional(),
   intakeEventType: z.union([
@@ -73,6 +74,7 @@ export const petDetailsSchema = z.object({
     z.literal('SURRENDER'),
     z.literal('BORN'),
     z.literal('RETURN'),
+    z.literal('UNKNOWN'),
   ]),
 });
 
@@ -96,6 +98,7 @@ export const petFilterOptionsSchema = z.object({
     z.literal('TREATED'),
     z.literal('QUARANTINE'),
     z.literal('DEAD'),
+    z.literal('UNKNOWN'),
   ]),
 });
 
@@ -109,12 +112,14 @@ export const fullPetDetailsSchema = z.object({
   color: z.string().optional(),
   coat: z.string().optional(),
   weight: z.string().optional(),
-  adoptionFee: z.number().optional().nullable(),
+  adoptionFeeKnown: z.boolean().optional(),
+  adoptionFee: z.string().optional(),
   dateOfBirth: z.string().optional(),
   status: z.string().optional(),
   microchipBrand: z.string().optional(),
   microchipNumber: z.string().optional(),
-  description: z.string().optional().nullable(),
+  availableForAdoption: z.boolean().optional(),
+  description: z.string().optional(),
   houseTrained: z.string().optional().nullable(),
   specialNeeds: z.string().optional().nullable(),
   neutered: z.string().optional().nullable(),
@@ -132,6 +137,7 @@ export const fullPetDetailsSchema = z.object({
     z.literal('TREATED'),
     z.literal('QUARANTINE'),
     z.literal('DEAD'),
+    z.literal('UNKNOWN'),
   ]),
   medicalEvents: z.array(medicalEvent).optional(),
   intakeEventDate: z.string().optional(),
@@ -141,6 +147,7 @@ export const fullPetDetailsSchema = z.object({
     z.literal('SURRENDER'),
     z.literal('BORN'),
     z.literal('RETURN'),
+    z.literal('UNKNOWN'),
   ]),
   outcomeEvents: z.array(outcomeEvent).optional(),
   photos: z.array(photo).optional(),
@@ -149,7 +156,7 @@ export const fullPetDetailsSchema = z.object({
   updatedAt: z.date(),
 });
 
-export const petIdSchema = z.object({
+export const idSchema = z.object({
   id: z.string(),
 });
 
