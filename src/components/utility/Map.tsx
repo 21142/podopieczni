@@ -1,5 +1,6 @@
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import geocode from '~/lib/geocode';
 
 interface MapProps {
   address: string;
@@ -16,25 +17,11 @@ const Map = (props: MapProps) => {
   useEffect(() => {
     const fetchLocation = async () => {
       try {
-        const response = await fetch(
-          `https://maps.google.com/maps/api/geocode/json?address=${props.address}&sensor=false&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-        );
-
-        if (!response.ok) {
-          console.error(`Failed to fetch location: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (data.results.length === 0) {
-          console.error('No results found for the given location');
-        }
-
-        const { lat, lng } = data.results[0].geometry.location;
-
-        setLocation({ lat, lng });
-        mapRef.current?.panTo({ lat, lng });
+        const coordinates = await geocode(props.address);
+        setLocation(coordinates);
+        mapRef.current?.panTo(coordinates);
       } catch (error) {
+        console.error('Error fetching location:', error);
         setLocation(null);
       }
     };

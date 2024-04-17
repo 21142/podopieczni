@@ -13,7 +13,6 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import {
   Table,
@@ -29,14 +28,15 @@ import { DataTableToolbar } from './DataTableToolbar';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  variant?: 'animals' | 'users';
 }
 
 export function DataTable<TData extends { id: string }, TValue>({
   columns,
   data,
+  variant,
 }: DataTableProps<TData, TValue>) {
   const { t } = useTranslation('common');
-  const router = useRouter();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -70,7 +70,10 @@ export function DataTable<TData extends { id: string }, TValue>({
 
   return (
     <div className="space-y-3 pt-6">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar
+        variant={variant}
+        table={table}
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -96,12 +99,6 @@ export function DataTable<TData extends { id: string }, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="hover:cursor-pointer"
-                  onClick={() => {
-                    if (row.original && row.original.id) {
-                      router.push(`/animal/${row.original.id}`);
-                    }
-                  }}
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (

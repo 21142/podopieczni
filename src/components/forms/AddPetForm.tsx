@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodError, type z } from 'zod';
+import { links } from '~/config/siteConfig';
 import { useToast } from '~/hooks/use-toast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
@@ -47,6 +48,7 @@ export const HealthStatusMap: Record<
   DEAD: 'Dead',
   TREATED: 'Treated',
   QUARANTINE: 'Quarantine',
+  UNKNOWN: 'Unknown',
 };
 
 export const IntakeEventTypeMap: Record<
@@ -58,6 +60,7 @@ export const IntakeEventTypeMap: Record<
   SURRENDER: 'Surrender',
   BORN: 'Born',
   RETURN: 'Return',
+  UNKNOWN: 'Unknown',
 };
 
 const AddPetForm = () => {
@@ -71,13 +74,13 @@ const AddPetForm = () => {
 
   const addPetMutation = api.pet.add.useMutation({
     onSuccess: async () => {
-      await trpc.getAllPets.invalidate();
+      await trpc.getAllPetsDataForTable.invalidate();
     },
     onSettled(data) {
       form.reset();
       setAvatarUrl('');
       if (data && !addingAnotherAnimal) {
-        router.push(`/animal/${data.id}`);
+        router.push(links.animal(data.id));
       }
       if (addingAnotherAnimal) {
         router.refresh();
@@ -90,6 +93,9 @@ const AddPetForm = () => {
     defaultValues: {
       //TODO: decide if any should be set as default values
       intakeEventDate: new Date().toISOString().slice(0, 10),
+      dateOfBirth: new Date().toISOString().slice(0, 10),
+      intakeEventType: 'UNKNOWN',
+      healthStatus: 'UNKNOWN',
     },
   });
 
@@ -247,7 +253,7 @@ const AddPetForm = () => {
                   <FormControl>
                     <Input
                       type="date"
-                      className="border-b-2 border-t-0 border-l-0 border-r-0"
+                      className="border-b-2 border-l-0 border-r-0 border-t-0"
                       placeholder=""
                       {...field}
                     />
@@ -461,7 +467,7 @@ const AddPetForm = () => {
                   <FormControl>
                     <Input
                       type="date"
-                      className="border-b-2 border-t-0 border-l-0 border-r-0"
+                      className="border-b-2 border-l-0 border-r-0 border-t-0"
                       placeholder=""
                       {...field}
                     />

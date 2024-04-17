@@ -10,10 +10,11 @@ import {
   CardHeader,
   CardTitle,
 } from 'src/components/primitives/Card';
+import { links } from '~/config/siteConfig';
 import { Icons } from '../icons/Icons';
 
 export interface IAnimalCard {
-  id: number;
+  id: string;
   tag: string;
   title: string;
   body?: string;
@@ -54,7 +55,7 @@ const PetCard: React.FC<IAnimalCard> = ({
     }
     setIsLikeClicked((prev) => !prev);
     setTimeout(() => {
-      router.push(`/user/favorites`);
+      router.push(links.favorites);
     }, 1000);
   };
 
@@ -62,7 +63,7 @@ const PetCard: React.FC<IAnimalCard> = ({
     console.log('TODO: add mutation to donate for a pet with id: ', id);
     setIsDonationClicked((prev) => !prev);
     setTimeout(() => {
-      router.push(`/donate/${id}`);
+      router.push(links.donate(id));
     }, 1000);
   };
 
@@ -73,7 +74,7 @@ const PetCard: React.FC<IAnimalCard> = ({
     >
       <>
         <CardHeader
-          onClick={() => router.push(`${variant}/${id}`)}
+          onClick={() => router.push(links.redirectTo(variant, id))}
           className="p-0"
         >
           <Image
@@ -91,7 +92,7 @@ const PetCard: React.FC<IAnimalCard> = ({
           </CardDescription>
         </CardHeader>
         <CardContent
-          onClick={() => router.push(`${variant}/${id}`)}
+          onClick={() => router.push(links.redirectTo(variant, id))}
           className="flex flex-col overflow-hidden pt-3"
         >
           <p className="h-12">

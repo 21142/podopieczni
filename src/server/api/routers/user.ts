@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
 import { userAccountDetailsSchema } from '~/lib/validators/userValidation';
@@ -18,12 +19,40 @@ export const userRouter = createTRPCRouter({
     });
     return user;
   }),
-  getAllUsers: publicProcedure.query(async ({ ctx }) => {
+  getAllPeopleAssociatedWithShelter: publicProcedure.query(async ({ ctx }) => {
+    const associatedShelter = await ctx.prisma.shelter.findFirst({
+      where: {
+        members: {
+          some: {
+            id: ctx.session?.user.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!associatedShelter) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: `No users associated with any shelter.`,
+      });
+    }
+
     const allUsers = await ctx.prisma.user.findMany({
+      where: {
+        worksAt: {
+          is: {
+            id: associatedShelter.id,
+          },
+        },
+      },
       include: {
         address: true,
       },
     });
+
     return allUsers;
   }),
   getUserById: publicProcedure
@@ -37,6 +66,17 @@ export const userRouter = createTRPCRouter({
         where: { id: input.id },
       });
       return user;
+    }),
+  deletePersonById: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      await checkIfRateLimitHasExceeded({
+        rateLimiterName: 'main',
+        identifier: ctx.session?.user.id ?? '',
+      });
+      await ctx.prisma.user.delete({
+        where: { id: input },
+      });
     }),
   getUsersCount: publicProcedure.query(async ({ ctx }) => {
     const count = await ctx.prisma.user.count();
@@ -67,6 +107,27 @@ export const userRouter = createTRPCRouter({
         rateLimiterName: 'main',
         identifier: ctx.session?.user.id ?? '',
       });
+
+      const associatedShelter = await ctx.prisma.shelter.findFirst({
+        where: {
+          members: {
+            some: {
+              id: ctx.session?.user.id,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!associatedShelter) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `User with id: ${ctx.session?.user.id} is not associated with any shelter.`,
+        });
+      }
+
       if (input.address) {
         await ctx.prisma.user.create({
           data: {
@@ -87,6 +148,11 @@ export const userRouter = createTRPCRouter({
                 country: input.country,
               },
             },
+            worksAt: {
+              connect: {
+                id: associatedShelter.id,
+              },
+            },
           },
         });
       } else {
@@ -100,6 +166,11 @@ export const userRouter = createTRPCRouter({
             phoneNumber: input.phoneNumber,
             role: input.role,
             image: input.image,
+            worksAt: {
+              connect: {
+                id: associatedShelter.id,
+              },
+            },
           },
         });
       }

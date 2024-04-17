@@ -8,6 +8,7 @@ import GlobalStatistics, {
 import Hero from '~/components/utility/Hero';
 import SearchByBreed from '~/components/utility/SearchByBreed';
 import SearchByState from '~/components/utility/SearchByState';
+import { links } from '~/config/siteConfig';
 
 const mock: IGlobalStatistics = {
   adopted: 222,
@@ -37,7 +38,7 @@ const Landing: React.FC = () => {
         </h2>
 
         <Link
-          href="#featured"
+          href={links.featured}
           scroll={false}
           aria-label="Przewiń w dół"
         >

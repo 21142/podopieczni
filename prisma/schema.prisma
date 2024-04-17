@@ -73,6 +73,8 @@ model AddressInfo {
   postCode  String?
   state     String?
   country   String?
+  lat       String?
+  lng       String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -120,10 +122,11 @@ model Pet {
   color                String?
   coat                 String?
   weight               Float?
-  adoptionFee          Float?
+  adoptionFee          String?
+  adoptionFeeKnown     Boolean?
   dateOfBirth          DateTime         @db.Date
   status               String?
-  description          String?
+  description          String?          @db.VarChar(1000)
   houseTrained         String?          @db.VarChar(5)
   specialNeeds         String?          @db.VarChar(5)
   neutered             String?          @db.VarChar(5)
@@ -134,6 +137,7 @@ model Pet {
   friendlyWithChildren String?          @db.VarChar(5)
   microchipBrand       String?
   microchipNumber      String?
+  availableForAdoption Boolean?
   shelter              Shelter          @relation(fields: [shelterId], references: [id], onDelete: Cascade)
   shelterId            String
   adoptedBy            User?            @relation(fields: [adopterId], references: [id])
@@ -144,6 +148,7 @@ model Pet {
   intakeEventDate      DateTime?
   outcomeEvents        OutcomeEvent[]
   photos               Photo[]
+  notes                Note[]
   documents            Document[]
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
@@ -215,6 +220,16 @@ model OutcomeEvent {
   @@index([petId])
 }
 
+model Note {
+  id      String  @id @default(cuid())
+  title   String?
+  content String  @db.VarChar(500)
+  pet     Pet?    @relation(fields: [petId], references: [id], onDelete: Cascade)
+  petId   String?
+
+  @@index([petId])
+}
+
 enum HealthStatus {
   HEALTHY
   INJURED
@@ -222,6 +237,7 @@ enum HealthStatus {
   TREATED
   QUARANTINE
   DEAD
+  UNKNOWN
 }
 
 enum MedicalEventType {
@@ -239,6 +255,7 @@ enum IntakeEventType {
   BORN
   RETURN
   OTHER
+  UNKNOWN
 }
 
 enum OutcomeEventType {

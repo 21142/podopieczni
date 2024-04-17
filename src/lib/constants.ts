@@ -39,3 +39,18 @@ export const species = [
     icon: Icons.cat,
   },
 ];
+
+export const roles = [
+  {
+    value: 'Adopter',
+    label: 'Adopter',
+  },
+  {
+    value: 'Shelter',
+    label: 'Shelter',
+  },
+  {
+    value: 'Admin',
+    label: 'Admin',
+  },
+];

@@ -14,6 +14,7 @@ import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
 import SearchCategory from '~/components/utility/SearchCategory';
 import SearchResults from '~/components/utility/SearchResults';
+import { links } from '~/config/siteConfig';
 import { TypeOfResults } from '~/lib/constants';
 import { cn } from '~/lib/utils';
 import type IAnimalData from '~/types/petfinderTypes';
@@ -28,9 +29,9 @@ export interface PetfinderOauth {
 }
 
 const sortOptions = [
-  { name: 'Most Popular', href: '#scrollToPosition', current: true },
-  { name: 'Newest addition', href: '#scrollToPosition', current: false },
-  { name: 'Oldest addition', href: '#scrollToPosition', current: false },
+  { name: 'Most Popular', href: links.scrollToPosition, current: true },
+  { name: 'Newest addition', href: links.scrollToPosition, current: false },
+  { name: 'Oldest addition', href: links.scrollToPosition, current: false },
 ];
 
 const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
@@ -200,7 +201,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
           </div>
         </section>
         <Link
-          href="#scrollToPosition"
+          href={links.scrollToPosition}
           scroll={false}
           className="z-50 mx-auto -mt-6 flex w-fit justify-center"
         >

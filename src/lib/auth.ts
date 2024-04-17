@@ -6,6 +6,7 @@ import EmailProvider from 'next-auth/providers/email';
 import GoogleProvider from 'next-auth/providers/google';
 import nodemailer from 'nodemailer';
 import WelcomeEmail from '~/components/emails/Welcome';
+import { links } from '~/config/siteConfig';
 import { env } from '~/env.mjs';
 import { prisma } from '~/lib/db';
 
@@ -29,7 +30,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    newUser: '/welcome',
+    newUser: links.welcome,
     //TODO: Create custom pages and register them here when done
     // signIn: '/auth/signin',
     // signOut: '/auth/signout',
