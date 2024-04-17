@@ -3,8 +3,8 @@ import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { DataTable } from '~/components/data-table/DataTable';
-import { peopleColumns } from '~/components/data-table/DataTableColumns';
-import { peopleColumnsInPolish } from '~/components/data-table/DataTableColumnsInPolish';
+import { usersColumns } from '~/components/data-table/DataTableColumns';
+import { usersColumnsInPolish } from '~/components/data-table/DataTableColumnsInPolish';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinner/Spinner';
@@ -54,7 +54,7 @@ const People: NextPage = () => {
         <div className="container">
           {users && (
             <DataTable
-              columns={locale === 'pl' ? peopleColumnsInPolish : peopleColumns}
+              columns={locale === 'pl' ? usersColumnsInPolish : usersColumns}
               data={users}
               variant="users"
             />

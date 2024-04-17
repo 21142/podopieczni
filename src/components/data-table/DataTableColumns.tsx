@@ -11,7 +11,7 @@ import { Checkbox } from '../primitives/Checkbox';
 import { DataTableColumnHeader } from './DataTableHeaders';
 import { DataTableRowActions } from './DataTableRowActions';
 
-export const columns: ColumnDef<AnimalDto>[] = [
+export const animalsColumns: ColumnDef<AnimalDto>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -151,7 +151,7 @@ export const columns: ColumnDef<AnimalDto>[] = [
   },
 ];
 
-export const peopleColumns: ColumnDef<UserDto>[] = [
+export const usersColumns: ColumnDef<UserDto>[] = [
   {
     accessorKey: 'image',
     header: ({ column }) => (

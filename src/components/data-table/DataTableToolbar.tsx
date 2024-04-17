@@ -37,7 +37,7 @@ export function DataTableToolbar<TData>({
       />
       <div className="flex gap-2">
         {variant === 'animals' && (
-          <div>
+          <div className="flex items-center gap-2">
             {table.getColumn('status') && (
               <DataTableFilter
                 column={table.getColumn('status')}
@@ -55,6 +55,7 @@ export function DataTableToolbar<TData>({
             {isFiltered && (
               <Button
                 variant="ghost"
+                size="lg"
                 onClick={() => table.resetColumnFilters()}
                 className="h-8 px-2 lg:px-3"
               >
@@ -65,7 +66,7 @@ export function DataTableToolbar<TData>({
           </div>
         )}
         {variant === 'users' && (
-          <div>
+          <div className="flex items-center gap-2">
             {table.getColumn('role') && (
               <DataTableFilter
                 column={table.getColumn('role')}
@@ -76,6 +77,7 @@ export function DataTableToolbar<TData>({
             {isFiltered && (
               <Button
                 variant="ghost"
+                size="lg"
                 onClick={() => table.resetColumnFilters()}
                 className="h-8 px-2 lg:px-3"
               >
