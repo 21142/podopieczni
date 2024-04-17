@@ -12,9 +12,10 @@ interface RecentAdoptionsProps {
 
 const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
   const router = useRouter();
+
   return (
     <div className="flex flex-col">
-      {animals ? (
+      {animals && animals.length > 0 ? (
         animals.map((animal) => (
           <RecentlyAddedAnimalsRow
             key={animal.id}
