@@ -131,6 +131,7 @@ export const userRouter = createTRPCRouter({
       if (input.address) {
         await ctx.prisma.user.create({
           data: {
+            title: input.title ?? undefined,
             name: `${input.firstName} ${input.lastName}`,
             firstName: input.firstName,
             lastName: input.lastName,
@@ -158,6 +159,7 @@ export const userRouter = createTRPCRouter({
       } else {
         await ctx.prisma.user.create({
           data: {
+            title: input.title ?? undefined,
             name: `${input.firstName} ${input.lastName}`,
             firstName: input.firstName,
             lastName: input.lastName,
@@ -228,4 +230,20 @@ export const userRouter = createTRPCRouter({
         });
       }
     }),
+  isUserAssociatedWithShelter: protectedProcedure.query(async ({ ctx }) => {
+    const associatedShelter = await ctx.prisma.shelter.findFirst({
+      where: {
+        members: {
+          some: {
+            id: ctx.session?.user.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return !!associatedShelter;
+  }),
 });

@@ -139,7 +139,6 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
 
   const updatePetMutation = api.pet.updatePetById.useMutation({
     onSuccess: async () => {
-      form.reset();
       await trpc.getPetById.invalidate();
     },
   });
@@ -318,6 +317,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
       microchipBrand: pet?.microchipBrand ?? '',
       weight: pet?.weight?.toString(),
       adoptionFee: pet?.adoptionFee?.toString() ?? '',
+      adoptionFeeKnown: pet?.adoptionFeeKnown ?? undefined,
       description: pet?.description ?? '',
       intakeEventDate: pet?.intakeEventDate?.toISOString().split('T')[0],
     } as IPetFullDetails,

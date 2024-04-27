@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import ShelterDashboard from '~/components/pages/ShelterDashboard';
+import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
 import { ssghelpers } from '~/lib/ssg';
@@ -27,14 +28,32 @@ const Dashboard: NextPage = () => {
   const { data: petsAddedLastMonthCount } =
     api.pet.getPetsCountChangeFromLastMonth.useQuery();
 
+  const { data: isUserAssociatedWithShelter, isLoading } =
+    api.user.isUserAssociatedWithShelter.useQuery();
+
+  const { data: shelterDetails } = api.shelter.getShelterDetails.useQuery();
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="grid h-[50vh] content-center">
+          <Spinner />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   if (!session) return <LoginToAccessPage />;
 
   return (
     <DashboardLayout>
-      {session &&
+      {isUserAssociatedWithShelter &&
+        session &&
         (session.user.role === Roles.Shelter ||
           session.user.role === Roles.Admin) && (
           <ShelterDashboard
+            shelterName={shelterDetails?.name}
+            shelterLogo={shelterDetails?.logo}
             petsCount={petsCount}
             petsCountChangeFromLastMonth={petsCountChangeFromLastMonth}
             usersCount={usersCount}
@@ -47,6 +66,13 @@ const Dashboard: NextPage = () => {
             }
           />
         )}
+      {!isUserAssociatedWithShelter && (
+        <div className="grid h-[50vh] content-center">
+          <h1 className="text-center text-2xl font-semibold">
+            You are not associated with any shelter
+          </h1>
+        </div>
+      )}
     </DashboardLayout>
   );
 };
@@ -54,6 +80,8 @@ const Dashboard: NextPage = () => {
 export default Dashboard;
 
 export async function getStaticProps({ locale }: { locale: string }) {
+  await ssghelpers.shelter.getShelterDetails.prefetch();
+  await ssghelpers.user.isUserAssociatedWithShelter.prefetch();
   await ssghelpers.user.getUsersCount.prefetch();
   await ssghelpers.user.getUsersCountChangeFromLastMonth.prefetch();
   await ssghelpers.pet.getPetsCount.prefetch();

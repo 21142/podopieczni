@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import {
@@ -9,31 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/primitives/Card';
-import { env } from '~/env.mjs';
-import type IAnimalData from '../../types/petfinderTypes';
+import { api } from '~/lib/api';
 import { Skeleton } from '../primitives/Skeleton';
 import BackgroundWavesFeaturedPets from './BackgroundWavesFeaturedPets';
 import PetsGrid from './PetsGrid';
 
-export interface IFeaturedPets {
-  featuredAnimals?: IAnimalData[];
-}
+const FeaturedPets: React.FC = () => {
+  const { data: featuredAnimals, isLoading } =
+    api.pet.getFeaturedAnimals.useQuery();
 
-const animalFetcher = async () => {
-  const petfindetAnimalsData = (await fetch(
-    `${env.NEXT_PUBLIC_BASE_URL}/api/animals`
-  ).then((res) => res.json())) as IAnimalData[] | undefined;
-
-  if (!petfindetAnimalsData) return;
-  const featuredAnimalsData = petfindetAnimalsData.slice(10, 16);
-  return featuredAnimalsData;
-};
-
-const FeaturedPets: React.FC<IFeaturedPets> = () => {
-  const { data: featuredAnimals, isLoading } = useQuery(
-    ['animals'],
-    animalFetcher
-  );
   const { t } = useTranslation('common');
 
   return (
@@ -62,7 +45,7 @@ const FeaturedPets: React.FC<IFeaturedPets> = () => {
                     height="384"
                     unoptimized
                   />
-                  <CardTitle className="pt-5 pb-1"></CardTitle>
+                  <CardTitle className="pb-1 pt-5"></CardTitle>
                   <CardDescription></CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col overflow-hidden">

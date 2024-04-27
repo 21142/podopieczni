@@ -5,6 +5,7 @@ import geocode from '~/lib/geocode';
 interface MapProps {
   address: string;
   exactAddress?: boolean;
+  className?: string;
 }
 
 type Location = google.maps.LatLngLiteral;
@@ -46,14 +47,14 @@ const Map = (props: MapProps) => {
   }, []);
 
   return (
-    <div className="w-screen">
+    <div className={props.className ?? 'w-screen'}>
       {location && (
         <GoogleMap
           zoom={15}
           center={center}
           options={options}
           onLoad={onMapLoad}
-          mapContainerClassName="h-[50vh]"
+          mapContainerClassName={props.className ?? 'h-[50vh]'}
         >
           {props.exactAddress && <Marker position={location} />}
         </GoogleMap>

@@ -22,10 +22,8 @@ export function DataTablePagination<TData>({
   return (
     <div className="flex flex-col items-center justify-between px-2 sm:flex-row">
       <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length}
-        {t('pagination_of')}
         {table.getFilteredRowModel().rows.length}
-        {t('animals_table_rows_selected')}
+        {t('animals_table_rows')}
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">

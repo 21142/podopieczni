@@ -7,7 +7,7 @@ export enum Roles {
 }
 
 export enum TypeOfResults {
-  Animal = 'results',
+  Animal = 'pets',
   Organization = 'organizations',
 }
 

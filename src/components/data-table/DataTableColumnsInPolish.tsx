@@ -7,42 +7,21 @@ import {
 } from '~/components/primitives/Avatar';
 import { statuses } from '~/lib/constants';
 import { type AnimalDto, type UserDto } from '~/types';
-import { Checkbox } from '../primitives/Checkbox';
 import { DataTableColumnHeader } from './DataTableHeaders';
 import { DataTableRowActions } from './DataTableRowActions';
 
 export const animalsColumnsInPolish: ColumnDef<AnimalDto>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Zaznacz wszystkie"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Zaznacz wiersz"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: 'image',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
         title="Zdjęcie"
+        className="ml-12"
       />
     ),
     cell: ({ row }) => (
-      <Avatar className="h-12 w-12">
+      <Avatar className="ml-12 h-12 w-12">
         <AvatarImage
           src={row.getValue('image')}
           width={48}
@@ -58,10 +37,14 @@ export const animalsColumnsInPolish: ColumnDef<AnimalDto>[] = [
         </AvatarFallback>
       </Avatar>
     ),
+    enableHiding: false,
     enableSorting: false,
   },
   {
     accessorKey: 'name',
+    cell: ({ row }) => (
+      <span className="text-base font-medium">{row.getValue('name')}</span>
+    ),
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
@@ -155,22 +138,24 @@ export const usersColumnsInPolish: ColumnDef<UserDto>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title=""
+        title="Zdjęcie"
+        className="ml-12"
       />
     ),
     cell: ({ row }) => (
-      <Avatar className="ml-4 h-12 w-12">
+      <Avatar className="ml-12 h-12 w-12">
         <AvatarImage
           src={row.getValue('image')}
           width={48}
           height={48}
-          alt="animal profile picture"
+          alt="Zdjęcie profilowe użytkownika"
         />
         <AvatarFallback>
           <Icons.user className="h-6 w-6 text-muted-foreground" />
         </AvatarFallback>
       </Avatar>
     ),
+    enableHiding: false,
     enableSorting: false,
   },
   {
