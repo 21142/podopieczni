@@ -1,7 +1,11 @@
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, FilterIcon, XIcon } from '@heroicons/react/outline';
 import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
-import type { GetServerSideProps, NextPage } from 'next';
+import type {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from 'next';
 import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -13,19 +17,14 @@ import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
 import SearchCategory from '~/components/utility/SearchCategory';
-import SearchResults from '~/components/utility/SearchResults';
+import SearchPetsResults from '~/components/utility/SearchPetsResults';
 import { links } from '~/config/siteConfig';
+import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
 import { cn } from '~/lib/utils';
-import type IAnimalData from '~/types/petfinderTypes';
 
 export interface IResults {
-  animals?: IAnimalData[];
   searchQuery: string;
-}
-
-export interface PetfinderOauth {
-  access_token: string;
 }
 
 const sortOptions = [
@@ -34,10 +33,17 @@ const sortOptions = [
   { name: 'Oldest addition', href: links.scrollToPosition, current: false },
 ];
 
-const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
+const Results: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ searchQuery }) => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const { t } = useTranslation('common');
+
+  const { data: animals } =
+    api.pet.queryPetsAvailableForAdoptionFulltextSearch.useQuery({
+      searchQuery: searchQuery,
+    });
 
   return (
     <PageLayout>
@@ -46,7 +52,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
         className="flex w-full items-center justify-center bg-primary-300 pt-4 text-center"
       >
         <Search
-          query={searchQuery}
+          query={searchQuery ?? ''}
           typeOfResults={TypeOfResults.Animal}
         />
       </div>
@@ -179,7 +185,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
 
         <section
           aria-labelledby="pets-heading"
-          className="pt-6 pb-24"
+          className="pb-24 pt-6"
         >
           <h2
             id="products-heading"
@@ -194,10 +200,7 @@ const Results: NextPage<IResults> = ({ animals, searchQuery }) => {
               <FilterResultsForm />
             </div>
             <SearchCategory />
-            <SearchResults
-              results={animals}
-              typeOfResults="pet"
-            />
+            <SearchPetsResults results={animals} />
           </div>
         </section>
         <Link
@@ -225,45 +228,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     : '';
   const locale = context.locale ?? 'en';
 
-  const petfindetOauthData = (await fetch(
-    `${baseUrl}/api/petfinder-oauth-token`
-  ).then((res) => res.json())) as PetfinderOauth;
-  const accessToken = petfindetOauthData.access_token;
-  if (accessToken) {
-    let url = 'https://api.petfinder.com/v2/animals?location=22152';
-    if (search) {
-      url = `https://api.petfinder.com/v2/animals?location=${search}`;
-    }
-    const petfindetData = (await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }).then((res) => res.json())) as IResults;
-    const animals = petfindetData?.animals;
+  const availablePets = await fetch(
+    `${baseUrl}/api/animals?search=${search}`
+  ).then((res) => res.json());
 
-    if (!animals)
-      return {
-        props: {
-          animals: null,
-          searchQuery: search,
-          ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
-        },
-      };
-
+  if (!availablePets || availablePets.length == 0)
     return {
       props: {
-        animals: animals,
+        animals: [],
         searchQuery: search,
         ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
       },
     };
-  } else {
-    return {
-      props: {
-        animals: ['no animals found'],
-        searchQuery: search,
-        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
-      },
-    };
-  }
+
+  return {
+    props: {
+      animals: availablePets,
+      searchQuery: search,
+      ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+    },
+  };
 };

@@ -32,6 +32,7 @@ const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
           </span>
           <Button
             onClick={() => void router.push(links.registerAnimal)}
+            size="lg"
             variant="primary"
             className="my-4"
           >

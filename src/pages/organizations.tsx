@@ -1,22 +1,25 @@
-import type { GetServerSideProps, NextPage } from 'next';
+import type {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from 'next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
-import SearchResults from '~/components/utility/SearchResults';
-import { type IOrganizationData } from '~/types/petfinderTypes';
+import SearchSheltersResults from '~/components/utility/SearchSheltersResults';
+import { api } from '~/lib/api';
+import { TypeOfResults } from '~/lib/constants';
 
-export interface IResults {
-  organizations?: IOrganizationData[];
-  searchQuery: string;
-}
+const Organizations: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ searchQuery }) => {
+  const { data: organizations } =
+    api.shelter.querySheltersFulltextSearch.useQuery({
+      searchQuery,
+    });
 
-export interface PetfinderOauth {
-  access_token: string;
-}
-
-const Organizations: NextPage<IResults> = ({ organizations, searchQuery }) => {
   return (
     <PageLayout>
       <div
@@ -25,17 +28,14 @@ const Organizations: NextPage<IResults> = ({ organizations, searchQuery }) => {
       >
         <Search
           query={searchQuery}
-          typeOfResults="organizations"
+          typeOfResults={TypeOfResults.Organization}
         />
       </div>
       <BackgroundWave />
 
       <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
         <div className="justify-betweenpb-6 relative z-10 flex items-baseline">
-          <SearchResults
-            results={organizations}
-            typeOfResults="organization"
-          />
+          <SearchSheltersResults results={organizations} />
         </div>
       </main>
     </PageLayout>
@@ -54,35 +54,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     : '';
   const locale = context.locale ?? 'en';
 
-  const petfindetOauthData = (await fetch(
-    `${baseUrl}/api/petfinder-oauth-token`
-  ).then((res) => res.json())) as PetfinderOauth;
-  const accessToken = petfindetOauthData.access_token;
-  if (accessToken) {
-    let url = 'https://api.petfinder.com/v2/organizations?location=22152';
-    if (search) {
-      url = `https://api.petfinder.com/v2/organizations?location=${search}`;
-    }
-    const petfindetData = (await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }).then((res) => res.json())) as IResults;
-    const organizations = petfindetData?.organizations;
-    return {
-      props: {
-        organizations: organizations,
-        searchQuery: search,
-        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
-      },
-    };
-  } else {
-    return {
-      props: {
-        organizations: ['no organizations found'],
-        searchQuery: search,
-        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
-      },
-    };
-  }
+  const shelters = await fetch(`${baseUrl}/api/shelters?search=${search}`).then(
+    (res) => res.json()
+  );
+
+  return {
+    props: {
+      organizations: shelters,
+      searchQuery: search,
+      ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+    },
+  };
 };

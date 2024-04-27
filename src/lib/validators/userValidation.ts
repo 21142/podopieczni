@@ -1,6 +1,7 @@
 import * as z from 'zod';
 
 export const userAccountDetailsSchema = z.object({
+  title: z.string().optional().nullable(),
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   email: z

@@ -30,7 +30,8 @@
     "**/*.jsx",
     "**/*.cjs",
     "**/*.mjs",
-    "lighthouserc.js"
+    "lighthouserc.js",
+    "vitest.config.mjs"
   ],
   "exclude": ["node_modules"]
 }

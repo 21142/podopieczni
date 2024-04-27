@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from 'src/components/primitives/Card';
 import { links } from '~/config/siteConfig';
+import { Variant } from '~/lib/constants';
 import { Icons } from '../icons/Icons';
 
 export interface IAnimalCard {
@@ -24,9 +25,7 @@ export interface IAnimalCard {
   variant: string;
   age?: string;
   type?: string;
-  breeds?: {
-    primary?: string;
-  };
+  breed?: string;
 }
 
 const PetCard: React.FC<IAnimalCard> = ({
@@ -36,7 +35,7 @@ const PetCard: React.FC<IAnimalCard> = ({
   photo,
   variant,
   age,
-  breeds,
+  breed,
   type,
 }) => {
   const { t } = useTranslation('common');
@@ -84,11 +83,11 @@ const PetCard: React.FC<IAnimalCard> = ({
             width="360"
             height="400"
           />
-          <CardTitle className="pt-5 pb-1">{title}</CardTitle>
+          <CardTitle className="pb-1 pt-5">{title}</CardTitle>
           <CardDescription>
-            {variant === 'organization'
+            {variant === Variant.Organization
               ? t('organization_card_default_description')
-              : `${age} • ${breeds?.primary} ${type ? `• ${type}` : ''}`}
+              : `${age} • ${breed} ${type ? `• ${type}` : ''}`}
           </CardDescription>
         </CardHeader>
         <CardContent
@@ -98,25 +97,27 @@ const PetCard: React.FC<IAnimalCard> = ({
           <p className="h-12">
             {body
               ? `${body}`
-              : variant === 'organization'
+              : variant === Variant.Organization
               ? ''
               : 'Podopieczny poszukujący kochającego opiekuna i bezpiecznego domu.'}
           </p>
         </CardContent>
-        <CardFooter className="flex justify-end gap-2 pt-2 pb-3">
-          <Icons.heart
-            onClick={handleLikeClick}
-            className={`transition-all ease-in-out hover:scale-110 ${
-              isLikeClicked ? 'fill-primary-300 text-primary-300' : ''
-            }`}
-          />
-          <Icons.heartDonate
-            onClick={handleDonationClick}
-            className={`transition-all ease-in-out hover:scale-110 ${
-              isDonationClicked ? 'fill-success-200 text-success-400' : ''
-            }`}
-          />
-        </CardFooter>
+        {variant === Variant.Animal && (
+          <CardFooter className="flex justify-end gap-2 pb-3 pt-2">
+            <Icons.heart
+              onClick={handleLikeClick}
+              className={`transition-all ease-in-out hover:scale-110 ${
+                isLikeClicked ? 'fill-primary-300 text-primary-300' : ''
+              }`}
+            />
+            <Icons.heartDonate
+              onClick={handleDonationClick}
+              className={`transition-all ease-in-out hover:scale-110 ${
+                isDonationClicked ? 'fill-success-200 text-success-400' : ''
+              }`}
+            />
+          </CardFooter>
+        )}
       </>
     </Card>
   );

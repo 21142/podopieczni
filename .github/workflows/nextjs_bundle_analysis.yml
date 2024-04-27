@@ -13,8 +13,6 @@ env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   NEXTAUTH_SECRET: 'fake'
   NEXTAUTH_URL: 'https://fake.com'
-  PETFINDER_KEY: 'fake'
-  PETFINDER_SECRET: 'fake'
   GOOGLE_ID: 'fake'
   GOOGLE_SECRET: 'fake'
   EMAIL_SERVER_USER: 'fake'

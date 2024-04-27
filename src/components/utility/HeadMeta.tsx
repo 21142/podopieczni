@@ -59,6 +59,10 @@ const HeadMeta = ({
         content={title}
       />
       <meta
+        property="og:description"
+        content={description}
+      />
+      <meta
         property="og:type"
         content={type}
       />

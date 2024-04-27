@@ -12,8 +12,8 @@ export const links = {
   resultsPosition: '/results#scrollToPosition',
   search: (type: string, query: string) =>
     `/${type}?search=${query}#scrollToPosition`,
-  searchDogs: '/search?search=dog',
-  searchCats: '/search?search=cat',
+  searchDogs: '/pets?search=dog#scrollToPosition',
+  searchCats: '/pets?search=cat#scrollToPosition',
   about: '/about',
   adoption: '/adoption',
   contact: '/contact',
@@ -21,9 +21,10 @@ export const links = {
   phone: (phoneNumber: string) => `tel:${phoneNumber}`,
   email: (email: string) => `mailto:${email}`,
   organizations: '/organizations',
+  organizationSettings: '/organization/settings',
   organization: (organizationId: string) => `/organization/${organizationId}`,
   organizationPets: (organizationId: string) =>
-    `/organizations/${organizationId}/pets`,
+    `/organization/${organizationId}/pets`,
   animal: (animalId: string) => `/animal/${animalId}`,
   person: (personId: string) => `/user/${personId}`,
   registerAnimal: '/animal/register',
@@ -36,6 +37,3 @@ export const links = {
   privacyPolicy: '/privacyPolicy',
   facebook: '/tba',
 };
-
-//href
-//router.push etc

@@ -16,8 +16,6 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string().min(1) : z.string().url()
     ),
-    PETFINDER_KEY: z.string(),
-    PETFINDER_SECRET: z.string(),
     GOOGLE_ID: z.string(),
     GOOGLE_SECRET: z.string(),
     VERCEL_URL: z.string().optional(),
@@ -38,8 +36,6 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    PETFINDER_KEY: process.env.PETFINDER_KEY,
-    PETFINDER_SECRET: process.env.PETFINDER_SECRET,
     GOOGLE_ID: process.env.GOOGLE_ID,
     GOOGLE_SECRET: process.env.GOOGLE_SECRET,
     VERCEL_URL: process.env.VERCEL_URL,
