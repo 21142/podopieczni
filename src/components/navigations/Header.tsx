@@ -32,7 +32,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   return (
     <header
       {...headerProps}
-      className={`top-0 z-30 h-20 w-full border-b border-b-accent py-[14px] px-8 ${
+      className={`top-0 z-30 h-20 w-full border-b border-b-accent px-4 py-[14px] sm:px-8 ${
         className ?? ''
       }`}
     >
@@ -45,7 +45,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
         <nav
           className={classNames(
             mobileMenuIsOpen
-              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:pl-10'
+              ? 'fixed left-0 top-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:pl-10'
               : 'hidden items-center gap-x-10 md:inline-flex'
           )}
         >
@@ -113,7 +113,7 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
           <div className={mobileMenuIsOpen ? '' : 'md:hidden'}>
             <button
               className={classNames(
-                mobileMenuIsOpen ? 'fixed top-6 right-8' : '',
+                mobileMenuIsOpen ? 'fixed right-8 top-6' : '',
                 'z-10'
               )}
               onClick={() =>

@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -11,6 +12,7 @@ import {
   CardTitle,
 } from 'src/components/primitives/Card';
 import { links } from '~/config/siteConfig';
+import { api } from '~/lib/api';
 import { Variant } from '~/lib/constants';
 import { Icons } from '../icons/Icons';
 
@@ -26,6 +28,7 @@ export interface IAnimalCard {
   age?: string;
   type?: string;
   breed?: string;
+  isLikedByUser?: boolean;
 }
 
 const PetCard: React.FC<IAnimalCard> = ({
@@ -37,25 +40,49 @@ const PetCard: React.FC<IAnimalCard> = ({
   age,
   breed,
   type,
+  isLikedByUser,
 }) => {
+  const { data: session } = useSession();
+  const petContext = api.useContext().pet;
+  const userContext = api.useContext().user;
   const { t } = useTranslation('common');
   const router = useRouter();
-  const [isLikeClicked, setIsLikeClicked] = useState(false);
+  const [isLikeClicked, setIsLikeClicked] = useState(isLikedByUser ?? false);
   const [isDonationClicked, setIsDonationClicked] = useState(false);
 
-  const handleLikeClick = () => {
+  const markPetAsFavoriteMutation = api.user.markPetAsFavorite.useMutation({
+    onSuccess: () => {
+      userContext.getFavoritePets.invalidate();
+      petContext.getFeaturedAnimals.invalidate();
+      petContext.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+    },
+  });
+  const removePetFromFavoritesMutation =
+    api.user.removePetFromFavorites.useMutation({
+      onSuccess: () => {
+        userContext.getFavoritePets.invalidate();
+        petContext.getFeaturedAnimals.invalidate();
+        petContext.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+      },
+    });
+
+  const handleLikeClick = async () => {
+    if (!session) {
+      setTimeout(() => {
+        router.push(links.favorites);
+      }, 1000);
+      return;
+    }
+
     if (!isLikeClicked) {
-      console.log('TODO: add mutation to tag as favorite pet with id: ', id);
+      await markPetAsFavoriteMutation.mutateAsync(id);
+      setTimeout(() => {
+        router.push(links.favorites);
+      }, 1000);
     } else {
-      console.log(
-        'TODO: add mutation to remove from favorites pet with id: ',
-        id
-      );
+      await removePetFromFavoritesMutation.mutateAsync(id);
     }
     setIsLikeClicked((prev) => !prev);
-    setTimeout(() => {
-      router.push(links.favorites);
-    }, 1000);
   };
 
   const handleDonationClick = () => {
@@ -69,7 +96,11 @@ const PetCard: React.FC<IAnimalCard> = ({
   return (
     <Card
       key={id}
-      className="relative min-w-[239px] max-w-[22rem] border-0 border-none shadow-md transition hover:cursor-pointer hover:ease-out"
+      className={`relative ${
+        variant === Variant.Organization
+          ? 'min-h-[600px] min-w-[300px]'
+          : 'max-h-[600px]'
+      } min-w-[239px] max-w-[350px] border-0 border-none shadow-md transition hover:cursor-pointer hover:ease-out`}
     >
       <>
         <CardHeader
@@ -83,8 +114,10 @@ const PetCard: React.FC<IAnimalCard> = ({
             width="360"
             height="400"
           />
-          <CardTitle className="pb-1 pt-5">{title}</CardTitle>
-          <CardDescription>
+          <CardTitle className="flex justify-center pb-1 pt-5">
+            {title}
+          </CardTitle>
+          <CardDescription className="flex justify-center">
             {variant === Variant.Organization
               ? t('organization_card_default_description')
               : `${age} • ${breed} ${type ? `• ${type}` : ''}`}
@@ -94,7 +127,7 @@ const PetCard: React.FC<IAnimalCard> = ({
           onClick={() => router.push(links.redirectTo(variant, id))}
           className="flex flex-col overflow-hidden pt-3"
         >
-          <p className="h-12">
+          <p className="h-12 text-center">
             {body
               ? `${body}`
               : variant === Variant.Organization

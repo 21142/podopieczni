@@ -70,6 +70,10 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
 
   const { data: pet } = api.pet.getPetById.useQuery({ id: animalId });
 
+  const markPetAsFavoriteMutation = api.user.markPetAsFavorite.useMutation();
+  const removePetFromFavoritesMutation =
+    api.user.removePetFromFavorites.useMutation();
+
   React.useEffect(() => {
     if (!carouselApi) {
       return;
@@ -94,17 +98,14 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
       </PageLayout>
     );
 
-  const handleLikeClick = () => {
+  const handleLikeClick = async () => {
     if (!isLikeClicked) {
-      console.log(
-        'TODO: add mutation to tag as favorite pet with id: ',
-        pet.id
-      );
+      await markPetAsFavoriteMutation.mutateAsync(pet.id);
+      setTimeout(() => {
+        router.push(links.favorites);
+      }, 1000);
     } else {
-      console.log(
-        'TODO: add mutation to remove from favorites pet with id: ',
-        pet.id
-      );
+      await removePetFromFavoritesMutation.mutateAsync(pet.id);
     }
     setIsLikeClicked((prev) => !prev);
   };

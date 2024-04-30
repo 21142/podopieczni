@@ -3,11 +3,15 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from 'next';
+import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import AdoptionFormCard from '~/components/cards/AdoptionFormCard';
+import FilterSheltersResults from '~/components/forms/FilterSheltersResultsForm';
 import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
+import SearchCategory from '~/components/utility/SearchCategory';
 import SearchSheltersResults from '~/components/utility/SearchSheltersResults';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
@@ -15,6 +19,7 @@ import { TypeOfResults } from '~/lib/constants';
 const Organizations: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ searchQuery }) => {
+  const { t } = useTranslation('common');
   const { data: organizations } =
     api.shelter.querySheltersFulltextSearch.useQuery({
       searchQuery,
@@ -33,9 +38,20 @@ const Organizations: NextPage<
       </div>
       <BackgroundWave />
 
-      <main className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-        <div className="justify-betweenpb-6 relative z-10 flex items-baseline">
-          <SearchSheltersResults results={organizations} />
+      <main className="container mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
+        <h1 className="max-w-[300px] pb-6 text-2xl font-semibold tracking-tight sm:max-w-none sm:text-4xl">
+          {t('organizations_title')}
+        </h1>
+        <div className="relative z-10 flex items-baseline justify-between pb-6">
+          <div className="grid w-full grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-[250px_minmax(700px,_1fr)]">
+            <AdoptionFormCard />
+            <div className="hidden lg:row-start-2 lg:row-end-3 lg:block">
+              <FilterSheltersResults />
+            </div>
+
+            <SearchCategory />
+            <SearchSheltersResults results={organizations} />
+          </div>
         </div>
       </main>
     </PageLayout>

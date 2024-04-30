@@ -2,7 +2,7 @@ const BackgroundWave = () => {
   return (
     <div
       id="featured"
-      className="aspect-[40/1] rotate-180"
+      className="-z-10 -mt-1 aspect-[40/1] rotate-180"
     >
       <svg
         id="visual"

@@ -23,6 +23,7 @@ const PetsGrid: React.FC<IPetsGrid> = ({ featuredAnimals }) => {
           type={animal.species ?? 'Unknown'}
           age={animal.age ?? 'Unknown'}
           breed={animal.breed ?? 'Unknown'}
+          isLikedByUser={animal.isLikedByUser ?? false}
         />
       ))}
     </div>

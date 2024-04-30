@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next';
 import HeaderLink from '~/components/links/HeaderLink';
+import { voivodships } from '~/lib/constants';
 
 const SearchByState: React.FC = () => {
   const { t } = useTranslation('common');
@@ -11,55 +12,14 @@ const SearchByState: React.FC = () => {
           {t('state')}
         </span>
       </p>
-      <div className="grid grid-cols-2 content-center gap-10 pt-5 text-center sm:grid-cols-3 md:gap-14 md:pt-10 lg:w-full lg:gap-20">
-        <HeaderLink
-          href="/search/breed/bulldog"
-          title="Bulldog"
-        />
-        <HeaderLink
-          href="/search/breed/pudel"
-          title="Pudel"
-        />
-        <HeaderLink
-          href="/search/breed/cockerspaniel"
-          title="Cocker spaniel"
-        />
-        <HeaderLink
-          href="/search/breed/labrador"
-          title="Labrador"
-        />
-        <HeaderLink
-          href="/search/breed/goldenretriever"
-          title="Golden Retriever"
-        />
-        <HeaderLink
-          href="/search/breed/chihuahua"
-          title="Chihuahua"
-        />
-        <HeaderLink
-          href="/search/breed/owczarekniemiecki"
-          title="Owczarek niemiecki"
-        />
-        <HeaderLink
-          href="/search/breed/yorkshireterrier"
-          title="Yorkshire Terrier"
-        />
-        <HeaderLink
-          href="/search/breed/doberman"
-          title="Doberman"
-        />
-        <HeaderLink
-          href="/search/breed/owczarekniemiecki"
-          title="Owczarek niemiecki"
-        />
-        <HeaderLink
-          href="/search/breed/yorkshireterrier"
-          title="Yorkshire Terrier"
-        />
-        <HeaderLink
-          href="/search/breed/doberman"
-          title="Doberman"
-        />
+      <div className="mx-auto grid grid-cols-2 gap-x-1 gap-y-10 pt-5 text-center sm:grid-cols-3 md:gap-14 md:pt-10 lg:gap-20">
+        {voivodships.map((voivodeship, index) => (
+          <HeaderLink
+            key={index}
+            href={`/pets?search=${voivodeship.name}`}
+            title={voivodeship.name}
+          />
+        ))}
       </div>
     </div>
   );

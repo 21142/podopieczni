@@ -7,6 +7,14 @@ export interface ISearchResults {
 }
 
 const SearchSheltersResults: React.FC<ISearchResults> = ({ results }) => {
+  if (results?.length === 0)
+    return (
+      <p>
+        No results found, sorry but you need to try another search query or
+        filter selection
+      </p>
+    );
+
   return (
     <div className="grid grid-cols-1 justify-items-center gap-x-6 gap-y-10 text-center sm:grid-cols-2 md:grid-cols-3 lg:col-start-2 lg:col-end-5 lg:gap-x-4 xl:grid-cols-4">
       {results?.map((shelter) => (

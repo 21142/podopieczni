@@ -13,6 +13,7 @@ import {
   photo,
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
+import { getShelterAssociatedWithUser } from '~/server/helpers/getShelterAssociatedWithUser';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
@@ -22,6 +23,24 @@ export const petRouter = createTRPCRouter({
     const pets = await ctx.prisma.pet.findMany();
     return pets;
   }),
+  getPetsAvailableForAdoptionCount: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.pet.count({
+      where: {
+        availableForAdoption: true,
+      },
+    });
+  }),
+  getAdoptedPetsCount: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.pet.count({
+      where: {
+        outcomeEvents: {
+          some: {
+            eventType: 'ADOPTION',
+          },
+        },
+      },
+    });
+  }),
   getFeaturedAnimals: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.pet
       .findMany({
@@ -29,15 +48,45 @@ export const petRouter = createTRPCRouter({
           availableForAdoption: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          publishedAt: 'desc',
         },
         take: 6,
       })
-      .then((pets) => {
-        return pets.map((pet) => ({
-          ...pet,
-          age: calculatePetAgeGroup(pet.dateOfBirth),
-        }));
+      .then(async (pets) => {
+        if (ctx.session?.user.id) {
+          const petIds = pets.map((pet) => pet.id);
+
+          const favoritePets = await ctx.prisma.favoritePet.findMany({
+            where: {
+              userId: ctx.session.user.id,
+              petId: {
+                in: petIds,
+              },
+            },
+            select: {
+              petId: true,
+            },
+          });
+
+          const favoriteStatusMap: { [key: string]: boolean } = {};
+          for (const favoritePet of favoritePets) {
+            favoriteStatusMap[favoritePet.petId] = true;
+          }
+
+          pets = pets.map((pet) => ({
+            ...pet,
+            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+            isLikedByUser: favoriteStatusMap[pet.id] || false,
+          }));
+
+          return pets;
+        } else {
+          pets = pets.map((pet) => ({
+            ...pet,
+            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+          }));
+          return pets;
+        }
       });
   }),
   queryPetsAvailableForAdoptionFulltextSearch: publicProcedure
@@ -87,7 +136,7 @@ export const petRouter = createTRPCRouter({
               },
             },
             orderBy: {
-              createdAt: 'desc',
+              publishedAt: 'desc',
             },
           });
         } else {
@@ -103,17 +152,45 @@ export const petRouter = createTRPCRouter({
               },
             },
             orderBy: {
-              createdAt: 'desc',
+              publishedAt: 'desc',
             },
           });
         }
 
-        pets = pets.map((pet) => ({
-          ...pet,
-          age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
-        }));
+        if (ctx.session?.user.id) {
+          const petIds = pets.map((pet) => pet.id);
 
-        return pets;
+          const favoritePets = await ctx.prisma.favoritePet.findMany({
+            where: {
+              userId: ctx.session.user.id,
+              petId: {
+                in: petIds,
+              },
+            },
+            select: {
+              petId: true,
+            },
+          });
+
+          const favoriteStatusMap: { [key: string]: boolean } = {};
+          for (const favoritePet of favoritePets) {
+            favoriteStatusMap[favoritePet.petId] = true;
+          }
+
+          pets = pets.map((pet) => ({
+            ...pet,
+            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+            isLikedByUser: favoriteStatusMap[pet.id] || false,
+          }));
+
+          return pets;
+        } else {
+          pets = pets.map((pet) => ({
+            ...pet,
+            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+          }));
+          return pets;
+        }
       } catch (error) {
         console.log(error);
         throw new TRPCError({
@@ -123,18 +200,10 @@ export const petRouter = createTRPCRouter({
       }
     }),
   getAllPetsDataForTable: publicProcedure.query(async ({ ctx }) => {
-    const associatedShelter = await ctx.prisma.shelter.findFirst({
-      where: {
-        members: {
-          some: {
-            id: ctx.session?.user.id,
-          },
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
+    const associatedShelter = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
 
     const pets = await ctx.prisma.pet.findMany({
       where: {
@@ -280,12 +349,26 @@ export const petRouter = createTRPCRouter({
       return pet?.notes;
     }),
   getPetsCount: publicProcedure.query(async ({ ctx }) => {
-    const count = await ctx.prisma.pet.count();
-    return count;
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
+    return await ctx.prisma.pet.count({
+      where: {
+        shelterId: shelterAssociatedWithUser?.id,
+      },
+    });
   }),
   getPetsCountChangeFromLastMonth: publicProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
     const thisMonthsCount = await ctx.prisma.pet.count({
       where: {
+        shelterId: shelterAssociatedWithUser.id,
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         },
@@ -293,6 +376,7 @@ export const petRouter = createTRPCRouter({
     });
     const lastMonthsCount = await ctx.prisma.pet.count({
       where: {
+        shelterId: shelterAssociatedWithUser.id,
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 2)),
           lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
@@ -302,8 +386,14 @@ export const petRouter = createTRPCRouter({
     return thisMonthsCount - lastMonthsCount;
   }),
   getPetsAddedInTheLastMonth: publicProcedure.query(async ({ ctx }) => {
-    const pets = await ctx.prisma.pet.findMany({
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
+    return await ctx.prisma.pet.findMany({
       where: {
+        shelterId: shelterAssociatedWithUser.id,
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         },
@@ -311,13 +401,18 @@ export const petRouter = createTRPCRouter({
       orderBy: {
         createdAt: 'desc',
       },
-      take: 5,
     });
-
-    return pets;
   }),
   getMostRecentlyAddedPets: publicProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
     const pets = await ctx.prisma.pet.findMany({
+      where: {
+        shelterId: shelterAssociatedWithUser.id,
+      },
       orderBy: {
         createdAt: 'desc',
       },
@@ -327,8 +422,14 @@ export const petRouter = createTRPCRouter({
     return pets;
   }),
   getPetsAddedInTheLastMonthCount: publicProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
     const count = await ctx.prisma.pet.count({
       where: {
+        shelterId: shelterAssociatedWithUser.id,
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         },
@@ -344,25 +445,10 @@ export const petRouter = createTRPCRouter({
         identifier: ctx.session?.user.id ?? '',
       });
 
-      const associatedShelter = await ctx.prisma.shelter.findFirst({
-        where: {
-          members: {
-            some: {
-              id: ctx.session?.user.id,
-            },
-          },
-        },
-        select: {
-          id: true,
-        },
-      });
-
-      if (!associatedShelter) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `User with id: ${ctx.session?.user.id} is not associated with any shelter.`,
-        });
-      }
+      const associatedShelter = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
 
       const pet = await ctx.prisma.pet.create({
         data: {
@@ -405,25 +491,10 @@ export const petRouter = createTRPCRouter({
         identifier: ctx.session?.user.id ?? '',
       });
 
-      const associatedShelter = await ctx.prisma.shelter.findFirst({
-        where: {
-          members: {
-            some: {
-              id: ctx.session?.user.id,
-            },
-          },
-        },
-        select: {
-          id: true,
-        },
-      });
-
-      if (!associatedShelter) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `User with id: ${ctx.session?.user.id} is not associated with any shelter.`,
-        });
-      }
+      const associatedShelter = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
 
       await ctx.prisma.pet.update({
         where: { id: input.id },
@@ -502,6 +573,7 @@ export const petRouter = createTRPCRouter({
         where: { id: input },
         data: {
           availableForAdoption: true,
+          publishedAt: new Date(),
         },
       });
 
@@ -615,6 +687,7 @@ export const petRouter = createTRPCRouter({
           description: input.values.description,
           adoptionFee: input.values.adoptionFee,
           adoptionFeeKnown: input.values.adoptionFeeKnown,
+          publishedAt: new Date(),
         },
       });
     }),

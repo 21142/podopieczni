@@ -6,11 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { ZodError, type z } from 'zod';
-import {
-  HealthStatusMap,
-  IntakeEventTypeMap,
-} from '~/components/forms/AddPetForm';
+import { ZodError } from 'zod';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import {
   Avatar,
@@ -54,6 +50,15 @@ import {
   type IPetOutcomeEvent,
   type IPhoto,
 } from '~/lib/validators/petValidation';
+import { catBreeds, dogBreeds } from '~/static/breeds';
+import { coats } from '~/static/coats';
+import { colors } from '~/static/colors';
+import { genders } from '~/static/genders';
+import { HealthStatusMap } from '~/static/healthStatuses';
+import { IntakeEventTypeMap } from '~/static/intakeEventTypes';
+import { MedicalEventTypeMap } from '~/static/medicalEventTypes';
+import { OutcomeEventTypeMap } from '~/static/outcomeEventTypes';
+import { species } from '~/static/species';
 import { Icons } from '../icons/Icons';
 import {
   AlertDialog,
@@ -67,7 +72,15 @@ import {
   AlertDialogTrigger,
 } from '../primitives/AlertDialog';
 import { Card } from '../primitives/Card';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from '../primitives/Command';
 import { Label } from '../primitives/Label';
+import { Popover, PopoverContent, PopoverTrigger } from '../primitives/Popover';
 import { RadioGroup, RadioGroupItem } from '../primitives/RadioButton';
 import { Switch } from '../primitives/Switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../primitives/Tabs';
@@ -78,33 +91,11 @@ interface Props {
   animalId: string;
 }
 
-export const MedicalEventTypeMap: Record<
-  z.infer<typeof medicalEvent>['medicalEventType'],
-  string
-> = {
-  VACCINATION: 'Vaccination',
-  TREATMENT: 'Treatment',
-  DIAGNOSIS: 'Diagnosis',
-  MEDICATION: 'Medication',
-  SURGERY: 'Surgery',
-};
-
-export const OutcomeEventTypeMap: Record<
-  z.infer<typeof outcomeEvent>['eventType'],
-  string
-> = {
-  ADOPTION: 'Adoption',
-  TRANSFER: 'Transfer',
-  EUTHANIZED: 'Euthanized',
-  DIED: 'Died',
-  RETURN: 'Return to Owner',
-};
-
 const PetDetailsForm: FC<Props> = ({ animalId }) => {
   const trpc = api.useContext().pet;
   const { toast } = useToast();
   const router = useRouter();
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
 
   const { data: pet } = api.pet.getPetById.useQuery({
     id: animalId,
@@ -293,10 +284,10 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
 
   const form = useForm<IPetFullDetails>({
     resolver: async (data, context, options) => {
-      // you can debug your validation schema here
+      // debug zod validation schema
       console.log('formData', data);
       console.log(
-        'validation result',
+        'zod validation result',
         await zodResolver(fullPetDetailsSchema)(data, context, options)
       );
       return zodResolver(fullPetDetailsSchema)(data, context, options);
@@ -540,6 +531,11 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     }
   };
 
+  const breedsToDisplay =
+    form.watch('species') == 'Cat' || form.watch('species') == 'Kot'
+      ? catBreeds
+      : dogBreeds;
+
   return (
     <DashboardLayout>
       <Tabs defaultValue="details">
@@ -759,8 +755,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="female">Female</SelectItem>
-                              <SelectItem value="male">Male</SelectItem>
+                              {genders.map((option) => (
+                                <SelectItem
+                                  key={option[i18n.language as 'en' | 'pl']}
+                                  value={option[i18n.language as 'en' | 'pl']}
+                                >
+                                  {option[i18n.language as 'en' | 'pl']}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -789,12 +791,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="hairless">Hairless</SelectItem>
-                              <SelectItem value="short">Short</SelectItem>
-                              <SelectItem value="medium">Medium</SelectItem>
-                              <SelectItem value="long">Long</SelectItem>
-                              <SelectItem value="wire">Wire</SelectItem>
-                              <SelectItem value="curly">Curly</SelectItem>
+                              {coats.map((coat) => (
+                                <SelectItem
+                                  key={coat[i18n.language as 'en' | 'pl']}
+                                  value={coat[i18n.language as 'en' | 'pl']}
+                                >
+                                  {coat[i18n.language as 'en' | 'pl']}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -823,8 +827,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="white">White</SelectItem>
-                              <SelectItem value="black">Black</SelectItem>
+                              {colors.map((color) => (
+                                <SelectItem
+                                  key={color[i18n.language as 'en' | 'pl']}
+                                  value={color[i18n.language as 'en' | 'pl']}
+                                >
+                                  {color[i18n.language as 'en' | 'pl']}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -874,8 +884,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="dog">Dog</SelectItem>
-                              <SelectItem value="cat">Cat</SelectItem>
+                              {species.map((specie) => (
+                                <SelectItem
+                                  key={specie[i18n.language as 'en' | 'pl']}
+                                  value={specie[i18n.language as 'en' | 'pl']}
+                                >
+                                  {specie[i18n.language as 'en' | 'pl']}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -888,27 +904,67 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                       render={({ field }) => (
                         <FormItem className="col-span-6 sm:col-span-3">
                           <FormLabel>{t('add_pet_form_label_breed')}</FormLabel>
-                          <Select
-                            onValueChange={
-                              field.onChange as (value: string) => void
-                            }
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="combobox"
+                                  role="combobox"
+                                  className={cn(
+                                    'w-full justify-between',
+                                    !species && 'text-muted-foreground'
+                                  )}
+                                >
+                                  {field.value
+                                    ? breedsToDisplay.find(
+                                        (breed) =>
+                                          breed.pl === field.value ||
+                                          breed.en === field.value
+                                      )?.[i18n.language as 'en' | 'pl'] ??
+                                      t('add_pet_form_placeholder_breed')
+                                    : t('add_pet_form_placeholder_breed')}
+                                  <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="p-0">
+                              <Command>
+                                <CommandInput
                                   placeholder={t(
                                     'add_pet_form_placeholder_breed'
                                   )}
                                 />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="cockerSpaniel">
-                                Cocker Spaniel
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
+                                <CommandEmpty>No breeds found.</CommandEmpty>
+                                <CommandGroup>
+                                  {breedsToDisplay.map((breed) => (
+                                    <CommandItem
+                                      value={
+                                        breed[i18n.language as 'en' | 'pl']
+                                      }
+                                      key={breed[i18n.language as 'en' | 'pl']}
+                                      onSelect={() => {
+                                        form.setValue(
+                                          'breed',
+                                          breed[i18n.language as 'en' | 'pl']
+                                        );
+                                      }}
+                                    >
+                                      <Icons.check
+                                        className={cn(
+                                          'mr-2 h-4 w-4',
+                                          breed.en == field.value ||
+                                            breed.pl == field.value
+                                            ? 'opacity-100'
+                                            : 'opacity-0'
+                                        )}
+                                      />
+                                      {breed[i18n.language as 'en' | 'pl']}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -1466,7 +1522,11 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                           key={op.value}
                                           value={op.value}
                                         >
-                                          {OutcomeEventTypeMap[op.value]}
+                                          {
+                                            OutcomeEventTypeMap[op.value][
+                                              i18n.language as 'en' | 'pl'
+                                            ]
+                                          }
                                         </SelectItem>
                                       )
                                     )}
@@ -1623,10 +1683,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                   {fullPetDetailsSchema.shape.intakeEventType.options.map(
                                     (op) => (
                                       <SelectItem
-                                        key={op.value}
-                                        value={op.value}
+                                        key={op}
+                                        value={op}
                                       >
-                                        {IntakeEventTypeMap[op.value]}
+                                        {
+                                          IntakeEventTypeMap[op][
+                                            i18n.language as 'en' | 'pl'
+                                          ]
+                                        }
                                       </SelectItem>
                                     )
                                   )}
@@ -1660,13 +1724,17 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {fullPetDetailsSchema.shape.healthStatus.options.map(
-                                    (op) => (
+                                  {Object.entries(HealthStatusMap).map(
+                                    ([status, translations]) => (
                                       <SelectItem
-                                        key={op.value}
-                                        value={op.value}
+                                        key={status}
+                                        value={status}
                                       >
-                                        {HealthStatusMap[op.value]}
+                                        {
+                                          translations[
+                                            i18n.language as 'en' | 'pl'
+                                          ]
+                                        }
                                       </SelectItem>
                                     )
                                   )}
@@ -1749,7 +1817,11 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                                           key={op.value}
                                           value={op.value}
                                         >
-                                          {MedicalEventTypeMap[op.value]}
+                                          {
+                                            MedicalEventTypeMap[op.value][
+                                              i18n.language as 'en' | 'pl'
+                                            ]
+                                          }{' '}
                                         </SelectItem>
                                       )
                                     )}

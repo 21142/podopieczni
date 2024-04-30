@@ -10,7 +10,7 @@ const Footer = () => {
       <BackgroundWavesFooter className="-z-10 -mt-40 aspect-[10/1] sm:mt-0" />
       <footer className="w-full bg-primary-300">
         <div className="flex flex-col items-center justify-center">
-          <div className="mt-2 grid max-w-[77.5rem] grid-cols-2 gap-6 py-8 px-6 text-neutral-50 md:grid-cols-4">
+          <div className="mt-2 grid max-w-[77.5rem] grid-cols-2 gap-6 px-6 py-8 text-neutral-50 md:grid-cols-4">
             <div>
               <h2 className="mb-6 text-sm font-semibold uppercase">
                 {t('footer_sitemap')}
@@ -49,7 +49,7 @@ const Footer = () => {
               <ul className="">
                 <li className="mb-4">
                   <a
-                    href={links.results(TypeOfResults.Animal)}
+                    href={links.searchDogs}
                     className="hover:underline"
                   >
                     {t('footer_find_dogs')}
@@ -57,7 +57,7 @@ const Footer = () => {
                 </li>
                 <li className="mb-4">
                   <a
-                    href={links.results(TypeOfResults.Animal)}
+                    href={links.searchCats}
                     className="hover:underline"
                   >
                     {t('footer_find_cats')}
