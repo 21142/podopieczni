@@ -1,6 +1,5 @@
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
-import Link from 'next/link';
 import { buttonVariants } from 'src/components/primitives/Button';
 import { links } from '~/config/siteConfig';
 import { TypeOfResults } from '~/lib/constants';
@@ -20,8 +19,8 @@ const Hero: React.FC = () => {
         loading="eager"
         priority
       />
-      <div className="absolute top-[58%] left-1/2 flex h-[12.5rem] w-full -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-white/20 text-center shadow-lg backdrop-blur-sm dark:bg-white/10 xs:w-[90%] sm:max-w-[34rem] xl:top-[62%]">
-        <h2 className="mb-3 text-lg font-bold text-neutral-50 dark:text-foreground sm:text-2xl">
+      <div className="absolute left-1/2 top-[58%] flex h-[12.5rem] w-full -translate-x-1/2 flex-col items-center justify-center rounded-2xl bg-white/20 text-center shadow-lg backdrop-blur-sm dark:bg-white/10 xs:w-[90%] sm:max-w-[34rem] xl:top-[62%]">
+        <h2 className="mb-3 text-lg font-bold tracking-tight text-neutral-50 dark:text-foreground sm:text-2xl sm:tracking-normal">
           {t('hero_search_label')}:
         </h2>
         <Search
@@ -29,18 +28,18 @@ const Hero: React.FC = () => {
           typeOfResults={TypeOfResults.Animal}
         />
         <div className="flex w-[19.5rem] items-center justify-center gap-x-5 pt-3">
-          <Link
+          <a
             href={links.results(TypeOfResults.Animal)}
             className={buttonVariants({ variant: 'roundedButton' })}
           >
             {t('hero_search_button_pets')}
-          </Link>
-          <Link
+          </a>
+          <a
             href={links.results(TypeOfResults.Organization)}
             className={buttonVariants({ variant: 'roundedButton' })}
           >
             {t('hero_search_button_shelters')}
-          </Link>
+          </a>
         </div>
       </div>
     </div>

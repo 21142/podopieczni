@@ -13,6 +13,12 @@ import { ssghelpers } from '~/lib/ssg';
 const Dashboard: NextPage = () => {
   const { data: session } = useSession();
 
+  if (!session)
+    return (
+      <DashboardLayout>
+        <LoginToAccessPage />
+      </DashboardLayout>
+    );
   const { data: usersCount } = api.user.getUsersCount.useQuery();
   const { data: usersCountChangeFromLastMonth } =
     api.user.getUsersCountChangeFromLastMonth.useQuery();
@@ -43,7 +49,12 @@ const Dashboard: NextPage = () => {
     );
   }
 
-  if (!session) return <LoginToAccessPage />;
+  if (!session)
+    return (
+      <DashboardLayout>
+        <LoginToAccessPage />
+      </DashboardLayout>
+    );
 
   return (
     <DashboardLayout>
@@ -96,22 +107,3 @@ export async function getStaticProps({ locale }: { locale: string }) {
     revalidate: 1,
   };
 }
-
-// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-//   const session = await getServerAuthSession(ctx);
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: `/api/auth/signin?callbackUrl=${env.NEXT_PUBLIC_BASE_URL}/dashboard&error=SessionRequired`,
-//       },
-//     };
-//   }
-//   if (session.user?.role === Roles.Adopter) {
-//     return {
-//       redirect: {
-//         destination: `${env.NEXT_PUBLIC_BASE_URL}/unauthorized`,
-//       },
-//     };
-//   }
-//   return { props: {} };
-// }

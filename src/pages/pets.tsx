@@ -12,7 +12,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { Fragment, useState } from 'react';
 import AdoptionFormCard from '~/components/cards/AdoptionFormCard';
-import FilterResultsForm from '~/components/forms/FilterResultsForm';
+import FilterPetsResultsForm from '~/components/forms/FilterPetsResultsForm';
 import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import BackgroundWave from '~/components/utility/BackgroundWave';
@@ -28,9 +28,24 @@ export interface IResults {
 }
 
 const sortOptions = [
-  { name: 'Most Popular', href: links.scrollToPosition, current: true },
-  { name: 'Newest addition', href: links.scrollToPosition, current: false },
-  { name: 'Oldest addition', href: links.scrollToPosition, current: false },
+  {
+    en: 'Newest addition',
+    pl: 'Nowi podopieczni',
+    href: links.scrollToPosition,
+    current: true,
+  },
+  {
+    en: 'Oldest addition',
+    pl: 'Starsi podopieczni',
+    href: links.scrollToPosition,
+    current: false,
+  },
+  {
+    en: 'Most Popular',
+    pl: 'Najbardziej popularni',
+    href: links.scrollToPosition,
+    current: false,
+  },
 ];
 
 const Results: NextPage<
@@ -38,9 +53,9 @@ const Results: NextPage<
 > = ({ searchQuery }) => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
 
-  const { data: animals } =
+  const { data: animals, isLoading } =
     api.pet.queryPetsAvailableForAdoptionFulltextSearch.useQuery({
       searchQuery: searchQuery,
     });
@@ -89,12 +104,14 @@ const Results: NextPage<
             leaveFrom="translate-x-0"
             leaveTo="translate-x-full"
           >
-            <div className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
+            <div className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-background py-4 pb-12 shadow-xl">
               <div className="flex items-center justify-between px-4">
-                <h2 className="text-lg font-medium text-gray-900">Filters</h2>
+                <h2 className="text-lg font-medium text-foreground">
+                  {t('filters')}
+                </h2>
                 <button
                   type="button"
-                  className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
+                  className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-background p-2 text-gray-400"
                   onClick={() => setMobileFiltersOpen(false)}
                 >
                   <span className="sr-only">Close menu</span>
@@ -105,19 +122,17 @@ const Results: NextPage<
                 </button>
               </div>
               <div className="p-4">
-                <FilterResultsForm />
+                <FilterPetsResultsForm />
               </div>
             </div>
           </Transition.Child>
         </Dialog>
       </Transition.Root>
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="container mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 flex items-baseline justify-between pb-6">
-          <h1 className="max-w-[300px] text-2xl font-medium tracking-tight sm:max-w-none sm:text-4xl">
-            {searchQuery
-              ? `${t('results_for')}${searchQuery}`
-              : `${t('results_title')}`}
+          <h1 className="max-w-[300px] text-2xl font-semibold tracking-tight sm:max-w-none sm:text-4xl">
+            {t('results_title')}
           </h1>
 
           <div className="flex items-center">
@@ -127,7 +142,7 @@ const Results: NextPage<
             >
               <div>
                 <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                  Sort
+                  {t('sort')}
                   <ChevronDownIcon
                     className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                     aria-hidden="true"
@@ -144,22 +159,22 @@ const Results: NextPage<
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute right-0 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute right-0 mt-2 w-40 origin-top-right rounded-md bg-background shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="py-1">
                     {sortOptions.map((option) => (
-                      <Menu.Item key={option.name}>
+                      <Menu.Item key={option[i18n.language as 'en' | 'pl']}>
                         {({ active }) => (
                           <a
                             href={option.href}
                             className={cn(
                               option.current
-                                ? 'font-medium text-gray-900'
+                                ? 'font-medium text-foreground'
                                 : 'text-gray-500',
                               active ? 'bg-gray-100' : '',
                               'block px-4 py-2 text-sm'
                             )}
                           >
-                            {option.name}
+                            {option[i18n.language as 'en' | 'pl']}
                           </a>
                         )}
                       </Menu.Item>
@@ -174,7 +189,7 @@ const Results: NextPage<
               className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
               onClick={() => setMobileFiltersOpen(true)}
             >
-              <span className="sr-only">Filters</span>
+              <span className="sr-only">{t('filters')}</span>
               <FilterIcon
                 className="h-5 w-5"
                 aria-hidden="true"
@@ -185,7 +200,7 @@ const Results: NextPage<
 
         <section
           aria-labelledby="pets-heading"
-          className="pb-24 pt-6"
+          className="pb-24"
         >
           <h2
             id="products-heading"
@@ -194,13 +209,16 @@ const Results: NextPage<
             Pets
           </h2>
 
-          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-[250px_minmax(700px,_1fr)]">
+          <div className="grid w-full grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-[250px_minmax(700px,_1fr)]">
             <AdoptionFormCard />
             <div className="hidden lg:row-start-2 lg:row-end-3 lg:block">
-              <FilterResultsForm />
+              <FilterPetsResultsForm />
             </div>
             <SearchCategory />
-            <SearchPetsResults results={animals} />
+            <SearchPetsResults
+              isLoading={isLoading}
+              results={animals}
+            />
           </div>
         </section>
         <Link

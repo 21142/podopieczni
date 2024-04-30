@@ -1,13 +1,10 @@
 import { useTranslation } from 'next-i18next';
+import { api } from '~/lib/api';
 
-export interface IGlobalStatistics {
-  adopted: number;
-  waiting: number;
-  shelters: number;
-}
-
-const GlobalStatistics: React.FC<IGlobalStatistics> = (mock) => {
-  const { adopted, waiting, shelters } = mock;
+const GlobalStatistics = () => {
+  const { data: adopted } = api.pet.getAdoptedPetsCount.useQuery();
+  const { data: waiting } = api.pet.getPetsAvailableForAdoptionCount.useQuery();
+  const { data: shelters } = api.shelter.getSheltersCount.useQuery();
   const { t } = useTranslation('common');
   return (
     <div className="flex min-h-[80%] items-center justify-center gap-[1rem] sm:gap-[3rem] md:gap-[5rem]">

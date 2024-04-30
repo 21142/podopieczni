@@ -5,6 +5,16 @@ import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
 
 export const shelterRouter = createTRPCRouter({
+  getSheltersCount: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.shelter.count();
+  }),
+  getSheltersNames: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.shelter.findMany({
+      select: {
+        name: true,
+      },
+    });
+  }),
   getShelterDetails: protectedProcedure.query(async ({ ctx }) => {
     const shelter = await ctx.prisma.shelter.findFirst({
       where: {

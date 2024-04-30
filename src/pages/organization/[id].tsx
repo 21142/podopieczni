@@ -59,8 +59,6 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
 
   const organizationAddress = `${organization.address?.address}, ${organization.address?.city}, ${organization.address?.state}, ${organization.address?.country}`;
 
-  console.log(organizationAddress);
-
   return (
     <PageLayout>
       <>

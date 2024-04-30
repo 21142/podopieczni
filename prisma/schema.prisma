@@ -43,23 +43,24 @@ model Session {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String        @id @default(cuid())
   title         String?
   name          String?
   firstName     String?
   lastName      String?
-  email         String?      @unique
+  email         String?       @unique
   emailVerified DateTime?
   role          Role?
   image         String?
-  dateOfBirth   DateTime?    @db.Date
-  phoneNumber   String?      @db.VarChar(13)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  dateOfBirth   DateTime?     @db.Date
+  phoneNumber   String?       @db.VarChar(13)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   address       AddressInfo?
   adoptedPets   Pet[]
-  worksAt       Shelter?     @relation(fields: [shelterId], references: [id])
+  worksAt       Shelter?      @relation(fields: [shelterId], references: [id])
   shelterId     String?
+  favoritePets  FavoritePet[]
   accounts      Account[]
   sessions      Session[]
 
@@ -149,6 +150,8 @@ model Pet {
   shelterId            String
   adoptedBy            User?            @relation(fields: [adopterId], references: [id])
   adopterId            String?
+  isLikedByUser        Boolean?
+  likedBy              FavoritePet[]
   healthStatus         HealthStatus?
   medicalEvents        MedicalEvent[]
   intakeEventType      IntakeEventType?
@@ -157,6 +160,7 @@ model Pet {
   photos               Photo[]
   notes                Note[]
   documents            Document[]
+  publishedAt          DateTime?
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
 
@@ -170,6 +174,18 @@ model Pet {
   @@index([shelterId])
   @@index([adopterId])
   @@fulltext([species, breed, gender, color, coat])
+}
+
+model FavoritePet {
+  id        String   @default(cuid())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  pet       Pet      @relation(fields: [petId], references: [id])
+  userId    String
+  petId     String
+
+  @@unique([userId, petId])
+  @@index([petId])
 }
 
 model Photo {

@@ -32,7 +32,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
   return (
     <header
       {...headerProps}
-      className={`top-0 z-10 h-20 w-full border-b border-b-accent py-[14px] px-8 ${
+      className={`top-0 z-10 h-20 w-full border-b border-b-accent px-4 py-[14px] sm:px-8 ${
         className ?? ''
       }`}
     >
@@ -45,7 +45,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
         <nav
           className={classNames(
             mobileMenuIsOpen
-              ? 'fixed top-0 left-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:pl-10'
+              ? 'fixed left-0 top-0 m-0 flex h-full w-full flex-col bg-background pt-16 [&_a]:flex [&_a]:h-16 [&_a]:items-center [&_a]:pl-10'
               : 'hidden items-center gap-x-10 md:inline-flex'
           )}
         >
@@ -122,7 +122,7 @@ const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
           <div className={mobileMenuIsOpen ? '' : 'md:hidden'}>
             <button
               className={classNames(
-                mobileMenuIsOpen ? 'fixed top-6 right-5' : '',
+                mobileMenuIsOpen ? 'fixed right-5 top-6' : '',
                 'z-10'
               )}
               onClick={() =>
