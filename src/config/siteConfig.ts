@@ -32,7 +32,7 @@ export const links = {
   donations: '/donations',
   donate: (petId: string) => `/donate/${petId}`,
   user: (userId: string) => `/user/${userId}`,
-  redirectTo: (variant: string, id: string) => `${variant}/${id}`,
+  redirectTo: (variant: string, id: string) => `/${variant}/${id}`,
   termsOfService: '/termsOfService',
   privacyPolicy: '/privacyPolicy',
   facebook: '/tba',
