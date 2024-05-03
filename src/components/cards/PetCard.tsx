@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -11,6 +12,8 @@ import {
   CardTitle,
 } from 'src/components/primitives/Card';
 import { links } from '~/config/siteConfig';
+import { api } from '~/lib/api';
+import { Variant } from '~/lib/constants';
 import { Icons } from '../icons/Icons';
 
 export interface IAnimalCard {
@@ -24,9 +27,8 @@ export interface IAnimalCard {
   variant: string;
   age?: string;
   type?: string;
-  breeds?: {
-    primary?: string;
-  };
+  breed?: string;
+  isLikedByUser?: boolean;
 }
 
 const PetCard: React.FC<IAnimalCard> = ({
@@ -36,27 +38,51 @@ const PetCard: React.FC<IAnimalCard> = ({
   photo,
   variant,
   age,
-  breeds,
+  breed,
   type,
+  isLikedByUser,
 }) => {
+  const { data: session } = useSession();
+  const petContext = api.useContext().pet;
+  const userContext = api.useContext().user;
   const { t } = useTranslation('common');
   const router = useRouter();
-  const [isLikeClicked, setIsLikeClicked] = useState(false);
+  const [isLikeClicked, setIsLikeClicked] = useState(isLikedByUser ?? false);
   const [isDonationClicked, setIsDonationClicked] = useState(false);
 
-  const handleLikeClick = () => {
+  const markPetAsFavoriteMutation = api.user.markPetAsFavorite.useMutation({
+    onSuccess: () => {
+      userContext.getFavoritePets.invalidate();
+      petContext.getFeaturedAnimals.invalidate();
+      petContext.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+    },
+  });
+  const removePetFromFavoritesMutation =
+    api.user.removePetFromFavorites.useMutation({
+      onSuccess: () => {
+        userContext.getFavoritePets.invalidate();
+        petContext.getFeaturedAnimals.invalidate();
+        petContext.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+      },
+    });
+
+  const handleLikeClick = async () => {
+    if (!session) {
+      setTimeout(() => {
+        router.push(links.favorites);
+      }, 1000);
+      return;
+    }
+
     if (!isLikeClicked) {
-      console.log('TODO: add mutation to tag as favorite pet with id: ', id);
+      await markPetAsFavoriteMutation.mutateAsync(id);
+      setTimeout(() => {
+        router.push(links.favorites);
+      }, 1000);
     } else {
-      console.log(
-        'TODO: add mutation to remove from favorites pet with id: ',
-        id
-      );
+      await removePetFromFavoritesMutation.mutateAsync(id);
     }
     setIsLikeClicked((prev) => !prev);
-    setTimeout(() => {
-      router.push(links.favorites);
-    }, 1000);
   };
 
   const handleDonationClick = () => {
@@ -70,7 +96,11 @@ const PetCard: React.FC<IAnimalCard> = ({
   return (
     <Card
       key={id}
-      className="relative min-w-[239px] max-w-[22rem] border-0 border-none shadow-md transition hover:cursor-pointer hover:ease-out"
+      className={`relative ${
+        variant === Variant.Organization
+          ? 'min-h-[600px] min-w-[300px]'
+          : 'max-h-[600px]'
+      } min-w-[239px] max-w-[350px] border-0 border-none shadow-md transition hover:cursor-pointer hover:ease-out`}
     >
       <>
         <CardHeader
@@ -84,39 +114,43 @@ const PetCard: React.FC<IAnimalCard> = ({
             width="360"
             height="400"
           />
-          <CardTitle className="pt-5 pb-1">{title}</CardTitle>
-          <CardDescription>
-            {variant === 'organization'
+          <CardTitle className="flex justify-center pb-1 pt-5">
+            {title}
+          </CardTitle>
+          <CardDescription className="flex justify-center">
+            {variant === Variant.Organization
               ? t('organization_card_default_description')
-              : `${age} • ${breeds?.primary} ${type ? `• ${type}` : ''}`}
+              : `${age} • ${breed} ${type ? `• ${type}` : ''}`}
           </CardDescription>
         </CardHeader>
         <CardContent
           onClick={() => router.push(links.redirectTo(variant, id))}
           className="flex flex-col overflow-hidden pt-3"
         >
-          <p className="h-12">
+          <p className="h-12 text-center">
             {body
               ? `${body}`
-              : variant === 'organization'
+              : variant === Variant.Organization
               ? ''
               : 'Podopieczny poszukujący kochającego opiekuna i bezpiecznego domu.'}
           </p>
         </CardContent>
-        <CardFooter className="flex justify-end gap-2 pt-2 pb-3">
-          <Icons.heart
-            onClick={handleLikeClick}
-            className={`transition-all ease-in-out hover:scale-110 ${
-              isLikeClicked ? 'fill-primary-300 text-primary-300' : ''
-            }`}
-          />
-          <Icons.heartDonate
-            onClick={handleDonationClick}
-            className={`transition-all ease-in-out hover:scale-110 ${
-              isDonationClicked ? 'fill-success-200 text-success-400' : ''
-            }`}
-          />
-        </CardFooter>
+        {variant === Variant.Animal && (
+          <CardFooter className="flex justify-end gap-2 pb-3 pt-2">
+            <Icons.heart
+              onClick={handleLikeClick}
+              className={`transition-all ease-in-out hover:scale-110 ${
+                isLikeClicked ? 'fill-primary-300 text-primary-300' : ''
+              }`}
+            />
+            <Icons.heartDonate
+              onClick={handleDonationClick}
+              className={`transition-all ease-in-out hover:scale-110 ${
+                isDonationClicked ? 'fill-success-200 text-success-400' : ''
+              }`}
+            />
+          </CardFooter>
+        )}
       </>
     </Card>
   );

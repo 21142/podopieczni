@@ -51,18 +51,18 @@ const InviteToOrganizationEmail = ({
       <Head />
       <Preview>{previewText}</Preview>
       <Tailwind>
-        <Body className="my-auto mx-auto bg-white font-sans">
-          <Container className="my-[40px] mx-auto w-[465px] rounded border border-solid border-[#eaeaea] p-[20px]">
+        <Body className="mx-auto my-auto bg-white font-sans">
+          <Container className="mx-auto my-[40px] w-[465px] rounded border border-solid border-[#eaeaea] p-[20px]">
             <Section className="mt-[32px]">
               <Img
                 src={`/logo.svg`}
                 width="40"
                 height="37"
                 alt="Vercel"
-                className="my-0 mx-auto"
+                className="mx-auto my-0"
               />
             </Section>
-            <Heading className="my-[30px] mx-0 p-0 text-center text-[24px] font-normal text-black">
+            <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
               Join <strong>{teamName}</strong> on <strong>Vercel</strong>
             </Heading>
             <Text className="text-[14px] leading-[24px] text-black">
@@ -72,7 +72,7 @@ const InviteToOrganizationEmail = ({
               <strong>bukinoshita</strong> (
               <Link
                 href={links.email(invitedByEmail)}
-                className="text-blue-600 no-underline"
+                className="text-primary-400 no-underline"
               >
                 {invitedByEmail}
               </Link>
@@ -107,7 +107,7 @@ const InviteToOrganizationEmail = ({
                 </Column>
               </Row>
             </Section>
-            <Section className="mt-[32px] mb-[32px] text-center">
+            <Section className="mb-[32px] mt-[32px] text-center">
               <Button
                 pX={20}
                 pY={12}
@@ -121,12 +121,12 @@ const InviteToOrganizationEmail = ({
               or copy and paste this URL into your browser:{' '}
               <Link
                 href={inviteLink}
-                className="text-blue-600 no-underline"
+                className="text-primary-400 no-underline"
               >
                 {inviteLink}
               </Link>
             </Text>
-            <Hr className="my-[26px] mx-0 w-full border border-solid border-[#eaeaea]" />
+            <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
             <Text className="text-[12px] leading-[24px] text-[#666666]">
               This invitation was intended for{' '}
               <span className="text-black">{username} </span>.This invite was

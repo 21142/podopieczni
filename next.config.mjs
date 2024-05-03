@@ -12,7 +12,9 @@ const config = {
       'dbw3zep4prcju.cloudfront.net',
       'lh3.googleusercontent.com',
       'uploadthing.com',
+      'utfs.io',
       'anitar.dev',
+      'napaluchu.waw.pl',
     ],
   },
   i18n: i18nConfig.i18n,
@@ -57,7 +59,7 @@ const config = {
           {
             key: 'Content-Security-Policy',
             value:
-              "default-src 'self'; img-src 'self' authjs.dev data: https://lh3.googleusercontent.com https://dl5zpyw5k3jeb.cloudfront.net https://uploadthing.com https://utfs.io https://maps.gstatic.com https://maps.googleapis.com https://anitar.dev; script-src 'self' 'unsafe-eval' 'sha256-eMuh8xiwcX72rRYNAGENurQBAcH7kLlAUQcoOri3BIo=' https://cdn.vercel-insights.com https://vercel.live https://va.vercel-scripts.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src *; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action *; manifest-src 'self'; media-src 'self'; object-src 'self'; worker-src 'self'; block-all-mixed-content; upgrade-insecure-requests;",
+              "default-src 'self'; img-src 'self' authjs.dev data: https://lh3.googleusercontent.com https://dl5zpyw5k3jeb.cloudfront.net https://dbw3zep4prcju.cloudfront.net https://i.pravatar.cc https://uploadthing.com https://utfs.io https://maps.gstatic.com https://maps.googleapis.com https://anitar.dev; script-src 'self' 'unsafe-eval' 'sha256-eMuh8xiwcX72rRYNAGENurQBAcH7kLlAUQcoOri3BIo=' https://cdn.vercel-insights.com https://vercel.live https://va.vercel-scripts.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src *; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action *; manifest-src 'self'; media-src 'self'; object-src 'self'; worker-src 'self'; block-all-mixed-content; upgrade-insecure-requests;",
           },
           {
             key: 'Permission-Policy',

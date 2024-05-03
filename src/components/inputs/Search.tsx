@@ -16,8 +16,7 @@ const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
 
   useEffect(() => {
     if (query) {
-      const encodedQuery = encodeURI(query);
-      setSearchQuery(encodedQuery);
+      setSearchQuery(query);
     }
   }, [query]);
 

@@ -1,7 +1,8 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { env } from '~/env.mjs';
 import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
-import geocode from '~/lib/geocode';
+import { calculatePetAgeGroup, calculatePetSizeGroup } from '~/lib/utils';
 import {
   document,
   fullPetDetailsSchema,
@@ -12,6 +13,7 @@ import {
   photo,
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
+import { getShelterAssociatedWithUser } from '~/server/helpers/getShelterAssociatedWithUser';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
@@ -21,40 +23,187 @@ export const petRouter = createTRPCRouter({
     const pets = await ctx.prisma.pet.findMany();
     return pets;
   }),
-  queryPetsAvailableForAdoption: publicProcedure
-    .input(
-      z.object({
-        location: z.string(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const userCoordinates = await geocode(input.location);
-
-      console.log(
-        `${input.location} : ${userCoordinates.lat} , ${userCoordinates.lng}`
-      );
-
-      const pets = await ctx.prisma.pet.findMany({
-        where: {
-          availableForAdoption: true,
-        },
-      });
-
-      return pets;
-    }),
-  getAllPetsDataForTable: publicProcedure.query(async ({ ctx }) => {
-    const associatedShelter = await ctx.prisma.shelter.findFirst({
+  getPetsAvailableForAdoptionCount: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.pet.count({
       where: {
-        members: {
+        availableForAdoption: true,
+      },
+    });
+  }),
+  getAdoptedPetsCount: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.pet.count({
+      where: {
+        outcomeEvents: {
           some: {
-            id: ctx.session?.user.id,
+            eventType: 'ADOPTION',
           },
         },
       },
-      select: {
-        id: true,
-      },
     });
+  }),
+  getFeaturedAnimals: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.pet
+      .findMany({
+        where: {
+          availableForAdoption: true,
+        },
+        orderBy: {
+          publishedAt: 'desc',
+        },
+        take: 6,
+      })
+      .then(async (pets) => {
+        if (ctx.session?.user.id) {
+          const petIds = pets.map((pet) => pet.id);
+
+          const favoritePets = await ctx.prisma.favoritePet.findMany({
+            where: {
+              userId: ctx.session.user.id,
+              petId: {
+                in: petIds,
+              },
+            },
+            select: {
+              petId: true,
+            },
+          });
+
+          const favoriteStatusMap: { [key: string]: boolean } = {};
+          for (const favoritePet of favoritePets) {
+            favoriteStatusMap[favoritePet.petId] = true;
+          }
+
+          pets = pets.map((pet) => ({
+            ...pet,
+            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+            isLikedByUser: favoriteStatusMap[pet.id] || false,
+          }));
+
+          return pets;
+        } else {
+          pets = pets.map((pet) => ({
+            ...pet,
+            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+          }));
+          return pets;
+        }
+      });
+  }),
+  queryPetsAvailableForAdoptionFulltextSearch: publicProcedure
+    .input(
+      z.object({
+        searchQuery: z.string().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        let pets;
+        if (input.searchQuery) {
+          pets = await ctx.prisma.pet.findMany({
+            where: {
+              availableForAdoption: true,
+              OR: [
+                {
+                  shelter: {
+                    OR: [
+                      { name: { search: input.searchQuery } },
+                      {
+                        address: {
+                          OR: [
+                            { address: { search: input.searchQuery } },
+                            { city: { search: input.searchQuery } },
+                            { state: { search: input.searchQuery } },
+                            { country: { search: input.searchQuery } },
+                            { postCode: { search: input.searchQuery } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { species: { search: input.searchQuery } },
+                { breed: { search: input.searchQuery } },
+                { color: { search: input.searchQuery } },
+                { coat: { search: input.searchQuery } },
+                { gender: { search: input.searchQuery } },
+              ],
+            },
+            include: {
+              shelter: {
+                include: {
+                  address: true,
+                },
+              },
+            },
+            orderBy: {
+              publishedAt: 'desc',
+            },
+          });
+        } else {
+          pets = await ctx.prisma.pet.findMany({
+            where: {
+              availableForAdoption: true,
+            },
+            include: {
+              shelter: {
+                include: {
+                  address: true,
+                },
+              },
+            },
+            orderBy: {
+              publishedAt: 'desc',
+            },
+          });
+        }
+
+        if (ctx.session?.user.id) {
+          const petIds = pets.map((pet) => pet.id);
+
+          const favoritePets = await ctx.prisma.favoritePet.findMany({
+            where: {
+              userId: ctx.session.user.id,
+              petId: {
+                in: petIds,
+              },
+            },
+            select: {
+              petId: true,
+            },
+          });
+
+          const favoriteStatusMap: { [key: string]: boolean } = {};
+          for (const favoritePet of favoritePets) {
+            favoriteStatusMap[favoritePet.petId] = true;
+          }
+
+          pets = pets.map((pet) => ({
+            ...pet,
+            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+            isLikedByUser: favoriteStatusMap[pet.id] || false,
+          }));
+
+          return pets;
+        } else {
+          pets = pets.map((pet) => ({
+            ...pet,
+            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+          }));
+          return pets;
+        }
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'An error occurred while fetching pets',
+        });
+      }
+    }),
+  getAllPetsDataForTable: publicProcedure.query(async ({ ctx }) => {
+    const associatedShelter = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
 
     const pets = await ctx.prisma.pet.findMany({
       where: {
@@ -67,6 +216,16 @@ export const petRouter = createTRPCRouter({
         breed: true,
         status: true,
         image: true,
+        shelter: {
+          select: {
+            address: {
+              select: {
+                lat: true,
+                lng: true,
+              },
+            },
+          },
+        },
       },
     });
     return pets;
@@ -80,8 +239,27 @@ export const petRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const pet = await ctx.prisma.pet.findUnique({
         where: { id: input.id },
+        include: {
+          photos: true,
+          shelter: {
+            include: {
+              address: true,
+            },
+          },
+        },
       });
-      return pet;
+
+      if (!pet) return;
+
+      const profilePhoto = pet.image ? [{ url: pet.image }] : [];
+
+      return {
+        ...pet,
+        photos: [...profilePhoto, ...pet.photos],
+        age: calculatePetAgeGroup(pet.dateOfBirth),
+        size: calculatePetSizeGroup(pet.weight ?? 0),
+        url: `${env.NEXT_PUBLIC_BASE_URL}/pet/${pet.id}`,
+      };
     }),
   getPetMedicalEvents: protectedProcedure
     .input(
@@ -171,12 +349,26 @@ export const petRouter = createTRPCRouter({
       return pet?.notes;
     }),
   getPetsCount: publicProcedure.query(async ({ ctx }) => {
-    const count = await ctx.prisma.pet.count();
-    return count;
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
+    return await ctx.prisma.pet.count({
+      where: {
+        shelterId: shelterAssociatedWithUser?.id,
+      },
+    });
   }),
   getPetsCountChangeFromLastMonth: publicProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
     const thisMonthsCount = await ctx.prisma.pet.count({
       where: {
+        shelterId: shelterAssociatedWithUser.id,
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         },
@@ -184,6 +376,7 @@ export const petRouter = createTRPCRouter({
     });
     const lastMonthsCount = await ctx.prisma.pet.count({
       where: {
+        shelterId: shelterAssociatedWithUser.id,
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 2)),
           lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
@@ -193,8 +386,14 @@ export const petRouter = createTRPCRouter({
     return thisMonthsCount - lastMonthsCount;
   }),
   getPetsAddedInTheLastMonth: publicProcedure.query(async ({ ctx }) => {
-    const pets = await ctx.prisma.pet.findMany({
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
+    return await ctx.prisma.pet.findMany({
       where: {
+        shelterId: shelterAssociatedWithUser.id,
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         },
@@ -202,13 +401,18 @@ export const petRouter = createTRPCRouter({
       orderBy: {
         createdAt: 'desc',
       },
-      take: 5,
     });
-
-    return pets;
   }),
   getMostRecentlyAddedPets: publicProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
     const pets = await ctx.prisma.pet.findMany({
+      where: {
+        shelterId: shelterAssociatedWithUser.id,
+      },
       orderBy: {
         createdAt: 'desc',
       },
@@ -218,8 +422,14 @@ export const petRouter = createTRPCRouter({
     return pets;
   }),
   getPetsAddedInTheLastMonthCount: publicProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
     const count = await ctx.prisma.pet.count({
       where: {
+        shelterId: shelterAssociatedWithUser.id,
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         },
@@ -235,25 +445,10 @@ export const petRouter = createTRPCRouter({
         identifier: ctx.session?.user.id ?? '',
       });
 
-      const associatedShelter = await ctx.prisma.shelter.findFirst({
-        where: {
-          members: {
-            some: {
-              id: ctx.session?.user.id,
-            },
-          },
-        },
-        select: {
-          id: true,
-        },
-      });
-
-      if (!associatedShelter) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `User with id: ${ctx.session?.user.id} is not associated with any shelter.`,
-        });
-      }
+      const associatedShelter = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
 
       const pet = await ctx.prisma.pet.create({
         data: {
@@ -266,6 +461,9 @@ export const petRouter = createTRPCRouter({
           coat: input.coat,
           image: input.image,
           dateOfBirth: new Date(input.dateOfBirth as string).toISOString(),
+          age: input.dateOfBirth
+            ? calculatePetAgeGroup(new Date(input.dateOfBirth))
+            : undefined,
           status: input.status,
           microchipBrand: input.microchipBrand,
           microchipNumber: input.microchipNumber,
@@ -293,25 +491,10 @@ export const petRouter = createTRPCRouter({
         identifier: ctx.session?.user.id ?? '',
       });
 
-      const associatedShelter = await ctx.prisma.shelter.findFirst({
-        where: {
-          members: {
-            some: {
-              id: ctx.session?.user.id,
-            },
-          },
-        },
-        select: {
-          id: true,
-        },
-      });
-
-      if (!associatedShelter) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `User with id: ${ctx.session?.user.id} is not associated with any shelter.`,
-        });
-      }
+      const associatedShelter = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
 
       await ctx.prisma.pet.update({
         where: { id: input.id },
@@ -327,7 +510,12 @@ export const petRouter = createTRPCRouter({
           weight: parseFloat(input.pet.weight ?? '0.0'),
           image: input.pet.image,
           adoptionFee: input.pet.adoptionFee,
-          dateOfBirth: new Date(input.pet.dateOfBirth as string).toISOString(),
+          dateOfBirth: input.pet.dateOfBirth
+            ? new Date(input.pet.dateOfBirth).toISOString()
+            : undefined,
+          age: input.pet.dateOfBirth
+            ? calculatePetAgeGroup(new Date(input.pet.dateOfBirth))
+            : undefined,
           status: input.pet.status,
           description: input.pet.description,
           houseTrained: input.pet.houseTrained,
@@ -385,6 +573,7 @@ export const petRouter = createTRPCRouter({
         where: { id: input },
         data: {
           availableForAdoption: true,
+          publishedAt: new Date(),
         },
       });
 
@@ -498,6 +687,7 @@ export const petRouter = createTRPCRouter({
           description: input.values.description,
           adoptionFee: input.values.adoptionFee,
           adoptionFeeKnown: input.values.adoptionFeeKnown,
+          publishedAt: new Date(),
         },
       });
     }),

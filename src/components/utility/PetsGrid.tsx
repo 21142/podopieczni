@@ -1,32 +1,29 @@
 import PetCard from '~/components/cards/PetCard';
 import { Variant } from '~/lib/constants';
-import type IAnimalData from '../../types/petfinderTypes';
+import { type FeaturedPet } from '~/types';
 
 export interface IPetsGrid {
-  featuredAnimals: IAnimalData[];
+  featuredAnimals: FeaturedPet[];
 }
 
 const PetsGrid: React.FC<IPetsGrid> = ({ featuredAnimals }) => {
   return (
     <div className="grid max-w-7xl gap-3 p-5 md:grid-cols-2 lg:grid-cols-3">
-      {featuredAnimals?.map((animal: IAnimalData) => (
+      {featuredAnimals?.map((animal: FeaturedPet) => (
         <PetCard
           key={animal.id}
           id={animal.id}
-          photo={
-            animal.photos[0]?.large ??
-            animal.photos[0]?.medium ??
-            animal.photos[0]?.small ??
-            '/images/no-profile-picture.svg'
-          }
-          tag={animal.status}
-          title={animal.name}
-          body={animal.description}
-          avatar={animal.organization_id}
-          author={animal.photos[0]?.small ?? '/images/no-profile-picture.svg'}
+          photo={animal.image ?? '/images/no-profile-picture.svg'}
+          tag={animal.status ?? 'Adoptable'}
+          title={animal.name ?? 'Unkown'}
+          body={animal.description ?? ''}
+          avatar={animal.image ?? '/images/no-profile-picture.svg'}
+          author={animal.shelterId}
           variant={Variant.Animal}
-          age={animal.age}
-          breeds={animal.breeds}
+          type={animal.species ?? 'Unknown'}
+          age={animal.age ?? 'Unknown'}
+          breed={animal.breed ?? 'Unknown'}
+          isLikedByUser={animal.isLikedByUser ?? false}
         />
       ))}
     </div>

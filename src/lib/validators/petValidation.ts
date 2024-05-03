@@ -58,48 +58,58 @@ export const petDetailsSchema = z.object({
   status: z.string().optional(),
   microchipBrand: z.string().optional(),
   microchipNumber: z.string().optional(),
-  healthStatus: z.union([
-    z.literal('HEALTHY'),
-    z.literal('INJURED'),
-    z.literal('SICK'),
-    z.literal('TREATED'),
-    z.literal('QUARANTINE'),
-    z.literal('DEAD'),
-    z.literal('UNKNOWN'),
+  healthStatus: z.enum([
+    'HEALTHY',
+    'INJURED',
+    'SICK',
+    'TREATED',
+    'QUARANTINE',
+    'DEAD',
+    'UNKNOWN',
+  ]),
+  intakeEventType: z.enum([
+    'STRAY',
+    'TRANSFER',
+    'SURRENDER',
+    'BORN',
+    'RETURN',
+    'UNKNOWN',
   ]),
   intakeEventDate: z.string().optional(),
-  intakeEventType: z.union([
-    z.literal('STRAY'),
-    z.literal('TRANSFER'),
-    z.literal('SURRENDER'),
-    z.literal('BORN'),
-    z.literal('RETURN'),
-    z.literal('UNKNOWN'),
-  ]),
 });
 
 export const petFilterOptionsSchema = z.object({
   name: z.string().optional(),
+  distance: z.string().optional(),
+  shelter: z.string().optional(),
   species: z.string().optional(),
   breed: z.string().optional(),
   gender: z.string().optional(),
   color: z.string().optional(),
   coat: z.string().optional(),
-  weight: z.string().optional(),
   age: z.string().optional(),
   size: z.string().optional(),
   characteristics: z.string().optional(),
   goodWith: z.string().optional(),
   status: z.string().optional(),
-  healthStatus: z.union([
-    z.literal('HEALTHY'),
-    z.literal('INJURED'),
-    z.literal('SICK'),
-    z.literal('TREATED'),
-    z.literal('QUARANTINE'),
-    z.literal('DEAD'),
-    z.literal('UNKNOWN'),
-  ]),
+  healthStatus: z
+    .enum([
+      'HEALTHY',
+      'INJURED',
+      'SICK',
+      'TREATED',
+      'QUARANTINE',
+      'DEAD',
+      'UNKNOWN',
+    ])
+    .optional(),
+});
+
+export const shelterFilterOptionsSchema = z.object({
+  name: z.string().optional(),
+  distance: z.string().optional(),
+  address: z.string().optional(),
+  state: z.string().optional(),
 });
 
 export const fullPetDetailsSchema = z.object({
@@ -130,24 +140,24 @@ export const fullPetDetailsSchema = z.object({
   friendlyWithChildren: z.string().optional().nullable(),
   shelter: z.object({}).optional(),
   shelterId: z.string().optional(),
-  healthStatus: z.union([
-    z.literal('HEALTHY'),
-    z.literal('INJURED'),
-    z.literal('SICK'),
-    z.literal('TREATED'),
-    z.literal('QUARANTINE'),
-    z.literal('DEAD'),
-    z.literal('UNKNOWN'),
+  healthStatus: z.enum([
+    'HEALTHY',
+    'INJURED',
+    'SICK',
+    'TREATED',
+    'QUARANTINE',
+    'DEAD',
+    'UNKNOWN',
   ]),
   medicalEvents: z.array(medicalEvent).optional(),
   intakeEventDate: z.string().optional(),
-  intakeEventType: z.union([
-    z.literal('STRAY'),
-    z.literal('TRANSFER'),
-    z.literal('SURRENDER'),
-    z.literal('BORN'),
-    z.literal('RETURN'),
-    z.literal('UNKNOWN'),
+  intakeEventType: z.enum([
+    'STRAY',
+    'TRANSFER',
+    'SURRENDER',
+    'BORN',
+    'RETURN',
+    'UNKNOWN',
   ]),
   outcomeEvents: z.array(outcomeEvent).optional(),
   photos: z.array(photo).optional(),
@@ -163,6 +173,7 @@ export const idSchema = z.object({
 export type IPetDetails = z.infer<typeof petDetailsSchema>;
 export type IPetFullDetails = z.infer<typeof fullPetDetailsSchema>;
 export type IPetFilterOptions = z.infer<typeof petFilterOptionsSchema>;
+export type IShelterFilterOptions = z.infer<typeof shelterFilterOptionsSchema>;
 export type IPetMedicalEvent = z.infer<typeof medicalEvent>;
 export type IPetOutcomeEvent = z.infer<typeof outcomeEvent>;
 export type IDocument = z.infer<typeof document>;

@@ -2,25 +2,17 @@ import { ChevronDoubleDownIcon } from '@heroicons/react/outline';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import FeaturedPets from '~/components/utility/FeaturedPets';
-import GlobalStatistics, {
-  type IGlobalStatistics,
-} from '~/components/utility/GlobalStatistics';
+import GlobalStatistics from '~/components/utility/GlobalStatistics';
 import Hero from '~/components/utility/Hero';
 import SearchByBreed from '~/components/utility/SearchByBreed';
 import SearchByState from '~/components/utility/SearchByState';
 import { links } from '~/config/siteConfig';
 
-const mock: IGlobalStatistics = {
-  adopted: 222,
-  waiting: 111,
-  shelters: 31,
-};
-
 const Landing: React.FC = () => {
   const { t } = useTranslation('common');
 
   return (
-    <>
+    <div className="bg-background">
       <Hero />
 
       <div className="mt-10 flex flex-col items-center justify-center pt-12 text-center">
@@ -46,11 +38,11 @@ const Landing: React.FC = () => {
         </Link>
 
         <FeaturedPets />
-        <GlobalStatistics {...mock} />
+        <GlobalStatistics />
         <SearchByBreed />
         <SearchByState />
       </div>
-    </>
+    </div>
   );
 };
 

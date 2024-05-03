@@ -47,7 +47,7 @@ const UserProfilePage: NextPage<PageProps> = ({ userId }) => {
             <strong>id:</strong> {userId}
           </p>
           <p>
-            <strong>name:</strong> {user.name}
+            <strong>name:</strong> {user.title ?? ''} {user.name}
           </p>
           <p>
             <strong>email:</strong> {user.email}

@@ -1,4 +1,6 @@
 import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
 import { links } from '~/config/siteConfig';
@@ -7,7 +9,7 @@ import { type RecentlyAddedAnimals } from '~/types';
 import ShelterStatisticsCard from '../cards/ShelterStatisticsCard';
 import EmailInviteForm from '../forms/EmailInviteForm';
 import { Icons } from '../icons/Icons';
-import { Button } from '../primitives/Button';
+import { Button, buttonVariants } from '../primitives/Button';
 import {
   Card,
   CardContent,
@@ -27,6 +29,8 @@ import { Chart } from '../utility/Chart';
 import RecentAdoptions from '../utility/RecentAdoptions';
 
 interface ShelterDashboardProps {
+  shelterName: string | undefined;
+  shelterLogo: string | undefined | null;
   petsCount: number | undefined;
   petsCountChangeFromLastMonth: number | undefined;
   usersCount: number | undefined;
@@ -36,6 +40,8 @@ interface ShelterDashboardProps {
 }
 
 const ShelterDashboard: FC<ShelterDashboardProps> = ({
+  shelterName,
+  shelterLogo,
   petsCount,
   petsCountChangeFromLastMonth,
   usersCount,
@@ -51,14 +57,26 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
     <div className="container">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">
-            {t('dashboard_title', { name: 'na paluchu' })}
-          </h2>
+          <div className="flex items-center gap-3">
+            {shelterLogo && (
+              <Image
+                src={shelterLogo}
+                width={48}
+                height={48}
+                className="h-12"
+                alt="Shelter logo"
+              />
+            )}
+            <h2 className="text-3xl font-bold tracking-tight">{shelterName}</h2>
+          </div>
           <div className="flex items-center space-x-2">
-            <Button size="sm">
+            <Link
+              href={links.organizationSettings}
+              className={buttonVariants({ size: 'sm' })}
+            >
               <Icons.settings className="mr-2 h-4 w-4" />
               {t('dashboard_organization_settings')}
-            </Button>
+            </Link>
           </div>
         </div>
         <div className="flex gap-2">

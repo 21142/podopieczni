@@ -7,42 +7,21 @@ import {
 } from '~/components/primitives/Avatar';
 import { statuses } from '~/lib/constants';
 import { type AnimalDto, type UserDto } from '~/types';
-import { Checkbox } from '../primitives/Checkbox';
 import { DataTableColumnHeader } from './DataTableHeaders';
 import { DataTableRowActions } from './DataTableRowActions';
 
 export const animalsColumns: ColumnDef<AnimalDto>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: 'image',
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
         title="Image"
+        className="ml-12"
       />
     ),
     cell: ({ row }) => (
-      <Avatar className="h-12 w-12">
+      <Avatar className="ml-12 h-12 w-12">
         <AvatarImage
           src={row.getValue('image')}
           width={48}
@@ -58,10 +37,14 @@ export const animalsColumns: ColumnDef<AnimalDto>[] = [
         </AvatarFallback>
       </Avatar>
     ),
+    enableHiding: false,
     enableSorting: false,
   },
   {
     accessorKey: 'name',
+    cell: ({ row }) => (
+      <span className="text-base font-medium">{row.getValue('name')}</span>
+    ),
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
@@ -157,11 +140,12 @@ export const usersColumns: ColumnDef<UserDto>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        title=""
+        title="Image"
+        className="ml-12"
       />
     ),
     cell: ({ row }) => (
-      <Avatar className="ml-4 h-12 w-12">
+      <Avatar className="ml-12 h-12 w-12">
         <AvatarImage
           src={row.getValue('image')}
           width={48}
@@ -174,6 +158,7 @@ export const usersColumns: ColumnDef<UserDto>[] = [
       </Avatar>
     ),
     enableSorting: false,
+    enableHiding: false,
   },
   {
     accessorKey: 'name',

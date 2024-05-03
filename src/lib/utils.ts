@@ -40,3 +40,34 @@ export function getDocumentType(url: string): string {
 
   return fileExtension;
 }
+
+export function calculatePetAgeGroup(dateOfBirth: Date): string {
+  const currentDate = new Date();
+  const dob = new Date(dateOfBirth);
+  const ageInMilliseconds = currentDate.getTime() - dob.getTime();
+  const ageInYears = ageInMilliseconds / (1000 * 60 * 60 * 24 * 365);
+
+  if (ageInYears < 1) {
+    return 'Puppy';
+  } else if (ageInYears < 3) {
+    return 'Young';
+  } else if (ageInYears < 7) {
+    return 'Adult';
+  } else {
+    return 'Senior';
+  }
+}
+
+export function calculatePetSizeGroup(weight: number): string {
+  if (weight == 0) {
+    return 'Unknown';
+  } else if (weight < 11) {
+    return 'Small';
+  } else if (weight < 27) {
+    return 'Medium';
+  } else if (weight < 45) {
+    return 'Large';
+  } else {
+    return 'Extra Large';
+  }
+}

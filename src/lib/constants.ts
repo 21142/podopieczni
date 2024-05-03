@@ -1,5 +1,6 @@
 import { Icons } from '~/components/icons/Icons';
 
+//TODO: i18n
 export enum Roles {
   Adopter = 'Adopter',
   Shelter = 'Shelter',
@@ -7,7 +8,7 @@ export enum Roles {
 }
 
 export enum TypeOfResults {
-  Animal = 'results',
+  Animal = 'pets',
   Organization = 'organizations',
 }
 
@@ -16,6 +17,7 @@ export enum Variant {
   Organization = 'organization',
 }
 
+//TODO: i18n
 export const statuses = [
   {
     value: 'adoptable',
@@ -27,6 +29,7 @@ export const statuses = [
   },
 ];
 
+//TODO: i18n
 export const species = [
   {
     value: 'dog',
@@ -40,6 +43,7 @@ export const species = [
   },
 ];
 
+//TODO: i18n
 export const roles = [
   {
     value: 'Adopter',
@@ -53,4 +57,23 @@ export const roles = [
     value: 'Admin',
     label: 'Admin',
   },
+];
+
+export const voivodships = [
+  { name: 'Dolnośląskie' },
+  { name: 'Małopolskie' },
+  { name: 'Lubelskie' },
+  { name: 'Lubuskie' },
+  { name: 'Opolskie' },
+  { name: 'Łódzkie' },
+  { name: 'Mazowieckie' },
+  { name: 'Wielkopolskie' },
+  { name: 'Podkarpackie' },
+  { name: 'Podlaskie' },
+  { name: 'Pomorskie' },
+  { name: 'Śląskie' },
+  { name: 'Świętokrzyskie' },
+  { name: 'Warmińsko-mazurskie' },
+  { name: 'Kujawsko-pomorskie' },
+  { name: 'Zachodniopomorskie' },
 ];

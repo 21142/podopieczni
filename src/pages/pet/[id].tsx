@@ -1,3 +1,5 @@
+import { useLoadScript } from '@react-google-maps/api';
+import { TRPCError } from '@trpc/server';
 import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -14,7 +16,12 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { type GetServerSideProps, type NextPage } from 'next/types';
+import {
+  type GetStaticPaths,
+  type GetStaticPropsContext,
+  type InferGetStaticPropsType,
+  type NextPage,
+} from 'next/types';
 import React from 'react';
 import { Icons } from '~/components/icons/Icons';
 import PageLayout from '~/components/layouts/PageLayout';
@@ -34,61 +41,82 @@ import {
   type CarouselApi,
 } from '~/components/primitives/Carousel';
 import { Separator } from '~/components/primitives/Separator';
+import Spinner from '~/components/spinner/Spinner';
+import Map from '~/components/utility/Map';
+import ShelterContactDetails from '~/components/utility/ShelterContactDetails';
 import { links } from '~/config/siteConfig';
+import { api } from '~/lib/api';
 import dayjs from '~/lib/dayjs';
-import type IAnimalData from '~/types/petfinderTypes';
-import { type PetfinderOauth } from '../results';
+import { prisma } from '~/lib/db';
+import { ssghelpers } from '~/lib/ssg';
 
-type IPetProfilePage = {
-  pet: IAnimalData;
-  message: string;
-};
+type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
-type PetfinderData = {
-  animal: IAnimalData;
-};
-
-const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
+const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
   const { t } = useTranslation('common');
   const router = useRouter();
   const { locale } = router;
-  const [api, setApi] = React.useState<CarouselApi>();
+  const [carouselApi, setCarouselApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
   const [isLikeClicked, setIsLikeClicked] = React.useState(false);
 
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
+    libraries: ['places'],
+  });
+
   dayjs.locale(locale);
 
+  const { data: pet } = api.pet.getPetById.useQuery({ id: animalId });
+
+  const markPetAsFavoriteMutation = api.user.markPetAsFavorite.useMutation();
+  const removePetFromFavoritesMutation =
+    api.user.removePetFromFavorites.useMutation();
+
   React.useEffect(() => {
-    if (!api) {
+    if (!carouselApi) {
       return;
     }
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
+    setCount(carouselApi.scrollSnapList().length);
+    setCurrent(carouselApi.selectedScrollSnap() + 1);
 
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap() + 1);
+    carouselApi.on('select', () => {
+      setCurrent(carouselApi.selectedScrollSnap() + 1);
     });
-  }, [api]);
+  }, [carouselApi]);
 
-  const handleLikeClick = () => {
+  if (!pet) {
+    return <p>{t('pet_profile_page_no_pet_found')}</p>;
+  }
+
+  if (!isLoaded)
+    return (
+      <PageLayout>
+        <Spinner />
+      </PageLayout>
+    );
+
+  const handleLikeClick = async () => {
     if (!isLikeClicked) {
-      console.log(
-        'TODO: add mutation to tag as favorite pet with id: ',
-        pet.id
-      );
+      await markPetAsFavoriteMutation.mutateAsync(pet.id);
+      setTimeout(() => {
+        router.push(links.favorites);
+      }, 1000);
     } else {
-      console.log(
-        'TODO: add mutation to remove from favorites pet with id: ',
-        pet.id
-      );
+      await removePetFromFavoritesMutation.mutateAsync(pet.id);
     }
     setIsLikeClicked((prev) => !prev);
   };
 
-  const iconsAndText = [
-    pet.environment.children && {
+  interface IconAndText {
+    icon: JSX.Element;
+    text: string;
+  }
+
+  const iconsAndText: IconAndText[] = [
+    pet.friendlyWithChildren && {
       icon: (
         <Icons.baby
           key="baby"
@@ -97,7 +125,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
       ),
       text: t('pet_profile_page_good_with_children'),
     },
-    pet.environment.dogs && {
+    pet.friendlyWithDogs && {
       icon: (
         <Icons.dog
           key="dog"
@@ -106,7 +134,7 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
       ),
       text: t('pet_profile_page_good_with_dogs'),
     },
-    pet.environment.cats && {
+    pet.friendlyWithCats && {
       icon: (
         <Icons.cat
           key="cat"
@@ -115,104 +143,111 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
       ),
       text: t('pet_profile_page_good_with_cats'),
     },
-  ];
+  ].filter((item): item is IconAndText => !!item);
 
   return (
     <PageLayout>
       <div className="mx-auto w-full max-w-8xl p-6">
-        {pet === null ? (
-          <p>{message}</p>
-        ) : (
-          <div className="flex h-full flex-col items-center justify-center">
-            <Carousel
-              className="w-full max-w-[15rem] md:max-w-xs lg:max-w-lg xl:max-w-xl"
-              setApi={setApi}
-              opts={{
-                loop: true,
-              }}
-            >
-              <CarouselContent className="lg:max-h-[70vh]">
-                {pet.photos?.map((photo, index) => (
-                  <CarouselItem key={index}>
-                    <Image
-                      src={photo.large ?? '/images/no-profile-picture.svg'}
-                      alt={`Pet photo ${index + 1}`}
-                      className="h-full w-full rounded-sm object-cover"
-                      width={600}
-                      height={600}
-                      priority={true}
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              {pet.photos?.length > 1 && (
-                <>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </>
-              )}
-            </Carousel>
-            {pet.photos?.length > 0 && (
-              <div className="py-2 text-sm text-muted-foreground">
-                {t('carousel_slide')} {current} {t('carousel_slide_of')} {count}
-              </div>
+        <div className="flex h-full flex-col items-center justify-center">
+          <Carousel
+            className="w-full max-w-[15rem] md:max-w-xs lg:max-w-lg xl:max-w-xl"
+            setApi={setCarouselApi}
+            opts={{
+              loop: true,
+            }}
+          >
+            <CarouselContent className="lg:max-h-[70vh]">
+              {pet.photos?.map((photo, index) => (
+                <CarouselItem key={index}>
+                  <Image
+                    src={photo.url ?? '/images/no-profile-picture.svg'}
+                    alt={`Pet photo ${index + 1}`}
+                    className="h-full w-full rounded-sm object-cover"
+                    width={600}
+                    height={600}
+                    priority={true}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {pet.photos?.length > 1 && (
+              <>
+                <CarouselPrevious />
+                <CarouselNext />
+              </>
             )}
-            <div className="flex w-full flex-col gap-6 lg:flex-row">
-              <Card className="rounded-lg bg-transparent lg:w-2/3 lg:p-6">
-                <CardHeader>
-                  <CardTitle>
-                    <div className="flex items-center">
-                      <h1 className="text-4xl font-bold">{pet.name}</h1>
-                      <span className="ml-4">
-                        <Icons.heart
-                          onClick={handleLikeClick}
-                          className={`cursor-pointer text-primary-400 transition-all ease-in-out hover:scale-110 ${
-                            isLikeClicked ? 'fill-primary-300' : ''
-                          }`}
-                        />
-                      </span>
-                    </div>
-                    <p className="pt-4 text-lg ">
-                      {pet.type} • {pet.breeds.primary} •{' '}
-                      {pet.contact.address.city}, {pet.contact.address.state}
-                    </p>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Separator className="mb-6" />
-                  <ul className="flex flex-col items-start space-y-4 text-lg md:flex-row md:space-x-4 md:space-y-0">
-                    <li className="flex items-center">
-                      <span className="mr-2">{t('pet_profile_page_age')}</span>
-                      <span className="font-bold text-primary-300">
-                        {pet.age}
-                      </span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="mr-2">
-                        {t('pet_profile_page_gender')}
-                      </span>
-                      <span className="font-bold text-primary-300">
-                        {pet.gender}
-                      </span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="mr-2">{t('pet_profile_page_size')}</span>
-                      <span className="font-bold text-primary-300">
-                        {pet.size}
-                      </span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="mr-2">
-                        {t('pet_profile_page_color')}
-                      </span>
-                      <span className="font-bold text-primary-300">
-                        {pet.colors.primary ?? 'Unknown'}
-                      </span>
-                    </li>
-                  </ul>
-                  <Separator className="mt-6" />
+          </Carousel>
+          {pet.photos?.length > 0 && (
+            <div className="py-2 text-sm text-muted-foreground">
+              {t('carousel_slide')} {current} {t('carousel_slide_of')} {count}
+            </div>
+          )}
+          <div className="flex w-full flex-col gap-6 lg:flex-row">
+            <Card className="rounded-lg bg-transparent lg:flex-1 lg:self-start lg:p-6">
+              <CardHeader>
+                <CardTitle>
+                  <div className="flex items-center">
+                    <h1 className="text-4xl font-bold">{pet.name}</h1>
+                    <span className="ml-4">
+                      <Icons.heart
+                        onClick={handleLikeClick}
+                        className={`cursor-pointer text-primary-400 transition-all ease-in-out hover:scale-110 ${
+                          isLikeClicked ? 'fill-primary-300' : ''
+                        }`}
+                      />
+                    </span>
+                  </div>
+                  <p className="space-y-2 pt-4 text-lg sm:flex sm:flex-row sm:space-y-0">
+                    <span className="mb-2 mr-2 inline-block sm:mb-0 sm:mr-4">
+                      {pet.species}
+                    </span>
+                    <span className="mb-2 mr-2 inline-block sm:mb-0 sm:mr-4">
+                      •
+                    </span>
+                    <span className="mb-2 mr-2 inline-block sm:mb-0 sm:mr-4">
+                      {pet.breed}
+                    </span>
+                    <span className="mb-2 mr-2 inline-block sm:mb-0 sm:mr-4">
+                      •
+                    </span>
+                    <span className="mb-2 mr-2 inline-block sm:mb-0 sm:mr-4">
+                      {pet.shelter.address?.city}, {pet.shelter.address?.state}
+                    </span>
+                  </p>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Separator className="mb-6" />
+                <ul className="flex flex-col items-start space-y-4 text-lg md:flex-row md:space-x-4 md:space-y-0">
+                  <li className="flex items-center">
+                    <span className="mr-2">{t('pet_profile_page_age')}</span>
+                    <span className="font-bold text-primary-300">
+                      {pet.age}
+                    </span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">{t('pet_profile_page_gender')}</span>
+                    <span className="font-bold text-primary-300">
+                      {pet.gender}
+                    </span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">{t('pet_profile_page_size')}</span>
+                    <span className="font-bold text-primary-300">
+                      {pet.size}
+                    </span>
+                  </li>
+                  <li className="flex items-center">
+                    <span className="mr-2">{t('pet_profile_page_color')}</span>
+                    <span className="font-bold text-primary-300">
+                      {pet.color ?? 'Unknown'}
+                    </span>
+                  </li>
+                </ul>
 
-                  {pet.description && (
+                {pet.description && (
+                  <>
+                    <Separator className="mt-6" />
                     <div className="mt-6">
                       <h2 className="mb-2 text-2xl font-bold">
                         {t('pet_profile_page_pet_description', {
@@ -221,9 +256,12 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                       </h2>
                       <p className="">{pet.description}</p>
                     </div>
-                  )}
+                  </>
+                )}
 
-                  {iconsAndText.length > 0 && (
+                {iconsAndText.length > 0 && (
+                  <>
+                    <Separator className="mt-6" />
                     <div className="mt-6">
                       <h2 className="mb-4 text-2xl font-bold">
                         {t('pet_profile_page_good_with')}
@@ -242,59 +280,61 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                         ))}
                       </div>
                     </div>
-                  )}
+                  </>
+                )}
 
-                  <Separator className="mt-6" />
-                  <div className="flex flex-col justify-between pt-6">
-                    <h2 className="mb-2 text-xl font-bold">
-                      {t('pet_profile_page_how_long', { name: pet.name })}
-                    </h2>
-                    <div className="flex items-end gap-4">
-                      <p className="text-lg">
-                        {dayjs(pet.published_at).fromNow(true)}
-                      </p>
-                    </div>
+                <Separator className="mt-6" />
+                <div className="flex flex-col justify-between pt-6">
+                  <h2 className="mb-2 text-xl font-bold">
+                    {t('pet_profile_page_how_long', { name: pet.name })}
+                  </h2>
+                  <div className="flex items-end gap-4">
+                    <p className="text-lg">
+                      {dayjs(pet.createdAt).fromNow(true)}
+                    </p>
                   </div>
-                  <Separator className="mt-6" />
-                  <div className="flex flex-col justify-between pt-6">
-                    <h2 className="mb-2 text-xl font-bold">
-                      {t('pet_profile_page_help')}
-                    </h2>
-                    <div className="flex items-center gap-4">
-                      <span className="text-base md:text-lg">
-                        {t('pet_profile_page_share')}
-                      </span>
-                      <FacebookShareButton url={pet.url}>
-                        <FacebookIcon
-                          size={32}
-                          round
-                        />
-                      </FacebookShareButton>
-                      <LinkedinShareButton url={pet.url}>
-                        <LinkedinIcon
-                          size={32}
-                          round
-                        />
-                      </LinkedinShareButton>
-                      <TwitterShareButton url={pet.url}>
-                        <TwitterIcon
-                          size={32}
-                          round
-                        />
-                      </TwitterShareButton>
-                      <WhatsappShareButton url={pet.url}>
-                        <WhatsappIcon
-                          size={32}
-                          round
-                        />
-                      </WhatsappShareButton>
-                    </div>
+                </div>
+                <Separator className="mt-6" />
+                <div className="flex flex-col justify-between pt-6">
+                  <h2 className="mb-2 text-xl font-bold">
+                    {t('pet_profile_page_help')}
+                  </h2>
+                  <div className="flex items-center gap-4">
+                    <span className="text-base md:text-lg">
+                      {t('pet_profile_page_share')}
+                    </span>
+                    <FacebookShareButton url={pet.url}>
+                      <FacebookIcon
+                        size={32}
+                        round
+                      />
+                    </FacebookShareButton>
+                    <LinkedinShareButton url={pet.url}>
+                      <LinkedinIcon
+                        size={32}
+                        round
+                      />
+                    </LinkedinShareButton>
+                    <TwitterShareButton url={pet.url}>
+                      <TwitterIcon
+                        size={32}
+                        round
+                      />
+                    </TwitterShareButton>
+                    <WhatsappShareButton url={pet.url}>
+                      <WhatsappIcon
+                        size={32}
+                        round
+                      />
+                    </WhatsappShareButton>
                   </div>
-                </CardContent>
-              </Card>
-              <Card className="rounded-lg bg-transparent lg:w-1/3 lg:p-6">
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="lg:flex-2 rounded-lg bg-transparent p-0 lg:self-start">
+              <div>
                 <CardHeader>
-                  <CardTitle className="mb-4 text-3xl font-bold">
+                  <CardTitle className="mb-4 pt-4 text-2xl font-bold lg:text-3xl">
                     {t('pet_profile_want_to_adopt', { name: pet.name })}
                   </CardTitle>
                   <Button
@@ -305,36 +345,67 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
                     {t('pet_profile_inquire_about_adoption')}
                   </Button>
                 </CardHeader>
-                <CardContent>
-                  <Separator className="my-6" />
-                  <div className="flex w-fit flex-col">
-                    <div className="mt-6">
+              </div>
+              <CardContent className="p-0">
+                <div className="px-6">
+                  <Separator className="my-3" />
+                  <div className="flex flex-col">
+                    <div className="mt-4 w-full">
                       <h2 className="mb-2 text-2xl font-bold">
                         {t('pet_profile_shelter')}
                       </h2>
-                      <p className="w-fit text-base decoration-primary-300 underline-offset-4 transition hover:text-primary-300 hover:underline">
-                        <Link href={links.organization(pet.organization_id)}>
-                          {pet.organization_id} •{' '}
-                          {t('pet_profile_shelter_link')}
-                        </Link>
-                      </p>
+                      <div className="mt-4 flex items-center gap-4">
+                        {pet.shelter.logo && (
+                          <Image
+                            src={pet.shelter.logo}
+                            width={48}
+                            height={48}
+                            className="h-16 w-16"
+                            alt="Shelter logo"
+                          />
+                        )}
+                        <div>
+                          <p className="text-lg font-medium lg:text-xl">
+                            {pet.shelter.name}
+                          </p>
+                          <p className="w-fit text-base decoration-primary-300 underline-offset-4 transition hover:text-primary-300 hover:underline">
+                            <Link href={links.organization(pet.shelterId)}>
+                              {t('pet_profile_shelter_link')}
+                            </Link>
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="py-6 px-6 sm:px-12 lg:px-48">
-              <Button
-                onClick={() => router.back()}
-                className="hover:text-primary focus:text-primary text-md group flex items-center justify-center gap-x-0.5 font-sans text-gray-600 transition ease-out focus:outline-none"
-                variant="link"
-              >
-                <Icons.chevronLeft className="h-5 w-5" />
-                {t('go_back')}
-              </Button>
-            </div>
+                </div>
+                <div className="mb-2 mt-6">
+                  <Map
+                    className="h-48"
+                    address={`${pet.shelter.address?.address} ${pet.shelter.address?.city} ${pet.shelter.address?.state}`}
+                    exactAddress={true}
+                  />
+                </div>
+                <div className="p-6">
+                  <ShelterContactDetails
+                    organizationAddress={`${pet.shelter.address?.address}, ${pet.shelter.address?.city}, ${pet.shelter.address?.state}`}
+                    organizationPhone={pet.shelter.phoneNumber}
+                    organizationEmail={pet.shelter.email}
+                  />
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        )}
+          <div className="px-6 py-6 sm:px-12 lg:px-48">
+            <Button
+              onClick={() => router.back()}
+              className="hover:text-primary focus:text-primary text-md group flex items-center justify-center gap-x-0.5 font-sans text-gray-600 transition ease-out focus:outline-none"
+              variant="link"
+            >
+              <Icons.chevronLeft className="h-5 w-5" />
+              {t('go_back')}
+            </Button>
+          </div>
+        </div>
       </div>
     </PageLayout>
   );
@@ -342,56 +413,44 @@ const PetProfilePage: NextPage<IPetProfilePage> = ({ pet, message }) => {
 
 export default PetProfilePage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { query } = context;
-  const id = query.id ?? '';
-  const { host } = context.req.headers;
-  const protocol = context.req.headers['x-forwarded-proto'] || 'http';
-  const baseUrl = context.req
-    ? `${protocol as string}://${host as string}`
-    : '';
+export async function getStaticProps(context: GetStaticPropsContext) {
+  const animalId = context.params?.id as string;
   const locale = context.locale ?? 'en';
+  if (!animalId)
+    throw new TRPCError({
+      code: 'NOT_FOUND',
+      message: `Animal not found for id: ${animalId}`,
+    });
 
-  const petfindetOauthData = (await fetch(
-    `${baseUrl}/api/petfinder-oauth-token`
-  ).then((res) => res.json())) as PetfinderOauth;
-  const accessToken = petfindetOauthData.access_token;
-  if (accessToken) {
-    let url = 'https://api.petfinder.com/v2/animals?location=22152';
-    if (id) {
-      url = `https://api.petfinder.com/v2/animals/${id}`;
-    }
-    const petfindetData = (await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }).then((res) => res.json())) as PetfinderData;
-    const pet = petfindetData?.animal;
+  await ssghelpers.pet.getPetById.prefetch({ id: animalId });
+  return {
+    props: {
+      trpcState: ssghelpers.dehydrate(),
+      animalId,
+      ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+    },
+    revalidate: 1,
+  };
+}
 
-    if (pet) {
-      return {
-        props: {
-          pet: pet,
-          message: 'success',
-          ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
-        },
-      };
-    } else {
-      return {
-        props: {
-          pet: null,
-          message: `no animal found for id: ${id}`,
-          ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
-        },
-      };
-    }
-  } else {
-    return {
-      props: {
-        pet: null,
-        message: 'no access token',
-        ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+export const getStaticPaths: GetStaticPaths = async () => {
+  const animals = await prisma.pet.findMany({
+    where: {
+      availableForAdoption: true,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!animals) return { paths: [], fallback: 'blocking' };
+
+  return {
+    paths: animals.map((animal) => ({
+      params: {
+        id: animal.id,
       },
-    };
-  }
+    })),
+    fallback: 'blocking',
+  };
 };
