@@ -1,4 +1,3 @@
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '~/lib/db';
 
@@ -71,11 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(200).json(availableAnimals);
   } catch (error) {
     console.error('Error fetching animal data:', error);
-    let errorMessage = 'Could not load data';
-    if (error instanceof PrismaClientKnownRequestError) {
-      errorMessage = 'Database error: ' + error.message;
-    }
-    res.status(500).json({ error: errorMessage });
+    res.status(500).json({ error: 'Could not load pets' });
   }
 };
 

@@ -92,7 +92,7 @@ interface Props {
 }
 
 const PetDetailsForm: FC<Props> = ({ animalId }) => {
-  const trpc = api.useContext().pet;
+  const trpc = api.useUtils();
   const { toast } = useToast();
   const router = useRouter();
   const { t, i18n } = useTranslation('common');
@@ -130,7 +130,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
 
   const updatePetMutation = api.pet.updatePetById.useMutation({
     onSuccess: async () => {
-      await trpc.getPetById.invalidate();
+      await trpc.pet.getPetById.invalidate();
     },
   });
 
@@ -140,7 +140,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
         medicalEventForm.reset();
         setIsAddingMedical(false);
         setIsCostKnown(false);
-        await trpc.getPetMedicalEvents.invalidate();
+        await trpc.pet.getPetMedicalEvents.invalidate();
       },
     });
 
@@ -149,7 +149,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
       onSuccess: async () => {
         outcomeEventForm.reset();
         setIsAddingOutcome(false);
-        await trpc.getPetOutcomeEvents.invalidate();
+        await trpc.pet.getPetOutcomeEvents.invalidate();
       },
     });
 
@@ -158,14 +158,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
       onSuccess: async () => {
         documentForm.reset();
         setIsAddingDocument(false);
-        await trpc.getPetDocuments.invalidate();
+        await trpc.pet.getPetDocuments.invalidate();
       },
     });
 
   const addPetPhotoMutation = api.pet.addPetPhotoMutation.useMutation({
     onSuccess: async () => {
       photoForm.reset();
-      await trpc.getPetPhotos.invalidate();
+      await trpc.pet.getPetPhotos.invalidate();
     },
   });
 
@@ -173,14 +173,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
     onSuccess: async () => {
       notesForm.reset();
       setIsAddingNote(false);
-      await trpc.getPetNotes.invalidate();
+      await trpc.pet.getPetNotes.invalidate();
     },
   });
 
   const savePetAdoptionDetailsMutation =
     api.pet.savePetAdoptionDetailsMutation.useMutation({
       onSuccess: async () => {
-        await trpc.getPetById.invalidate();
+        await trpc.pet.getPetById.invalidate();
       },
     });
 
@@ -193,33 +193,33 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
   const deletePetMedicalEventMutation =
     api.pet.deletePetMedicalEventMutation.useMutation({
       onSuccess: async () => {
-        await trpc.getPetMedicalEvents.invalidate();
+        await trpc.pet.getPetMedicalEvents.invalidate();
       },
     });
 
   const deleteOutcomeEventMutation =
     api.pet.deletePetOutcomeEventMutation.useMutation({
       onSuccess: async () => {
-        await trpc.getPetOutcomeEvents.invalidate();
+        await trpc.pet.getPetOutcomeEvents.invalidate();
       },
     });
 
   const deletePetDocumentMutation =
     api.pet.deletePetDocumentMutation.useMutation({
       onSuccess: async () => {
-        await trpc.getPetDocuments.invalidate();
+        await trpc.pet.getPetDocuments.invalidate();
       },
     });
 
   const deletePetPhotoMutation = api.pet.deletePetPhotoMutation.useMutation({
     onSuccess: async () => {
-      await trpc.getPetPhotos.invalidate();
+      await trpc.pet.getPetPhotos.invalidate();
     },
   });
 
   const deletePetNoteMutation = api.pet.deletePetNoteMutation.useMutation({
     onSuccess: async () => {
-      await trpc.getPetNotes.invalidate();
+      await trpc.pet.getPetNotes.invalidate();
     },
   });
 

@@ -253,6 +253,19 @@ export const petRouter = createTRPCRouter({
 
       const profilePhoto = pet.image ? [{ url: pet.image }] : [];
 
+      if (ctx.session?.user.id) {
+        const favoritePet = await ctx.prisma.favoritePet.findFirst({
+          where: {
+            userId: ctx.session.user.id,
+            petId: pet.id,
+          },
+          select: {
+            petId: true,
+          },
+        });
+        pet.isLikedByUser = !!favoritePet;
+      }
+
       return {
         ...pet,
         photos: [...profilePhoto, ...pet.photos],

@@ -2,9 +2,10 @@ import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { links } from '~/config/siteConfig';
+import { TypeOfResults } from '~/lib/constants';
 import { buttonVariants } from '../primitives/Button';
 
-const Custom404Page = () => {
+const WorkInProgress = () => {
   const { t } = useTranslation('common');
 
   return (
@@ -18,13 +19,13 @@ const Custom404Page = () => {
       />
       <div className="text-center">
         <p className="bg-gradient-to-r from-primary-200 to-primary-600 bg-clip-text text-base font-semibold text-transparent">
-          404
+          {t('coming_soon')}
         </p>
         <h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
-          {t('404_title')}
+          {t('work_in_progress')}
         </h1>
         <p className="mt-6 text-base leading-7 text-muted-foreground">
-          {t('404_subtitle')}
+          {t('work_in_progress_subtitle')}
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <Link
@@ -34,22 +35,15 @@ const Custom404Page = () => {
             {t('go_back_home')}
           </Link>
           <Link
-            href={links.contact}
+            href={links.results(TypeOfResults.Animal)}
             className={buttonVariants({ variant: 'link' })}
           >
-            {t('404_contact')}
+            {t('find_pets')}
           </Link>
         </div>
       </div>
-      <Image
-        src="/images/lost.svg"
-        alt="cosmos"
-        width="600"
-        height="558"
-        className="-bottom-56 left-0 z-10 hidden lg:absolute lg:block"
-      />
     </main>
   );
 };
 
-export default Custom404Page;
+export default WorkInProgress;

@@ -2,8 +2,9 @@ name: Security Scan
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0' # generate report in an issue once a week, every Sunday at midnight
+  # cron disabled by default as free tier on vercel has limited web analytics and speed insights
+  # schedule:
+  #   - cron: '0 0 1 */3 *' # Generate report on the 1st day of every third month at midnight
 
 jobs:
   security:

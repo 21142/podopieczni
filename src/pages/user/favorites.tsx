@@ -14,7 +14,10 @@ const Favorites: NextPage = () => {
   const { t } = useTranslation('common');
   const { data: session } = useSession();
 
-  const { data: favoritePets, isLoading } = api.user.getFavoritePets.useQuery();
+  const { data: favoritePets, isLoading } = api.user.getFavoritePets.useQuery(
+    undefined, // no input
+    { enabled: session?.user !== undefined }
+  );
 
   if (!session)
     return (

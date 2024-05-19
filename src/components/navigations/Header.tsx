@@ -1,5 +1,6 @@
 import { MenuAlt2Icon, XIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
@@ -22,7 +23,8 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
   ...headerProps
 }) => {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
-  const { data: userFromSession } = useUserFromSessionQuery();
+  const { data: session } = useSession();
+  const { data: userFromSession } = useUserFromSessionQuery(session);
 
   const { systemTheme, theme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;
@@ -62,11 +64,11 @@ const Header: React.FC<JSX.IntrinsicElements['header']> = ({
               />
             )}
           <HeaderLink
-            href={links.home}
+            href={links.adoption}
             title={t('nav_adopt')}
           />
           <HeaderLink
-            href={links.home}
+            href={links.about}
             title={t('nav_about')}
           />
           {mobileMenuIsOpen && (

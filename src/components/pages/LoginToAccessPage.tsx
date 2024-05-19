@@ -1,4 +1,4 @@
-import { signIn, signOut } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
@@ -8,7 +8,8 @@ import { Button } from '../primitives/Button';
 
 const LoginToAccessPage: FC = ({}) => {
   const router = useRouter();
-  const { data: userFromSession } = useUserFromSessionQuery();
+  const { data: session } = useSession();
+  const { data: userFromSession } = useUserFromSessionQuery(session);
   const { t } = useTranslation('common');
 
   return (

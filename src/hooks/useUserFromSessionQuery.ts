@@ -1,6 +1,7 @@
+import { type Session } from 'next-auth';
 import { api } from '~/lib/api';
 
-export function useUserFromSessionQuery() {
+export function useUserFromSessionQuery(session?: Session | null) {
   const user = api.auth.getUserFromSession.useQuery(undefined, {
     retry: (failureCount, error) => {
       if (error?.data?.code === 'UNAUTHORIZED') {
@@ -8,6 +9,7 @@ export function useUserFromSessionQuery() {
       }
       return failureCount > 3 ? false : true;
     },
+    enabled: session?.user !== undefined,
   });
 
   return user;

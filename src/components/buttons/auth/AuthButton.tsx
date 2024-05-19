@@ -1,4 +1,4 @@
-import { signIn, signOut } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { Icons } from '~/components/icons/Icons';
@@ -15,13 +15,29 @@ import {
   DropdownMenuTrigger,
 } from '~/components/primitives/DropdownMenu';
 import { links } from '~/config/siteConfig';
+import { useToast } from '~/hooks/use-toast';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { Roles } from '~/lib/constants';
 
 //TODO: Consider renaming to AuthDropdownMenu
 const AuthButton: React.FC = () => {
-  const { data: userFromSession } = useUserFromSessionQuery();
+  const { data: session } = useSession();
+  const { data: userFromSession } = useUserFromSessionQuery(session);
   const { t } = useTranslation('common');
+  const { toast } = useToast();
+
+  const handleButtonClick = () => {
+    if (userFromSession) {
+      signOut();
+      toast({
+        description: t('nav_signout_toast_success'),
+        variant: 'success',
+      });
+    } else {
+      signIn();
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -74,7 +90,7 @@ const AuthButton: React.FC = () => {
           className="cursor-pointer"
           onSelect={(event) => {
             event.preventDefault();
-            userFromSession ? signOut() : signIn();
+            handleButtonClick();
           }}
         >
           {userFromSession ? `${t('nav_signout')}` : `${t('nav_login')}`}

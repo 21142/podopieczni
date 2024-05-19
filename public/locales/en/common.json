@@ -8,6 +8,7 @@
    "nav_favorites": "Favorites",
    "nav_login": "Log in",
    "nav_signout": "Sign out",
+   "nav_signout_toast_success": "You have successfully signed out!",
    "settings": "Settings",
    "search": "Find your new ",
    "hero_title": "discover your perfect match.",
@@ -270,10 +271,13 @@
    "login_to_access": "Please login to your account or create one to access this page.",
    "404_title": "Page not found",
    "404_subtitle": "Sorry, we couldn’t find the page you’re looking for.",
-   "404_button": "Go back home",
+   "go_back_home": "Go back home",
+   "find_pets": "Find pets",
+   "coming_soon": "Coming soon!",
+   "work_in_progress": "Work in progress",
+   "work_in_progress_subtitle": "We're working on this page. Please come back later.",
    "404_contact": "Contact us",
    "500_title": "Internal server error",
    "500_subtitle": "Oops, something went wrong. Please try again, or contact us.",
-   "500_button": "Go back home",
    "500_contact": "Contact support"
 }
