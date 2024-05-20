@@ -19,25 +19,53 @@ const Dashboard: NextPage = () => {
         <LoginToAccessPage />
       </DashboardLayout>
     );
-  const { data: usersCount } = api.user.getUsersCount.useQuery();
-  const { data: usersCountChangeFromLastMonth } =
-    api.user.getUsersCountChangeFromLastMonth.useQuery();
 
-  const { data: petsCount } = api.pet.getPetsCount.useQuery();
+  const { data: usersCount } = api.user.getUsersCount.useQuery(
+    undefined, // no input
+    { enabled: session?.user !== undefined }
+  );
+  const { data: usersCountChangeFromLastMonth } =
+    api.user.getUsersCountChangeFromLastMonth.useQuery(
+      undefined, // no input
+      { enabled: session?.user !== undefined }
+    );
+
+  const { data: petsCount } = api.pet.getPetsCount.useQuery(
+    undefined, // no input
+    { enabled: session?.user !== undefined }
+  );
   const { data: petsCountChangeFromLastMonth } =
-    api.pet.getPetsCountChangeFromLastMonth.useQuery();
+    api.pet.getPetsCountChangeFromLastMonth.useQuery(
+      undefined, // no input
+      { enabled: session?.user !== undefined }
+    );
 
   const { data: recentlyAddedPets } =
-    api.pet.getPetsAddedInTheLastMonth.useQuery();
+    api.pet.getPetsAddedInTheLastMonth.useQuery(
+      undefined, // no input
+      { enabled: session?.user !== undefined }
+    );
   const { data: mostRecentlyAddedPets } =
-    api.pet.getMostRecentlyAddedPets.useQuery();
+    api.pet.getMostRecentlyAddedPets.useQuery(
+      undefined, // no input
+      { enabled: session?.user !== undefined }
+    );
   const { data: petsAddedLastMonthCount } =
-    api.pet.getPetsCountChangeFromLastMonth.useQuery();
+    api.pet.getPetsCountChangeFromLastMonth.useQuery(
+      undefined, // no input
+      { enabled: session?.user !== undefined }
+    );
 
   const { data: isUserAssociatedWithShelter, isLoading } =
-    api.user.isUserAssociatedWithShelter.useQuery();
+    api.user.isUserAssociatedWithShelter.useQuery(
+      undefined, // no input
+      { enabled: session?.user !== undefined }
+    );
 
-  const { data: shelterDetails } = api.shelter.getShelterDetails.useQuery();
+  const { data: shelterDetails } = api.shelter.getShelterDetails.useQuery(
+    undefined, // no input
+    { enabled: session?.user !== undefined }
+  );
 
   if (isLoading) {
     return (

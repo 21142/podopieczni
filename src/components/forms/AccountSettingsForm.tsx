@@ -32,7 +32,7 @@ export interface Props {
 
 const AccountSettingsForm: FC<Props> = ({ user }) => {
   const router = useRouter();
-  const trpc = api.useContext();
+  const trpc = api.useUtils();
   const { toast } = useToast();
   const { t } = useTranslation('common');
 
@@ -136,7 +136,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         <UploadButton
                           endpoint="imageUploader"
                           onClientUploadComplete={(res) => {
-                            res && setAvatarUrl(res[0]?.fileUrl ?? '');
+                            res && setAvatarUrl(res[0]?.url ?? '');
                           }}
                           onUploadError={(error: Error) => {
                             toast({
@@ -167,7 +167,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="first-name"
                         autoComplete="given-name"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('firstName')}
                       />
@@ -189,7 +189,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="last-name"
                         autoComplete="family-name"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('lastName')}
                       />
@@ -211,7 +211,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="email"
                         id="email"
                         autoComplete="email"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('email')}
                       />
@@ -233,7 +233,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="date"
                         id="bday"
                         autoComplete="bday"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('dateOfBirth')}
                       />
@@ -255,7 +255,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="tel"
                         autoComplete="tel"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('phoneNumber')}
                       />
@@ -275,13 +275,13 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                     <div className="relative z-0 col-span-6 sm:col-span-3">
                       <label
                         htmlFor="role"
-                        className="absolute top-4 left-0 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 text-sm font-semibold uppercase tracking-[0.25rem] text-primary-400/80"
+                        className="absolute left-0 top-4 -z-10 h-14 w-full origin-[0] -translate-y-6 scale-75 text-sm font-semibold uppercase tracking-[0.25rem] text-primary-400/80"
                       >
                         {t('add_person_form_label_role')}
                       </label>
                       <select
                         id="role"
-                        className="absolute top-6 left-0 mt-1 block w-full rounded-md border border-neutral-50 bg-white py-2 px-3 shadow-sm focus:border-primary-400 focus:outline-none focus:ring-primary-400 sm:text-sm"
+                        className="absolute left-0 top-6 mt-1 block w-full rounded-md border border-neutral-50 bg-white px-3 py-2 shadow-sm focus:border-primary-400 focus:outline-none focus:ring-primary-400 sm:text-sm"
                         {...register('role')}
                       >
                         {userAccountDetailsSchema.shape.role.options.map(
@@ -298,7 +298,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                     </div>
                   </div>
 
-                  <p className="col-span-6 mt-12 mb-4 text-3xl font-light tracking-widest text-foreground underline decoration-2 underline-offset-2 sm:text-4xl">
+                  <p className="col-span-6 mb-4 mt-12 text-3xl font-light tracking-widest text-foreground underline decoration-2 underline-offset-2 sm:text-4xl">
                     {t('update_user_details_form_title_address')}
                   </p>
                   <div className="grid grid-cols-6 gap-6">
@@ -307,7 +307,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="address"
                         autoComplete="street-address"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('address')}
                       />
@@ -329,7 +329,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="city"
                         autoComplete="address-level2"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('city')}
                       />
@@ -351,7 +351,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="state"
                         autoComplete="address-level1"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('state')}
                       />
@@ -373,7 +373,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="postal-code"
                         autoComplete="postal-code"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('postCode')}
                       />
@@ -395,7 +395,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         type="text"
                         id="country"
                         autoComplete="country-name"
-                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
+                        className="peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-foreground outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm"
                         placeholder=" "
                         {...register('country')}
                       />
@@ -416,10 +416,10 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                 <div className="px-4 py-3 text-left sm:p-10">
                   <button
                     type="submit"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-primary-400/90 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    disabled={updateUserDetailsMutation.isLoading}
+                    className="inline-flex justify-center rounded-md border border-transparent bg-primary-400/90 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    disabled={updateUserDetailsMutation.isPending}
                   >
-                    {updateUserDetailsMutation.isLoading ? (
+                    {updateUserDetailsMutation.isPending ? (
                       <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
                       t('form_button_save')

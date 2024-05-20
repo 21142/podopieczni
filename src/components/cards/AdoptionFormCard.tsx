@@ -1,7 +1,10 @@
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+import { links } from '~/config/siteConfig';
+import { cn } from '~/lib/utils';
 import { Icons } from '../icons/Icons';
-import { Button } from '../primitives/Button';
+import { buttonVariants } from '../primitives/Button';
 import {
   Card,
   CardContent,
@@ -23,13 +26,13 @@ const AdoptionFormCard = () => {
       <CardContent>
         <CardDescription>{t('adoption_form_card_description')}</CardDescription>
         <Separator className="my-3" />
-        <Button
-          variant="primaryLink"
-          className="pl-0"
+        <Link
+          className={cn(buttonVariants({ variant: 'primaryLink' }), 'pl-0')}
+          href={links.findYourPet}
         >
           {t('adoption_form_card_button')}
           <Icons.doubleChevronRight className="ml-1 h-5 w-5" />
-        </Button>
+        </Link>
       </CardContent>
     </Card>
   );

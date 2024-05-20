@@ -8,6 +8,7 @@
    "nav_favorites": "Ulubione",
    "nav_login": "Zaloguj się",
    "nav_signout": "Wyloguj się",
+   "nav_signout_toast_success": "Wylogowano pomyślnie!",
    "settings": "Ustawienia",
    "search": "Szukaj",
    "hero_title": " do których pasujesz.",
@@ -270,10 +271,13 @@
    "404_title": "Strona nie została znaleziona",
    "404_subtitle": "Przepraszamy, nie możemy odnaleźć szukanej strony.",
    "login_to_access": "Zaloguj się lub stwórz nowe konto, aby uzyskać dostęp do tej strony",
-   "404_button": "Wróć do strony głównej",
+   "go_back_home": "Wróć do strony głównej",
+   "find_pets": "Znajdź podopiecznych",
+   "coming_soon": "Wkrótce dostępne!",
+   "work_in_progress": "Pracujemy nad tą stroną",
+   "work_in_progress_subtitle": "Przepraszamy za wszelkie niedogności. Proszę wrócić niedługo.",
    "404_contact": "Skontaktuj się z nami",
    "500_title": "Błąd po stronie serwera",
    "500_subtitle": "Ups, coś poszło nie tak. Spróbuj ponownie lub skontaktuj się z nami.",
-   "500_button": "Wróć do strony głównej",
    "500_contact": "Skontaktuj się z nami"
 }

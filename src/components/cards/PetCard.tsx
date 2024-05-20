@@ -43,8 +43,7 @@ const PetCard: React.FC<IAnimalCard> = ({
   isLikedByUser,
 }) => {
   const { data: session } = useSession();
-  const petContext = api.useContext().pet;
-  const userContext = api.useContext().user;
+  const trpcContextUtils = api.useUtils();
   const { t } = useTranslation('common');
   const router = useRouter();
   const [isLikeClicked, setIsLikeClicked] = useState(isLikedByUser ?? false);
@@ -52,17 +51,18 @@ const PetCard: React.FC<IAnimalCard> = ({
 
   const markPetAsFavoriteMutation = api.user.markPetAsFavorite.useMutation({
     onSuccess: () => {
-      userContext.getFavoritePets.invalidate();
-      petContext.getFeaturedAnimals.invalidate();
-      petContext.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+      trpcContextUtils.user.getFavoritePets.invalidate();
+      trpcContextUtils.pet.getFeaturedAnimals.invalidate();
+      trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
     },
   });
+
   const removePetFromFavoritesMutation =
     api.user.removePetFromFavorites.useMutation({
       onSuccess: () => {
-        userContext.getFavoritePets.invalidate();
-        petContext.getFeaturedAnimals.invalidate();
-        petContext.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+        trpcContextUtils.user.getFavoritePets.invalidate();
+        trpcContextUtils.pet.getFeaturedAnimals.invalidate();
+        trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
       },
     });
 

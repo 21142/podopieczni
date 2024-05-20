@@ -46,7 +46,7 @@ export const RolesMap: Record<
 };
 
 const AddPersonForm = () => {
-  const trpc = api.useContext().user;
+  const trpc = api.useUtils();
   const router = useRouter();
   const { toast } = useToast();
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -54,7 +54,7 @@ const AddPersonForm = () => {
 
   const addUserMutation = api.user.add.useMutation({
     onSuccess: async () => {
-      await trpc.getAllPeopleAssociatedWithShelter.invalidate();
+      await trpc.user.getAllPeopleAssociatedWithShelter.invalidate();
     },
     onSettled() {
       router.push(links.users);
@@ -128,8 +128,8 @@ const AddPersonForm = () => {
                   <UploadButton
                     endpoint="imageUploader"
                     onClientUploadComplete={(res) => {
-                      res && setAvatarUrl(res[0]?.fileUrl as string);
-                      res && form.setValue('image', res[0]?.fileUrl as string);
+                      res && setAvatarUrl(res[0]?.url as string);
+                      res && form.setValue('image', res[0]?.url as string);
                     }}
                     onUploadError={(error: Error) => {
                       toast({
@@ -417,9 +417,9 @@ const AddPersonForm = () => {
               type="submit"
               className="col-span-2 justify-self-start"
               size="lg"
-              disabled={addUserMutation.isLoading}
+              disabled={addUserMutation.isPending}
             >
-              {addUserMutation.isLoading ? (
+              {addUserMutation.isPending ? (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 t('form_button_save')

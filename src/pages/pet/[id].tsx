@@ -59,7 +59,6 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
-  const [isLikeClicked, setIsLikeClicked] = React.useState(false);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
@@ -69,12 +68,16 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
   dayjs.locale(locale);
 
   const { data: pet } = api.pet.getPetById.useQuery({ id: animalId });
+  const [isLikeClicked, setIsLikeClicked] = React.useState(
+    pet?.isLikedByUser ?? false
+  );
 
   const markPetAsFavoriteMutation = api.user.markPetAsFavorite.useMutation();
   const removePetFromFavoritesMutation =
     api.user.removePetFromFavorites.useMutation();
 
   React.useEffect(() => {
+    setIsLikeClicked(pet?.isLikedByUser ?? false);
     if (!carouselApi) {
       return;
     }
@@ -85,7 +88,7 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
     carouselApi.on('select', () => {
       setCurrent(carouselApi.selectedScrollSnap() + 1);
     });
-  }, [carouselApi]);
+  }, [carouselApi, pet]);
 
   if (!pet) {
     return <p>{t('pet_profile_page_no_pet_found')}</p>;
