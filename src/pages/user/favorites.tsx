@@ -65,21 +65,3 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
     ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
   },
 });
-
-// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-//   const session = await getServerAuthSession(ctx);
-//   const locale = ctx.locale ?? 'en';
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: `/api/auth/signin?callbackUrl=${env.NEXT_PUBLIC_BASE_URL}/user/favorites&error=SessionRequired`,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: {
-//       ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
-//     },
-//   };
-// }

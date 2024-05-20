@@ -38,8 +38,6 @@ const WelcomeEmail = ({ name, href }: WelcomeEmailProps) => {
             </Text>
             <Section className="mb-[32px] mt-[32px] text-center">
               <Button
-                pX={20}
-                pY={12}
                 className="rounded bg-[#00A3FF] text-center text-xs font-semibold text-white no-underline"
                 href={href ?? fallbackUrl}
               >
