@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, type FC } from 'react';
 import AuthButton from 'src/components/buttons/auth/AuthButton';
 import Logo from '~/components/logos/Logo';
 import LogoDark from '~/components/logos/LogoDark';
@@ -18,7 +18,7 @@ import { Icons } from '../icons/Icons';
 import HeaderLink from '../links/HeaderLink';
 import { LanguageToggle } from '../utility/LanguageToggle';
 
-const Header: React.FC<JSX.IntrinsicElements['header']> = ({
+const Header: FC<JSX.IntrinsicElements['header']> = ({
   className,
   ...headerProps
 }) => {

@@ -15,7 +15,7 @@ const Favorites: NextPage = () => {
   const { data: session } = useSession();
 
   const { data: favoritePets, isLoading } = api.user.getFavoritePets.useQuery(
-    undefined, // no input
+    undefined,
     { enabled: session?.user !== undefined }
   );
 

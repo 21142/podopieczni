@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next';
 import HeaderLink from '~/components/links/HeaderLink';
 import { dogBreeds } from '~/static/breeds';
 
-const SearchByBreed: React.FC = () => {
+const SearchByBreed = () => {
   const { t, i18n } = useTranslation('common');
 
   const breedsToDisplay = dogBreeds.slice(0, 12);

@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next';
 import HeaderLink from '~/components/links/HeaderLink';
 import { voivodships } from '~/lib/constants';
 
-const SearchByState: React.FC = () => {
+const SearchByState = () => {
   const { t } = useTranslation('common');
   return (
     <div className="mt-[22rem] min-h-screen 2xl:mt-[25rem]">

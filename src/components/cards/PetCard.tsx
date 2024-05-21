@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, type FC } from 'react';
 import {
   Card,
   CardContent,
@@ -16,7 +16,7 @@ import { api } from '~/lib/api';
 import { Variant } from '~/lib/constants';
 import { Icons } from '../icons/Icons';
 
-export interface IAnimalCard {
+type IAnimalCard = {
   id: string;
   tag: string;
   title: string;
@@ -29,9 +29,9 @@ export interface IAnimalCard {
   type?: string;
   breed?: string;
   isLikedByUser?: boolean;
-}
+};
 
-const PetCard: React.FC<IAnimalCard> = ({
+const PetCard: FC<IAnimalCard> = ({
   id,
   title,
   body,

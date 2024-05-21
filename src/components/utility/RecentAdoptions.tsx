@@ -6,9 +6,9 @@ import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
 import RecentlyAddedAnimalsRow from './RecentlyAddedAnimalsRow';
 
-interface RecentAdoptionsProps {
+type RecentAdoptionsProps = {
   animals?: RecentlyAddedAnimals;
-}
+};
 
 const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
   const router = useRouter();

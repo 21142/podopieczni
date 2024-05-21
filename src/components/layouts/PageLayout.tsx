@@ -1,3 +1,4 @@
+import { type FC } from 'react';
 import Footer from '~/components/navigations/Footer';
 import HeadMeta from '~/components/utility/HeadMeta';
 import { env } from '~/env.mjs';
@@ -7,7 +8,7 @@ export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
   justify?: 'items-center' | 'items-start' | 'items-end';
 }
 
-const PageLayout: React.FC<IPageLayout> = ({
+const PageLayout: FC<IPageLayout> = ({
   children,
   justify = 'items-center',
   ...divProps

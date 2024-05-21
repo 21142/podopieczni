@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { Toaster } from '~/components/primitives/Toaster';
 import Spinner from '~/components/spinner/Spinner';
 import { ThemeProvider } from '~/components/utility/ThemeProvider';
-import { usePageLoading } from '~/hooks/use-page-loading';
+import { usePageLoading } from '~/hooks/usePageLoading';
 import { api } from '~/lib/api';
 import { setCookie } from '~/lib/cookie';
 import printConsoleLogo from '~/lib/printConsoleLogo';

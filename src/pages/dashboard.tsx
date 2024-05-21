@@ -20,50 +20,43 @@ const Dashboard: NextPage = () => {
       </DashboardLayout>
     );
 
-  const { data: usersCount } = api.user.getUsersCount.useQuery(
-    undefined, // no input
-    { enabled: session?.user !== undefined }
-  );
-  const { data: usersCountChangeFromLastMonth } =
-    api.user.getUsersCountChangeFromLastMonth.useQuery(
-      undefined, // no input
-      { enabled: session?.user !== undefined }
-    );
+  const { data: isUserAssociatedWithShelter, isLoading } =
+    api.user.isUserAssociatedWithShelter.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+    });
 
-  const { data: petsCount } = api.pet.getPetsCount.useQuery(
-    undefined, // no input
-    { enabled: session?.user !== undefined }
-  );
+  const { data: usersCount } = api.user.getUsersCount.useQuery(undefined, {
+    enabled: session?.user !== undefined,
+  });
+
+  const { data: usersCountChangeFromLastMonth } =
+    api.user.getUsersCountChangeFromLastMonth.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+    });
+
+  const { data: petsCount } = api.pet.getPetsCount.useQuery(undefined, {
+    enabled: session?.user !== undefined,
+  });
   const { data: petsCountChangeFromLastMonth } =
-    api.pet.getPetsCountChangeFromLastMonth.useQuery(
-      undefined, // no input
-      { enabled: session?.user !== undefined }
-    );
+    api.pet.getPetsCountChangeFromLastMonth.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+    });
 
   const { data: recentlyAddedPets } =
-    api.pet.getPetsAddedInTheLastMonth.useQuery(
-      undefined, // no input
-      { enabled: session?.user !== undefined }
-    );
+    api.pet.getPetsAddedInTheLastMonth.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+    });
   const { data: mostRecentlyAddedPets } =
-    api.pet.getMostRecentlyAddedPets.useQuery(
-      undefined, // no input
-      { enabled: session?.user !== undefined }
-    );
+    api.pet.getMostRecentlyAddedPets.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+    });
   const { data: petsAddedLastMonthCount } =
-    api.pet.getPetsCountChangeFromLastMonth.useQuery(
-      undefined, // no input
-      { enabled: session?.user !== undefined }
-    );
-
-  const { data: isUserAssociatedWithShelter, isLoading } =
-    api.user.isUserAssociatedWithShelter.useQuery(
-      undefined, // no input
-      { enabled: session?.user !== undefined }
-    );
+    api.pet.getPetsCountChangeFromLastMonth.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+    });
 
   const { data: shelterDetails } = api.shelter.getShelterDetails.useQuery(
-    undefined, // no input
+    undefined,
     { enabled: session?.user !== undefined }
   );
 

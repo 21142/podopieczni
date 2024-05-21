@@ -36,4 +36,6 @@ export const links = {
   privacyPolicy: '/privacy-policy',
   facebook: '/about#facebook',
   findYourPet: '/find-your-pet',
+  signIn: '/signin',
+  checkInbox: '/check-inbox',
 };

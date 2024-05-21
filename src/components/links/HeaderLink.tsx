@@ -1,12 +1,13 @@
 import Link from 'next/link';
+import { type FC } from 'react';
 
-export interface IHeaderLink {
+type IHeaderLink = {
   href: string;
   title: string;
   className?: string;
-}
+};
 
-const HeaderLink: React.FC<IHeaderLink> = ({ href, title, className }) => {
+const HeaderLink: FC<IHeaderLink> = ({ href, title, className }) => {
   return (
     <Link
       href={href}

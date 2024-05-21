@@ -25,17 +25,11 @@ export const authOptions: NextAuthOptions = {
         },
       };
     },
-    redirect({ baseUrl }) {
-      return `${baseUrl}/welcome`;
-    },
   },
   pages: {
     newUser: links.welcome,
-    //TODO: Create custom pages and register them here when done
-    // signIn: '/auth/signin',
-    // signOut: '/auth/signout',
-    // error: '/auth/error', // Error code passed in query string as ?error=
-    // verifyRequest: '/auth/verify-request', // (used for check email message)
+    signIn: links.signIn,
+    verifyRequest: links.checkInbox,
   },
   secret: env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(prisma),

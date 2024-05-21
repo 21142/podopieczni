@@ -2,7 +2,7 @@ import { type Row } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { links } from '~/config/siteConfig';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { idSchema } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';

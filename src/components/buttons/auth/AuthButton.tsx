@@ -15,12 +15,12 @@ import {
   DropdownMenuTrigger,
 } from '~/components/primitives/DropdownMenu';
 import { links } from '~/config/siteConfig';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { Roles } from '~/lib/constants';
 
 //TODO: Consider renaming to AuthDropdownMenu
-const AuthButton: React.FC = () => {
+const AuthButton = () => {
   const { data: session } = useSession();
   const { data: userFromSession } = useUserFromSessionQuery(session);
   const { t } = useTranslation('common');

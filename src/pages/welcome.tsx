@@ -1,4 +1,4 @@
-import type { NextPage } from 'next';
+import type { GetServerSidePropsContext, NextPage } from 'next';
 import { signIn, signOut } from 'next-auth/react';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -9,6 +9,7 @@ import Spinner from '~/components/spinner/Spinner';
 import { links } from '~/config/siteConfig';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { api } from '~/lib/api';
+import { getServerAuthSession } from '~/lib/auth';
 import { Roles } from '~/lib/constants';
 
 const Welcome: NextPage = () => {
@@ -103,8 +104,20 @@ const Welcome: NextPage = () => {
 
 export default Welcome;
 
-export const getStaticProps = async ({ locale }: { locale: string }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
-  },
-});
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
+  const locale = ctx.locale ?? 'en';
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+      },
+    };
+  }
+
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
+    },
+  };
+}

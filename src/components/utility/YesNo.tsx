@@ -3,9 +3,9 @@ import { Icons } from '../icons/Icons';
 import { Input } from '../primitives/Input';
 import { Label } from '../primitives/Label';
 
-interface YesNoProps {
+type YesNoProps = {
   question?: string;
-}
+};
 
 const YesNo: FC<YesNoProps> = ({ question }) => {
   return (

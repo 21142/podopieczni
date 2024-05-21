@@ -1,12 +1,13 @@
+import { type FC } from 'react';
 import PetCard from '~/components/cards/PetCard';
 import { Variant } from '~/lib/constants';
 import { type Shelter } from '~/types';
 
-export interface ISearchResults {
+type ISearchResults = {
   results?: Shelter[];
-}
+};
 
-const SearchSheltersResults: React.FC<ISearchResults> = ({ results }) => {
+const SearchSheltersResults: FC<ISearchResults> = ({ results }) => {
   if (results?.length === 0)
     return (
       <p>

@@ -5,7 +5,7 @@ import { links } from '~/config/siteConfig';
 import { TypeOfResults } from '~/lib/constants';
 import Search from '../inputs/Search';
 
-const Hero: React.FC = () => {
+const Hero = () => {
   const { t } = useTranslation('common');
   return (
     <div className="relative h-[19rem] w-full lg:h-[20rem] xl:h-[21rem] 2xl:h-[22rem]">

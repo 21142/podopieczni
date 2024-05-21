@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState, type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { env } from '~/env.mjs';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
 import { UploadButton } from '~/lib/uploadthing';
@@ -21,14 +21,14 @@ import Spinner from '../spinner/Spinner';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 import { RolesMap } from './AddPersonForm';
 
-export interface Props {
+type Props = {
   user:
     | (User & {
         address: AddressInfo | null;
       })
     | null
     | undefined;
-}
+};
 
 const AccountSettingsForm: FC<Props> = ({ user }) => {
   const router = useRouter();
@@ -136,7 +136,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
                         <UploadButton
                           endpoint="imageUploader"
                           onClientUploadComplete={(res) => {
-                            res && setAvatarUrl(res[0]?.url ?? '');
+                            res && setAvatarUrl(res[0]?.url as string);
                           }}
                           onUploadError={(error: Error) => {
                             toast({
