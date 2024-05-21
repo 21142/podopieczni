@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from '~/components/primitives/Select';
 import { links } from '~/config/siteConfig';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
 import { cn, getDocumentType, mapIntakeEventDate } from '~/lib/utils';
@@ -87,9 +87,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../primitives/Tabs';
 import { Textarea } from '../primitives/Textarea';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
-interface Props {
+type Props = {
   animalId: string;
-}
+};
 
 const PetDetailsForm: FC<Props> = ({ animalId }) => {
   const trpc = api.useUtils();

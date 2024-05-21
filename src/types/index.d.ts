@@ -24,3 +24,5 @@ export type FavoritePet = RouterOutputs['user']['getFavoritePets'][number];
 
 export type Shelter =
   RouterOutputs['shelter']['querySheltersFulltextSearch'][number];
+
+export type ShelterDetails = RouterOutputs['shelter']['getShelterDetails'];

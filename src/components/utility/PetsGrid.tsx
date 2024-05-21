@@ -1,12 +1,13 @@
+import { type FC } from 'react';
 import PetCard from '~/components/cards/PetCard';
 import { Variant } from '~/lib/constants';
 import { type FeaturedPet } from '~/types';
 
-export interface IPetsGrid {
+type IPetsGrid = {
   featuredAnimals: FeaturedPet[];
-}
+};
 
-const PetsGrid: React.FC<IPetsGrid> = ({ featuredAnimals }) => {
+const PetsGrid: FC<IPetsGrid> = ({ featuredAnimals }) => {
   return (
     <div className="grid max-w-7xl gap-3 p-5 md:grid-cols-2 lg:grid-cols-3">
       {featuredAnimals?.map((animal: FeaturedPet) => (

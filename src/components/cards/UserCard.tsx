@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { type FC } from 'react';
 import { links } from '~/config/siteConfig';
 import {
   Card,
@@ -8,14 +9,14 @@ import {
   CardTitle,
 } from '../primitives/Card';
 
-export interface IUserCard {
+type IUserCard = {
   id: string;
   name: string;
   image?: string;
   role: string;
-}
+};
 
-const UserCard: React.FC<IUserCard> = ({ id, name, image, role }) => {
+const UserCard: FC<IUserCard> = ({ id, name, image, role }) => {
   const router = useRouter();
   return (
     <Card
@@ -30,7 +31,7 @@ const UserCard: React.FC<IUserCard> = ({ id, name, image, role }) => {
           width="320"
           height="320"
         />
-        <CardTitle className="pt-5 pb-1">{name}</CardTitle>
+        <CardTitle className="pb-1 pt-5">{name}</CardTitle>
         <CardDescription>{role}</CardDescription>
       </CardHeader>
     </Card>

@@ -1,12 +1,11 @@
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
-import type { FC } from 'react';
 import { links } from '~/config/siteConfig';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { Button } from '../primitives/Button';
 
-const LoginToAccessPage: FC = ({}) => {
+const LoginToAccessPage = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const { data: userFromSession } = useUserFromSessionQuery(session);

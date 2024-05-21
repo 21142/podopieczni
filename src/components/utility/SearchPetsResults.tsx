@@ -1,17 +1,15 @@
+import { type FC } from 'react';
 import PetCard from '~/components/cards/PetCard';
 import { Variant } from '~/lib/constants';
 import { type PetAvailableForAdoption } from '~/types';
 import Spinner from '../spinner/Spinner';
 
-export interface ISearchResults {
+type ISearchResults = {
   results?: PetAvailableForAdoption[];
   isLoading?: boolean;
-}
+};
 
-const SearchPetsResults: React.FC<ISearchResults> = ({
-  results,
-  isLoading,
-}) => {
+const SearchPetsResults: FC<ISearchResults> = ({ results, isLoading }) => {
   if (results?.length === 0)
     return (
       <p>

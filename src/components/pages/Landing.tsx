@@ -8,7 +8,7 @@ import SearchByBreed from '~/components/utility/SearchByBreed';
 import SearchByState from '~/components/utility/SearchByState';
 import { links } from '~/config/siteConfig';
 
-const Landing: React.FC = () => {
+const Landing = () => {
   const { t } = useTranslation('common');
 
   return (

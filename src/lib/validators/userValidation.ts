@@ -26,7 +26,7 @@ export const userAccountDetailsSchema = z.object({
   image: z.string().optional(),
 });
 
-export const userEmailInviteSchema = z.object({
+export const userEmailSchema = z.object({
   email: z
     .string()
     .min(1, 'Email is required')
@@ -34,4 +34,4 @@ export const userEmailInviteSchema = z.object({
 });
 
 export type IUserAccountDetails = z.infer<typeof userAccountDetailsSchema>;
-export type IUserInviteDetails = z.infer<typeof userEmailInviteSchema>;
+export type IUserEmail = z.infer<typeof userEmailSchema>;

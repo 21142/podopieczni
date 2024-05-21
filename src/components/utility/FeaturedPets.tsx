@@ -13,7 +13,7 @@ import { Skeleton } from '../primitives/Skeleton';
 import BackgroundWavesFeaturedPets from './BackgroundWavesFeaturedPets';
 import PetsGrid from './PetsGrid';
 
-const FeaturedPets: React.FC = () => {
+const FeaturedPets = () => {
   const { data: featuredAnimals, isLoading } =
     api.pet.getFeaturedAnimals.useQuery();
 

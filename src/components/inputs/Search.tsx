@@ -1,15 +1,15 @@
 import { SearchIcon } from '@heroicons/react/outline';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { links } from '~/config/siteConfig';
 
-export interface ISearch {
+type ISearch = {
   query: string;
   typeOfResults: string;
-}
+};
 
-const Search: React.FC<ISearch> = ({ query, typeOfResults }) => {
+const Search: FC<ISearch> = ({ query, typeOfResults }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
   const { t } = useTranslation('common');

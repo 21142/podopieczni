@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, type FC } from 'react';
 import AuthButton from 'src/components/buttons/auth/AuthButton';
 import { Icons } from '~/components/icons/Icons';
 import Logo from '~/components/logos/Logo';
@@ -18,7 +18,7 @@ import { cn } from '~/lib/utils';
 import HeaderLink from '../links/HeaderLink';
 import { LanguageToggle } from '../utility/LanguageToggle';
 
-const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
+const DashboardHeader: FC<JSX.IntrinsicElements['header']> = ({
   className,
   ...headerProps
 }) => {

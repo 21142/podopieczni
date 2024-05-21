@@ -1,4 +1,4 @@
-import { type InputHTMLAttributes } from 'react';
+import { type FC, type InputHTMLAttributes } from 'react';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -11,7 +11,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   value?: string;
 }
 
-const TextInput: React.FC<Props> = ({
+const TextInput: FC<Props> = ({
   inputName,
   inputId,
   autoComplete,
@@ -27,7 +27,7 @@ const TextInput: React.FC<Props> = ({
         name={inputName}
         id={inputId}
         autoComplete={autoComplete ? autoComplete : ''}
-        className={`peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pt-5 pb-0 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm ${inputStyles}`}
+        className={`peer mt-1 block h-14 w-full appearance-none rounded-[0.2rem] border-0 border-b-[3px] border-primary-400 bg-transparent px-1 pb-0 pt-5 text-neutral-800 outline-none duration-200 ease-out focus:border-primary-400/80 focus:outline-none focus:ring-0 sm:text-sm ${inputStyles}`}
         placeholder=" "
       />
       <label

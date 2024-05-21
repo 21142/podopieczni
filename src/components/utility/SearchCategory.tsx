@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { species } from '~/static/species';
 import { Icons } from '../icons/Icons';
@@ -11,6 +11,7 @@ type Category = 'dog' | 'cat' | 'shelter';
 const SearchCategory = () => {
   const { t, i18n } = useTranslation('common');
   const router = useRouter();
+  const currentPath = usePathname();
   const [selectedCategory, setSelectedCategory] = useState<Category>();
 
   const categoryMappings: Record<Category, string> = useMemo(() => {
@@ -22,7 +23,6 @@ const SearchCategory = () => {
   }, []);
 
   useEffect(() => {
-    const currentPath = router.asPath;
     if (currentPath.includes(`${categoryMappings['dog']}`)) {
       setSelectedCategory('dog');
     } else if (currentPath.includes(`${categoryMappings['cat']}`)) {
@@ -30,7 +30,7 @@ const SearchCategory = () => {
     } else if (currentPath.includes('organizations')) {
       setSelectedCategory('shelter');
     }
-  }, [router.asPath, categoryMappings]);
+  }, [currentPath, categoryMappings]);
 
   const handleCategorySelection = (category: Category) => {
     setSelectedCategory(category);

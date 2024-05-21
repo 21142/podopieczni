@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
 import { links } from '~/config/siteConfig';
-import { useLoginToast } from '~/hooks/use-login-toast';
+import { useLoginToast } from '~/hooks/useLoginToast';
 import { type RecentlyAddedAnimals } from '~/types';
 import ShelterStatisticsCard from '../cards/ShelterStatisticsCard';
 import EmailInviteForm from '../forms/EmailInviteForm';
@@ -28,7 +28,7 @@ import {
 import { Chart } from '../utility/Chart';
 import RecentAdoptions from '../utility/RecentAdoptions';
 
-interface ShelterDashboardProps {
+type ShelterDashboardProps = {
   shelterName: string | undefined;
   shelterLogo: string | undefined | null;
   petsCount: number | undefined;
@@ -37,7 +37,7 @@ interface ShelterDashboardProps {
   usersCountChangeFromLastMonth: number | undefined;
   petsAddedLastMonthCount: number | undefined;
   recentlyAddedPets: RecentlyAddedAnimals | undefined;
-}
+};
 
 const ShelterDashboard: FC<ShelterDashboardProps> = ({
   shelterName,

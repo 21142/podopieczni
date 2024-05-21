@@ -1,3 +1,4 @@
+import { type FC } from 'react';
 import HeadMeta from '~/components/utility/HeadMeta';
 import { env } from '~/env.mjs';
 import DashboardHeader from '../navigations/DashboardHeader';
@@ -7,7 +8,7 @@ export interface IDashboardLayout
   justify?: 'items-center' | 'items-start' | 'items-end';
 }
 
-const DashboardLayout: React.FC<IDashboardLayout> = ({
+const DashboardLayout: FC<IDashboardLayout> = ({
   children,
   justify = 'items-center',
   ...divProps

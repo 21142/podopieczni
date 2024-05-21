@@ -3,11 +3,11 @@ import { type RecentlyAddedAnimal } from '~/types';
 import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 
-interface RecentlyAddedAnimalsRowProps {
+type RecentlyAddedAnimalsRowProps = {
   animal: RecentlyAddedAnimal;
   className?: string;
   onClick?: () => void;
-}
+};
 
 const RecentlyAddedAnimalsRow: FC<RecentlyAddedAnimalsRowProps> = ({
   animal,

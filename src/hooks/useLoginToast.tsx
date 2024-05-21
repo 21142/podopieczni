@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { buttonVariants } from '~/components/primitives/Button';
 import { links } from '~/config/siteConfig';
-import { toast } from '~/hooks/use-toast';
+import { toast } from '~/hooks/useToast';
 
 export const useLoginToast = () => {
   const loginToast = () => {
