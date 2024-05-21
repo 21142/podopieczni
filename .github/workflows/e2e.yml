@@ -23,7 +23,7 @@ env:
 jobs:
   setup:
     name: Setup E2E tests
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     outputs:
       preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
     steps:

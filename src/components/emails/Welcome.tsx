@@ -17,7 +17,7 @@ interface WelcomeEmailProps {
 }
 
 const WelcomeEmail = ({ name, href }: WelcomeEmailProps) => {
-  const previewText = `Welcome to podopieczni.pl ${name}!`;
+  const previewText = `Witamy w podopieczni ${name}!`;
   const fallbackUrl = `${env.NEXT_PUBLIC_BASE_URL}/welcome`;
   return (
     <Html>
