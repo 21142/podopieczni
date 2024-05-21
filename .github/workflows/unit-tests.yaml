@@ -22,9 +22,13 @@ env:
   UPLOADTHING_APP_ID: 'fake'
 
 jobs:
-  test:
-    name: Run unit tests
-    runs-on: windows-latest
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -35,8 +39,14 @@ jobs:
         with:
           node-version: 18
 
-      - name: Clear npm cache
-        run: npm cache clean --force
+      - name: Install dependencies
+        run: |
+          npm cache clean --force
+          npm ci
+          npm install
+
+      - name: List installed packages
+        run: npm list
       # - name: Cache dependencies
       #   uses: actions/cache@v3
       #   with:
