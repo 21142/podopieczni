@@ -1,5 +1,6 @@
 import { useLoadScript } from '@react-google-maps/api';
 import { TRPCError } from '@trpc/server';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -45,6 +46,7 @@ import Spinner from '~/components/spinner/Spinner';
 import Map from '~/components/utility/Map';
 import ShelterContactDetails from '~/components/utility/ShelterContactDetails';
 import { links } from '~/config/siteConfig';
+import { useLoginToast } from '~/hooks/useLoginToast';
 import { api } from '~/lib/api';
 import dayjs from '~/lib/dayjs';
 import { prisma } from '~/lib/db';
@@ -53,7 +55,9 @@ import { ssghelpers } from '~/lib/ssg';
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
+  const { data: session } = useSession();
   const { t } = useTranslation('common');
+  const { loginToast } = useLoginToast();
   const router = useRouter();
   const { locale } = router;
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi>();
@@ -102,10 +106,16 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
     );
 
   const handleLikeClick = async () => {
+    if (!session) {
+      loginToast();
+      return;
+    }
+
     if (!isLikeClicked) {
       await markPetAsFavoriteMutation.mutateAsync(pet.id);
-      setTimeout(() => {
-        router.push(links.favorites);
+      //                                            ^?
+      setTimeout(async () => {
+        await router.push(links.favorites);
       }, 1000);
     } else {
       await removePetFromFavoritesMutation.mutateAsync(pet.id);

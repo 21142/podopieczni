@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, FilterIcon, XIcon } from '@heroicons/react/outline';
 import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
@@ -22,6 +23,7 @@ import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
 import { cn } from '~/lib/utils';
+import { type PetAvailableForAdoption } from '~/types';
 
 export interface IResults {
   searchQuery: string;
@@ -57,7 +59,7 @@ const Results: NextPage<
 
   const { data: animals, isLoading } =
     api.pet.queryPetsAvailableForAdoptionFulltextSearch.useQuery({
-      searchQuery: searchQuery,
+      searchQuery,
     });
 
   return (
@@ -246,9 +248,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     : '';
   const locale = context.locale ?? 'en';
 
-  const availablePets = await fetch(
+  const availablePets: PetAvailableForAdoption[] = await fetch(
     `${baseUrl}/api/animals?search=${search}`
-  ).then((res) => res.json());
+  )
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Error fetching animals: ${res}`);
+      }
+      return res.json();
+    })
+    .then((data): PetAvailableForAdoption[] => {
+      return data;
+    });
 
   if (!availablePets || availablePets.length == 0)
     return {

@@ -18,14 +18,14 @@ const LoginToAccessPage = () => {
         <Button
           variant="primary"
           size="lg"
-          onClick={userFromSession ? () => void signOut() : () => void signIn()}
+          onClick={userFromSession ? () => signOut() : () => signIn()}
         >
           {userFromSession ? 'Wyloguj się' : 'Zaloguj się'}
         </Button>
         <Button
           variant="outline"
           size="lg"
-          onClick={() => void router.push(links.home)}
+          onClick={() => router.push(links.home)}
         >
           Strona główna
         </Button>

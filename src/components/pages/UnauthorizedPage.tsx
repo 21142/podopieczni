@@ -14,7 +14,7 @@ const UnauthorizedPage = () => {
         <Button
           variant="primary"
           size="lg"
-          onClick={() => void router.push(links.home)}
+          onClick={() => router.push(links.home)}
         >
           {t('button_navigate_home')}
         </Button>

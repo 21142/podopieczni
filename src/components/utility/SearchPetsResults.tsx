@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next';
 import { type FC } from 'react';
 import PetCard from '~/components/cards/PetCard';
 import { Variant } from '~/lib/constants';
@@ -10,11 +11,11 @@ type ISearchResults = {
 };
 
 const SearchPetsResults: FC<ISearchResults> = ({ results, isLoading }) => {
+  const { t } = useTranslation('common');
   if (results?.length === 0)
     return (
-      <p>
-        No results found, sorry but you need to try another search query or
-        filter selection
+      <p className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        {t('no_results_found')}
       </p>
     );
 

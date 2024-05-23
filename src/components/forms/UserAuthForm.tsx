@@ -37,7 +37,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         email: values.email,
       });
 
-      signIn('email', {
+      await signIn('email', {
         email: values.email,
       });
     } catch (error) {
