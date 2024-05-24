@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { species } from '~/static/species';
 import { Icons } from '../icons/Icons';
@@ -12,6 +12,8 @@ const SearchCategory = () => {
   const { t, i18n } = useTranslation('common');
   const router = useRouter();
   const currentPath = usePathname();
+  const currentParams = useSearchParams().toString();
+
   const [selectedCategory, setSelectedCategory] = useState<Category>();
 
   const categoryMappings: Record<Category, string> = useMemo(() => {
@@ -23,14 +25,14 @@ const SearchCategory = () => {
   }, []);
 
   useEffect(() => {
-    if (currentPath.includes(`${categoryMappings['dog']}`)) {
+    if (currentParams.includes(`${categoryMappings['dog']}`)) {
       setSelectedCategory('dog');
-    } else if (currentPath.includes(`${categoryMappings['cat']}`)) {
+    } else if (currentParams.includes(`${categoryMappings['cat']}`)) {
       setSelectedCategory('cat');
     } else if (currentPath.includes('organizations')) {
       setSelectedCategory('shelter');
     }
-  }, [currentPath, categoryMappings]);
+  }, [currentPath, currentParams, categoryMappings]);
 
   const handleCategorySelection = (category: Category) => {
     setSelectedCategory(category);

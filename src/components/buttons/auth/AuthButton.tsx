@@ -26,15 +26,15 @@ const AuthButton = () => {
   const { t } = useTranslation('common');
   const { toast } = useToast();
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     if (userFromSession) {
-      signOut();
+      await signOut();
       toast({
         description: t('nav_signout_toast_success'),
         variant: 'success',
       });
     } else {
-      signIn();
+      await signIn();
     }
   };
 
@@ -88,9 +88,9 @@ const AuthButton = () => {
         {userFromSession && <DropdownMenuSeparator />}
         <DropdownMenuItem
           className="cursor-pointer"
-          onSelect={(event) => {
+          onSelect={async (event) => {
             event.preventDefault();
-            handleButtonClick();
+            await handleButtonClick();
           }}
         >
           {userFromSession ? `${t('nav_signout')}` : `${t('nav_login')}`}

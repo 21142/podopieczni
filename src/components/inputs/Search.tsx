@@ -35,7 +35,7 @@ const Search: FC<ISearch> = ({ query, typeOfResults }) => {
       onSubmit={onSearchEvent}
     >
       <input
-        className="flex-grow border-none bg-transparent pl-3 pr-2 outline-none transition-colors duration-200 ease-in-out focus:ring-0 dark:placeholder-neutral-50"
+        className="flex-grow border-none bg-transparent pl-3 pr-2 outline-none transition-colors duration-200 ease-in-out focus:ring-0 dark:placeholder-neutral-50/80"
         type="text"
         placeholder={t('hero_search_placeholder')}
         value={searchQuery}

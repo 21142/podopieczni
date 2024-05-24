@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { buttonVariants } from 'src/components/primitives/Button';
 import { links } from '~/config/siteConfig';
 import { TypeOfResults } from '~/lib/constants';
@@ -27,19 +28,25 @@ const Hero = () => {
           query={''}
           typeOfResults={TypeOfResults.Animal}
         />
-        <div className="flex w-[19.5rem] items-center justify-center gap-x-5 pt-3">
-          <a
-            href={links.results(TypeOfResults.Animal)}
+        <div className="flex w-[19.5rem] items-center justify-center gap-x-3 pt-3 sm:gap-x-5">
+          <Link
+            href={links.searchDogs}
             className={buttonVariants({ variant: 'roundedButton' })}
           >
-            {t('hero_search_button_pets')}
-          </a>
-          <a
+            {t('search_category_dogs')}
+          </Link>
+          <Link
+            href={links.searchCats}
+            className={buttonVariants({ variant: 'roundedButton' })}
+          >
+            {t('search_category_cats')}
+          </Link>
+          <Link
             href={links.results(TypeOfResults.Organization)}
             className={buttonVariants({ variant: 'roundedButton' })}
           >
             {t('hero_search_button_shelters')}
-          </a>
+          </Link>
         </div>
       </div>
     </div>

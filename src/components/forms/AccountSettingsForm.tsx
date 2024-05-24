@@ -47,7 +47,7 @@ const AccountSettingsForm: FC<Props> = ({ user }) => {
     },
     onError: (error) => {
       if (error.data?.code === 'UNAUTHORIZED') {
-        void router.push(
+        router.push(
           `/api/auth/signin?callbackUrl=${env.NEXT_PUBLIC_BASE_URL}/user/settings&error=SessionRequired`
         );
       }

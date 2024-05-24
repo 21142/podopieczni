@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from 'src/components/primitives/Card';
 import { links } from '~/config/siteConfig';
+import { useLoginToast } from '~/hooks/useLoginToast';
 import { api } from '~/lib/api';
 import { Variant } from '~/lib/constants';
 import { Icons } from '../icons/Icons';
@@ -45,32 +46,31 @@ const PetCard: FC<IAnimalCard> = ({
   const { data: session } = useSession();
   const trpcContextUtils = api.useUtils();
   const { t } = useTranslation('common');
+  const { loginToast } = useLoginToast();
   const router = useRouter();
   const [isLikeClicked, setIsLikeClicked] = useState(isLikedByUser ?? false);
   const [isDonationClicked, setIsDonationClicked] = useState(false);
 
   const markPetAsFavoriteMutation = api.user.markPetAsFavorite.useMutation({
-    onSuccess: () => {
-      trpcContextUtils.user.getFavoritePets.invalidate();
-      trpcContextUtils.pet.getFeaturedAnimals.invalidate();
-      trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+    onSuccess: async () => {
+      await trpcContextUtils.user.getFavoritePets.invalidate();
+      await trpcContextUtils.pet.getFeaturedAnimals.invalidate();
+      await trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
     },
   });
 
   const removePetFromFavoritesMutation =
     api.user.removePetFromFavorites.useMutation({
-      onSuccess: () => {
-        trpcContextUtils.user.getFavoritePets.invalidate();
-        trpcContextUtils.pet.getFeaturedAnimals.invalidate();
-        trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+      onSuccess: async () => {
+        await trpcContextUtils.user.getFavoritePets.invalidate();
+        await trpcContextUtils.pet.getFeaturedAnimals.invalidate();
+        await trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
       },
     });
 
   const handleLikeClick = async () => {
     if (!session) {
-      setTimeout(() => {
-        router.push(links.favorites);
-      }, 1000);
+      loginToast();
       return;
     }
 
@@ -86,6 +86,10 @@ const PetCard: FC<IAnimalCard> = ({
   };
 
   const handleDonationClick = () => {
+    if (!session) {
+      loginToast();
+      return;
+    }
     console.log('TODO: add mutation to donate for a pet with id: ', id);
     setIsDonationClicked((prev) => !prev);
     setTimeout(() => {
@@ -120,7 +124,9 @@ const PetCard: FC<IAnimalCard> = ({
           <CardDescription className="flex justify-center">
             {variant === Variant.Organization
               ? t('organization_card_default_description')
-              : `${age} • ${breed} ${type ? `• ${type}` : ''}`}
+              : `${age ? `${age} ` : ''} ${breed ? `• ${breed}` : ''} ${
+                  type ? `• ${type}` : ''
+                }`}
           </CardDescription>
         </CardHeader>
         <CardContent

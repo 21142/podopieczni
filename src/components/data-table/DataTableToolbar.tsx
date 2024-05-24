@@ -89,7 +89,7 @@ export function DataTableToolbar<TData>({
         )}
         <DataTableVisibilityOptions table={table} />
         <Button
-          onClick={() => void router.push(redirectionLink)}
+          onClick={() => router.push(redirectionLink)}
           variant="primary"
           size="sm"
         >

@@ -72,9 +72,9 @@ const FilterPetsResultsForm = () => {
   const onSubmit = (values: IPetFilterOptions) => {
     const filters: string[] = [];
 
-    Object.entries(values).forEach(([name, value]) => {
+    Object.entries(values).forEach(([, value]) => {
       if (value !== '' && value !== undefined) {
-        filters.push(`${name}=${value}`);
+        filters.push(`${value}`);
       }
     });
 
@@ -180,8 +180,8 @@ const FilterPetsResultsForm = () => {
                           <CommandItem
                             value={shelterName.name}
                             key={shelterName.name}
-                            onSelect={() => {
-                              form.trigger('shelter');
+                            onSelect={async () => {
+                              await form.trigger('shelter');
                               form.setValue('shelter', shelterName.name);
                             }}
                           >
