@@ -38,4 +38,6 @@ export const links = {
   findYourPet: '/find-your-pet',
   signIn: '/signin',
   checkInbox: '/check-inbox',
+  associateShelter: '/shelter/associate',
+  registerShelter: '/shelter/register',
 };

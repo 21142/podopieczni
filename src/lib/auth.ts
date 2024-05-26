@@ -53,35 +53,26 @@ export const authOptions: NextAuthOptions = {
         url,
         provider: { server, from },
       }) => {
-        return new Promise((resolve, reject) => {
-          // TODO: Extract into a seprate function/service
-          const emailHtml = render(WelcomeEmail({ name: email, href: url }));
+        // TODO: Extract into a seprate function/service
+        const emailHtml = render(WelcomeEmail({ name: email, href: url }));
 
-          nodemailer.createTransport(server as string).sendMail(
-            {
-              to: email,
-              from,
-              subject: 'Sign in to podopieczni.pl',
-              text: `Sign in to podopieczni.pl\n${url}`,
-              html: emailHtml,
-            },
-            (error) => {
-              if (error) {
-                console.log(error);
-                return reject();
-              }
-              return resolve();
+        nodemailer.createTransport(server as string).sendMail(
+          {
+            to: email,
+            from,
+            subject: 'Witamy w podopieczni',
+            text: `Witamy w podopieczni\n${url}`,
+            html: emailHtml,
+          },
+          (error) => {
+            if (error) {
+              console.log(error);
             }
-          );
-        });
+          }
+        );
       },
     }),
   ],
-  theme: {
-    colorScheme: 'auto',
-    brandColor: '#a704b5',
-    logo: '/favicon.ico',
-  },
 };
 
 export const getServerAuthSession = (ctx: {

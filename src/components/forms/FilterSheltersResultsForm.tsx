@@ -89,7 +89,7 @@ const FilterSheltersResults = () => {
           name="address"
           render={({ field }) => (
             <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>{t('add_person_form_label_address')}</FormLabel>
+              <FormLabel>{t('form_label_address')}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input

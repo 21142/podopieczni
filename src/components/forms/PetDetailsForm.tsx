@@ -1751,7 +1751,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                             size="lg"
                             disabled={!form.formState.isDirty}
                           >
-                            {t('pet_details_form_edit_button')}
+                            {t('form_save_changes_button')}
                           </Button>
                         </div>
                       </form>
@@ -2424,7 +2424,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               render={({ field }) => (
                                 <FormItem className="col-span-6">
                                   <FormLabel>
-                                    {t('pet_adoption_description_label')}
+                                    {t('description_label')}
                                   </FormLabel>
                                   <FormControl>
                                     <Textarea

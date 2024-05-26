@@ -99,6 +99,7 @@ const PetCard: FC<IAnimalCard> = ({
 
   return (
     <Card
+      id="card"
       key={id}
       className={`relative ${
         variant === Variant.Organization

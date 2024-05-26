@@ -60,7 +60,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="sr-only">Email</FormLabel>
+                  <FormLabel
+                    htmlFor="email"
+                    className="sr-only"
+                  >
+                    Email
+                  </FormLabel>
                   <FormControl>
                     <Input
                       id="email"

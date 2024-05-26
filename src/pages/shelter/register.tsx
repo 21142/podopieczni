@@ -2,26 +2,31 @@ import type { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import ShelterSettings from '~/components/forms/ShelterDetailsForm';
+import ShelterDetailsForm from '~/components/forms/ShelterDetailsForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
-import { Roles } from '~/lib/constants';
 import { ssghelpers } from '~/lib/ssg';
 
-const OrganizationSettings: NextPage = () => {
+const RegisterShelter: NextPage = () => {
   const { data: session } = useSession();
 
   const { data: isUserAssociatedWithShelter, isLoading } =
     api.user.isUserAssociatedWithShelter.useQuery(undefined, {
       enabled: session?.user !== undefined,
+      retry: (failureCount) => {
+        return failureCount === 1;
+      },
     });
 
-  const { data: shelterDetails } = api.shelter.getShelterDetails.useQuery(
-    undefined,
-    { enabled: session?.user !== undefined }
-  );
+  if (!session) {
+    return (
+      <DashboardLayout>
+        <LoginToAccessPage />
+      </DashboardLayout>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -33,28 +38,15 @@ const OrganizationSettings: NextPage = () => {
     );
   }
 
-  if (!session)
-    return (
-      <DashboardLayout>
-        <LoginToAccessPage />
-      </DashboardLayout>
-    );
-
-  if (!shelterDetails)
-    return <p>No shelter details retrieved from our database.</p>;
-
   return (
     <DashboardLayout>
-      {isUserAssociatedWithShelter &&
-        session &&
-        (session.user.role === Roles.Shelter ||
-          session.user.role === Roles.Admin) && (
-          <ShelterSettings shelterDetails={shelterDetails} />
-        )}
-      {!isUserAssociatedWithShelter && (
+      {session && !isUserAssociatedWithShelter && (
+        <ShelterDetailsForm shelterDetails={null} />
+      )}
+      {isUserAssociatedWithShelter && (
         <div className="grid h-[50vh] content-center">
           <h1 className="text-center text-2xl font-semibold">
-            You are not associated with any shelter
+            You have already registered your shelter!
           </h1>
         </div>
       )}
@@ -62,10 +54,10 @@ const OrganizationSettings: NextPage = () => {
   );
 };
 
-export default OrganizationSettings;
+export default RegisterShelter;
 
 export async function getStaticProps({ locale }: { locale: string }) {
-  await ssghelpers.shelter.getShelterDetails.prefetch();
+  await ssghelpers.user.isUserAssociatedWithShelter.prefetch();
   return {
     props: {
       trpcState: ssghelpers.dehydrate(),

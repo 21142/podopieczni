@@ -2,23 +2,26 @@ import type { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/navigation';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import ShelterDashboard from '~/components/pages/ShelterDashboard';
 import Spinner from '~/components/spinner/Spinner';
+import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
-import { Roles } from '~/lib/constants';
 import { ssghelpers } from '~/lib/ssg';
 
 const Dashboard: NextPage = () => {
   const { data: session } = useSession();
+  const router = useRouter();
 
-  if (!session)
+  if (!session) {
     return (
       <DashboardLayout>
         <LoginToAccessPage />
       </DashboardLayout>
     );
+  }
 
   const { data: isUserAssociatedWithShelter, isLoading } =
     api.user.isUserAssociatedWithShelter.useQuery(undefined, {
@@ -70,34 +73,28 @@ const Dashboard: NextPage = () => {
     );
   }
 
-  if (!session)
-    return (
-      <DashboardLayout>
-        <LoginToAccessPage />
-      </DashboardLayout>
-    );
+  if (!isUserAssociatedWithShelter) {
+    router.push(links.associateShelter);
+  }
 
   return (
     <DashboardLayout>
-      {isUserAssociatedWithShelter &&
-        session &&
-        (session.user.role === Roles.Shelter ||
-          session.user.role === Roles.Admin) && (
-          <ShelterDashboard
-            shelterName={shelterDetails?.name}
-            shelterLogo={shelterDetails?.logo}
-            petsCount={petsCount}
-            petsCountChangeFromLastMonth={petsCountChangeFromLastMonth}
-            usersCount={usersCount}
-            usersCountChangeFromLastMonth={usersCountChangeFromLastMonth}
-            petsAddedLastMonthCount={petsAddedLastMonthCount}
-            recentlyAddedPets={
-              recentlyAddedPets && recentlyAddedPets?.length > 0
-                ? recentlyAddedPets
-                : mostRecentlyAddedPets
-            }
-          />
-        )}
+      {isUserAssociatedWithShelter && (
+        <ShelterDashboard
+          shelterName={shelterDetails?.name}
+          shelterLogo={shelterDetails?.logo}
+          petsCount={petsCount}
+          petsCountChangeFromLastMonth={petsCountChangeFromLastMonth}
+          usersCount={usersCount}
+          usersCountChangeFromLastMonth={usersCountChangeFromLastMonth}
+          petsAddedLastMonthCount={petsAddedLastMonthCount}
+          recentlyAddedPets={
+            recentlyAddedPets && recentlyAddedPets?.length > 0
+              ? recentlyAddedPets
+              : mostRecentlyAddedPets
+          }
+        />
+      )}
       {!isUserAssociatedWithShelter && (
         <div className="grid h-[50vh] content-center">
           <h1 className="text-center text-2xl font-semibold">
