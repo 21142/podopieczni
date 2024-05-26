@@ -1,5 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import HeaderLink from '~/components/links/HeaderLink';
+import { links } from '~/config/siteConfig';
+import { TypeOfResults } from '~/lib/constants';
 import { dogBreeds } from '~/static/breeds';
 
 const SearchByBreed = () => {
@@ -18,7 +20,10 @@ const SearchByBreed = () => {
         {breedsToDisplay.map((breed, index) => (
           <HeaderLink
             key={index}
-            href={`/pets?search=${breed[i18n.language as 'en' | 'pl']}`}
+            href={links.search(
+              TypeOfResults.Animal,
+              breed[i18n.language as 'en' | 'pl']
+            )}
             title={t(breed[i18n.language as 'en' | 'pl'])}
           />
         ))}

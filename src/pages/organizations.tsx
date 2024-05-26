@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   )
     .then((res) => {
       if (!res.ok) {
-        throw new Error(`Error fetching shelters: ${res}`);
+        throw new Error(`Error fetching shelters: ${res.toString()}`);
       }
       return res.json();
     })

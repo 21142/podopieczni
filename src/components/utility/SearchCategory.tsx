@@ -1,6 +1,8 @@
 import { useTranslation } from 'next-i18next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { links } from '~/config/siteConfig';
+import { TypeOfResults } from '~/lib/constants';
 import { species } from '~/static/species';
 import { Icons } from '../icons/Icons';
 import { Label } from '../primitives/Label';
@@ -37,9 +39,11 @@ const SearchCategory = () => {
   const handleCategorySelection = (category: Category) => {
     setSelectedCategory(category);
     if (category === 'shelter') {
-      router.push('/organizations');
+      router.push(links.organizations);
     } else {
-      router.push(`/pets?search=${categoryMappings[category]}`);
+      router.push(
+        links.search(TypeOfResults.Animal, categoryMappings[category])
+      );
     }
   };
 

@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import HeaderLink from '~/components/links/HeaderLink';
-import { voivodships } from '~/lib/constants';
+import { links } from '~/config/siteConfig';
+import { TypeOfResults, voivodships } from '~/lib/constants';
 
 const SearchByState = () => {
   const { t } = useTranslation('common');
@@ -16,7 +17,7 @@ const SearchByState = () => {
         {voivodships.map((voivodeship, index) => (
           <HeaderLink
             key={index}
-            href={`/pets?search=${voivodeship.name}`}
+            href={links.search(TypeOfResults.Animal, voivodeship.name)}
             title={voivodeship.name}
           />
         ))}
