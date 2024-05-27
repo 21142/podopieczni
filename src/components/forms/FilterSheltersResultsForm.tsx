@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
 import { useForm } from 'react-hook-form';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import { voivodships } from '~/lib/constants';
 import {
   shelterFilterOptionsSchema,
@@ -89,7 +89,7 @@ const FilterSheltersResults = () => {
           name="address"
           render={({ field }) => (
             <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>{t('add_person_form_label_address')}</FormLabel>
+              <FormLabel>{t('form_label_address')}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input

@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next';
 import { api } from '~/lib/api';
 
 const GlobalStatistics = () => {
-  const { data: adopted } = api.pet.getAdoptedPetsCount.useQuery();
+  const { data: adopted } = api.pet.getAdoptedPetsCountGlobally.useQuery();
   const { data: waiting } = api.pet.getPetsAvailableForAdoptionCount.useQuery();
   const { data: shelters } = api.shelter.getSheltersCount.useQuery();
   const { t } = useTranslation('common');
@@ -49,9 +49,13 @@ const GlobalStatistics = () => {
   };
 
   return (
-    <div className="flex min-h-[80%] items-center justify-center gap-[1rem] sm:gap-[3rem] md:gap-[5rem]">
+    <div className="relative flex min-h-[80%] items-center justify-center gap-[1rem] sm:gap-[3rem] md:gap-[5rem]">
+      <div
+        id="globalStatistics"
+        className="absolute -top-40"
+      />
       <div className="text-center">
-        <p className="bg-gradient-to-r from-primary-200 to-primary-600 bg-clip-text text-lg font-semibold text-transparent sm:text-2xl md:text-4xl lg:text-8xl">
+        <p className="bg-gradient-to-r from-primary-200 to-primary-600 bg-clip-text text-6xl font-semibold text-transparent lg:text-8xl">
           {adopted}
         </p>
         <p className="text-md font-light text-foreground sm:text-lg md:text-2xl">
@@ -59,7 +63,7 @@ const GlobalStatistics = () => {
         </p>
       </div>
       <div className="text-center">
-        <p className="bg-gradient-to-r from-primary-600 to-primary-200 bg-clip-text text-lg font-semibold text-transparent sm:text-2xl md:text-4xl lg:text-8xl">
+        <p className="bg-gradient-to-r from-primary-600 to-primary-200 bg-clip-text text-6xl font-semibold text-transparent lg:text-8xl">
           {waiting}
         </p>
         <p className="text-md font-light text-foreground sm:text-lg md:text-2xl">
@@ -67,7 +71,7 @@ const GlobalStatistics = () => {
         </p>
       </div>
       <div className="text-center">
-        <p className="bg-gradient-to-r from-primary-200 to-primary-600 bg-clip-text text-lg font-semibold text-transparent sm:text-2xl md:text-4xl lg:text-8xl">
+        <p className="bg-gradient-to-r from-primary-200 to-primary-600 bg-clip-text text-6xl font-semibold text-transparent lg:text-8xl">
           {shelters}
         </p>
         <p className="text-md font-light text-foreground sm:text-lg md:text-2xl">

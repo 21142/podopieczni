@@ -2,10 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useForm } from 'react-hook-form';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import {
-  userEmailInviteSchema,
-  type IUserInviteDetails,
+  userEmailSchema,
+  type IUserEmail,
 } from '~/lib/validators/userValidation';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
@@ -24,16 +24,16 @@ const EmailInviteForm = () => {
   const { toast } = useToast();
   const { t } = useTranslation('common');
 
-  const form = useForm<IUserInviteDetails>({
-    resolver: zodResolver(userEmailInviteSchema),
+  const form = useForm<IUserEmail>({
+    resolver: zodResolver(userEmailSchema),
   });
 
-  const onSubmit = async (values: IUserInviteDetails) => {
+  const onSubmit = async (values: IUserEmail) => {
     try {
       await signIn('email', {
         callbackUrl: '/',
         redirect: false,
-        email: form.getValues('email'),
+        email: values.email,
       });
       toast({
         description: t('invite_user_form_toast_success', {

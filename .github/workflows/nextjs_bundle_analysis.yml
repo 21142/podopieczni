@@ -4,9 +4,6 @@
 name: 'Next.js Bundle Analysis'
 
 on:
-  push:
-    branches:
-      - main # change this if your default branch is named differently
   workflow_dispatch:
 
 env:

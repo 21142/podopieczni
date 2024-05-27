@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
 import { links } from '~/config/siteConfig';
-import { useLoginToast } from '~/hooks/use-login-toast';
+import { useLoginToast } from '~/hooks/useLoginToast';
 import { type RecentlyAddedAnimals } from '~/types';
 import ShelterStatisticsCard from '../cards/ShelterStatisticsCard';
 import EmailInviteForm from '../forms/EmailInviteForm';
@@ -28,22 +28,26 @@ import {
 import { Chart } from '../utility/Chart';
 import RecentAdoptions from '../utility/RecentAdoptions';
 
-interface ShelterDashboardProps {
+type ShelterDashboardProps = {
   shelterName: string | undefined;
   shelterLogo: string | undefined | null;
   petsCount: number | undefined;
   petsCountChangeFromLastMonth: number | undefined;
+  adoptedPetsCount: number | undefined;
+  adoptedPetsCountChangeFromLastMonth: number | undefined;
   usersCount: number | undefined;
   usersCountChangeFromLastMonth: number | undefined;
   petsAddedLastMonthCount: number | undefined;
   recentlyAddedPets: RecentlyAddedAnimals | undefined;
-}
+};
 
 const ShelterDashboard: FC<ShelterDashboardProps> = ({
   shelterName,
   shelterLogo,
   petsCount,
   petsCountChangeFromLastMonth,
+  adoptedPetsCount,
+  adoptedPetsCountChangeFromLastMonth,
   usersCount,
   usersCountChangeFromLastMonth,
   petsAddedLastMonthCount,
@@ -115,8 +119,8 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
           </ShelterStatisticsCard>
           <ShelterStatisticsCard
             title={t('dashboard_statistics_card_adopted_title')}
-            value={42}
-            difference={1}
+            value={adoptedPetsCount}
+            difference={adoptedPetsCountChangeFromLastMonth}
             onClick={() => router.push(links.animals)}
           >
             <Icons.home className="h-4 w-4 text-muted-foreground dark:text-foreground" />

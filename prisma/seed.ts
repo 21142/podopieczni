@@ -68,8 +68,8 @@ async function seed() {
 
     const shelter1 = await prisma.shelter.create({
       data: {
-        name: 'Shelter 1',
-        taxId: 123456789,
+        name: 'Schronisko na Paluchu',
+        taxId: '5223190230',
         members: {
           connect: [{ id: alice.id }, { id: bob.id }],
         },
@@ -78,8 +78,8 @@ async function seed() {
 
     const shelter2 = await prisma.shelter.create({
       data: {
-        name: 'Shelter 2',
-        taxId: 987654321,
+        name: 'Schronisko dla zwierząt w Gaju',
+        taxId: '5470048840',
         members: {
           connect: { id: kate.id },
         },

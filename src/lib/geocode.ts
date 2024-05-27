@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 export type Location = google.maps.LatLngLiteral;
 
 async function geocode(address: string): Promise<Location> {

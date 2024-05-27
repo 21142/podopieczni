@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, type FC } from 'react';
 import {
   Card,
   CardContent,
@@ -12,11 +12,12 @@ import {
   CardTitle,
 } from 'src/components/primitives/Card';
 import { links } from '~/config/siteConfig';
+import { useLoginToast } from '~/hooks/useLoginToast';
 import { api } from '~/lib/api';
 import { Variant } from '~/lib/constants';
 import { Icons } from '../icons/Icons';
 
-export interface IAnimalCard {
+type IAnimalCard = {
   id: string;
   tag: string;
   title: string;
@@ -29,9 +30,9 @@ export interface IAnimalCard {
   type?: string;
   breed?: string;
   isLikedByUser?: boolean;
-}
+};
 
-const PetCard: React.FC<IAnimalCard> = ({
+const PetCard: FC<IAnimalCard> = ({
   id,
   title,
   body,
@@ -43,34 +44,33 @@ const PetCard: React.FC<IAnimalCard> = ({
   isLikedByUser,
 }) => {
   const { data: session } = useSession();
-  const petContext = api.useContext().pet;
-  const userContext = api.useContext().user;
+  const trpcContextUtils = api.useUtils();
   const { t } = useTranslation('common');
+  const { loginToast } = useLoginToast();
   const router = useRouter();
   const [isLikeClicked, setIsLikeClicked] = useState(isLikedByUser ?? false);
   const [isDonationClicked, setIsDonationClicked] = useState(false);
 
   const markPetAsFavoriteMutation = api.user.markPetAsFavorite.useMutation({
-    onSuccess: () => {
-      userContext.getFavoritePets.invalidate();
-      petContext.getFeaturedAnimals.invalidate();
-      petContext.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+    onSuccess: async () => {
+      await trpcContextUtils.user.getFavoritePets.invalidate();
+      await trpcContextUtils.pet.getFeaturedAnimals.invalidate();
+      await trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
     },
   });
+
   const removePetFromFavoritesMutation =
     api.user.removePetFromFavorites.useMutation({
-      onSuccess: () => {
-        userContext.getFavoritePets.invalidate();
-        petContext.getFeaturedAnimals.invalidate();
-        petContext.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+      onSuccess: async () => {
+        await trpcContextUtils.user.getFavoritePets.invalidate();
+        await trpcContextUtils.pet.getFeaturedAnimals.invalidate();
+        await trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
       },
     });
 
   const handleLikeClick = async () => {
     if (!session) {
-      setTimeout(() => {
-        router.push(links.favorites);
-      }, 1000);
+      loginToast();
       return;
     }
 
@@ -86,6 +86,10 @@ const PetCard: React.FC<IAnimalCard> = ({
   };
 
   const handleDonationClick = () => {
+    if (!session) {
+      loginToast();
+      return;
+    }
     console.log('TODO: add mutation to donate for a pet with id: ', id);
     setIsDonationClicked((prev) => !prev);
     setTimeout(() => {
@@ -95,6 +99,7 @@ const PetCard: React.FC<IAnimalCard> = ({
 
   return (
     <Card
+      id="card"
       key={id}
       className={`relative ${
         variant === Variant.Organization
@@ -114,13 +119,15 @@ const PetCard: React.FC<IAnimalCard> = ({
             width="360"
             height="400"
           />
-          <CardTitle className="flex justify-center pb-1 pt-5">
+          <CardTitle className="mx-auto flex max-w-[90%] justify-center pb-1 pt-5">
             {title}
           </CardTitle>
-          <CardDescription className="flex justify-center">
+          <CardDescription className="mx-auto flex max-w-[90%] justify-center">
             {variant === Variant.Organization
               ? t('organization_card_default_description')
-              : `${age} • ${breed} ${type ? `• ${type}` : ''}`}
+              : `${age ? `${age} ` : ''} ${breed ? `• ${breed}` : ''} ${
+                  type ? `• ${type}` : ''
+                }`}
           </CardDescription>
         </CardHeader>
         <CardContent
@@ -128,11 +135,11 @@ const PetCard: React.FC<IAnimalCard> = ({
           className="flex flex-col overflow-hidden pt-3"
         >
           <p className="h-12 text-center">
-            {body
-              ? `${body}`
+            {body && body !== '-'
+              ? body
               : variant === Variant.Organization
               ? ''
-              : 'Podopieczny poszukujący kochającego opiekuna i bezpiecznego domu.'}
+              : t('pet_card_default_description')}
           </p>
         </CardContent>
         {variant === Variant.Animal && (

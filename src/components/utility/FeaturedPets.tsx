@@ -13,7 +13,7 @@ import { Skeleton } from '../primitives/Skeleton';
 import BackgroundWavesFeaturedPets from './BackgroundWavesFeaturedPets';
 import PetsGrid from './PetsGrid';
 
-const FeaturedPets: React.FC = () => {
+const FeaturedPets = () => {
   const { data: featuredAnimals, isLoading } =
     api.pet.getFeaturedAnimals.useQuery();
 
@@ -25,7 +25,7 @@ const FeaturedPets: React.FC = () => {
       <div className="flex min-h-[84rem] w-full flex-col items-center justify-start bg-primary-200">
         <p
           id="featured"
-          className="py-10 text-3xl font-bold text-neutral-50 sm:text-4xl md:py-10 md:text-5xl lg:text-6xl 2xl:text-7xl"
+          className="p-2 py-10 text-3xl font-extrabold leading-[1.25] text-neutral-50 sm:text-4xl md:py-10 md:text-5xl lg:text-[3rem] xl:text-[3.5rem] 2xl:text-[4.5rem]"
         >
           {t('featured_pets_title')}
         </p>

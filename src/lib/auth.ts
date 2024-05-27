@@ -25,17 +25,11 @@ export const authOptions: NextAuthOptions = {
         },
       };
     },
-    redirect({ baseUrl }) {
-      return `${baseUrl}/welcome`;
-    },
   },
   pages: {
     newUser: links.welcome,
-    //TODO: Create custom pages and register them here when done
-    // signIn: '/auth/signin',
-    // signOut: '/auth/signout',
-    // error: '/auth/error', // Error code passed in query string as ?error=
-    // verifyRequest: '/auth/verify-request', // (used for check email message)
+    signIn: links.signIn,
+    verifyRequest: links.checkInbox,
   },
   secret: env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(prisma),
@@ -59,35 +53,26 @@ export const authOptions: NextAuthOptions = {
         url,
         provider: { server, from },
       }) => {
-        return new Promise((resolve, reject) => {
-          // TODO: Extract into a seprate function/service
-          const emailHtml = render(WelcomeEmail({ name: email, href: url }));
+        // TODO: Extract into a seprate function/service
+        const emailHtml = render(WelcomeEmail({ name: email, href: url }));
 
-          nodemailer.createTransport(server as string).sendMail(
-            {
-              to: email,
-              from,
-              subject: 'Sign in to podopieczni.pl',
-              text: `Sign in to podopieczni.pl\n${url}`,
-              html: emailHtml,
-            },
-            (error) => {
-              if (error) {
-                console.log(error);
-                return reject();
-              }
-              return resolve();
+        nodemailer.createTransport(server as string).sendMail(
+          {
+            to: email,
+            from,
+            subject: 'Witamy w podopieczni',
+            text: `Witamy w podopieczni\n${url}`,
+            html: emailHtml,
+          },
+          (error) => {
+            if (error) {
+              console.log(error);
             }
-          );
-        });
+          }
+        );
       },
     }),
   ],
-  theme: {
-    colorScheme: 'auto',
-    brandColor: '#a704b5',
-    logo: '/favicon.ico',
-  },
 };
 
 export const getServerAuthSession = (ctx: {

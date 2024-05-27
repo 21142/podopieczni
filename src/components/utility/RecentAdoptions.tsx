@@ -6,9 +6,9 @@ import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
 import RecentlyAddedAnimalsRow from './RecentlyAddedAnimalsRow';
 
-interface RecentAdoptionsProps {
+type RecentAdoptionsProps = {
   animals?: RecentlyAddedAnimals;
-}
+};
 
 const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
             key={animal.id}
             animal={animal}
             className="h-16 cursor-pointer pr-3 hover:bg-card"
-            onClick={() => void router.push(links.animal(animal.id))}
+            onClick={() => router.push(links.animal(animal.id))}
           />
         ))
       ) : (
@@ -31,7 +31,7 @@ const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
             Brak przyjętych w ostatnim miesiącu zwierzaków
           </span>
           <Button
-            onClick={() => void router.push(links.registerAnimal)}
+            onClick={() => router.push(links.registerAnimal)}
             size="lg"
             variant="primary"
             className="my-4"

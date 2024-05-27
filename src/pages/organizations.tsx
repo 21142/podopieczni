@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -15,6 +16,7 @@ import SearchCategory from '~/components/utility/SearchCategory';
 import SearchSheltersResults from '~/components/utility/SearchSheltersResults';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
+import { type Shelter } from '~/types';
 
 const Organizations: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -70,9 +72,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     : '';
   const locale = context.locale ?? 'en';
 
-  const shelters = await fetch(`${baseUrl}/api/shelters?search=${search}`).then(
-    (res) => res.json()
-  );
+  const shelters: Shelter[] = await fetch(
+    `${baseUrl}/api/shelters?search=${search}`
+  )
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`Error fetching shelters: ${res.toString()}`);
+      }
+      return res.json();
+    })
+    .then((data): Shelter[] => {
+      return data;
+    });
 
   return {
     props: {

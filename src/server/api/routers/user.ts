@@ -147,8 +147,18 @@ export const userRouter = createTRPCRouter({
     });
   }),
   getUsersCountChangeFromLastMonth: publicProcedure.query(async ({ ctx }) => {
+    const associatedShelter = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
     const thisMonthsCount = await ctx.prisma.user.count({
       where: {
+        worksAt: {
+          is: {
+            id: associatedShelter.id,
+          },
+        },
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         },
@@ -156,6 +166,11 @@ export const userRouter = createTRPCRouter({
     });
     const lastMonthsCount = await ctx.prisma.user.count({
       where: {
+        worksAt: {
+          is: {
+            id: associatedShelter.id,
+          },
+        },
         createdAt: {
           gt: new Date(new Date().setMonth(new Date().getMonth() - 2)),
           lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),

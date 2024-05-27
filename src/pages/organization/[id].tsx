@@ -88,6 +88,14 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
               </div>
             </div>
           </div>
+          {organization.description && (
+            <section className="px-6 py-8 sm:px-12 lg:px-48">
+              <h2 className="text-2xl font-bold">
+                {t('organization_mission')}
+              </h2>
+              <p className="mt-2">{organization.description}</p>
+            </section>
+          )}
           <div className="px-6 py-8 sm:px-12 lg:px-48">
             <ShelterContactDetails
               organizationAddress={organizationAddress}
@@ -95,14 +103,6 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
               organizationEmail={organization.email}
             />
           </div>
-          {/* {organization.mission_statement && (
-            <section className="px-6 py-8 sm:px-12 lg:px-48">
-              <h2 className="text-2xl font-bold">
-                {t('organization_mission')}
-              </h2>
-              <p className="mt-2">{organization.mission_statement}</p>
-            </section>
-          )} */}
           <section className="mt-8">
             <h2 className="mb-4 px-6 py-8 text-2xl font-bold sm:px-12 lg:px-48">
               {t('organization_location')}

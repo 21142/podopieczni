@@ -1,6 +1,8 @@
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { links } from '~/config/siteConfig';
+import { TypeOfResults } from '~/lib/constants';
 import { species } from '~/static/species';
 import { Icons } from '../icons/Icons';
 import { Label } from '../primitives/Label';
@@ -11,6 +13,9 @@ type Category = 'dog' | 'cat' | 'shelter';
 const SearchCategory = () => {
   const { t, i18n } = useTranslation('common');
   const router = useRouter();
+  const currentPath = usePathname();
+  const currentParams = useSearchParams().toString();
+
   const [selectedCategory, setSelectedCategory] = useState<Category>();
 
   const categoryMappings: Record<Category, string> = useMemo(() => {
@@ -22,22 +27,23 @@ const SearchCategory = () => {
   }, []);
 
   useEffect(() => {
-    const currentPath = router.asPath;
-    if (currentPath.includes(`${categoryMappings['dog']}`)) {
+    if (currentParams.includes(`${categoryMappings['dog']}`)) {
       setSelectedCategory('dog');
-    } else if (currentPath.includes(`${categoryMappings['cat']}`)) {
+    } else if (currentParams.includes(`${categoryMappings['cat']}`)) {
       setSelectedCategory('cat');
     } else if (currentPath.includes('organizations')) {
       setSelectedCategory('shelter');
     }
-  }, [router.asPath, categoryMappings]);
+  }, [currentPath, currentParams, categoryMappings]);
 
   const handleCategorySelection = (category: Category) => {
     setSelectedCategory(category);
     if (category === 'shelter') {
-      router.push('/organizations');
+      router.push(links.organizations);
     } else {
-      router.push(`/pets?search=${categoryMappings[category]}`);
+      router.push(
+        links.search(TypeOfResults.Animal, categoryMappings[category])
+      );
     }
   };
 

@@ -1,9 +1,10 @@
 import { MenuAlt2Icon, XIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, type FC } from 'react';
 import AuthButton from 'src/components/buttons/auth/AuthButton';
 import { Icons } from '~/components/icons/Icons';
 import Logo from '~/components/logos/Logo';
@@ -17,12 +18,13 @@ import { cn } from '~/lib/utils';
 import HeaderLink from '../links/HeaderLink';
 import { LanguageToggle } from '../utility/LanguageToggle';
 
-const DashboardHeader: React.FC<JSX.IntrinsicElements['header']> = ({
+const DashboardHeader: FC<JSX.IntrinsicElements['header']> = ({
   className,
   ...headerProps
 }) => {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
-  const { data: userFromSession } = useUserFromSessionQuery();
+  const { data: session } = useSession();
+  const { data: userFromSession } = useUserFromSessionQuery(session);
 
   const { systemTheme, theme } = useTheme();
   const currentTheme = theme === 'system' ? systemTheme : theme;

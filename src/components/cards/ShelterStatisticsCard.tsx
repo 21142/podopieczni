@@ -2,14 +2,14 @@ import { useTranslation } from 'next-i18next';
 import { type FC } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../primitives/Card';
 
-interface ShelterStatisticsCardProps {
+type ShelterStatisticsCardProps = {
   title: string;
   value: number | undefined;
   difference: number | undefined;
   currency?: string;
   children?: React.ReactElement;
   onClick?: () => void;
-}
+};
 
 const ShelterStatisticsCard: FC<ShelterStatisticsCardProps> = ({
   title,

@@ -31,7 +31,7 @@ const People: NextPage = () => {
     );
   }
 
-  if (error || sessionData.role === Roles.Adopter)
+  if (error || sessionData?.role === Roles.Adopter)
     return (
       <DashboardLayout>
         <UnauthorizedPage />

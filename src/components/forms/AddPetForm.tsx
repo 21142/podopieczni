@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodError } from 'zod';
 import { links } from '~/config/siteConfig';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
 import { cn, mapIntakeEventDate } from '~/lib/utils';
@@ -54,7 +54,7 @@ import Spinner from '../spinner/Spinner';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
 const AddPetForm = () => {
-  const trpc = api.useContext().pet;
+  const trpc = api.useUtils();
   const { toast } = useToast();
   const router = useRouter();
   const { t, i18n } = useTranslation('common');
@@ -64,7 +64,7 @@ const AddPetForm = () => {
 
   const addPetMutation = api.pet.add.useMutation({
     onSuccess: async () => {
-      await trpc.getAllPetsDataForTable.invalidate();
+      await trpc.pet.getAllPetsDataForTable.invalidate();
     },
     onSettled(data) {
       form.reset();
@@ -149,8 +149,8 @@ const AddPetForm = () => {
                 <UploadButton
                   endpoint="imageUploader"
                   onClientUploadComplete={(res) => {
-                    res && setAvatarUrl(res[0]?.fileUrl as string);
-                    res && form.setValue('image', res[0]?.fileUrl as string);
+                    res && setAvatarUrl(res[0]?.url as string);
+                    res && form.setValue('image', res[0]?.url as string);
                     toast({
                       description: t('pet_image_toast_upload_success'),
                       variant: 'success',
@@ -606,9 +606,9 @@ const AddPetForm = () => {
                 className="col-span-6 justify-self-start"
                 onClick={() => setAddingAnotherAnimal(false)}
                 size="lg"
-                disabled={addPetMutation.isLoading}
+                disabled={addPetMutation.isPending}
               >
-                {addPetMutation.isLoading ? (
+                {addPetMutation.isPending ? (
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   t('form_button_save')
@@ -618,10 +618,10 @@ const AddPetForm = () => {
                 type="submit"
                 className="justify-self-start"
                 size="lg"
-                disabled={addPetMutation.isLoading}
+                disabled={addPetMutation.isPending}
                 onClick={() => setAddingAnotherAnimal(true)}
               >
-                {addPetMutation.isLoading ? (
+                {addPetMutation.isPending ? (
                   <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   t('add_pet_form_button_save_add_another')

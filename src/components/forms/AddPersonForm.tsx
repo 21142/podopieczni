@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
 import { links } from '~/config/siteConfig';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
 import {
@@ -46,7 +46,7 @@ export const RolesMap: Record<
 };
 
 const AddPersonForm = () => {
-  const trpc = api.useContext().user;
+  const trpc = api.useUtils();
   const router = useRouter();
   const { toast } = useToast();
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -54,7 +54,7 @@ const AddPersonForm = () => {
 
   const addUserMutation = api.user.add.useMutation({
     onSuccess: async () => {
-      await trpc.getAllPeopleAssociatedWithShelter.invalidate();
+      await trpc.user.getAllPeopleAssociatedWithShelter.invalidate();
     },
     onSettled() {
       router.push(links.users);
@@ -128,8 +128,8 @@ const AddPersonForm = () => {
                   <UploadButton
                     endpoint="imageUploader"
                     onClientUploadComplete={(res) => {
-                      res && setAvatarUrl(res[0]?.fileUrl as string);
-                      res && form.setValue('image', res[0]?.fileUrl as string);
+                      res && setAvatarUrl(res[0]?.url as string);
+                      res && form.setValue('image', res[0]?.url as string);
                     }}
                     onUploadError={(error: Error) => {
                       toast({
@@ -255,7 +255,7 @@ const AddPersonForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_email')}</FormLabel>
+                  <FormLabel>{t('form_label_email')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -289,7 +289,7 @@ const AddPersonForm = () => {
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_phone')}</FormLabel>
+                  <FormLabel>{t('form_label_phone')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -338,7 +338,7 @@ const AddPersonForm = () => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_address')}</FormLabel>
+                  <FormLabel>{t('form_label_address')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -354,7 +354,7 @@ const AddPersonForm = () => {
               name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_city')}</FormLabel>
+                  <FormLabel>{t('form_label_city')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -370,7 +370,7 @@ const AddPersonForm = () => {
               name="postCode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_zip_code')}</FormLabel>
+                  <FormLabel>{t('form_label_zip_code')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -386,7 +386,7 @@ const AddPersonForm = () => {
               name="state"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_state')}</FormLabel>
+                  <FormLabel>{t('form_label_state')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -402,7 +402,7 @@ const AddPersonForm = () => {
               name="country"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_country')}</FormLabel>
+                  <FormLabel>{t('form_label_country')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -417,9 +417,9 @@ const AddPersonForm = () => {
               type="submit"
               className="col-span-2 justify-self-start"
               size="lg"
-              disabled={addUserMutation.isLoading}
+              disabled={addUserMutation.isPending}
             >
-              {addUserMutation.isLoading ? (
+              {addUserMutation.isPending ? (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 t('form_button_save')

@@ -1,13 +1,9 @@
 name: E2E Tests
 on:
-  pull_request:
-  push:
-    branches:
-      - main
-      - dev
+  workflow_dispatch:
 
 env:
-  DATABASE_URL: 'https://fake.com'
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
   NEXTAUTH_SECRET: 'fake'
   NEXTAUTH_URL: 'https://fake.com'
   GOOGLE_ID: 'fake'
@@ -23,7 +19,7 @@ env:
 jobs:
   setup:
     name: Setup E2E tests
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     outputs:
       preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
     steps:

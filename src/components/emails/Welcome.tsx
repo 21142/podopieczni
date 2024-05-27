@@ -3,13 +3,13 @@ import {
   Button,
   Container,
   Head,
-  Heading,
   Html,
   Preview,
   Section,
   Tailwind,
   Text,
 } from '@react-email/components';
+import { env } from '~/env.mjs';
 
 interface WelcomeEmailProps {
   name: string | null | undefined;
@@ -17,38 +17,43 @@ interface WelcomeEmailProps {
 }
 
 const WelcomeEmail = ({ name, href }: WelcomeEmailProps) => {
-  const previewText = `Welcome to podopieczni.pl ${name}!`;
-  const fallbackUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/welcome`;
+  const previewText = `Witamy w podopieczni ${name}!`;
+  const fallbackUrl = `${env.NEXT_PUBLIC_BASE_URL}/welcome`;
   return (
     <Html>
       <Head />
       <Preview>{previewText}</Preview>
       <Tailwind>
-        <Body className="my-auto mx-auto bg-white font-sans">
-          <Container className="my-10 mx-auto w-[465px] p-5">
-            <Heading className="my-8 mx-0 p-0 text-center text-2xl font-normal">
-              Welcome to podopieczni!
-            </Heading>
-            <Text className="text-sm">Hello {name},</Text>
-            <Text className="text-sm">
-              We&apos;re excited to have you onboard at <span>podopieczni</span>
-              . We hope you will enjoy your journey with us. If you have any
-              questions or need assistance, feel free to reach out.
+        <Body className="mx-auto my-auto bg-white font-sans">
+          <Container className="mx-auto my-10 w-[465px] p-5">
+            <Text className="mx-0 my-8 p-0 text-center text-2xl font-bold">
+              Witamy w{' '}
+              <span className="font-extrabold text-fuchsia-600">
+                podopieczni
+              </span>
+              !
             </Text>
-            <Section className="mt-[32px] mb-[32px] text-center">
+            <Text className="text-sm">Cześć {name},</Text>
+            <Text className="text-sm">
+              Jesteśmy bardzo podekscytowani, że tu jesteś. Mamy nadzieję, że
+              będziesz czerpać radość podczas korzystania z naszej platformy.
+            </Text>
+            <Text className="text-sm">
+              Jeśli masz jakiekolwiek pytania lub potrzebujesz pomocy, nie wahaj
+              się z nami skontaktować. Jesteśmy po to, aby Ci pomóc!
+            </Text>
+            <Section className="mb-[32px] mt-[32px] text-center">
               <Button
-                pX={20}
-                pY={12}
-                className="rounded bg-[#00A3FF] text-center text-xs font-semibold text-white no-underline"
+                className="rounded-md bg-[#A704B5] p-3 text-center text-xs font-semibold text-white no-underline"
                 href={href ?? fallbackUrl}
               >
-                Get Started
+                Zaloguj się i zaczynajmy!
               </Button>
             </Section>
             <Text className="text-sm">
-              Cheers,
+              Pozdrawiamy,
               <br />
-              Podopieczni Team
+              Zespół podopieczni
             </Text>
           </Container>
         </Body>

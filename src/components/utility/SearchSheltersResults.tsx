@@ -1,17 +1,21 @@
+import { useTranslation } from 'next-i18next';
+import { type FC } from 'react';
 import PetCard from '~/components/cards/PetCard';
 import { Variant } from '~/lib/constants';
 import { type Shelter } from '~/types';
 
-export interface ISearchResults {
+type ISearchResults = {
   results?: Shelter[];
-}
+};
 
-const SearchSheltersResults: React.FC<ISearchResults> = ({ results }) => {
+const SearchSheltersResults: FC<ISearchResults> = ({ results }) => {
+  const { t } = useTranslation('common');
   if (results?.length === 0)
     return (
-      <p>
+      <p className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
         No results found, sorry but you need to try another search query or
         filter selection
+        {t('no_results_found')}
       </p>
     );
 

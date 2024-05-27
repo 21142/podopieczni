@@ -1,14 +1,14 @@
-import { signIn, signOut } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
-import type { FC } from 'react';
 import { links } from '~/config/siteConfig';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { Button } from '../primitives/Button';
 
-const LoginToAccessPage: FC = ({}) => {
+const LoginToAccessPage = () => {
   const router = useRouter();
-  const { data: userFromSession } = useUserFromSessionQuery();
+  const { data: session } = useSession();
+  const { data: userFromSession } = useUserFromSessionQuery(session);
   const { t } = useTranslation('common');
 
   return (
@@ -18,14 +18,14 @@ const LoginToAccessPage: FC = ({}) => {
         <Button
           variant="primary"
           size="lg"
-          onClick={userFromSession ? () => void signOut() : () => void signIn()}
+          onClick={userFromSession ? () => signOut() : () => signIn()}
         >
           {userFromSession ? 'Wyloguj się' : 'Zaloguj się'}
         </Button>
         <Button
-          variant="outline"
+          variant="default"
           size="lg"
-          onClick={() => void router.push(links.home)}
+          onClick={() => router.push(links.home)}
         >
           Strona główna
         </Button>

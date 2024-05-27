@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { links } from '~/config/siteConfig';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
 import { cn } from '~/lib/utils';
@@ -72,9 +72,9 @@ const FilterPetsResultsForm = () => {
   const onSubmit = (values: IPetFilterOptions) => {
     const filters: string[] = [];
 
-    Object.entries(values).forEach(([name, value]) => {
+    Object.entries(values).forEach(([, value]) => {
       if (value !== '' && value !== undefined) {
-        filters.push(`${name}=${value}`);
+        filters.push(`${value}`);
       }
     });
 
@@ -180,8 +180,8 @@ const FilterPetsResultsForm = () => {
                           <CommandItem
                             value={shelterName.name}
                             key={shelterName.name}
-                            onSelect={() => {
-                              form.trigger('shelter');
+                            onSelect={async () => {
+                              await form.trigger('shelter');
                               form.setValue('shelter', shelterName.name);
                             }}
                           >

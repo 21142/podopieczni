@@ -2,7 +2,7 @@ import { type Row } from '@tanstack/react-table';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { links } from '~/config/siteConfig';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { idSchema } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
@@ -61,7 +61,7 @@ export function DataTableRowActions<TData>({
       await trpc.user.getAllPeopleAssociatedWithShelter.invalidate();
     },
   });
-  const trpc = api.useContext();
+  const trpc = api.useUtils();
   const router = useRouter();
   const { t } = useTranslation('common');
 
@@ -91,8 +91,8 @@ export function DataTableRowActions<TData>({
   };
 
   if (
-    deletePetMutation.status === 'loading' ||
-    deletePersonMutation.status === 'loading'
+    deletePetMutation.status === 'pending' ||
+    deletePersonMutation.status === 'pending'
   ) {
     return (
       <Icons.spinner className="ml-2 h-4 w-4 animate-spin text-primary-200" />
