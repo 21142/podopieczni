@@ -255,7 +255,7 @@ const AddPersonForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_email')}</FormLabel>
+                  <FormLabel>{t('form_label_email')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -289,7 +289,7 @@ const AddPersonForm = () => {
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_phone')}</FormLabel>
+                  <FormLabel>{t('form_label_phone')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -338,7 +338,7 @@ const AddPersonForm = () => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_address')}</FormLabel>
+                  <FormLabel>{t('form_label_address')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -354,7 +354,7 @@ const AddPersonForm = () => {
               name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_city')}</FormLabel>
+                  <FormLabel>{t('form_label_city')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -370,7 +370,7 @@ const AddPersonForm = () => {
               name="postCode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_zip_code')}</FormLabel>
+                  <FormLabel>{t('form_label_zip_code')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -386,7 +386,7 @@ const AddPersonForm = () => {
               name="state"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_state')}</FormLabel>
+                  <FormLabel>{t('form_label_state')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""
@@ -402,7 +402,7 @@ const AddPersonForm = () => {
               name="country"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('add_person_form_label_country')}</FormLabel>
+                  <FormLabel>{t('form_label_country')}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder=""

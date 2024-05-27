@@ -1,5 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { Roles } from '~/lib/constants';
+import { shelterSettingsSchema } from '~/lib/validators/shelterValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
@@ -31,6 +33,73 @@ export const shelterRouter = createTRPCRouter({
 
     return shelter;
   }),
+  upsertShelterDetails: protectedProcedure
+    .input(shelterSettingsSchema)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+
+      const shelter = await ctx.prisma.shelter.findFirst({
+        where: {
+          members: {
+            some: {
+              id: userId,
+            },
+          },
+        },
+      });
+
+      if (!shelter) {
+        await ctx.prisma.shelter.create({
+          data: {
+            ...input,
+            members: {
+              connect: { id: userId },
+            },
+            address: {
+              create: {
+                address: input.address?.address,
+                city: input.address?.city,
+                state: input.address?.state,
+                postCode: input.address?.postCode,
+                country: input.address?.country,
+              },
+            },
+          },
+        });
+
+        await ctx.prisma.user.update({
+          where: { id: userId },
+          data: { role: Roles.Admin },
+        });
+      } else {
+        return await ctx.prisma.shelter.update({
+          where: {
+            id: shelter.id,
+          },
+          data: {
+            ...input,
+            address: {
+              upsert: {
+                create: {
+                  address: input.address?.address,
+                  city: input.address?.city,
+                  state: input.address?.state,
+                  postCode: input.address?.postCode,
+                  country: input.address?.country,
+                },
+                update: {
+                  address: input.address?.address,
+                  city: input.address?.city,
+                  state: input.address?.state,
+                  postCode: input.address?.postCode,
+                  country: input.address?.country,
+                },
+              },
+            },
+          },
+        });
+      }
+    }),
   getShelterById: publicProcedure
     .input(
       z.object({

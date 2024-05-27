@@ -7,6 +7,10 @@ export const links = {
   userSettings: '/user/settings',
   favorites: '/user/favorites',
   featured: '#featured',
+  globalStatistics: '#globalStatistics',
+  searchByBreed: '#searchByBreed',
+  searchByState: '#searchByState',
+  footer: '#footer',
   scrollToPosition: '#scrollToPosition',
   results: (type: string) => `/${type}`,
   resultsPosition: '/pets#scrollToPosition',
@@ -38,4 +42,6 @@ export const links = {
   findYourPet: '/find-your-pet',
   signIn: '/signin',
   checkInbox: '/check-inbox',
+  associateShelter: '/shelter/associate',
+  registerShelter: '/shelter/register',
 };

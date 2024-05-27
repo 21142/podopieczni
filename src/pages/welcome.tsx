@@ -34,7 +34,9 @@ const Welcome: NextPage = () => {
 
   if (userFromSession?.role) {
     const redirectSlug: string =
-      userFromSession?.role == Roles.Adopter ? links.home : links.dashboard;
+      userFromSession?.role == Roles.Adopter
+        ? links.home
+        : links.associateShelter;
     router.replace(redirectSlug);
   }
 

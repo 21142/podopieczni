@@ -23,7 +23,7 @@ const LoginToAccessPage = () => {
           {userFromSession ? 'Wyloguj się' : 'Zaloguj się'}
         </Button>
         <Button
-          variant="outline"
+          variant="default"
           size="lg"
           onClick={() => router.push(links.home)}
         >

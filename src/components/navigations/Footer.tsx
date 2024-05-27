@@ -1,14 +1,21 @@
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import BackgroundWavesFooter from '~/components/utility/BackgroundWavesFooter';
 import { links } from '~/config/siteConfig';
-import { TypeOfResults } from '~/lib/constants';
+import { Roles, TypeOfResults } from '~/lib/constants';
 
 const Footer = () => {
   const { t } = useTranslation('common');
+  const { data: session } = useSession();
+
   return (
     <>
       <BackgroundWavesFooter className="-z-10 -mt-40 aspect-[10/1] sm:mt-0" />
-      <footer className="w-full bg-primary-300">
+      <footer className="relative w-full bg-primary-300">
+        <div
+          id="footer"
+          className="absolute -top-32"
+        />
         <div className="flex flex-col items-center justify-center">
           <div className="mt-2 grid max-w-[77.5rem] grid-cols-2 gap-6 px-6 py-8 text-neutral-50 md:grid-cols-4">
             <div>
@@ -24,6 +31,16 @@ const Footer = () => {
                     {t('nav_home')}
                   </a>
                 </li>
+                {session?.user.role !== Roles.Adopter && (
+                  <li className="mb-4">
+                    <a
+                      href={links.dashboard}
+                      className="hover:underline"
+                    >
+                      {t('nav_shelter')}
+                    </a>
+                  </li>
+                )}
                 <li className="mb-4">
                   <a
                     href={links.adoption}

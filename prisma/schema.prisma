@@ -103,9 +103,9 @@ model Shelter {
   name        String
   logo        String?
   description String?
-  email       String?      @unique
+  email       String?      
   phoneNumber String?      @db.VarChar(13)
-  taxId       Int
+  taxId       String
   website     String?
   address     AddressInfo?
   pets        Pet[]

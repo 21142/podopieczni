@@ -253,7 +253,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   )
     .then((res) => {
       if (!res.ok) {
-        throw new Error(`Error fetching animals: ${res}`);
+        throw new Error(`Error fetching animals: ${res.toString()}`);
       }
       return res.json();
     })

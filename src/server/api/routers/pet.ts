@@ -30,7 +30,7 @@ export const petRouter = createTRPCRouter({
       },
     });
   }),
-  getAdoptedPetsCount: publicProcedure.query(async ({ ctx }) => {
+  getAdoptedPetsCountGlobally: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.pet.count({
       where: {
         outcomeEvents: {
@@ -41,6 +41,60 @@ export const petRouter = createTRPCRouter({
       },
     });
   }),
+  getAdoptedPetsCount: protectedProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
+    return await ctx.prisma.pet.count({
+      where: {
+        shelterId: shelterAssociatedWithUser?.id,
+        outcomeEvents: {
+          some: {
+            eventType: 'ADOPTION',
+          },
+        },
+      },
+    });
+  }),
+  getAdoptedPetsCountChangeFromLastMonth: protectedProcedure.query(
+    async ({ ctx }) => {
+      const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
+
+      const thisMonthsCount = await ctx.prisma.pet.count({
+        where: {
+          shelterId: shelterAssociatedWithUser?.id,
+          outcomeEvents: {
+            some: {
+              eventType: 'ADOPTION',
+              createdAt: {
+                gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+              },
+            },
+          },
+        },
+      });
+      const lastMonthsCount = await ctx.prisma.pet.count({
+        where: {
+          shelterId: shelterAssociatedWithUser?.id,
+          outcomeEvents: {
+            some: {
+              eventType: 'ADOPTION',
+              createdAt: {
+                gt: new Date(new Date().setMonth(new Date().getMonth() - 2)),
+                lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+              },
+            },
+          },
+        },
+      });
+      return thisMonthsCount - lastMonthsCount;
+    }
+  ),
   getFeaturedAnimals: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.pet
       .findMany({
