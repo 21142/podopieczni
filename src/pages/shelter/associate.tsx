@@ -37,9 +37,9 @@ const AssociateShelter: NextPage = () => {
 
   if (!session) {
     return (
-      <DashboardLayout>
+      <PageLayout>
         <LoginToAccessPage />
-      </DashboardLayout>
+      </PageLayout>
     );
   }
 

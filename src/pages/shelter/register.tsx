@@ -4,6 +4,7 @@ import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShelterDetailsForm from '~/components/forms/ShelterDetailsForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
+import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
@@ -22,9 +23,9 @@ const RegisterShelter: NextPage = () => {
 
   if (!session) {
     return (
-      <DashboardLayout>
+      <PageLayout>
         <LoginToAccessPage />
-      </DashboardLayout>
+      </PageLayout>
     );
   }
 

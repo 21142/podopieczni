@@ -29,16 +29,16 @@ const WorkInProgress = () => {
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <Link
-            href={links.home}
+            href={links.results(TypeOfResults.Animal)}
             className={buttonVariants({ variant: 'primary', size: 'lg' })}
           >
-            {t('go_back_home')}
+            {t('find_pets')}
           </Link>
           <Link
-            href={links.results(TypeOfResults.Animal)}
+            href={links.home}
             className={buttonVariants({ variant: 'link' })}
           >
-            {t('find_pets')}
+            {t('go_back_home')}
           </Link>
         </div>
       </div>

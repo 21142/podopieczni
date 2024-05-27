@@ -26,26 +26,10 @@ const buttonVariants = cva(
           'cursor-pointer rounded-full border border-primary-300 dark:border-none text-primary-300 transition-colors duration-200 ease-in-out hover:bg-primary-300 hover:text-neutral-50 dark:bg-primary-300 dark:text-neutral-50 dark:hover:bg-primary-300/50',
         primaryLink:
           'bg-transparent dark:bg-transparent underline-offset-4 hover:underline text-primary-400 dark:text-primary-100 hover:text-primary-200 dark:hover:text-primary-200 hover:bg-transparent dark:hover:bg-transparent transition-colors',
-        primary: [
-          'bg-transparent',
-          'text-primary-300',
-          'border-[1px]',
-          'border-primary-300',
-          'hover:bg-primary-400',
-          'hover:text-white',
-          'dark:hover:bg-primary-400',
-          'dark:text-primary-300',
-        ],
-        secondary: [
-          'bg-transparent',
-          'text-neutral-400',
-          'border-toned/10',
-          'border-[1px]',
-          'hover:border-[1px]',
-          'hover:border-toned/10',
-          'hover:bg-toned/10',
-          'hover:text-neutral-500',
-        ],
+        primary:
+          'bg-primary-300 text-background dark:text-white dark:hover:bg-primary-400/80 hover:bg-primary-400/80',
+        secondary:
+          'bg-transparent marker:text-neutral-400 border-toned/10 border hover:border-toned/10 hover:bg-toned/10 hover:text-neutral-500',
       },
       size: {
         default: 'h-10 py-2 px-4',

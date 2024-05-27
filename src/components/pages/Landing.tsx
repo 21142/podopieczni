@@ -38,9 +38,45 @@ const Landing = () => {
         </Link>
 
         <FeaturedPets />
+        <div className="z-50 -mt-24 mb-96">
+          <Link
+            href={links.globalStatistics}
+            scroll={false}
+            aria-label="Przewiń w dół"
+          >
+            <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+          </Link>
+        </div>
         <GlobalStatistics />
+        <div className="mt-96">
+          <Link
+            href={links.searchByBreed}
+            scroll={false}
+            aria-label="Przewiń w dół"
+          >
+            <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+          </Link>
+        </div>
         <SearchByBreed />
+        <div className="mt-64">
+          <Link
+            href={links.searchByState}
+            scroll={false}
+            aria-label="Przewiń w dół"
+          >
+            <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+          </Link>
+        </div>
         <SearchByState />
+        <div className="z-50 sm:-mt-64">
+          <Link
+            href={links.footer}
+            scroll={false}
+            aria-label="Przewiń w dół"
+          >
+            <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -33,6 +33,8 @@ type ShelterDashboardProps = {
   shelterLogo: string | undefined | null;
   petsCount: number | undefined;
   petsCountChangeFromLastMonth: number | undefined;
+  adoptedPetsCount: number | undefined;
+  adoptedPetsCountChangeFromLastMonth: number | undefined;
   usersCount: number | undefined;
   usersCountChangeFromLastMonth: number | undefined;
   petsAddedLastMonthCount: number | undefined;
@@ -44,6 +46,8 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
   shelterLogo,
   petsCount,
   petsCountChangeFromLastMonth,
+  adoptedPetsCount,
+  adoptedPetsCountChangeFromLastMonth,
   usersCount,
   usersCountChangeFromLastMonth,
   petsAddedLastMonthCount,
@@ -115,8 +119,8 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
           </ShelterStatisticsCard>
           <ShelterStatisticsCard
             title={t('dashboard_statistics_card_adopted_title')}
-            value={42}
-            difference={1}
+            value={adoptedPetsCount}
+            difference={adoptedPetsCountChangeFromLastMonth}
             onClick={() => router.push(links.animals)}
           >
             <Icons.home className="h-4 w-4 text-muted-foreground dark:text-foreground" />

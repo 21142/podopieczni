@@ -4,6 +4,7 @@ import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
+import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import ShelterDashboard from '~/components/pages/ShelterDashboard';
 import Spinner from '~/components/spinner/Spinner';
@@ -15,52 +16,69 @@ const Dashboard: NextPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  if (!session) {
-    return (
-      <DashboardLayout>
-        <LoginToAccessPage />
-      </DashboardLayout>
-    );
-  }
-
   const { data: isUserAssociatedWithShelter, isLoading } =
     api.user.isUserAssociatedWithShelter.useQuery(undefined, {
       enabled: session?.user !== undefined,
+      retry: false,
     });
 
   const { data: usersCount } = api.user.getUsersCount.useQuery(undefined, {
     enabled: session?.user !== undefined,
+    retry: false,
   });
 
   const { data: usersCountChangeFromLastMonth } =
     api.user.getUsersCountChangeFromLastMonth.useQuery(undefined, {
       enabled: session?.user !== undefined,
+      retry: false,
     });
 
   const { data: petsCount } = api.pet.getPetsCount.useQuery(undefined, {
     enabled: session?.user !== undefined,
+    retry: false,
   });
+
   const { data: petsCountChangeFromLastMonth } =
     api.pet.getPetsCountChangeFromLastMonth.useQuery(undefined, {
       enabled: session?.user !== undefined,
+      retry: false,
+    });
+
+  const { data: adoptedPetsCount } = api.pet.getAdoptedPetsCount.useQuery(
+    undefined,
+    {
+      enabled: session?.user !== undefined,
+      retry: false,
+    }
+  );
+
+  const { data: adoptedPetsCountChangeFromLastMonth } =
+    api.pet.getAdoptedPetsCountChangeFromLastMonth.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+      retry: false,
     });
 
   const { data: recentlyAddedPets } =
     api.pet.getPetsAddedInTheLastMonth.useQuery(undefined, {
       enabled: session?.user !== undefined,
+      retry: false,
     });
+
   const { data: mostRecentlyAddedPets } =
     api.pet.getMostRecentlyAddedPets.useQuery(undefined, {
       enabled: session?.user !== undefined,
+      retry: false,
     });
+
   const { data: petsAddedLastMonthCount } =
     api.pet.getPetsCountChangeFromLastMonth.useQuery(undefined, {
       enabled: session?.user !== undefined,
+      retry: false,
     });
 
   const { data: shelterDetails } = api.shelter.getShelterDetails.useQuery(
     undefined,
-    { enabled: session?.user !== undefined }
+    { enabled: session?.user !== undefined, retry: false }
   );
 
   if (isLoading) {
@@ -70,6 +88,14 @@ const Dashboard: NextPage = () => {
           <Spinner />
         </div>
       </DashboardLayout>
+    );
+  }
+
+  if (!session) {
+    return (
+      <PageLayout>
+        <LoginToAccessPage />
+      </PageLayout>
     );
   }
 
@@ -85,6 +111,10 @@ const Dashboard: NextPage = () => {
           shelterLogo={shelterDetails?.logo}
           petsCount={petsCount}
           petsCountChangeFromLastMonth={petsCountChangeFromLastMonth}
+          adoptedPetsCount={adoptedPetsCount}
+          adoptedPetsCountChangeFromLastMonth={
+            adoptedPetsCountChangeFromLastMonth
+          }
           usersCount={usersCount}
           usersCountChangeFromLastMonth={usersCountChangeFromLastMonth}
           petsAddedLastMonthCount={petsAddedLastMonthCount}

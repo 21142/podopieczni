@@ -119,10 +119,10 @@ const PetCard: FC<IAnimalCard> = ({
             width="360"
             height="400"
           />
-          <CardTitle className="flex justify-center pb-1 pt-5">
+          <CardTitle className="mx-auto flex max-w-[90%] justify-center pb-1 pt-5">
             {title}
           </CardTitle>
-          <CardDescription className="flex justify-center">
+          <CardDescription className="mx-auto flex max-w-[90%] justify-center">
             {variant === Variant.Organization
               ? t('organization_card_default_description')
               : `${age ? `${age} ` : ''} ${breed ? `• ${breed}` : ''} ${
@@ -135,11 +135,11 @@ const PetCard: FC<IAnimalCard> = ({
           className="flex flex-col overflow-hidden pt-3"
         >
           <p className="h-12 text-center">
-            {body
-              ? `${body}`
+            {body && body !== '-'
+              ? body
               : variant === Variant.Organization
               ? ''
-              : 'Podopieczny poszukujący kochającego opiekuna i bezpiecznego domu.'}
+              : t('pet_card_default_description')}
           </p>
         </CardContent>
         {variant === Variant.Animal && (

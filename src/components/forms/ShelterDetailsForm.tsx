@@ -1,9 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TRPCClientError } from '@trpc/client';
-import { Upload } from 'lucide-react';
+import { UploadButton } from '@uploadthing/react';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodError } from 'zod';
 import { links } from '~/config/siteConfig';
@@ -13,6 +14,7 @@ import {
   shelterSettingsSchema,
   type IShelterSettings,
 } from '~/lib/validators/shelterValidation';
+import { type fileRouter } from '~/server/api/routers/uploadthing';
 import { type ShelterDetails } from '~/types';
 import { Badge } from '../primitives/Badge';
 import { Button } from '../primitives/Button';
@@ -42,6 +44,8 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
   const trpc = api.useUtils();
   const { t } = useTranslation('common');
   const router = useRouter();
+
+  const [logo, setLogo] = useState(shelterDetails?.logo ?? '');
 
   const upsertShelterSettingsMutation =
     api.shelter.upsertShelterDetails.useMutation({
@@ -105,9 +109,9 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
               </h1>
               <div className="flex w-full flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 {shelterDetails?.taxId ? (
-                  <Badge variant="success">Verified</Badge>
+                  <Badge variant="success">{t('verified')}</Badge>
                 ) : (
-                  <Badge variant="destructive">Unverified</Badge>
+                  <Badge variant="destructive">{t('unverified')}</Badge>
                 )}
                 <Button
                   size="sm"
@@ -124,10 +128,10 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-2xl font-semibold">
-                      Shelter details
+                      {t('shelter_details')}
                     </CardTitle>
                     <CardDescription className="pt-1">
-                      Provide your organization details and settings
+                      {t('shelter_details_subtitle')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -190,7 +194,7 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-2xl font-semibold">
-                      Contact details
+                      {t('contact_details')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -233,7 +237,7 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-2xl font-semibold">
-                      Address details
+                      {t('address_details')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -328,9 +332,7 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                     <CardTitle className="text-2xl font-semibold">
                       Logo
                     </CardTitle>
-                    <CardDescription>
-                      Upload your organization logo
-                    </CardDescription>
+                    <CardDescription>{t('logo_subtitle')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-2">
@@ -339,16 +341,31 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                         className="aspect-square w-full rounded-md object-cover"
                         height="300"
                         width="300"
-                        src={
-                          shelterDetails?.logo ??
-                          '/images/no-profile-picture.svg'
-                        }
+                        src={logo ?? '/images/no-profile-picture.svg'}
                       />
-                      <div className="grid grid-cols-3 gap-2">
-                        <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-                          <Upload className="h-4 w-4 text-muted-foreground" />
-                          <span className="sr-only">Upload</span>
-                        </button>
+                      <div className="mt-4 grid place-items-center">
+                        <UploadButton<fileRouter>
+                          endpoint="imageUploader"
+                          onClientUploadComplete={(res) => {
+                            if (res) {
+                              res && setLogo(res[0]?.url as string);
+                              res &&
+                                form.setValue('logo', res[0]?.url as string);
+                              toast({
+                                description: t(
+                                  'pet_image_toast_upload_success'
+                                ),
+                                variant: 'success',
+                              });
+                            }
+                          }}
+                          onUploadError={(error: Error) => {
+                            toast({
+                              description: error.message,
+                              variant: 'destructive',
+                            });
+                          }}
+                        />
                       </div>
                     </div>
                   </CardContent>
@@ -356,7 +373,7 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-2xl font-semibold">
-                      Legal details
+                      {t('legal_details')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
