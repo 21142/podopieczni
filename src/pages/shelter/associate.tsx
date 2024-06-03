@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Icons } from '~/components/icons/Icons';
-import DashboardLayout from '~/components/layouts/DashboardLayout';
 import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import { Button, buttonVariants } from '~/components/primitives/Button';
@@ -59,11 +58,11 @@ const AssociateShelter: NextPage = () => {
 
   if (isLoadingUserAssociation) {
     return (
-      <DashboardLayout>
+      <PageLayout>
         <div className="grid h-[50vh] content-center">
           <Spinner />
         </div>
-      </DashboardLayout>
+      </PageLayout>
     );
   }
 

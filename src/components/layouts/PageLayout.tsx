@@ -2,29 +2,52 @@ import { type FC } from 'react';
 import Footer from '~/components/navigations/Footer';
 import HeadMeta from '~/components/utility/HeadMeta';
 import { env } from '~/env.mjs';
+import { createFormattedForOgImageUrl, truncate } from '~/lib/utils';
 import Header from '../navigations/Header';
 
 export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
+  title?: string;
+  description?: string;
+  name?: string;
+  image?: string;
+  url?: string;
   justify?: 'items-center' | 'items-start' | 'items-end';
 }
 
 const PageLayout: FC<IPageLayout> = ({
+  title,
+  description,
+  name,
+  image,
   children,
   justify = 'items-center',
   ...divProps
 }) => {
+  const formattedForOgImageUrl = createFormattedForOgImageUrl({
+    name,
+    image,
+    description,
+  });
+
   return (
     <div className="overflow-x-hidden">
       <HeadMeta
         title={
+          title ??
           'podopieczni - Pomoc w znalezieniu zwierząt gotowych do adopcji.'
         }
         description={
-          'Szukaj podopiecznych gotowych do adopcji i pasujących do twoich preferencji.'
+          description
+            ? truncate(description)
+            : 'Szukaj podopiecznych gotowych do adopcji i pasujących do twoich preferencji.'
         }
         keywords={'psy, koty, adopcja zwierząt, schroniska'}
         type={'website'}
-        url={env.NEXT_PUBLIC_BASE_URL ?? 'https://podopieczni-dev.vercel.app'}
+        url={
+          formattedForOgImageUrl ||
+          env.NEXT_PUBLIC_BASE_URL ||
+          'https://podopieczni-21142.vercel.app'
+        }
       />
       <div
         {...divProps}

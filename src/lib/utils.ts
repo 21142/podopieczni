@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { env } from '~/env.mjs';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -16,6 +17,38 @@ export function getBaseUrl(): string {
 
   return `${protocol}${hostname}`;
 }
+
+export const createFormattedForOgImageUrl = ({
+  name,
+  image,
+  description,
+}: {
+  name?: string;
+  image?: string;
+  description?: string;
+}) => {
+  if (!name) return '';
+
+  const baseUrl = `${env.NEXT_PUBLIC_BASE_URL}/api/og-dynamic`;
+  const params = new URLSearchParams();
+
+  if (name) {
+    params.append('name', name);
+  }
+
+  if (description) {
+    params.append('description', encodeURI(description));
+  }
+
+  if (image) {
+    params.append('image', encodeURI(image));
+  }
+
+  return `${baseUrl}?${params.toString()}`;
+};
+
+export const truncate = (input: string) =>
+  input?.length > 200 ? `${input.substring(0, 150)}...` : input;
 
 export function getTodayDate(): string {
   const today = new Date();

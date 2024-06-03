@@ -45,7 +45,9 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
   const { t } = useTranslation('common');
   const router = useRouter();
 
-  const [logo, setLogo] = useState(shelterDetails?.logo ?? '');
+  const [logo, setLogo] = useState(
+    shelterDetails?.logo ?? '/images/no-profile-picture.svg'
+  );
 
   const upsertShelterSettingsMutation =
     api.shelter.upsertShelterDetails.useMutation({
@@ -105,7 +107,7 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
           <div className="mx-auto grid w-full flex-1 auto-rows-max gap-4 sm:max-w-7xl">
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <h1 className="relative flex-1 shrink-0 whitespace-nowrap text-3xl font-semibold tracking-tight sm:grow-0">
-                {shelterDetails?.name ?? 'Register your shelter'}
+                {shelterDetails?.name ?? t('register_shelter_title')}
               </h1>
               <div className="flex w-full flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 {shelterDetails?.taxId ? (
