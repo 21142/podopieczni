@@ -19,6 +19,7 @@ import Spinner from '~/components/spinner/Spinner';
 import Map from '~/components/utility/Map';
 import ShelterContactDetails from '~/components/utility/ShelterContactDetails';
 import { links } from '~/config/siteConfig';
+import { env } from '~/env.mjs';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
 import { prisma } from '~/lib/db';
@@ -60,7 +61,14 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
   const organizationAddress = `${organization.address?.address}, ${organization.address?.city}, ${organization.address?.state}, ${organization.address?.country}`;
 
   return (
-    <PageLayout>
+    <PageLayout
+      name={organization.name ?? undefined}
+      description={organization.description ?? undefined}
+      image={
+        organization.logo ??
+        `${env.NEXT_PUBLIC_BASE_URL}/images/no-profile-picture.svg`
+      }
+    >
       <>
         <div className="mx-auto flex min-h-screen flex-col">
           <div className="flex items-center justify-start px-6 py-8 sm:px-12 lg:px-48">

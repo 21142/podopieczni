@@ -46,6 +46,7 @@ import Spinner from '~/components/spinner/Spinner';
 import Map from '~/components/utility/Map';
 import ShelterContactDetails from '~/components/utility/ShelterContactDetails';
 import { links } from '~/config/siteConfig';
+import { env } from '~/env.mjs';
 import { useLoginToast } from '~/hooks/useLoginToast';
 import { api } from '~/lib/api';
 import dayjs from '~/lib/dayjs';
@@ -113,7 +114,6 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
 
     if (!isLikeClicked) {
       await markPetAsFavoriteMutation.mutateAsync(pet.id);
-      //                                            ^?
       setTimeout(async () => {
         await router.push(links.favorites);
       }, 1000);
@@ -159,7 +159,13 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
   ].filter((item): item is IconAndText => !!item);
 
   return (
-    <PageLayout>
+    <PageLayout
+      name={pet.name ?? undefined}
+      description={pet.description ?? undefined}
+      image={
+        pet.image ?? `${env.NEXT_PUBLIC_BASE_URL}/images/no-profile-picture.svg`
+      }
+    >
       <div className="mx-auto w-full max-w-8xl p-6">
         <div className="flex h-full flex-col items-center justify-center">
           <Carousel
