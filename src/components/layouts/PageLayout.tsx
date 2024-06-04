@@ -17,6 +17,7 @@ const PageLayout: FC<IPageLayout> = ({
   description,
   name,
   image,
+  url,
   children,
   justify = 'items-center',
   ...divProps
@@ -42,7 +43,8 @@ const PageLayout: FC<IPageLayout> = ({
         }
         keywords={'psy, koty, adopcja zwierząt, schroniska'}
         type={'website'}
-        url={
+        url={url ?? 'https://podopieczni-dev.vercel.app'}
+        image={
           formattedForOgImageUrl ?? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image`
         }
       />
