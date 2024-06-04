@@ -77,7 +77,7 @@ const HeadMeta = ({
       />
       <meta
         property="og:image"
-        content={url ?? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image`}
+        content={`${url}/api/og-dynamic`}
       />
       <meta
         property="og:site_name"
