@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { env } from '~/env.mjs';
 
 type Props = {
   title: string;
@@ -72,11 +73,11 @@ const HeadMeta = ({
       />
       <meta
         property="og:url"
-        content={url}
+        content={url ?? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image`}
       />
       <meta
         property="og:image"
-        content={`${url}/api/og-image`}
+        content={url ?? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image`}
       />
       <meta
         property="og:site_name"
@@ -84,7 +85,7 @@ const HeadMeta = ({
       />
       <meta
         name="twitter:card"
-        content="sumarry"
+        content="summary"
       />
       <meta
         name="twitter:site"
@@ -100,7 +101,7 @@ const HeadMeta = ({
       />
       <meta
         name="twitter:image"
-        content={`${url}/api/og-image`}
+        content={url ?? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image`}
       />
       <meta
         property="fb:admins"

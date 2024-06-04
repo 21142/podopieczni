@@ -6,7 +6,6 @@ import { createFormattedForOgImageUrl, truncate } from '~/lib/utils';
 import Header from '../navigations/Header';
 
 export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
-  title?: string;
   description?: string;
   name?: string;
   image?: string;
@@ -15,7 +14,6 @@ export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 const PageLayout: FC<IPageLayout> = ({
-  title,
   description,
   name,
   image,
@@ -33,8 +31,9 @@ const PageLayout: FC<IPageLayout> = ({
     <div className="overflow-x-hidden">
       <HeadMeta
         title={
-          title ??
-          'podopieczni - Pomoc w znalezieniu zwierząt gotowych do adopcji.'
+          name
+            ? `${name} szuka nowego domu`
+            : 'podopieczni - Pomoc w znalezieniu zwierząt gotowych do adopcji.'
         }
         description={
           description
@@ -44,9 +43,7 @@ const PageLayout: FC<IPageLayout> = ({
         keywords={'psy, koty, adopcja zwierząt, schroniska'}
         type={'website'}
         url={
-          formattedForOgImageUrl ||
-          env.NEXT_PUBLIC_BASE_URL ||
-          'https://podopieczni-21142.vercel.app'
+          formattedForOgImageUrl ?? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image`
         }
       />
       <div
