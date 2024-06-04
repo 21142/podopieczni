@@ -155,7 +155,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       shelterId,
       ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
     },
-    revalidate: 1,
   };
 }
 

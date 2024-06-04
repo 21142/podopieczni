@@ -449,7 +449,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       animalId,
       ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
     },
-    revalidate: 1,
   };
 }
 
