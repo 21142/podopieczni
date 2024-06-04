@@ -7,6 +7,7 @@ type Props = {
   keywords: string;
   type: string;
   url: string;
+  image?: string;
   canonical?: string;
   author?: string;
   twitterHandle?: string;
@@ -18,6 +19,7 @@ const HeadMeta = ({
   keywords,
   type,
   url,
+  image,
   canonical,
   author,
   twitterHandle,
@@ -77,7 +79,7 @@ const HeadMeta = ({
       />
       <meta
         property="og:image"
-        content={`${url}/api/og-dynamic`}
+        content={image}
       />
       <meta
         property="og:site_name"
@@ -101,7 +103,7 @@ const HeadMeta = ({
       />
       <meta
         name="twitter:image"
-        content={url ?? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image`}
+        content={image}
       />
       <meta
         property="fb:admins"

@@ -165,6 +165,7 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
       image={
         pet.image ?? `${env.NEXT_PUBLIC_BASE_URL}/images/no-profile-picture.svg`
       }
+      url={pet.url ?? `${env.NEXT_PUBLIC_BASE_URL}/pet/${pet.id}`}
     >
       <div className="mx-auto w-full max-w-8xl p-6">
         <div className="flex h-full flex-col items-center justify-center">

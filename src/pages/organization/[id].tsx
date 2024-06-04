@@ -68,6 +68,7 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
         organization.logo ??
         `${env.NEXT_PUBLIC_BASE_URL}/images/no-profile-picture.svg`
       }
+      url={`${env.NEXT_PUBLIC_BASE_URL}/organization/${shelterId}`}
     >
       <>
         <div className="mx-auto flex min-h-screen flex-col">
