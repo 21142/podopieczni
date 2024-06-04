@@ -75,11 +75,13 @@ const HeadMeta = ({
       />
       <meta
         property="og:url"
-        content={url ?? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image`}
+        content={url ?? env.NEXT_PUBLIC_BASE_URL}
       />
       <meta
         property="og:image"
-        content={image}
+        content={
+          image == '' ? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image` : image
+        }
       />
       <meta
         property="og:site_name"
