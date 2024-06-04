@@ -62,6 +62,7 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
 
   return (
     <PageLayout
+      title={organization.name ?? undefined}
       name={organization.name ?? undefined}
       description={organization.description ?? undefined}
       image={

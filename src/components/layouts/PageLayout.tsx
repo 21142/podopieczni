@@ -6,6 +6,7 @@ import { createFormattedForOgImageUrl, truncate } from '~/lib/utils';
 import Header from '../navigations/Header';
 
 export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
+  title?: string;
   description?: string;
   name?: string;
   image?: string;
@@ -14,6 +15,7 @@ export interface IPageLayout extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 const PageLayout: FC<IPageLayout> = ({
+  title,
   description,
   name,
   image,
@@ -28,14 +30,20 @@ const PageLayout: FC<IPageLayout> = ({
     description,
   });
 
+  let pageTitle;
+  if (title) {
+    pageTitle = title;
+  } else if (name) {
+    pageTitle = `${name} szuka nowego domu`;
+  } else {
+    pageTitle =
+      'podopieczni - Pomoc w znalezieniu zwierząt gotowych do adopcji.';
+  }
+
   return (
     <div className="overflow-x-hidden">
       <HeadMeta
-        title={
-          name
-            ? `${name} szuka nowego domu`
-            : 'podopieczni - Pomoc w znalezieniu zwierząt gotowych do adopcji.'
-        }
+        title={pageTitle}
         description={
           description
             ? truncate(description)
