@@ -155,7 +155,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       shelterId,
       ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
     },
-    revalidate: 1,
   };
 }
 
@@ -166,7 +165,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     },
   });
 
-  if (!shelters) return { paths: [], fallback: 'blocking' };
+  if (!shelters) return { paths: [], fallback: false };
 
   return {
     paths: shelters.map((shelter) => ({
@@ -174,6 +173,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
         id: shelter.id,
       },
     })),
-    fallback: 'blocking',
+    fallback: false,
   };
 };
