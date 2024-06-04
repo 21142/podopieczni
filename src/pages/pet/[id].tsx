@@ -463,7 +463,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     },
   });
 
-  if (!animals) return { paths: [], fallback: 'blocking' };
+  if (!animals) return { paths: [], fallback: false };
 
   return {
     paths: animals.map((animal) => ({
@@ -471,6 +471,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
         id: animal.id,
       },
     })),
-    fallback: 'blocking',
+    fallback: false,
   };
 };
