@@ -1,8 +1,13 @@
+import { render } from '@react-email/render';
 import { TRPCError } from '@trpc/server';
+import nodemailer from 'nodemailer';
 import { z } from 'zod';
+import InviteToOrganizationEmail from '~/components/emails/InviteToOrganizationEmail';
+import JoinRequestRejected from '~/components/emails/JoinRequestRejectedEmail';
 import { Roles } from '~/lib/constants';
 import { shelterSettingsSchema } from '~/lib/validators/shelterValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
+import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
 
@@ -167,5 +172,333 @@ export const shelterRouter = createTRPCRouter({
           message: 'An error occurred while fetching shelters',
         });
       }
+    }),
+  requestToJoinShelter: protectedProcedure
+    .input(
+      z.object({
+        shelterName: z.string().nullable(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+
+      if (!input.shelterName) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Shelter name is required.',
+        });
+      }
+
+      const shelter = await ctx.prisma.shelter.findFirst({
+        where: {
+          name: input.shelterName,
+        },
+      });
+
+      if (!shelter) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Shelter not found.',
+        });
+      }
+
+      const existingRequest = await ctx.prisma.joinRequest.findUnique({
+        where: {
+          userId_shelterId: {
+            userId,
+            shelterId: shelter.id,
+          },
+        },
+      });
+
+      if (existingRequest) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'An error occurred while requesting to join the shelter.',
+        });
+      }
+
+      const joinRequest = await ctx.prisma.joinRequest.create({
+        data: {
+          userId,
+          shelterId: shelter.id,
+          status: 'pending',
+        },
+      });
+
+      return joinRequest;
+    }),
+  getJoinRequests: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user.id;
+
+    const shelter = await ctx.prisma.shelter.findFirst({
+      where: {
+        members: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    if (!shelter) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message:
+          'Error while looking for a shelter associated with your account.',
+      });
+    }
+
+    const joinRequests = await ctx.prisma.joinRequest.findMany({
+      where: {
+        shelterId: shelter.id,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    return joinRequests;
+  }),
+  rejectJoinRequest: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const joinRequest = await ctx.prisma.joinRequest.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          shelter: true,
+          user: true,
+        },
+      });
+
+      if (!joinRequest) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Join request not found.',
+        });
+      }
+
+      if (joinRequest.status === 'rejected') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Join request already rejected.',
+        });
+      }
+
+      await ctx.prisma.joinRequest.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          status: 'rejected',
+        },
+      });
+
+      await ctx.prisma.shelter.update({
+        where: {
+          id: joinRequest.shelterId,
+        },
+        data: {
+          members: {
+            disconnect: {
+              id: joinRequest.userId,
+            },
+          },
+        },
+      });
+
+      const emailHtml = render(
+        JoinRequestRejected({
+          username: joinRequest.user.name ?? undefined,
+          teamName: joinRequest.shelter.name,
+        })
+      );
+
+      const emailServer = {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      };
+
+      if (
+        joinRequest.user.email === undefined ||
+        joinRequest.user.email === null ||
+        joinRequest.shelter.email === undefined ||
+        joinRequest.shelter.email === null
+      ) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message:
+            'An error occurred while sending an email to the user. Not all emails are provided.',
+        });
+      }
+
+      nodemailer.createTransport(emailServer).sendMail(
+        {
+          to: joinRequest.user.email,
+          from: `${joinRequest.shelter.name}.podopieczni@trial-neqvygme57d40p7w.mlsender.net`,
+          subject: `Witamy w ${joinRequest.shelter.name}`,
+          text: `Witamy w \n${joinRequest.shelter.name}`,
+          html: emailHtml,
+        },
+        (error) => {
+          if (error) {
+            console.log(error);
+          }
+        }
+      );
+
+      return joinRequest;
+    }),
+  acceptJoinRequest: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const joinRequest = await ctx.prisma.joinRequest.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          shelter: true,
+          user: true,
+        },
+      });
+
+      if (!joinRequest) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Join request not found.',
+        });
+      }
+
+      if (joinRequest.status === 'accepted') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Join request already accepted.',
+        });
+      }
+
+      await ctx.prisma.joinRequest.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          status: 'accepted',
+        },
+      });
+
+      await ctx.prisma.shelter.update({
+        where: {
+          id: joinRequest.shelterId,
+        },
+        data: {
+          members: {
+            connect: {
+              id: joinRequest.userId,
+            },
+          },
+        },
+      });
+
+      const emailHtml = render(
+        InviteToOrganizationEmail({
+          username: joinRequest.user.name ?? undefined,
+          userImage: joinRequest.user.image ?? undefined,
+          teamName: joinRequest.shelter.name,
+          teamImage: joinRequest.shelter.logo ?? undefined,
+        })
+      );
+
+      const emailServer = {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      };
+
+      if (
+        joinRequest.user.email === undefined ||
+        joinRequest.user.email === null ||
+        joinRequest.shelter.email === undefined ||
+        joinRequest.shelter.email === null
+      ) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message:
+            'An error occurred while sending an email to the user. Not all emails are provided.',
+        });
+      }
+
+      nodemailer.createTransport(emailServer).sendMail(
+        {
+          to: joinRequest.user.email,
+          from: `${joinRequest.shelter.name}.podopieczni@trial-neqvygme57d40p7w.mlsender.net`,
+          subject: `Witamy w ${joinRequest.shelter.name}`,
+          text: `Witamy w \n${joinRequest.shelter.name}`,
+          html: emailHtml,
+        },
+        (error) => {
+          if (error) {
+            console.log(error);
+          }
+        }
+      );
+
+      return joinRequest;
+    }),
+  deleteJoinRequest: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const joinRequest = await ctx.prisma.joinRequest.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!joinRequest) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Join request not found.',
+        });
+      }
+
+      await ctx.prisma.joinRequest.delete({
+        where: {
+          id: input.id,
+        },
+      });
+
+      await ctx.prisma.shelter.update({
+        where: {
+          id: joinRequest.shelterId,
+        },
+        data: {
+          members: {
+            disconnect: {
+              id: joinRequest.userId,
+            },
+          },
+        },
+      });
+
+      return joinRequest;
     }),
 });

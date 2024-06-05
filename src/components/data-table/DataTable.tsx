@@ -28,7 +28,7 @@ import { DataTableToolbar } from './DataTableToolbar';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  variant?: 'animals' | 'users';
+  variant?: 'animals' | 'users' | 'joinRequests';
 }
 
 export function DataTable<TData extends { id: string }, TValue>({

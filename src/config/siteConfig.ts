@@ -42,6 +42,8 @@ export const links = {
   findYourPet: '/find-your-pet',
   signIn: '/signin',
   checkInbox: '/check-inbox',
+  checkInboxForInviteDecision: '/check-inbox?joinRequest=shelter',
   associateShelter: '/shelter/associate',
   registerShelter: '/shelter/register',
+  joinRequests: '/join-requests',
 };

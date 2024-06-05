@@ -63,6 +63,7 @@ model User {
   favoritePets  FavoritePet[]
   accounts      Account[]
   sessions      Session[]
+  joinRequests  JoinRequest[] @relation("UserJoinRequest")
 
   @@index([name])
   @@index([shelterId])
@@ -99,23 +100,39 @@ model VerificationToken {
 }
 
 model Shelter {
-  id          String       @id @default(cuid())
-  name        String
-  logo        String?
-  description String?
-  email       String?      
-  phoneNumber String?      @db.VarChar(13)
-  taxId       String
-  website     String?
-  address     AddressInfo?
-  pets        Pet[]
-  members     User[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id           String        @id @default(cuid())
+  name         String
+  logo         String?
+  description  String?
+  email        String?
+  phoneNumber  String?       @db.VarChar(13)
+  taxId        String
+  website      String?
+  address      AddressInfo?
+  pets         Pet[]
+  members      User[]
+  joinRequests JoinRequest[] @relation("ShelterJoinRequest")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   @@unique([taxId])
   @@index([name])
   @@fulltext([name], map: "Shelter_name_fulltext")
+}
+
+model JoinRequest {
+  id        String   @id @default(cuid())
+  // pending, accepted, rejected, invited
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation("UserJoinRequest", fields: [userId], references: [id])
+  userId    String
+  shelter   Shelter  @relation("ShelterJoinRequest", fields: [shelterId], references: [id])
+  shelterId String
+
+  @@unique([userId, shelterId])
+  @@index([shelterId])
 }
 
 model Pet {
