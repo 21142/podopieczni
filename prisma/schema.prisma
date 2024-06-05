@@ -132,6 +132,7 @@ model JoinRequest {
   shelterId String
 
   @@unique([userId, shelterId])
+  @@index([shelterId])
 }
 
 model Pet {
