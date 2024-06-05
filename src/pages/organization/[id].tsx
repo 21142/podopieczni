@@ -3,6 +3,16 @@ import { TRPCError } from '@trpc/server';
 import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+  WhatsappIcon,
+  WhatsappShareButton,
+} from 'next-share';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -112,6 +122,48 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
               organizationPhone={organization.phoneNumber}
               organizationEmail={organization.email}
             />
+            <div className="flex flex-col justify-between pt-14">
+              <h2 className="mb-2 text-xl font-bold">
+                {t('pet_profile_page_help')}
+              </h2>
+              <div className="flex items-center gap-4">
+                <span className="text-base md:text-lg">
+                  {t('pet_profile_page_share')}
+                </span>
+                <FacebookShareButton
+                  url={`${env.NEXT_PUBLIC_BASE_URL}/organization/${organization.id}`}
+                >
+                  <FacebookIcon
+                    size={32}
+                    round
+                  />
+                </FacebookShareButton>
+                <LinkedinShareButton
+                  url={`${env.NEXT_PUBLIC_BASE_URL}/organization/${organization.id}`}
+                >
+                  <LinkedinIcon
+                    size={32}
+                    round
+                  />
+                </LinkedinShareButton>
+                <TwitterShareButton
+                  url={`${env.NEXT_PUBLIC_BASE_URL}/organization/${organization.id}`}
+                >
+                  <TwitterIcon
+                    size={32}
+                    round
+                  />
+                </TwitterShareButton>
+                <WhatsappShareButton
+                  url={`${env.NEXT_PUBLIC_BASE_URL}/organization/${organization.id}`}
+                >
+                  <WhatsappIcon
+                    size={32}
+                    round
+                  />
+                </WhatsappShareButton>
+              </div>
+            </div>
           </div>
           <section className="mt-8">
             <h2 className="mb-4 px-6 py-8 text-2xl font-bold sm:px-12 lg:px-48">
@@ -155,6 +207,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       shelterId,
       ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
     },
+    revalidate: 60,
   };
 }
 
@@ -165,7 +218,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     },
   });
 
-  if (!shelters) return { paths: [], fallback: false };
+  if (!shelters) return { paths: [], fallback: 'blocking' };
 
   return {
     paths: shelters.map((shelter) => ({
@@ -173,6 +226,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
         id: shelter.id,
       },
     })),
-    fallback: false,
+    fallback: 'blocking',
   };
 };

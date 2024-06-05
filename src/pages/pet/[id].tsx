@@ -449,6 +449,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       animalId,
       ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
     },
+    revalidate: 60,
   };
 }
 
@@ -462,7 +463,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     },
   });
 
-  if (!animals) return { paths: [], fallback: false };
+  if (!animals) return { paths: [], fallback: 'blocking' };
 
   return {
     paths: animals.map((animal) => ({
@@ -470,6 +471,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
         id: animal.id,
       },
     })),
-    fallback: false,
+    fallback: 'blocking',
   };
 };
