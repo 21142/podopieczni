@@ -24,6 +24,7 @@ import {
 } from '~/components/primitives/Popover';
 import Spinner from '~/components/spinner/Spinner';
 import { links } from '~/config/siteConfig';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { ssghelpers } from '~/lib/ssg';
 import { cn } from '~/lib/utils';
@@ -33,6 +34,7 @@ const AssociateShelter: NextPage = () => {
   const { t } = useTranslation('common');
   const router = useRouter();
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
+  const { toast } = useToast();
 
   if (!session) {
     return (
@@ -55,6 +57,25 @@ const AssociateShelter: NextPage = () => {
     isLoading,
     isError,
   } = api.shelter.getSheltersNames.useQuery();
+
+  const requestToJoinShelterMutation =
+    api.shelter.requestToJoinShelter.useMutation({
+      onSuccess: () => {
+        toast({
+          description: t('request_to_join_shelter_toast_success'),
+          variant: 'success',
+        });
+        setTimeout(() => {
+          router.push(links.checkInboxForInviteDecision);
+        }, 5000);
+      },
+      onError: (error) => {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      },
+    });
 
   if (isLoadingUserAssociation) {
     return (
@@ -131,9 +152,9 @@ const AssociateShelter: NextPage = () => {
               size="lg"
               disabled={!selectedValue}
               onClick={() =>
-                console.log(
-                  `TODO: Try to associate user: ${session?.user?.email} with shelter: ${selectedValue}`
-                )
+                requestToJoinShelterMutation.mutateAsync({
+                  shelterName: selectedValue,
+                })
               }
             >
               Try to associate

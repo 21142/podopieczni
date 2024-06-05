@@ -9,6 +9,9 @@ export type AnimalDto = RouterOutputs['pet']['getAllPetsDataForTable'][number];
 export type UserDto =
   RouterOutputs['user']['getAllPeopleAssociatedWithShelter'][number];
 
+export type JoinRequestDto =
+  RouterOutputs['shelter']['getJoinRequests'][number];
+
 export type RecentlyAddedAnimals =
   RouterOutputs['pet']['getPetsAddedInTheLastMonth'];
 

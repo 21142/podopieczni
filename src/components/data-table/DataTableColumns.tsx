@@ -6,7 +6,7 @@ import {
   AvatarImage,
 } from '~/components/primitives/Avatar';
 import { statuses } from '~/lib/constants';
-import { type AnimalDto, type UserDto } from '~/types';
+import { type AnimalDto, type JoinRequestDto, type UserDto } from '~/types';
 import { DataTableColumnHeader } from './DataTableHeaders';
 import { DataTableRowActions } from './DataTableRowActions';
 
@@ -244,6 +244,121 @@ export const usersColumns: ColumnDef<UserDto>[] = [
     cell: ({ row }) => (
       <DataTableRowActions
         variant="users"
+        row={row}
+      />
+    ),
+  },
+];
+
+export const joinRequestColumns: ColumnDef<JoinRequestDto>[] = [
+  {
+    accessorKey: 'user.image',
+    id: 'userAvatar',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="User avatar"
+        className="ml-10"
+      />
+    ),
+    cell: ({ row }) => (
+      <Avatar className="ml-12 h-12 w-12">
+        <AvatarImage
+          src={row.getValue('userAvatar')}
+          width={48}
+          height={48}
+          alt="user profile picture"
+        />
+        <AvatarFallback>
+          <Icons.user className="h-6 w-6 text-muted-foreground" />
+        </AvatarFallback>
+      </Avatar>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: 'user.name',
+    id: 'userName',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Name"
+      />
+    ),
+    cell: ({ row }) => (
+      <span className="text-base font-medium">{row.getValue('userName')}</span>
+    ),
+  },
+  {
+    accessorKey: 'user.email',
+    id: 'email',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Email"
+      />
+    ),
+    cell: ({ row }) => (
+      <span className="text-base font-medium">{row.getValue('email')}</span>
+    ),
+  },
+  {
+    accessorKey: 'user.phoneNumber',
+    id: 'phoneNumber',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Phone number"
+      />
+    ),
+    cell: ({ row }) => (
+      <span>
+        {row.getValue('phoneNumber') != undefined ? (
+          row.getValue('phoneNumber')
+        ) : (
+          <span className="text-muted-foreground">N/A</span>
+        )}
+      </span>
+    ),
+  },
+  {
+    accessorKey: 'createdAt',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Created at"
+      />
+    ),
+    cell: ({ row }) => {
+      const createdAt = row.getValue('createdAt');
+      if (createdAt instanceof Date) {
+        return (
+          <span className="text-foreground">{createdAt.toLocaleString()}</span>
+        );
+      } else {
+        return <span className="text-foreground">Invalid Date</span>;
+      }
+    },
+  },
+  {
+    id: 'status',
+    accessorKey: 'status',
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Status"
+      />
+    ),
+    cell: ({ row }) => (
+      <span className="text-foreground">{row.getValue('status')}</span>
+    ),
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => (
+      <DataTableRowActions
+        variant="joinRequests"
         row={row}
       />
     ),

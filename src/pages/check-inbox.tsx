@@ -1,12 +1,16 @@
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useSearchParams } from 'next/navigation';
 import PageLayout from '~/components/layouts/PageLayout';
 import CheckInbox from '~/components/utility/CheckInbox';
 
 const CheckInboxForMagicLinkPage = () => {
+  const params = useSearchParams();
+  const joinRequest = params.get('joinRequest');
+
   return (
     <PageLayout>
-      <CheckInbox />
+      <CheckInbox joinRequest={joinRequest} />
     </PageLayout>
   );
 };

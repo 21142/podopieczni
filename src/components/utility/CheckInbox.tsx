@@ -1,10 +1,15 @@
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { type FC } from 'react';
 import { links } from '~/config/siteConfig';
 import { buttonVariants } from '../primitives/Button';
 
-const CheckInbox = () => {
+type Props = {
+  joinRequest?: string | null;
+};
+
+const CheckInbox: FC<Props> = ({ joinRequest }) => {
   const { t } = useTranslation('common');
 
   return (
@@ -24,7 +29,9 @@ const CheckInbox = () => {
           {t('check_email_title')}
         </h1>
         <h2 className="mb-6 text-base font-medium tracking-tight text-foreground sm:text-lg sm:tracking-normal">
-          {t('check_email_subtitle')}
+          {joinRequest
+            ? t('check_email_for_invite_decision')
+            : t('check_email_subtitle')}
         </h2>
         <Link
           href={links.home}

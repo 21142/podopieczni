@@ -71,6 +71,10 @@ const DashboardHeader: FC<JSX.IntrinsicElements['header']> = ({
                 href={links.users}
                 title={t('nav_people')}
               />
+              <HeaderLink
+                href={links.joinRequests}
+                title={t('nav_join_requests')}
+              />
             </>
           ) : (
             <>
