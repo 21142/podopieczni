@@ -58,7 +58,7 @@ const Results: NextPage<
   const { t, i18n } = useTranslation('common');
 
   const { data: animals, isLoading } =
-    api.pet.queryPetsAvailableForAdoptionFulltextSearch.useQuery({
+    api.pet.queryPetsAvailableForAdoption.useQuery({
       searchQuery,
     });
 

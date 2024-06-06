@@ -1,4 +1,3 @@
-import { type Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { env } from '~/env.mjs';
@@ -15,6 +14,7 @@ import {
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import { getShelterAssociatedWithUser } from '~/server/helpers/getShelterAssociatedWithUser';
+import { petsSearchWhereConditions } from '~/server/helpers/searchConditions';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
@@ -144,7 +144,7 @@ export const petRouter = createTRPCRouter({
         }
       });
   }),
-  queryPetsAvailableForAdoptionFulltextSearch: publicProcedure
+  queryPetsAvailableForAdoption: publicProcedure
     .input(
       z.object({
         searchQuery: z.string().optional(),
@@ -155,62 +155,7 @@ export const petRouter = createTRPCRouter({
         let pets;
         if (input.searchQuery) {
           pets = await ctx.prisma.pet.findMany({
-            where: {
-              availableForAdoption: true,
-              OR: [
-                {
-                  shelter: {
-                    OR: [
-                      {
-                        name: {
-                          contains: input.searchQuery,
-                        },
-                      },
-                      {
-                        address: {
-                          OR: [
-                            {
-                              address: {
-                                contains: input.searchQuery,
-                              },
-                            },
-                            {
-                              city: {
-                                contains: input.searchQuery,
-                              },
-                            },
-                            {
-                              state: {
-                                contains: input.searchQuery,
-                              },
-                            },
-                            {
-                              country: {
-                                contains: input.searchQuery,
-                              },
-                            },
-                            {
-                              postCode: {
-                                contains: input.searchQuery,
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ] as Prisma.ShelterWhereInput[],
-                  },
-                },
-                {
-                  species: { contains: input.searchQuery },
-                },
-                { breed: { contains: input.searchQuery } },
-                { color: { contains: input.searchQuery } },
-                { coat: { contains: input.searchQuery } },
-                {
-                  gender: { contains: input.searchQuery },
-                },
-              ],
-            },
+            where: petsSearchWhereConditions(input.searchQuery),
             include: {
               shelter: {
                 include: {

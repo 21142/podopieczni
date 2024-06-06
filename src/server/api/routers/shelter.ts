@@ -1,4 +1,3 @@
-import { type Prisma } from '@prisma/client';
 import { render } from '@react-email/render';
 import { TRPCError } from '@trpc/server';
 import nodemailer from 'nodemailer';
@@ -8,6 +7,7 @@ import JoinRequestRejected from '~/components/emails/JoinRequestRejectedEmail';
 import { Roles } from '~/lib/constants';
 import { shelterSettingsSchema } from '~/lib/validators/shelterValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
+import { sheltersSearchWhereConditions } from '~/server/helpers/searchConditions';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
@@ -124,7 +124,7 @@ export const shelterRouter = createTRPCRouter({
 
       return shelter;
     }),
-  querySheltersFulltextSearch: publicProcedure
+  queryAvailableShelters: publicProcedure
     .input(
       z.object({
         searchQuery: z.string().optional(),
@@ -142,44 +142,7 @@ export const shelterRouter = createTRPCRouter({
           return shelters;
         }
         const shelters = await ctx.prisma.shelter.findMany({
-          where: {
-            OR: [
-              {
-                name: { contains: input.searchQuery },
-              },
-              {
-                address: {
-                  OR: [
-                    {
-                      address: {
-                        contains: input.searchQuery,
-                      },
-                    },
-                    {
-                      city: {
-                        contains: input.searchQuery,
-                      },
-                    },
-                    {
-                      state: {
-                        contains: input.searchQuery,
-                      },
-                    },
-                    {
-                      country: {
-                        contains: input.searchQuery,
-                      },
-                    },
-                    {
-                      postCode: {
-                        contains: input.searchQuery,
-                      },
-                    },
-                  ] as Prisma.AddressInfoWhereInput[],
-                },
-              },
-            ],
-          },
+          where: sheltersSearchWhereConditions(input.searchQuery),
           include: {
             address: true,
           },
