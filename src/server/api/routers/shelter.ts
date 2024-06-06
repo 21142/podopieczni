@@ -1,3 +1,4 @@
+import { type Prisma } from '@prisma/client';
 import { render } from '@react-email/render';
 import { TRPCError } from '@trpc/server';
 import nodemailer from 'nodemailer';
@@ -144,17 +145,37 @@ export const shelterRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { search: input.searchQuery },
+                name: { contains: input.searchQuery },
               },
               {
                 address: {
                   OR: [
-                    { address: { search: input.searchQuery } },
-                    { city: { search: input.searchQuery } },
-                    { state: { search: input.searchQuery } },
-                    { country: { search: input.searchQuery } },
-                    { postCode: { search: input.searchQuery } },
-                  ],
+                    {
+                      address: {
+                        contains: input.searchQuery,
+                      },
+                    },
+                    {
+                      city: {
+                        contains: input.searchQuery,
+                      },
+                    },
+                    {
+                      state: {
+                        contains: input.searchQuery,
+                      },
+                    },
+                    {
+                      country: {
+                        contains: input.searchQuery,
+                      },
+                    },
+                    {
+                      postCode: {
+                        contains: input.searchQuery,
+                      },
+                    },
+                  ] as Prisma.AddressInfoWhereInput[],
                 },
               },
             ],

@@ -1,3 +1,4 @@
+import { type Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '~/lib/db';
 
@@ -14,28 +15,46 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           availableForAdoption: true,
           OR: [
             {
+              name: { contains: searchQuery },
               shelter: {
                 OR: [
-                  { name: { search: searchQuery } },
+                  { name: { contains: searchQuery } },
                   {
                     address: {
                       OR: [
-                        { address: { search: searchQuery } },
-                        { city: { search: searchQuery } },
-                        { state: { search: searchQuery } },
-                        { country: { search: searchQuery } },
-                        { postCode: { search: searchQuery } },
+                        {
+                          address: {
+                            contains: searchQuery,
+                          },
+                        },
+                        {
+                          city: { contains: searchQuery },
+                        },
+                        {
+                          state: { contains: searchQuery },
+                        },
+                        {
+                          country: {
+                            contains: searchQuery,
+                          },
+                        },
+                        {
+                          postCode: {
+                            contains: searchQuery,
+                          },
+                        },
                       ],
                     },
                   },
-                ],
+                ] as Prisma.ShelterWhereInput[],
               },
             },
-            { species: { search: searchQuery } },
-            { breed: { search: searchQuery } },
-            { color: { search: searchQuery } },
-            { coat: { search: searchQuery } },
-            { gender: { search: searchQuery } },
+            { age: { contains: searchQuery } },
+            { species: { contains: searchQuery } },
+            { breed: { contains: searchQuery } },
+            { color: { contains: searchQuery } },
+            { coat: { contains: searchQuery } },
+            { gender: { contains: searchQuery } },
           ],
         },
         include: {
@@ -68,8 +87,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     res.status(200).json(availableAnimals);
+    return availableAnimals;
   } catch (error) {
-    console.error('Error fetching animal data:', error);
+    console.log('Error fetching animal data:', error);
     res.status(500).json({ error: 'Could not load pets' });
   }
 };

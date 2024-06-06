@@ -1,3 +1,4 @@
+import { type Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '~/lib/db';
 
@@ -13,17 +14,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         where: {
           OR: [
             {
-              name: { search: searchQuery },
+              name: { contains: searchQuery },
             },
             {
               address: {
                 OR: [
-                  { address: { search: searchQuery } },
-                  { city: { search: searchQuery } },
-                  { state: { search: searchQuery } },
-                  { country: { search: searchQuery } },
-                  { postCode: { search: searchQuery } },
-                ],
+                  { address: { contains: searchQuery } },
+                  { city: { contains: searchQuery } },
+                  { state: { contains: searchQuery } },
+                  { country: { contains: searchQuery } },
+                  { postCode: { contains: searchQuery } },
+                ] as Prisma.AddressInfoWhereInput[],
               },
             },
           ],

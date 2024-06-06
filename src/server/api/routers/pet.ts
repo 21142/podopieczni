@@ -1,3 +1,4 @@
+import { type Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { env } from '~/env.mjs';
@@ -160,26 +161,54 @@ export const petRouter = createTRPCRouter({
                 {
                   shelter: {
                     OR: [
-                      { name: { search: input.searchQuery } },
+                      {
+                        name: {
+                          contains: input.searchQuery,
+                        },
+                      },
                       {
                         address: {
                           OR: [
-                            { address: { search: input.searchQuery } },
-                            { city: { search: input.searchQuery } },
-                            { state: { search: input.searchQuery } },
-                            { country: { search: input.searchQuery } },
-                            { postCode: { search: input.searchQuery } },
+                            {
+                              address: {
+                                contains: input.searchQuery,
+                              },
+                            },
+                            {
+                              city: {
+                                contains: input.searchQuery,
+                              },
+                            },
+                            {
+                              state: {
+                                contains: input.searchQuery,
+                              },
+                            },
+                            {
+                              country: {
+                                contains: input.searchQuery,
+                              },
+                            },
+                            {
+                              postCode: {
+                                contains: input.searchQuery,
+                              },
+                            },
                           ],
                         },
                       },
-                    ],
+                    ] as Prisma.ShelterWhereInput[],
                   },
                 },
-                { species: { search: input.searchQuery } },
-                { breed: { search: input.searchQuery } },
-                { color: { search: input.searchQuery } },
-                { coat: { search: input.searchQuery } },
-                { gender: { search: input.searchQuery } },
+                {
+                  species: { contains: input.searchQuery },
+                },
+                { breed: { contains: input.searchQuery } },
+                { color: { contains: input.searchQuery } },
+                { coat: { contains: input.searchQuery } },
+                {
+                  gender: { contains: input.searchQuery },
+                },
               ],
             },
             include: {

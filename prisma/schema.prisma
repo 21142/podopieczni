@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  provider = "prisma-client-js"
 }
 
 generator docs {
@@ -8,7 +7,7 @@ generator docs {
 }
 
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
@@ -85,10 +84,6 @@ model AddressInfo {
   userId    String?  @unique
   shelter   Shelter? @relation(fields: [shelterId], references: [id], onDelete: Cascade)
   shelterId String?  @unique
-
-  @@fulltext([state])
-  @@fulltext([city])
-  @@fulltext([address, city, postCode, state, country])
 }
 
 model VerificationToken {
@@ -117,7 +112,6 @@ model Shelter {
 
   @@unique([taxId])
   @@index([name])
-  @@fulltext([name], map: "Shelter_name_fulltext")
 }
 
 model JoinRequest {
@@ -190,7 +184,6 @@ model Pet {
   @@index([adoptionFee])
   @@index([shelterId])
   @@index([adopterId])
-  @@fulltext([species, breed, gender, color, coat])
 }
 
 model FavoritePet {
