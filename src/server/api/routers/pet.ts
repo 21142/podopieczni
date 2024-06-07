@@ -424,7 +424,17 @@ export const petRouter = createTRPCRouter({
         },
       },
     });
-    return thisMonthsCount - lastMonthsCount;
+
+    if (
+      !thisMonthsCount ||
+      !lastMonthsCount ||
+      lastMonthsCount === 0 ||
+      thisMonthsCount === 0
+    ) {
+      return 0;
+    } else {
+      return thisMonthsCount - lastMonthsCount;
+    }
   }),
   getPetsAddedInTheLastMonth: publicProcedure.query(async ({ ctx }) => {
     const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
@@ -442,6 +452,7 @@ export const petRouter = createTRPCRouter({
       orderBy: {
         createdAt: 'desc',
       },
+      take: 6,
     });
   }),
   getMostRecentlyAddedPets: publicProcedure.query(async ({ ctx }) => {
@@ -457,10 +468,114 @@ export const petRouter = createTRPCRouter({
       orderBy: {
         createdAt: 'desc',
       },
-      take: 5,
+      take: 6,
     });
 
     return pets;
+  }),
+  getDataForAdmittedAnimalsRaportChart: protectedProcedure.query(
+    async ({ ctx }) => {
+      const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
+
+      const beginningOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+
+      const pets = await ctx.prisma.pet.findMany({
+        where: {
+          shelterId: shelterAssociatedWithUser.id,
+          createdAt: {
+            gt: beginningOfThisYear,
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      const months = [
+        { name: 'Sty', total: 0 },
+        { name: 'Lut', total: 0 },
+        { name: 'Mar', total: 0 },
+        { name: 'Kwi', total: 0 },
+        { name: 'Maj', total: 0 },
+        { name: 'Cze', total: 0 },
+        { name: 'Lip', total: 0 },
+        { name: 'Sie', total: 0 },
+        { name: 'Wrz', total: 0 },
+        { name: 'Paź', total: 0 },
+        { name: 'Lis', total: 0 },
+        { name: 'Gru', total: 0 },
+      ];
+
+      pets.forEach((pet) => {
+        const monthIndex = new Date(pet.createdAt).getMonth();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        months[monthIndex]!.total += 1;
+      });
+
+      return months;
+    }
+  ),
+  getDataForAdoptionRaportChart: protectedProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
+    const beginningOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+
+    const pets = await ctx.prisma.pet.findMany({
+      where: {
+        shelterId: shelterAssociatedWithUser.id,
+        outcomeEvents: {
+          some: {
+            eventType: 'ADOPTION',
+            createdAt: {
+              gt: beginningOfThisYear,
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        outcomeEvents: true,
+      },
+    });
+
+    const months = [
+      { name: 'Sty', total: 0 },
+      { name: 'Lut', total: 0 },
+      { name: 'Mar', total: 0 },
+      { name: 'Kwi', total: 0 },
+      { name: 'Maj', total: 0 },
+      { name: 'Cze', total: 0 },
+      { name: 'Lip', total: 0 },
+      { name: 'Sie', total: 0 },
+      { name: 'Wrz', total: 0 },
+      { name: 'Paź', total: 0 },
+      { name: 'Lis', total: 0 },
+      { name: 'Gru', total: 0 },
+    ];
+
+    pets.forEach((pet) => {
+      pet.outcomeEvents.forEach((event) => {
+        if (event.eventType === 'ADOPTION') {
+          const outcomeDate = new Date(event.eventDate);
+          const monthIndex = outcomeDate.getMonth();
+
+          if (monthIndex !== -1) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            months[monthIndex]!.total += 1;
+          }
+        }
+      });
+    });
+
+    return months;
   }),
   getPetsAddedInTheLastMonthCount: publicProcedure.query(async ({ ctx }) => {
     const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
@@ -476,6 +591,10 @@ export const petRouter = createTRPCRouter({
         },
       },
     });
+
+    if (!count) {
+      return -1;
+    }
     return count;
   }),
   add: protectedProcedure

@@ -10,6 +10,7 @@ export const petsSearchWhereConditions = (
       {
         shelter: {
           OR: [
+            { name: { contains: searchQuery, mode: 'insensitive' } },
             {
               address: {
                 OR: [
@@ -24,6 +25,7 @@ export const petsSearchWhereConditions = (
           ],
         },
       },
+      { age: { contains: searchQuery, mode: 'insensitive' } },
       { species: { contains: searchQuery, mode: 'insensitive' } },
       { breed: { contains: searchQuery, mode: 'insensitive' } },
       { color: { contains: searchQuery, mode: 'insensitive' } },
@@ -39,19 +41,19 @@ export const sheltersSearchWhereConditions = (
   return {
     OR: [
       {
-        name: { contains: searchQuery },
+        name: { contains: searchQuery, mode: 'insensitive' },
       },
       {
-        description: { contains: searchQuery },
+        description: { contains: searchQuery, mode: 'insensitive' },
       },
       {
         address: {
           OR: [
-            { address: { contains: searchQuery } },
-            { city: { contains: searchQuery } },
-            { state: { contains: searchQuery } },
-            { country: { contains: searchQuery } },
-            { postCode: { contains: searchQuery } },
+            { address: { contains: searchQuery, mode: 'insensitive' } },
+            { city: { contains: searchQuery, mode: 'insensitive' } },
+            { state: { contains: searchQuery, mode: 'insensitive' } },
+            { country: { contains: searchQuery, mode: 'insensitive' } },
+            { postCode: { contains: searchQuery, mode: 'insensitive' } },
           ],
         },
       },

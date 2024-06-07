@@ -46,4 +46,5 @@ export const links = {
   associateShelter: '/shelter/associate',
   registerShelter: '/shelter/register',
   joinRequests: '/join-requests',
+  raports: '/raports',
 };
