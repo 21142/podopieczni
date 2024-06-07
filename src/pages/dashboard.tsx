@@ -119,7 +119,7 @@ const Dashboard: NextPage = () => {
           usersCountChangeFromLastMonth={usersCountChangeFromLastMonth}
           petsAddedLastMonthCount={petsAddedLastMonthCount}
           recentlyAddedPets={
-            recentlyAddedPets && recentlyAddedPets?.length > 0
+            recentlyAddedPets && recentlyAddedPets?.length >= 6
               ? recentlyAddedPets
               : mostRecentlyAddedPets
           }
@@ -146,6 +146,7 @@ export async function getStaticProps({ locale }: { locale: string }) {
   await ssghelpers.pet.getPetsCount.prefetch();
   await ssghelpers.pet.getPetsCountChangeFromLastMonth.prefetch();
   await ssghelpers.pet.getPetsAddedInTheLastMonth.prefetch();
+  await ssghelpers.pet.getMostRecentlyAddedPets.prefetch();
   await ssghelpers.pet.getPetsAddedInTheLastMonthCount.prefetch();
   return {
     props: {

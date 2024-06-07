@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '~/lib/db';
+import { sheltersSearchWhereConditions } from '~/server/helpers/searchConditions';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -10,24 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let shelters;
     if (searchQuery) {
       shelters = await prisma.shelter.findMany({
-        where: {
-          OR: [
-            {
-              name: { search: searchQuery },
-            },
-            {
-              address: {
-                OR: [
-                  { address: { search: searchQuery } },
-                  { city: { search: searchQuery } },
-                  { state: { search: searchQuery } },
-                  { country: { search: searchQuery } },
-                  { postCode: { search: searchQuery } },
-                ],
-              },
-            },
-          ],
-        },
+        where: sheltersSearchWhereConditions(searchQuery),
       });
     } else {
       shelters = await prisma.shelter.findMany({

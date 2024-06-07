@@ -7,6 +7,7 @@ import JoinRequestRejected from '~/components/emails/JoinRequestRejectedEmail';
 import { Roles } from '~/lib/constants';
 import { shelterSettingsSchema } from '~/lib/validators/shelterValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
+import { sheltersSearchWhereConditions } from '~/server/helpers/searchConditions';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
@@ -123,7 +124,7 @@ export const shelterRouter = createTRPCRouter({
 
       return shelter;
     }),
-  querySheltersFulltextSearch: publicProcedure
+  queryAvailableShelters: publicProcedure
     .input(
       z.object({
         searchQuery: z.string().optional(),
@@ -141,24 +142,7 @@ export const shelterRouter = createTRPCRouter({
           return shelters;
         }
         const shelters = await ctx.prisma.shelter.findMany({
-          where: {
-            OR: [
-              {
-                name: { search: input.searchQuery },
-              },
-              {
-                address: {
-                  OR: [
-                    { address: { search: input.searchQuery } },
-                    { city: { search: input.searchQuery } },
-                    { state: { search: input.searchQuery } },
-                    { country: { search: input.searchQuery } },
-                    { postCode: { search: input.searchQuery } },
-                  ],
-                },
-              },
-            ],
-          },
+          where: sheltersSearchWhereConditions(input.searchQuery),
           include: {
             address: true,
           },

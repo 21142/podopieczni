@@ -55,7 +55,7 @@ const PetCard: FC<IAnimalCard> = ({
     onSuccess: async () => {
       await trpcContextUtils.user.getFavoritePets.invalidate();
       await trpcContextUtils.pet.getFeaturedAnimals.invalidate();
-      await trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+      await trpcContextUtils.pet.queryPetsAvailableForAdoption.invalidate();
     },
   });
 
@@ -64,7 +64,7 @@ const PetCard: FC<IAnimalCard> = ({
       onSuccess: async () => {
         await trpcContextUtils.user.getFavoritePets.invalidate();
         await trpcContextUtils.pet.getFeaturedAnimals.invalidate();
-        await trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+        await trpcContextUtils.pet.queryPetsAvailableForAdoption.invalidate();
       },
     });
 

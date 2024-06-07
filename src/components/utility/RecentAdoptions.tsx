@@ -14,13 +14,13 @@ const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals }) => {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col">
+    <div className="ml-1 flex flex-col">
       {animals && animals.length > 0 ? (
         animals.map((animal) => (
           <RecentlyAddedAnimalsRow
             key={animal.id}
             animal={animal}
-            className="h-16 cursor-pointer pr-3 hover:bg-card"
+            className="h-16 cursor-pointer px-6 hover:bg-card"
             onClick={() => router.push(links.animal(animal.id))}
           />
         ))

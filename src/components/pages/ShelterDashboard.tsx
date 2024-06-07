@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
 import { links } from '~/config/siteConfig';
-import { useLoginToast } from '~/hooks/useLoginToast';
+import { api } from '~/lib/api';
 import { type RecentlyAddedAnimals } from '~/types';
 import ShelterStatisticsCard from '../cards/ShelterStatisticsCard';
 import EmailInviteForm from '../forms/EmailInviteForm';
@@ -25,7 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../primitives/Dialog';
-import { Chart } from '../utility/Chart';
+import Chart from '../utility/Chart';
 import RecentAdoptions from '../utility/RecentAdoptions';
 
 type ShelterDashboardProps = {
@@ -54,8 +54,12 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
   recentlyAddedPets,
 }) => {
   const { t } = useTranslation('common');
-  const { loginToast } = useLoginToast();
   const router = useRouter();
+
+  const { data: adoptionRaportChartData } =
+    api.pet.getDataForAdoptionRaportChart.useQuery(undefined, {
+      retry: false,
+    });
 
   return (
     <div className="container">
@@ -84,6 +88,13 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
           </div>
         </div>
         <div className="flex gap-2">
+          <Link
+            className={buttonVariants({ size: 'sm' })}
+            href={links.raports}
+          >
+            <Icons.charts className="mr-2 h-4 w-4" />
+            {t('dashboard_raports')}
+          </Link>
           <Dialog>
             <DialogTrigger asChild>
               <Button size="sm">
@@ -100,13 +111,6 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
               </DialogHeader>
             </DialogContent>
           </Dialog>
-          <Button
-            size="sm"
-            onClick={loginToast}
-          >
-            <Icons.download className="mr-2 h-4 w-4" />
-            {t('dashboard_download_raport')}
-          </Button>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <ShelterStatisticsCard
@@ -115,7 +119,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             difference={petsCountChangeFromLastMonth}
             onClick={() => router.push(links.animals)}
           >
-            <Icons.dog className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+            <Icons.dog className="h-6 w-6 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
           <ShelterStatisticsCard
             title={t('dashboard_statistics_card_adopted_title')}
@@ -123,7 +127,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             difference={adoptedPetsCountChangeFromLastMonth}
             onClick={() => router.push(links.animals)}
           >
-            <Icons.home className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+            <Icons.home className="h-6 w-6 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
           <ShelterStatisticsCard
             title={t('dashboard_statistics_card_users_title')}
@@ -131,7 +135,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             difference={usersCountChangeFromLastMonth}
             onClick={() => router.push(links.users)}
           >
-            <Icons.user className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+            <Icons.user className="h-6 w-6 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
           <ShelterStatisticsCard
             title={t('dashboard_statistics_card_donations_title')}
@@ -140,20 +144,10 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             difference={20.1}
             onClick={() => router.push(links.donations)}
           >
-            <Icons.dollarSign className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+            <Icons.dollarSign className="h-6 w-6 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-          <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
-            <CardHeader>
-              <CardTitle>
-                {t('dashboard_adoptions_raport_card_title')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pl-2">
-              <Chart />
-            </CardContent>
-          </Card>
           <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent lg:col-span-3">
             <CardHeader>
               <CardTitle>
@@ -164,8 +158,21 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
                 {t('dashboard_recent_adoptions_card_subtitle')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
               <RecentAdoptions animals={recentlyAddedPets} />
+            </CardContent>
+          </Card>
+          <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
+            <CardHeader>
+              <CardTitle>
+                {t('dashboard_adopted_animals_raport_card_title')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pl-2">
+              <Chart
+                height={390}
+                data={adoptionRaportChartData}
+              />
             </CardContent>
           </Card>
         </div>
