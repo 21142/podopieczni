@@ -48,6 +48,7 @@ import ShelterContactDetails from '~/components/utility/ShelterContactDetails';
 import { links } from '~/config/siteConfig';
 import { env } from '~/env.mjs';
 import { useLoginToast } from '~/hooks/useLoginToast';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import dayjs from '~/lib/dayjs';
 import { prisma } from '~/lib/db';
@@ -59,6 +60,7 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
   const { data: session } = useSession();
   const { t } = useTranslation('common');
   const { loginToast } = useLoginToast();
+  const { toast } = useToast();
   const router = useRouter();
   const { locale } = router;
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi>();
@@ -157,6 +159,16 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
       text: t('pet_profile_page_good_with_cats'),
     },
   ].filter((item): item is IconAndText => !!item);
+
+  const copyUrlToClipboard = () => {
+    navigator.clipboard.writeText(
+      `${env.NEXT_PUBLIC_BASE_URL}${links.pet(pet.id)}`
+    );
+    toast({
+      description: t('copied_to_clipboard_toast'),
+      variant: 'success',
+    });
+  };
 
   return (
     <PageLayout
@@ -347,6 +359,12 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
                         round
                       />
                     </WhatsappShareButton>
+                    <div
+                      className="rounded-full p-2 hover:cursor-pointer"
+                      onClick={copyUrlToClipboard}
+                    >
+                      <Icons.copy className="h-6 w-6" />
+                    </div>
                   </div>
                 </div>
               </CardContent>

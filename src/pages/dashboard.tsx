@@ -44,6 +44,20 @@ const Dashboard: NextPage = () => {
       retry: false,
     });
 
+  const { data: returnedPetsCount } = api.pet.getReturnedPetsCount.useQuery(
+    undefined,
+    {
+      enabled: session?.user !== undefined,
+      retry: false,
+    }
+  );
+
+  const { data: returnedPetsCountChangeFromLastMonth } =
+    api.pet.getReturnedPetsCountChangeFromLastMonth.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+      retry: false,
+    });
+
   const { data: adoptedPetsCount } = api.pet.getAdoptedPetsCount.useQuery(
     undefined,
     {
@@ -58,7 +72,7 @@ const Dashboard: NextPage = () => {
       retry: false,
     });
 
-  const { data: recentlyAddedPets } =
+  const { data: recentlyAddedPets, isLoading: recentlyAddedPetsIsLoading } =
     api.pet.getPetsAddedInTheLastMonth.useQuery(undefined, {
       enabled: session?.user !== undefined,
       retry: false,
@@ -122,6 +136,11 @@ const Dashboard: NextPage = () => {
             recentlyAddedPets && recentlyAddedPets?.length >= 6
               ? recentlyAddedPets
               : mostRecentlyAddedPets
+          }
+          recentlyAddedPetsIsLoading={recentlyAddedPetsIsLoading}
+          returnedPetsCount={returnedPetsCount}
+          returnedPetsCountChangeFromLastMonth={
+            returnedPetsCountChangeFromLastMonth
           }
         />
       )}

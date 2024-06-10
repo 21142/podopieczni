@@ -120,6 +120,9 @@ export const userRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.findUnique({
         where: { id: input.id },
+        include: {
+          address: true,
+        },
       });
       return user;
     }),
@@ -231,11 +234,11 @@ export const userRouter = createTRPCRouter({
             image: input.image,
             address: {
               create: {
-                address: input.address,
-                city: input.city,
-                postCode: input.postCode,
-                state: input.state,
-                country: input.country,
+                address: input.address.address,
+                city: input.address.city,
+                postCode: input.address.postCode,
+                state: input.address.state,
+                country: input.address.country,
               },
             },
             worksAt: {
@@ -277,6 +280,7 @@ export const userRouter = createTRPCRouter({
         await ctx.prisma.user.update({
           where: { email: input.email },
           data: {
+            title: input.title ?? undefined,
             firstName: input.firstName,
             lastName: input.lastName,
             email: input.email,
@@ -287,18 +291,18 @@ export const userRouter = createTRPCRouter({
             address: {
               upsert: {
                 update: {
-                  address: input.address,
-                  city: input.city,
-                  postCode: input.postCode,
-                  state: input.state,
-                  country: input.country,
+                  address: input.address.address,
+                  city: input.address.city,
+                  postCode: input.address.postCode,
+                  state: input.address.state,
+                  country: input.address.country,
                 },
                 create: {
-                  address: input.address,
-                  city: input.city,
-                  postCode: input.postCode,
-                  state: input.state,
-                  country: input.country,
+                  address: input.address.address,
+                  city: input.address.city,
+                  postCode: input.address.postCode,
+                  state: input.address.state,
+                  country: input.address.country,
                 },
               },
             },
@@ -308,6 +312,7 @@ export const userRouter = createTRPCRouter({
         await ctx.prisma.user.update({
           where: { email: input.email },
           data: {
+            title: input.title ?? undefined,
             firstName: input.firstName,
             lastName: input.lastName,
             email: input.email,

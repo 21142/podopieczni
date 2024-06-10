@@ -5,6 +5,7 @@ import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Icons } from '~/components/icons/Icons';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import PageLayout from '~/components/layouts/PageLayout';
@@ -20,6 +21,7 @@ import Spinner from '~/components/spinner/Spinner';
 import Chart from '~/components/utility/Chart';
 import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
+import generateCombinedCSVReport from '~/lib/generateRaport';
 import { ssghelpers } from '~/lib/ssg';
 
 const Raports: NextPage = () => {
@@ -37,17 +39,60 @@ const Raports: NextPage = () => {
     { enabled: session?.user !== undefined, retry: false }
   );
 
-  const { data: admittedAnimalsRaportData } =
+  const { data: admittedAnimalsRaportData, isSuccess: isAdmittedSuccess } =
     api.pet.getDataForAdmittedAnimalsRaportChart.useQuery(undefined, {
       enabled: session?.user !== undefined,
       retry: false,
     });
 
-  const { data: adoptedAnimalsRaportData } =
+  const { data: adoptedAnimalsRaportData, isSuccess: isAdoptedSuccess } =
     api.pet.getDataForAdoptionRaportChart.useQuery(undefined, {
       enabled: session?.user !== undefined,
       retry: false,
     });
+
+  const { data: animalsReturnRateRaportData, isSuccess: isEuthanizedSuccess } =
+    api.pet.getDataForAnimalsReturnRateChart.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+      retry: false,
+    });
+
+  const { data: euthanizedAnimalsRaportData, isSuccess: isReturnRateSuccess } =
+    api.pet.getDataForEuthanizedAnimalsChart.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+      retry: false,
+    });
+
+  const [isRaportDataReady, setIsRaportDataReady] = useState(false);
+
+  useEffect(() => {
+    if (
+      isAdmittedSuccess &&
+      isAdoptedSuccess &&
+      isEuthanizedSuccess &&
+      isReturnRateSuccess
+    ) {
+      setIsRaportDataReady(true);
+    }
+  }, [
+    isAdmittedSuccess,
+    isAdoptedSuccess,
+    isEuthanizedSuccess,
+    isReturnRateSuccess,
+  ]);
+
+  const downloadReport = () => {
+    if (!isRaportDataReady) return;
+
+    const combinedData = [
+      { section: 'Przyjęte zwierzęta', data: admittedAnimalsRaportData },
+      { section: 'Adoptowane zwierzęta', data: adoptedAnimalsRaportData },
+      { section: 'Uśpione zwierzęta', data: euthanizedAnimalsRaportData },
+      { section: 'Zwrócone zwierzęta', data: animalsReturnRateRaportData },
+    ];
+
+    generateCombinedCSVReport(combinedData);
+  };
 
   if (isLoading) {
     return (
@@ -98,7 +143,8 @@ const Raports: NextPage = () => {
               </Link>
               <Button
                 size="sm"
-                onClick={() => console.log('TODO: Download raport')}
+                onClick={downloadReport}
+                disabled={!isRaportDataReady}
               >
                 <Icons.download className="mr-2 h-4 w-4" />
                 {t('dashboard_download_raport')}
@@ -108,26 +154,6 @@ const Raports: NextPage = () => {
               <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
                 <CardHeader>
                   <CardTitle>
-                    {t('dashboard_adopted_animals_raport_card_title')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pl-2">
-                  <Chart data={adoptedAnimalsRaportData} />
-                </CardContent>
-              </Card>
-              <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
-                <CardHeader>
-                  <CardTitle>
-                    {t('dashboard_admitted_animals_raport_card_title')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pl-2">
-                  <Chart data={admittedAnimalsRaportData} />
-                </CardContent>
-              </Card>
-              <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
-                <CardHeader>
-                  <CardTitle>
                     {t('dashboard_admitted_animals_raport_card_title')}
                   </CardTitle>
                 </CardHeader>
@@ -143,6 +169,26 @@ const Raports: NextPage = () => {
                 </CardHeader>
                 <CardContent className="pl-2">
                   <Chart data={adoptedAnimalsRaportData} />
+                </CardContent>
+              </Card>
+              <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
+                <CardHeader>
+                  <CardTitle>
+                    {t('dashboard_animals_return_rate_raport_card_title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pl-2">
+                  <Chart data={animalsReturnRateRaportData} />
+                </CardContent>
+              </Card>
+              <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
+                <CardHeader>
+                  <CardTitle>
+                    {t('dashboard_euthanized_animals_raport_card_title')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pl-2">
+                  <Chart data={euthanizedAnimalsRaportData} />
                 </CardContent>
               </Card>
             </div>

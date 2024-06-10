@@ -1,7 +1,6 @@
 import { type FC } from 'react';
 import Footer from '~/components/navigations/Footer';
 import HeadMeta from '~/components/utility/HeadMeta';
-import { env } from '~/env.mjs';
 import { createFormattedForOgImageUrl, truncate } from '~/lib/utils';
 import Header from '../navigations/Header';
 
@@ -52,9 +51,7 @@ const PageLayout: FC<IPageLayout> = ({
         keywords={'psy, koty, adopcja zwierząt, schroniska'}
         type={'website'}
         url={url ?? 'https://podopieczni-dev.vercel.app'}
-        image={
-          formattedForOgImageUrl ?? `${env.NEXT_PUBLIC_BASE_URL}/api/og-image`
-        }
+        image={formattedForOgImageUrl}
       />
       <div
         {...divProps}

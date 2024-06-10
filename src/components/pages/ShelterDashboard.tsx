@@ -39,6 +39,9 @@ type ShelterDashboardProps = {
   usersCountChangeFromLastMonth: number | undefined;
   petsAddedLastMonthCount: number | undefined;
   recentlyAddedPets: RecentlyAddedAnimals | undefined;
+  recentlyAddedPetsIsLoading: boolean;
+  returnedPetsCount: number | undefined;
+  returnedPetsCountChangeFromLastMonth: number | undefined;
 };
 
 const ShelterDashboard: FC<ShelterDashboardProps> = ({
@@ -52,6 +55,9 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
   usersCountChangeFromLastMonth,
   petsAddedLastMonthCount,
   recentlyAddedPets,
+  recentlyAddedPetsIsLoading,
+  returnedPetsCount,
+  returnedPetsCountChangeFromLastMonth,
 }) => {
   const { t } = useTranslation('common');
   const router = useRouter();
@@ -64,7 +70,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
   return (
     <div className="container">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
+        <div className="flex items-center justify-between space-x-2 space-y-2">
           <div className="flex items-center gap-3">
             {shelterLogo && (
               <Image
@@ -130,21 +136,20 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             <Icons.home className="h-6 w-6 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
           <ShelterStatisticsCard
+            title={t('dashboard_statistics_card_returned_title')}
+            value={returnedPetsCount}
+            difference={returnedPetsCountChangeFromLastMonth}
+            onClick={() => router.push(links.animals)}
+          >
+            <Icons.returned className="h-6 w-6 text-muted-foreground dark:text-foreground" />
+          </ShelterStatisticsCard>
+          <ShelterStatisticsCard
             title={t('dashboard_statistics_card_users_title')}
             value={usersCount}
             difference={usersCountChangeFromLastMonth}
             onClick={() => router.push(links.users)}
           >
             <Icons.user className="h-6 w-6 text-muted-foreground dark:text-foreground" />
-          </ShelterStatisticsCard>
-          <ShelterStatisticsCard
-            title={t('dashboard_statistics_card_donations_title')}
-            value={1231.89}
-            currency="zł"
-            difference={20.1}
-            onClick={() => router.push(links.donations)}
-          >
-            <Icons.dollarSign className="h-6 w-6 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
@@ -159,7 +164,10 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <RecentAdoptions animals={recentlyAddedPets} />
+              <RecentAdoptions
+                animals={recentlyAddedPets}
+                isLoading={recentlyAddedPetsIsLoading}
+              />
             </CardContent>
           </Card>
           <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
