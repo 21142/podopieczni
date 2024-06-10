@@ -16,14 +16,14 @@ export const OutcomeEventTypeMap: Record<
   },
   EUTHANIZED: {
     en: 'Euthanized',
-    pl: 'Eutanazja',
+    pl: 'Uśpienie',
   },
   DIED: {
     en: 'Died',
     pl: 'Zmarł',
   },
   RETURN: {
-    en: 'Return to Owner',
-    pl: 'Powrót do właściciela',
+    en: 'Return to shelter',
+    pl: 'Powrót do schroniska',
   },
 };

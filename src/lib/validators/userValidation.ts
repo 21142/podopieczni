@@ -13,7 +13,15 @@ export const userAccountDetailsSchema = z.object({
     .string()
     .min(1, 'Phone number is required')
     .max(13, 'Phone number is invalid'),
-  address: z.string().optional(),
+  address: z
+    .object({
+      address: z.string().optional(),
+      city: z.string().optional(),
+      state: z.string().optional(),
+      postCode: z.string().optional(),
+      country: z.string().optional(),
+    })
+    .optional(),
   city: z.string().optional(),
   state: z.string().optional(),
   postCode: z.string().optional(),

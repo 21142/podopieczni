@@ -10,6 +10,6 @@ test.describe('Testing shelter dashboard', () => {
     await page.waitForLoadState('networkidle');
 
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page.getByText('Adoptions raport')).toBeVisible();
+    await expect(page.getByText('Adopted animals raport')).toBeVisible();
   });
 });

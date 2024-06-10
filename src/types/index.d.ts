@@ -29,3 +29,5 @@ export type Shelter =
   RouterOutputs['shelter']['queryAvailableShelters'][number];
 
 export type ShelterDetails = RouterOutputs['shelter']['getShelterDetails'];
+
+export type UserDetailsDto = RouterOutputs['user']['getUserById'];

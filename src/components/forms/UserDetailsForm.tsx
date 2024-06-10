@@ -1,10 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
-import { links } from '~/config/siteConfig';
 import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
@@ -12,6 +10,7 @@ import {
   userAccountDetailsSchema,
   type IUserAccountDetails,
 } from '~/lib/validators/userValidation';
+import { type UserDetailsDto } from '~/types';
 import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 import { Button } from '../primitives/Button';
@@ -36,40 +35,44 @@ import {
 import Spinner from '../spinner/Spinner';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
-type Role = z.infer<typeof userAccountDetailsSchema>['role'];
-
-type NonAdminRole = Exclude<Role, 'Admin'>;
-
-export const RolesMap: Record<NonAdminRole, string> = {
+export const RolesMap: Record<
+  z.infer<typeof userAccountDetailsSchema>['role'],
+  string
+> = {
   Adopter: 'Adopter',
   Shelter: 'Shelter',
+  Admin: 'Admin',
 };
 
-const AddPersonForm = () => {
+type Props = {
+  user: UserDetailsDto;
+};
+
+const UserDetailsForm: FC<Props> = ({ user }) => {
   const trpc = api.useUtils();
-  const router = useRouter();
   const { toast } = useToast();
-  const [avatarUrl, setAvatarUrl] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState(user?.image ?? '');
   const { t } = useTranslation('common');
 
-  const addUserMutation = api.user.add.useMutation({
+  const updateUserDetails = api.user.update.useMutation({
     onSuccess: async () => {
       await trpc.user.getAllPeopleAssociatedWithShelter.invalidate();
-    },
-    onSettled() {
-      router.push(links.users);
     },
   });
 
   const form = useForm<IUserAccountDetails>({
     resolver: zodResolver(userAccountDetailsSchema),
+    defaultValues: {
+      ...user,
+      dateOfBirth: user?.dateOfBirth?.toISOString().split('T')[0],
+    } as IUserAccountDetails,
   });
 
   const onSubmit = async (values: IUserAccountDetails) => {
     try {
-      await addUserMutation.mutateAsync(values);
+      await updateUserDetails.mutateAsync(values);
       toast({
-        description: t('add_person_form_toast_success'),
+        description: t('update_user_details_form_toast_success'),
         variant: 'success',
       });
     } catch (error) {
@@ -79,23 +82,6 @@ const AddPersonForm = () => {
           variant: 'destructive',
         });
       }
-    } finally {
-      form.reset({
-        title: undefined,
-        firstName: '',
-        lastName: '',
-        email: '',
-        dateOfBirth: '',
-        phoneNumber: '',
-        role: undefined,
-        address: undefined,
-        city: '',
-        postCode: '',
-        state: '',
-        country: '',
-        image: '',
-      });
-      setAvatarUrl('');
     }
   };
 
@@ -103,11 +89,13 @@ const AddPersonForm = () => {
     <div className="pb-4">
       <BackgroundWavesFeaturedPets className="absolute -z-10 aspect-[10/1] w-full rotate-180" />
       <Card className="mx-auto mt-4 w-full max-w-7xl p-4 px-4 py-5 sm:mt-6 sm:p-10 2xl:max-w-8xl">
-        <CardHeader className="px-0 pt-2">
-          <h1 className="mb-6 font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
-            {t('add_person_form_title')}
-          </h1>
-        </CardHeader>
+        {user?.name && (
+          <CardHeader className="px-0 pt-2">
+            <h1 className="mb-6 font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
+              {user.name}
+            </h1>
+          </CardHeader>
+        )}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -323,7 +311,7 @@ const AddPersonForm = () => {
                           key={op.value}
                           value={op.value}
                         >
-                          {RolesMap[op.value as NonAdminRole]}
+                          {RolesMap[op.value]}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -417,9 +405,9 @@ const AddPersonForm = () => {
               type="submit"
               className="col-span-2 justify-self-start"
               size="lg"
-              disabled={addUserMutation.isPending}
+              disabled={updateUserDetails.isPending}
             >
-              {addUserMutation.isPending ? (
+              {updateUserDetails.isPending ? (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 t('form_button_save')
@@ -432,4 +420,4 @@ const AddPersonForm = () => {
   );
 };
 
-export default AddPersonForm;
+export default UserDetailsForm;

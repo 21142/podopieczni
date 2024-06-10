@@ -30,6 +30,7 @@ import Map from '~/components/utility/Map';
 import ShelterContactDetails from '~/components/utility/ShelterContactDetails';
 import { links } from '~/config/siteConfig';
 import { env } from '~/env.mjs';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
 import { prisma } from '~/lib/db';
@@ -40,6 +41,7 @@ type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
   const { t } = useTranslation('common');
   const router = useRouter();
+  const { toast } = useToast();
 
   const { data: organization } = api.shelter.getShelterById.useQuery({
     id: shelterId,
@@ -69,6 +71,16 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
   }
 
   const organizationAddress = `${organization.address?.address}, ${organization.address?.city}, ${organization.address?.state}, ${organization.address?.country}`;
+
+  const copyUrlToClipboard = () => {
+    navigator.clipboard.writeText(
+      `${env.NEXT_PUBLIC_BASE_URL}${links.organization(organization.id)}`
+    );
+    toast({
+      description: t('copied_to_clipboard_toast'),
+      variant: 'success',
+    });
+  };
 
   return (
     <PageLayout
@@ -162,6 +174,12 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
                     round
                   />
                 </WhatsappShareButton>
+                <div
+                  className="rounded-full p-2 hover:cursor-pointer"
+                  onClick={copyUrlToClipboard}
+                >
+                  <Icons.copy className="h-6 w-6" />
+                </div>
               </div>
             </div>
           </div>
