@@ -47,4 +47,9 @@ export const links = {
   registerShelter: '/shelter/register',
   joinRequests: '/join-requests',
   raports: '/raports',
+  adoptions: '/adoptions',
+  adoptionSurvey: '/adoption-survey',
+  confirmation: '/tba',
+  application: (applicationId: string) =>
+    `/adoption-application/${applicationId}`,
 };

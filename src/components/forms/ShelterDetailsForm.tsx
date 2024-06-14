@@ -119,7 +119,7 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                   size="sm"
                   type="submit"
                   className="text-xs"
-                  disabled={!form.formState.isDirty}
+                  disabled={!form.formState.isDirty || !form.formState.isValid}
                 >
                   {t('form_save_changes_button')}
                 </Button>

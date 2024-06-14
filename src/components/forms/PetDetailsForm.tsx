@@ -704,6 +704,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               <SelectItem value="adoptable">
                                 Adoptable
                               </SelectItem>
+                              <SelectItem value="adopted">Adopted</SelectItem>
                               <SelectItem value="quarantined">
                                 Quarantined
                               </SelectItem>
@@ -1412,7 +1413,9 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         type="submit"
                         className="justify-self-start"
                         size="lg"
-                        disabled={!form.formState.isDirty}
+                        disabled={
+                          !form.formState.isDirty || !form.formState.isValid
+                        }
                       >
                         {t('pet_details_form_update_button', {
                           name: pet.name,
@@ -1561,7 +1564,10 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               type="submit"
                               className="w-fit justify-self-start"
                               size="lg"
-                              disabled={!outcomeEventForm.formState.isDirty}
+                              disabled={
+                                !outcomeEventForm.formState.isDirty ||
+                                !outcomeEventForm.formState.isValid
+                              }
                             >
                               {t('pet_events_add_button')}
                             </Button>
@@ -1749,7 +1755,9 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                             type="submit"
                             className="col-span-6 justify-self-start"
                             size="lg"
-                            disabled={!form.formState.isDirty}
+                            disabled={
+                              !form.formState.isDirty || !form.formState.isValid
+                            }
                           >
                             {t('form_save_changes_button')}
                           </Button>
@@ -1929,7 +1937,10 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               type="submit"
                               className="w-fit justify-self-start"
                               size="lg"
-                              disabled={!medicalEventForm.formState.isDirty}
+                              disabled={
+                                !medicalEventForm.formState.isDirty ||
+                                !medicalEventForm.formState.isValid
+                              }
                             >
                               {t('pet_events_add_button')}
                             </Button>
@@ -2133,7 +2144,10 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               type="submit"
                               className="w-fit justify-self-start"
                               size="lg"
-                              disabled={!documentForm.formState.isDirty}
+                              disabled={
+                                !documentForm.formState.isDirty ||
+                                !documentForm.formState.isValid
+                              }
                             >
                               {t('pet_documents_add_button')}
                             </Button>
@@ -2260,7 +2274,10 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               type="submit"
                               className="w-fit justify-self-start"
                               size="lg"
-                              disabled={!notesForm.formState.isDirty}
+                              disabled={
+                                !notesForm.formState.isDirty ||
+                                !notesForm.formState.isValid
+                              }
                             >
                               {t('pet_note_create_button')}
                             </Button>
@@ -2449,7 +2466,9 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                         variant={'default'}
                         size="lg"
                         type="submit"
-                        disabled={!form.formState.isDirty}
+                        disabled={
+                          !form.formState.isDirty || !form.formState.isValid
+                        }
                       >
                         {t('pet_save_adoption_button')}
                       </Button>

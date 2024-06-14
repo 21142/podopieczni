@@ -1,22 +1,62 @@
 import type { NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { DataTable } from '~/components/data-table/DataTable';
 import { joinRequestColumns } from '~/components/data-table/DataTableColumns';
 import { joinRequestColumnsInPolish } from '~/components/data-table/DataTableColumnsInPolish';
+import EmailInviteForm from '~/components/forms/EmailInviteForm';
+import { Icons } from '~/components/icons/Icons';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
+import { Button, buttonVariants } from '~/components/primitives/Button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '~/components/primitives/Dialog';
+import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
 import { ssghelpers } from '~/lib/ssg';
 
 const JoinRequests: NextPage = () => {
   const { data } = api.shelter.getJoinRequests.useQuery();
   const { locale } = useRouter();
+  const { t } = useTranslation('common');
 
   return (
     <DashboardLayout>
       <section className="flex flex-col items-center justify-center p-3">
         <div className="container">
+          <div className="mt-2 flex gap-2">
+            <Link
+              className={buttonVariants({ size: 'sm' })}
+              href={links.dashboard}
+            >
+              <Icons.dashboard className="mr-2 h-4 w-4" />
+              {t('dashboard')}
+            </Link>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="sm">
+                  <Icons.mailPlus className="mr-2 h-4 w-4" />
+                  {t('invite_user')}
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{t('invite_user_title')}</DialogTitle>
+                  <DialogDescription>
+                    <EmailInviteForm />
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          </div>
           {data && (
             <DataTable
               columns={

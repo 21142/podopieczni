@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { links } from '~/config/siteConfig';
 import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
-import { idSchema } from '~/lib/validators/petValidation';
+import { idSchema, petIdSchema } from '~/lib/validators/petValidation';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
 import {
@@ -17,7 +17,7 @@ import {
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
-  variant?: 'animals' | 'users' | 'joinRequests';
+  variant?: 'animals' | 'users' | 'joinRequests' | 'adoptions';
 }
 
 interface DataWithStatus {
@@ -76,6 +76,40 @@ export function DataTableRowActions<TData extends object>({
     },
   });
 
+  const acceptApplicationMutation =
+    api.adoptionApplication.acceptApplication.useMutation({
+      onSuccess: async () => {
+        toast({
+          description: t('accept_application_toast_success'),
+          variant: 'success',
+        });
+        await trpc.adoptionApplication.getAllForShelter.invalidate();
+      },
+      onError: (error) => {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      },
+    });
+
+  const rejectApplicationMutation =
+    api.adoptionApplication.rejectApplication.useMutation({
+      onSuccess: async () => {
+        toast({
+          description: t('reject_application_toast_success'),
+          variant: 'success',
+        });
+        await trpc.adoptionApplication.getAllForShelter.invalidate();
+      },
+      onError: (error) => {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      },
+    });
+
   const deleteJoinRequestMutation = api.shelter.deleteJoinRequest.useMutation({
     onSuccess: async () => {
       toast({
@@ -110,6 +144,27 @@ export function DataTableRowActions<TData extends object>({
         }
       },
     });
+
+  const markAsContactedMutation =
+    api.adoptionApplication.markAsContacted.useMutation({
+      onSuccess: async () => {
+        toast({
+          description: t('mark_as_contacted_toast_success'),
+          variant: 'success',
+        });
+        await trpc.adoptionApplication.getAllForShelter.invalidate();
+      },
+    });
+
+  const acceptApplication = async (application: TData) => {
+    const parsedApplication = idSchema.parse(application);
+    await acceptApplicationMutation.mutateAsync(parsedApplication.id);
+  };
+
+  const rejectApplication = async (application: TData) => {
+    const parsedApplication = idSchema.parse(application);
+    await rejectApplicationMutation.mutateAsync(parsedApplication.id);
+  };
 
   const acceptJoinRequest = async (joinRequest: TData) => {
     const parsedJoinRequest = idSchema.parse(joinRequest);
@@ -150,9 +205,24 @@ export function DataTableRowActions<TData extends object>({
     router.push(links.animal(parsedAnimal.id));
   };
 
+  const goToPetProfileFromAdoptionApplications = (animal: TData) => {
+    const parsedAnimal = petIdSchema.parse(animal);
+    router.push(links.animal(parsedAnimal.petId));
+  };
+
+  const goToAdoptionApplication = (adoptionApplication: TData) => {
+    const parsedAdoptionApplication = idSchema.parse(adoptionApplication);
+    router.push(links.application(parsedAdoptionApplication.id));
+  };
+
   const markAvailableForAdoption = async (animal: TData) => {
     const parsedAnimal = idSchema.parse(animal);
     await markAvailableForAdoptionMutation.mutateAsync(parsedAnimal.id);
+  };
+
+  const markAsContacted = async (application: TData) => {
+    const parsedApplication = idSchema.parse(application);
+    await markAsContactedMutation.mutateAsync(parsedApplication.id);
   };
 
   const goToProfile = (person: TData) => {
@@ -195,7 +265,7 @@ export function DataTableRowActions<TData extends object>({
             <DropdownMenuSeparator />
           </>
         )}
-        {variant !== 'joinRequests' && (
+        {variant !== 'joinRequests' && variant !== 'adoptions' && (
           <DropdownMenuItem
             onClick={() =>
               variant === 'animals' ? goToPetProfile(data) : goToProfile(data)
@@ -204,6 +274,46 @@ export function DataTableRowActions<TData extends object>({
             {t('animals_table_row_action_view_profile')}
           </DropdownMenuItem>
         )}
+        {variant === 'adoptions' && (
+          <DropdownMenuItem
+            onClick={() => goToPetProfileFromAdoptionApplications(data)}
+          >
+            {t('adoptions_table_row_action_view_pet_profile')}
+          </DropdownMenuItem>
+        )}
+        {variant === 'adoptions' && (
+          <>
+            <DropdownMenuItem onClick={() => goToAdoptionApplication(data)}>
+              {t('adoptions_table_row_action_view_application')}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
+        {variant === 'adoptions' &&
+          hasStatus(data) &&
+          data.status !== 'CONTACTED' &&
+          data.status !== 'REJECTED' &&
+          data.status !== 'APPROVED' && (
+            <>
+              <DropdownMenuItem onClick={() => markAsContacted(data)}>
+                {t('adoption_table_row_action_mark_as_contacted')}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
+        {variant === 'adoptions' &&
+          hasStatus(data) &&
+          data.status !== 'APPROVED' &&
+          data.status !== 'REJECTED' && (
+            <>
+              <DropdownMenuItem onClick={() => acceptApplication(data)}>
+                {t('join_requests_table_row_action_accept')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => rejectApplication(data)}>
+                {t('join_requests_table_row_action_reject')}
+              </DropdownMenuItem>
+            </>
+          )}
         {variant === 'joinRequests' &&
           hasStatus(data) &&
           data.status !== 'invited' && (
@@ -217,7 +327,7 @@ export function DataTableRowActions<TData extends object>({
               <DropdownMenuSeparator />
             </>
           )}
-        {variant !== 'joinRequests' && (
+        {variant !== 'joinRequests' && variant !== 'adoptions' && (
           <DropdownMenuItem
             onClick={() =>
               variant === 'animals' ? deletePet(data) : deletePerson(data)
