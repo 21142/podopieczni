@@ -1,4 +1,5 @@
 import { createTRPCRouter } from '~/server/api/trpc';
+import { adoptionApplicationRouter } from './routers/adoptionApplication';
 import { authRouter } from './routers/auth';
 import { exampleRouter } from './routers/example';
 import { petRouter } from './routers/pet';
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   pet: petRouter,
   shelter: shelterRouter,
+  adoptionApplication: adoptionApplicationRouter,
   test: exampleRouter,
 });
 

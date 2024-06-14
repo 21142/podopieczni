@@ -12,6 +12,9 @@ export type UserDto =
 export type JoinRequestDto =
   RouterOutputs['shelter']['getJoinRequests'][number];
 
+export type AdoptionApplicationDto =
+  RouterOutputs['adoptionApplication']['getAllForShelter'][number];
+
 export type RecentlyAddedAnimals =
   RouterOutputs['pet']['getPetsAddedInTheLastMonth'];
 

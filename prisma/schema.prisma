@@ -42,27 +42,28 @@ model Session {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  title         String?       @db.VarChar(6)
-  name          String?
-  firstName     String?
-  lastName      String?
-  email         String?       @unique
-  emailVerified DateTime?
-  role          Role?
-  image         String?
-  dateOfBirth   DateTime?     @db.Date
-  phoneNumber   String?       @db.VarChar(13)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  address       AddressInfo?
-  adoptedPets   Pet[]
-  worksAt       Shelter?      @relation(fields: [shelterId], references: [id])
-  shelterId     String?
-  favoritePets  FavoritePet[]
-  accounts      Account[]
-  sessions      Session[]
-  joinRequests  JoinRequest[] @relation("UserJoinRequest")
+  id                  String                @id @default(cuid())
+  title               String?               @db.VarChar(6)
+  name                String?
+  firstName           String?
+  lastName            String?
+  email               String?               @unique
+  emailVerified       DateTime?
+  role                Role?
+  image               String?
+  dateOfBirth         DateTime?             @db.Date
+  phoneNumber         String?               @db.VarChar(13)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  address             AddressInfo?
+  adoptedPets         Pet[]
+  worksAt             Shelter?              @relation(fields: [shelterId], references: [id])
+  shelterId           String?
+  favoritePets        FavoritePet[]
+  accounts            Account[]
+  sessions            Session[]
+  joinRequests        JoinRequest[]         @relation("UserJoinRequest")
+  AdoptionApplication AdoptionApplication[]
 
   @@index([name])
   @@index([shelterId])
@@ -70,20 +71,22 @@ model User {
 }
 
 model AddressInfo {
-  id        String   @id @default(cuid())
-  address   String?
-  city      String?
-  postCode  String?
-  state     String?
-  country   String?
-  lat       String?
-  lng       String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String?  @unique
-  shelter   Shelter? @relation(fields: [shelterId], references: [id], onDelete: Cascade)
-  shelterId String?  @unique
+  id                    String               @id @default(cuid())
+  address               String?
+  city                  String?
+  postCode              String?
+  state                 String?
+  country               String?
+  lat                   String?
+  lng                   String?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  user                  User?                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                String?              @unique
+  shelter               Shelter?             @relation(fields: [shelterId], references: [id], onDelete: Cascade)
+  shelterId             String?              @unique
+  adoptionApplication   AdoptionApplication? @relation(fields: [adoptionApplicationId], references: [id], onDelete: Cascade)
+  adoptionApplicationId String?              @unique
 }
 
 model VerificationToken {
@@ -95,20 +98,21 @@ model VerificationToken {
 }
 
 model Shelter {
-  id           String        @id @default(cuid())
-  name         String
-  logo         String?
-  description  String?
-  email        String?
-  phoneNumber  String?       @db.VarChar(13)
-  taxId        String
-  website      String?
-  address      AddressInfo?
-  pets         Pet[]
-  members      User[]
-  joinRequests JoinRequest[] @relation("ShelterJoinRequest")
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id                  String                @id @default(cuid())
+  name                String
+  logo                String?
+  description         String?
+  email               String?
+  phoneNumber         String?               @db.VarChar(13)
+  taxId               String
+  website             String?
+  address             AddressInfo?
+  pets                Pet[]
+  members             User[]
+  joinRequests        JoinRequest[]         @relation("ShelterJoinRequest")
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  AdoptionApplication AdoptionApplication[]
 
   @@unique([taxId])
   @@index([name])
@@ -130,7 +134,7 @@ model JoinRequest {
 }
 
 model Pet {
-  id                   String           @id @default(cuid())
+  id                   String                @id @default(cuid())
   internalId           String?
   image                String?
   name                 String?
@@ -143,23 +147,23 @@ model Pet {
   weight               Float?
   adoptionFee          String?
   adoptionFeeKnown     Boolean?
-  dateOfBirth          DateTime         @db.Date
+  dateOfBirth          DateTime              @db.Date
   status               String?
-  description          String?          @db.VarChar(1000)
-  houseTrained         String?          @db.VarChar(5)
-  specialNeeds         String?          @db.VarChar(5)
-  neutered             String?          @db.VarChar(5)
-  declawed             String?          @db.VarChar(5)
-  aggressive           String?          @db.VarChar(5)
-  friendlyWithDogs     String?          @db.VarChar(5)
-  friendlyWithCats     String?          @db.VarChar(5)
-  friendlyWithChildren String?          @db.VarChar(5)
+  description          String?               @db.VarChar(1000)
+  houseTrained         String?               @db.VarChar(5)
+  specialNeeds         String?               @db.VarChar(5)
+  neutered             String?               @db.VarChar(5)
+  declawed             String?               @db.VarChar(5)
+  aggressive           String?               @db.VarChar(5)
+  friendlyWithDogs     String?               @db.VarChar(5)
+  friendlyWithCats     String?               @db.VarChar(5)
+  friendlyWithChildren String?               @db.VarChar(5)
   microchipBrand       String?
   microchipNumber      String?
   availableForAdoption Boolean?
-  shelter              Shelter          @relation(fields: [shelterId], references: [id], onDelete: Cascade)
+  shelter              Shelter               @relation(fields: [shelterId], references: [id], onDelete: Cascade)
   shelterId            String
-  adoptedBy            User?            @relation(fields: [adopterId], references: [id])
+  adoptedBy            User?                 @relation(fields: [adopterId], references: [id])
   adopterId            String?
   isLikedByUser        Boolean?
   likedBy              FavoritePet[]
@@ -172,8 +176,9 @@ model Pet {
   notes                Note[]
   documents            Document[]
   publishedAt          DateTime?
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  AdoptionApplication  AdoptionApplication[]
 
   @@index([name])
   @@index([breed])
@@ -261,6 +266,42 @@ model Note {
   petId   String?
 
   @@index([petId])
+}
+
+model AdoptionApplication {
+  id                String            @id @default(cuid())
+  firstName         String
+  lastName          String
+  email             String
+  phoneNumber       String
+  address           AddressInfo?
+  householdSize     String
+  hasPets           String
+  hasChildren       String
+  reasonForAdoption String
+  experience        String
+  additionalInfo    String?
+  status            ApplicationStatus @default(PENDING)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  user      User?   @relation(fields: [userId], references: [id])
+  userId    String? // Optional for unauthenticated users
+  shelter   Shelter @relation(fields: [shelterId], references: [id])
+  shelterId String
+  pet       Pet     @relation(fields: [petId], references: [id])
+  petId     String
+
+  @@index([userId])
+  @@index([shelterId])
+  @@index([petId])
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CONTACTED
 }
 
 enum HealthStatus {

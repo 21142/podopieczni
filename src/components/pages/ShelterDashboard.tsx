@@ -83,7 +83,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             )}
             <h2 className="text-3xl font-bold tracking-tight">{shelterName}</h2>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="hidden items-center space-x-2 sm:flex">
             <Link
               href={links.organizationSettings}
               className={buttonVariants({ size: 'sm' })}
@@ -93,7 +93,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             </Link>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col items-start gap-2 sm:flex-row">
           <Link
             className={buttonVariants({ size: 'sm' })}
             href={links.raports}
@@ -101,10 +101,17 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             <Icons.charts className="mr-2 h-4 w-4" />
             {t('dashboard_raports')}
           </Link>
+          <Link
+            className={buttonVariants({ size: 'sm' })}
+            href={links.joinRequests}
+          >
+            <Icons.joinRequests className="mr-2 h-4 w-4" />
+            {t('join_requests')}
+          </Link>
           <Dialog>
             <DialogTrigger asChild>
               <Button size="sm">
-                <Icons.mail className="mr-2 h-4 w-4" />
+                <Icons.mailPlus className="mr-2 h-4 w-4" />
                 {t('invite_user')}
               </Button>
             </DialogTrigger>
@@ -117,6 +124,15 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
               </DialogHeader>
             </DialogContent>
           </Dialog>
+          <div className="flex items-center space-x-2 sm:hidden">
+            <Link
+              href={links.organizationSettings}
+              className={buttonVariants({ size: 'sm' })}
+            >
+              <Icons.settings className="mr-2 h-4 w-4" />
+              {t('dashboard_organization_settings')}
+            </Link>
+          </div>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <ShelterStatisticsCard

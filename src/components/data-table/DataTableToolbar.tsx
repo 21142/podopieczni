@@ -11,7 +11,7 @@ import { DataTableVisibilityOptions } from './DataTableVisibilityOptions';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
-  variant?: 'animals' | 'users' | 'joinRequests';
+  variant?: 'animals' | 'users' | 'joinRequests' | 'adoptions';
 }
 
 export function DataTableToolbar<TData>({
@@ -27,7 +27,7 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="flex flex-1 flex-col items-center justify-between space-x-2 space-y-2 sm:flex-row sm:space-y-0">
-      {variant !== 'joinRequests' && (
+      {variant !== 'joinRequests' && variant !== 'adoptions' && (
         <Input
           placeholder={t('animals_table_input_placeholder')}
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
@@ -37,8 +37,28 @@ export function DataTableToolbar<TData>({
           className="h-8 w-[200px] lg:w-[250px]"
         />
       )}
+      {variant === 'adoptions' && (
+        <div className="flex max-w-full gap-3">
+          <Input
+            placeholder={t('adoptions_table_name_input_placeholder')}
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            onChange={(event) =>
+              table.getColumn('name')?.setFilterValue(event.target.value)
+            }
+            className="h-8 w-[200px] lg:w-[250px]"
+          />
+          <Input
+            placeholder={t('adoptions_table_email_input_placeholder')}
+            value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
+            onChange={(event) =>
+              table.getColumn('email')?.setFilterValue(event.target.value)
+            }
+            className="h-8 w-[200px] lg:w-[250px]"
+          />
+        </div>
+      )}
       {variant === 'joinRequests' && (
-        <div className="flex gap-3">
+        <div className="flex max-w-full gap-3">
           <Input
             placeholder={t('join_requests_table_email_input_placeholder')}
             value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
@@ -112,7 +132,7 @@ export function DataTableToolbar<TData>({
           </div>
         )}
         <DataTableVisibilityOptions table={table} />
-        {variant !== 'joinRequests' && (
+        {variant !== 'joinRequests' && variant !== 'adoptions' && (
           <Button
             onClick={() => router.push(redirectionLink)}
             variant="primary"

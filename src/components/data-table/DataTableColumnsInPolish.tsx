@@ -6,7 +6,12 @@ import {
   AvatarImage,
 } from '~/components/primitives/Avatar';
 import { statuses } from '~/lib/constants';
-import { type AnimalDto, type JoinRequestDto, type UserDto } from '~/types';
+import {
+  type AdoptionApplicationDto,
+  type AnimalDto,
+  type JoinRequestDto,
+  type UserDto,
+} from '~/types';
 import { DataTableColumnHeader } from './DataTableHeaders';
 import { DataTableRowActions } from './DataTableRowActions';
 
@@ -362,3 +367,121 @@ export const joinRequestColumnsInPolish: ColumnDef<JoinRequestDto>[] = [
     ),
   },
 ];
+
+export const adoptionApplicationColumnsInPolish: ColumnDef<AdoptionApplicationDto>[] =
+  [
+    {
+      accessorKey: 'pet.image',
+      id: 'petAvatar',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Zdjęcie profilowe"
+          className="ml-10"
+        />
+      ),
+      cell: ({ row }) => (
+        <Avatar className="ml-12 h-12 w-12">
+          <AvatarImage
+            src={row.getValue('petAvatar')}
+            width={48}
+            height={48}
+            alt="Zdjęcie profilowe podopiecznego"
+          />
+          <AvatarFallback>
+            <Icons.dog className="h-6 w-6 text-muted-foreground" />
+          </AvatarFallback>
+        </Avatar>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'pet.name',
+      id: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Imie"
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="text-base font-medium">{row.getValue('name')}</span>
+      ),
+    },
+    {
+      accessorKey: 'email',
+      id: 'email',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Adres email osoby zainteresowanej"
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="text-base font-medium">{row.getValue('email')}</span>
+      ),
+    },
+    {
+      accessorKey: 'phoneNumber',
+      id: 'phoneNumber',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Numer telefonu"
+        />
+      ),
+      cell: ({ row }) => (
+        <span>
+          {row.getValue('phoneNumber') != undefined ? (
+            row.getValue('phoneNumber')
+          ) : (
+            <span className="text-muted-foreground">Brak danych</span>
+          )}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'createdAt',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Data utworzenia"
+        />
+      ),
+      cell: ({ row }) => {
+        const createdAt = row.getValue('createdAt');
+        if (createdAt instanceof Date) {
+          return (
+            <span className="text-foreground">
+              {createdAt.toLocaleString()}
+            </span>
+          );
+        } else {
+          return <span className="text-foreground">Niepoprawna data</span>;
+        }
+      },
+    },
+    {
+      id: 'status',
+      accessorKey: 'status',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Status"
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="text-foreground">{row.getValue('status')}</span>
+      ),
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => (
+        <DataTableRowActions
+          variant="adoptions"
+          row={row}
+        />
+      ),
+    },
+  ];

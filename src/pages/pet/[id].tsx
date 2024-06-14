@@ -378,7 +378,12 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
                   <Button
                     className="w-fit rounded-full px-5 md:px-12"
                     variant="primary"
-                    onClick={() => console.log(pet.id)}
+                    onClick={() =>
+                      router.push({
+                        pathname: links.adoptionSurvey,
+                        query: { petId: pet.id },
+                      })
+                    }
                   >
                     {t('pet_profile_inquire_about_adoption')}
                   </Button>

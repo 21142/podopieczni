@@ -170,6 +170,10 @@ export const idSchema = z.object({
   id: z.string(),
 });
 
+export const petIdSchema = z.object({
+  petId: z.string(),
+});
+
 export type IPetDetails = z.infer<typeof petDetailsSchema>;
 export type IPetFullDetails = z.infer<typeof fullPetDetailsSchema>;
 export type IPetFilterOptions = z.infer<typeof petFilterOptionsSchema>;
