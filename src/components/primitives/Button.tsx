@@ -13,6 +13,8 @@ const buttonVariants = cva(
           'bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-50 dark:text-neutral-900',
         destructive:
           'bg-red-500 text-white hover:bg-red-600 dark:hover:bg-red-600',
+        success:
+          'bg-green-400 text-white hover:bg-green-500 dark:hover:bg-green-500',
         outline:
           'bg-transparent border border-neutral-200 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-100',
         combobox:

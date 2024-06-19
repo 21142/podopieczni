@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ApplicationStatus } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod';
@@ -13,7 +14,9 @@ import {
   type IAdoptionSurvey,
 } from '~/lib/validators/adoptionSurveyValidation';
 import { Icons } from '../icons/Icons';
-import { Button } from '../primitives/Button';
+import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
+import { Badge, type BadgeProps } from '../primitives/Badge';
+import { Button, buttonVariants } from '../primitives/Button';
 import { Card, CardHeader } from '../primitives/Card';
 import {
   Form,
@@ -43,55 +46,50 @@ export const HouseholdSizeMap: Record<HouseholdSize, string> = {
 };
 
 type Props = {
-  petId: string;
+  applicationId: string;
 };
 
-const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
-  const router = useRouter();
+const AdoptionSurveyAnswers: FC<Props> = ({ applicationId }) => {
   const { toast } = useToast();
   const { t } = useTranslation('common');
   const { data: session } = useSession();
+  const trpc = api.useUtils();
 
-  const submitAdoptionInquiryMutation =
-    api.adoptionApplication.create.useMutation({
-      onSuccess: () => {
-        setTimeout(() => {
-          router.push(links.confirmation);
-        }, 3000);
+  const acceptAdoptionApplicationMutation =
+    api.adoptionApplication.acceptApplication.useMutation({
+      onSuccess: async () => {
+        await trpc.adoptionApplication.getApplicationById.invalidate();
       },
     });
 
-  const { data: userDetails } = api.user.getUserById.useQuery({
-    id: session?.user.id ?? '',
-  });
+  const rejectAdoptionApplicationMutation =
+    api.adoptionApplication.rejectApplication.useMutation({
+      onSuccess: async () => {
+        await trpc.adoptionApplication.getApplicationById.invalidate();
+      },
+    });
+
+  const markAdoptionApplicationAsContactedMutation =
+    api.adoptionApplication.markAsContacted.useMutation({
+      onSuccess: async () => {
+        await trpc.adoptionApplication.getApplicationById.invalidate();
+      },
+    });
+
+  const { data: adoptionSurveyData } =
+    api.adoptionApplication.getApplicationById.useQuery(applicationId, {
+      enabled: session?.user !== undefined,
+      retry: false,
+    });
 
   const form = useForm<IAdoptionSurvey>({
     resolver: zodResolver(adoptionSurveySchema),
-    defaultValues: userDetails
-      ? {
-          firstName: userDetails.firstName || '',
-          lastName: userDetails.lastName || '',
-          email: userDetails.email || '',
-          phoneNumber: userDetails.phoneNumber || '',
-          address: {
-            address: userDetails.address?.address || '',
-            city: userDetails.address?.city || '',
-            postCode: userDetails.address?.postCode || '',
-            state: userDetails.address?.state || '',
-            country: userDetails.address?.country || '',
-          },
-        }
-      : {
-          firstName: '',
-          lastName: '',
-          email: '',
-          phoneNumber: '',
-        },
+    defaultValues: adoptionSurveyData as IAdoptionSurvey,
   });
 
-  const onSubmit = async (values: IAdoptionSurvey) => {
+  const acceptAdoptionApplication = async () => {
     try {
-      await submitAdoptionInquiryMutation.mutateAsync({ petId, data: values });
+      await acceptAdoptionApplicationMutation.mutateAsync(applicationId);
       toast({
         description: t('adoption_survey_toast_success'),
         variant: 'success',
@@ -106,20 +104,123 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
     }
   };
 
+  const rejectAdoptionApplication = async () => {
+    try {
+      await rejectAdoptionApplicationMutation.mutateAsync(applicationId);
+      toast({
+        description: t('adoption_survey_toast_success'),
+        variant: 'success',
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
+  const markAdoptionApplicationAsContacted = async () => {
+    try {
+      await markAdoptionApplicationAsContactedMutation.mutateAsync(
+        applicationId
+      );
+      toast({
+        description: t('adoption_survey_toast_success'),
+        variant: 'success',
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
+  const getBadgeVariant = (
+    status: ApplicationStatus
+  ): { variant: BadgeProps['variant'] } => {
+    switch (status) {
+      case ApplicationStatus.APPROVED:
+        return { variant: 'success' };
+      case ApplicationStatus.REJECTED:
+        return { variant: 'destructive' };
+      case ApplicationStatus.CONTACTED:
+        return { variant: 'success' };
+      case ApplicationStatus.PENDING:
+      default:
+        return { variant: 'default' };
+    }
+  };
+
+  const getBadgeText = (status: ApplicationStatus): string => {
+    switch (status) {
+      case ApplicationStatus.APPROVED:
+        return 'accepted';
+      case ApplicationStatus.REJECTED:
+        return 'rejected';
+      case ApplicationStatus.CONTACTED:
+        return 'marked_as_contacted';
+      case ApplicationStatus.PENDING:
+      default:
+        return 'pending';
+    }
+  };
+
+  if (!adoptionSurveyData) return <p>No adoption application found</p>;
+
+  const { variant } = getBadgeVariant(adoptionSurveyData.status);
+
   return (
-    <div className="pb-4">
+    <div className="p-4">
       <BackgroundWavesFeaturedPets className="absolute -z-10 aspect-[10/1] w-full rotate-180" />
       <Card className="mx-auto mt-4 w-full max-w-7xl p-4 px-4 py-5 sm:mt-6 sm:p-10 2xl:max-w-8xl">
-        <CardHeader className="px-0 pt-2">
+        <CardHeader className="px-0 pb-12 pt-0">
           <h1 className="mb-6 font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
             {t('adoption_survey_form_title')}
           </h1>
+          <div className="relative flex items-center gap-6 py-6">
+            <Badge
+              className="absolute -top-2 left-0"
+              variant={variant}
+            >
+              {t(getBadgeText(adoptionSurveyData.status))}
+            </Badge>
+            <Avatar className="h-28 w-28 sm:h-44 sm:w-44">
+              <AvatarImage
+                src={adoptionSurveyData?.user?.image ?? undefined}
+                alt={
+                  adoptionSurveyData?.user?.firstName ?? 'User profile photo'
+                }
+              />
+              <AvatarFallback>
+                <span className="sr-only">User image fallback</span>
+                {adoptionSurveyData?.user
+                  ? `${adoptionSurveyData.user?.firstName} ${adoptionSurveyData.user?.lastName}`
+                  : `${adoptionSurveyData.firstName} ${adoptionSurveyData.lastName}`}
+              </AvatarFallback>
+            </Avatar>
+            <Icons.arrows className="h-8 w-8" />
+            <Avatar className="h-28 w-28 sm:h-44 sm:w-44">
+              <AvatarImage
+                src={
+                  adoptionSurveyData?.pet.image ??
+                  '/images/no-profile-picture.svg'
+                }
+                alt={adoptionSurveyData?.pet.name ?? 'Pet profile photo'}
+              />
+              <AvatarFallback>
+                <span className="sr-only">Pet image fallback</span>
+                <Icons.dog className="h-4 w-4" />
+              </AvatarFallback>
+            </Avatar>
+          </div>
         </CardHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-y-6 md:grid md:grid-cols-2 md:gap-6"
-          >
+          <form className="flex flex-col gap-y-6 md:grid md:grid-cols-2 md:gap-6">
             <FormField
               control={form.control}
               name="reasonForAdoption"
@@ -129,6 +230,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Textarea
                       className="min-h-24"
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -145,6 +247,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Textarea
                       className="min-h-24"
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -162,6 +265,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                     onValueChange={field.onChange}
                     defaultValue={field.value?.toString()}
                     className="max-w grid grid-cols-2 gap-8 pt-2"
+                    disabled
                   >
                     <FormItem>
                       <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
@@ -208,6 +312,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                     onValueChange={field.onChange}
                     defaultValue={field.value?.toString()}
                     className="max-w grid grid-cols-2 gap-8 pt-2"
+                    disabled
                   >
                     <FormItem>
                       <FormLabel className="[&:has([data-state=checked])>div]:border-primary-300 [&:has([data-state=checked])>div]:text-primary-300">
@@ -253,6 +358,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <Select
                     onValueChange={field.onChange as (value: string) => void}
                     defaultValue={field.value}
+                    disabled
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -288,6 +394,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Input
                       placeholder=""
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -304,6 +411,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Input
                       placeholder=""
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -320,6 +428,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Input
                       placeholder=""
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -336,6 +445,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Input
                       placeholder=""
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -354,6 +464,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Input
                       placeholder=""
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -370,6 +481,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Input
                       placeholder=""
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -386,6 +498,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Input
                       placeholder=""
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -402,6 +515,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Input
                       placeholder=""
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -418,6 +532,7 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                   <FormControl>
                     <Input
                       placeholder=""
+                      disabled
                       {...field}
                     />
                   </FormControl>
@@ -425,23 +540,73 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
                 </FormItem>
               )}
             />
-            <Button
-              type="submit"
-              className="col-span-2 justify-self-start"
-              size="lg"
-              disabled={submitAdoptionInquiryMutation.isPending}
+          </form>
+          <div className="mt-10 grid w-fit grid-cols-1 gap-3 xs:grid-cols-2 md:grid-cols-4">
+            <Link
+              className={buttonVariants({ variant: 'subtle', size: 'lg' })}
+              href={links.adoptions}
             >
-              {submitAdoptionInquiryMutation.isPending ? (
+              <Icons.chevronLeft className="h-5 w-5" />
+              {t('go_back')}
+            </Link>
+            <Button
+              className=""
+              size="lg"
+              onClick={markAdoptionApplicationAsContacted}
+              disabled={
+                markAdoptionApplicationAsContactedMutation.isPending ||
+                adoptionSurveyData?.status === 'CONTACTED'
+              }
+            >
+              {markAdoptionApplicationAsContactedMutation.isPending ? (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              ) : adoptionSurveyData?.status === 'CONTACTED' ? (
+                t('marked_as_contacted')
               ) : (
-                t('form_button_save')
+                t('mark_as_contacted')
               )}
             </Button>
-          </form>
+            <Button
+              className=""
+              size="lg"
+              variant="success"
+              onClick={acceptAdoptionApplication}
+              disabled={
+                acceptAdoptionApplicationMutation.isPending ||
+                adoptionSurveyData?.status === 'APPROVED'
+              }
+            >
+              {acceptAdoptionApplicationMutation.isPending ? (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              ) : adoptionSurveyData?.status === 'APPROVED' ? (
+                t('accepted')
+              ) : (
+                t('accept')
+              )}
+            </Button>
+            <Button
+              className=""
+              size="lg"
+              variant="destructive"
+              onClick={rejectAdoptionApplication}
+              disabled={
+                rejectAdoptionApplicationMutation.isPending ||
+                adoptionSurveyData?.status === 'REJECTED'
+              }
+            >
+              {rejectAdoptionApplicationMutation.isPending ? (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              ) : adoptionSurveyData?.status === 'REJECTED' ? (
+                t('rejected')
+              ) : (
+                t('reject')
+              )}
+            </Button>
+          </div>
         </Form>
       </Card>
     </div>
   );
 };
 
-export default AdoptionSurveyForm;
+export default AdoptionSurveyAnswers;

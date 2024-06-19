@@ -53,7 +53,6 @@ export const authOptions: NextAuthOptions = {
         url,
         provider: { server, from },
       }) => {
-        // TODO: Extract into a seprate function/service
         const emailHtml = render(WelcomeEmail({ name: email, href: url }));
 
         nodemailer.createTransport(server as string).sendMail(

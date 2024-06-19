@@ -8,7 +8,6 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getBaseUrl(): string {
   if (typeof window !== 'undefined') {
-    // browser should use relative url
     return '';
   }
   const protocol = process.env.VERCEL_URL ? 'https://' : 'http://';

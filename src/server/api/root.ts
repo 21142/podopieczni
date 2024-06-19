@@ -6,11 +6,6 @@ import { petRouter } from './routers/pet';
 import { shelterRouter } from './routers/shelter';
 import { userRouter } from './routers/user';
 
-/**
- * This is the primary router for your server.
- *
- * All routers added in /api/routers should be manually added here.
- */
 export const appRouter = createTRPCRouter({
   auth: authRouter,
   user: userRouter,
@@ -20,5 +15,4 @@ export const appRouter = createTRPCRouter({
   test: exampleRouter,
 });
 
-// export type definition of API
 export type AppRouter = typeof appRouter;

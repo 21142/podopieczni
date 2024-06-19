@@ -40,7 +40,6 @@ const Welcome: NextPage = () => {
     router.replace(redirectSlug);
   }
 
-  // TODO: Clean up this mess - no low level html in pages (extract into components)
   if (isLoading)
     return (
       <PageLayout>

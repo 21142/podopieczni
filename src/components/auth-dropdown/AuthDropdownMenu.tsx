@@ -19,8 +19,7 @@ import { useToast } from '~/hooks/useToast';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { api } from '~/lib/api';
 
-//TODO: Consider renaming to AuthDropdownMenu
-const AuthButton = () => {
+const AuthDropdownMenu = () => {
   const { data: session } = useSession();
   const { data: userFromSession } = useUserFromSessionQuery(session);
   const { t } = useTranslation('common');
@@ -103,4 +102,4 @@ const AuthButton = () => {
   );
 };
 
-export default AuthButton;
+export default AuthDropdownMenu;
