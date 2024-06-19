@@ -1,61 +1,23 @@
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { type FC } from 'react';
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
-const data = [
-  {
-    name: 'Jan',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Feb',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Mar',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Apr',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'May',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Jun',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Jul',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Aug',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Sep',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Oct',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Nov',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-  {
-    name: 'Dec',
-    total: Math.floor(Math.random() * 10) + 1,
-  },
-];
+type Props = {
+  data: { name: string; total: number }[] | undefined;
+  height?: number;
+};
 
-export function Chart() {
+const Chart: FC<Props> = ({ data, height }) => {
   return (
     <ResponsiveContainer
       width="100%"
-      height={350}
+      height={height ?? 222}
     >
       <BarChart data={data}>
         <XAxis
@@ -70,14 +32,44 @@ export function Chart() {
           fontSize={12}
           tickLine={false}
           axisLine={false}
+          allowDecimals={false}
           tickFormatter={(value) => `${value}`}
+        />
+        <Tooltip
+          content={<CustomTooltip />}
+          wrapperStyle={{ width: 100, backgroundColor: '#c8812' }}
         />
         <Bar
           dataKey="total"
-          fill="#adfa1d"
+          fill="#a704b5"
           radius={[4, 4, 0, 0]}
         />
       </BarChart>
     </ResponsiveContainer>
   );
-}
+};
+
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: [{ value: string }];
+  label?: string;
+}) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-card-foreground/90 p-4">
+        <p className="font-semibold text-background">{label}</p>
+        <p className="text-base font-medium text-primary-200">
+          total: {`${payload[0].value}`}
+        </p>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+export default Chart;

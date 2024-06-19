@@ -44,6 +44,20 @@ const Dashboard: NextPage = () => {
       retry: false,
     });
 
+  const { data: returnedPetsCount } = api.pet.getReturnedPetsCount.useQuery(
+    undefined,
+    {
+      enabled: session?.user !== undefined,
+      retry: false,
+    }
+  );
+
+  const { data: returnedPetsCountChangeFromLastMonth } =
+    api.pet.getReturnedPetsCountChangeFromLastMonth.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+      retry: false,
+    });
+
   const { data: adoptedPetsCount } = api.pet.getAdoptedPetsCount.useQuery(
     undefined,
     {
@@ -58,7 +72,7 @@ const Dashboard: NextPage = () => {
       retry: false,
     });
 
-  const { data: recentlyAddedPets } =
+  const { data: recentlyAddedPets, isLoading: recentlyAddedPetsIsLoading } =
     api.pet.getPetsAddedInTheLastMonth.useQuery(undefined, {
       enabled: session?.user !== undefined,
       retry: false,
@@ -83,11 +97,11 @@ const Dashboard: NextPage = () => {
 
   if (isLoading) {
     return (
-      <DashboardLayout>
+      <PageLayout>
         <div className="grid h-[50vh] content-center">
           <Spinner />
         </div>
-      </DashboardLayout>
+      </PageLayout>
     );
   }
 
@@ -119,9 +133,14 @@ const Dashboard: NextPage = () => {
           usersCountChangeFromLastMonth={usersCountChangeFromLastMonth}
           petsAddedLastMonthCount={petsAddedLastMonthCount}
           recentlyAddedPets={
-            recentlyAddedPets && recentlyAddedPets?.length > 0
+            recentlyAddedPets && recentlyAddedPets?.length >= 6
               ? recentlyAddedPets
               : mostRecentlyAddedPets
+          }
+          recentlyAddedPetsIsLoading={recentlyAddedPetsIsLoading}
+          returnedPetsCount={returnedPetsCount}
+          returnedPetsCountChangeFromLastMonth={
+            returnedPetsCountChangeFromLastMonth
           }
         />
       )}
@@ -146,6 +165,7 @@ export async function getStaticProps({ locale }: { locale: string }) {
   await ssghelpers.pet.getPetsCount.prefetch();
   await ssghelpers.pet.getPetsCountChangeFromLastMonth.prefetch();
   await ssghelpers.pet.getPetsAddedInTheLastMonth.prefetch();
+  await ssghelpers.pet.getMostRecentlyAddedPets.prefetch();
   await ssghelpers.pet.getPetsAddedInTheLastMonthCount.prefetch();
   return {
     props: {

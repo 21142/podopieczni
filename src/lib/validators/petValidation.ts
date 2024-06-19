@@ -80,9 +80,7 @@ export const petDetailsSchema = z.object({
 
 export const petFilterOptionsSchema = z.object({
   name: z.string().optional(),
-  distance: z.string().optional(),
   shelter: z.string().optional(),
-  species: z.string().optional(),
   breed: z.string().optional(),
   gender: z.string().optional(),
   color: z.string().optional(),
@@ -107,7 +105,6 @@ export const petFilterOptionsSchema = z.object({
 
 export const shelterFilterOptionsSchema = z.object({
   name: z.string().optional(),
-  distance: z.string().optional(),
   address: z.string().optional(),
   state: z.string().optional(),
 });
@@ -168,6 +165,10 @@ export const fullPetDetailsSchema = z.object({
 
 export const idSchema = z.object({
   id: z.string(),
+});
+
+export const petIdSchema = z.object({
+  petId: z.string(),
 });
 
 export type IPetDetails = z.infer<typeof petDetailsSchema>;

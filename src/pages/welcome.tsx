@@ -10,7 +10,7 @@ import { links } from '~/config/siteConfig';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
 import { api } from '~/lib/api';
 import { getServerAuthSession } from '~/lib/auth';
-import { Roles } from '~/lib/constants';
+import { Roles, TypeOfResults } from '~/lib/constants';
 
 const Welcome: NextPage = () => {
   const router = useRouter();
@@ -24,7 +24,7 @@ const Welcome: NextPage = () => {
 
   const setAdopterRole = async () => {
     await setRoleAsAdopter.mutateAsync();
-    router.replace(links.resultsPosition);
+    router.replace(links.results(TypeOfResults.Animal));
   };
 
   const setShelterRole = async () => {
@@ -40,7 +40,6 @@ const Welcome: NextPage = () => {
     router.replace(redirectSlug);
   }
 
-  // TODO: Clean up this mess - no low level html in pages (extract into components)
   if (isLoading)
     return (
       <PageLayout>

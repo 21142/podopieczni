@@ -12,7 +12,7 @@ const Custom500Page = () => {
       <Image
         src="/images/cosmos.svg"
         alt="cosmos"
-        className="top-6 right-0 hidden lg:absolute lg:block"
+        className="right-0 top-6 hidden lg:absolute lg:block"
         width="455"
         height="692"
       />
@@ -31,7 +31,7 @@ const Custom500Page = () => {
             href={links.home}
             className={buttonVariants({ variant: 'primary', size: 'lg' })}
           >
-            {t('500_button')}
+            {t('go_back_home')}
           </Link>
           <Link
             href={links.contact}

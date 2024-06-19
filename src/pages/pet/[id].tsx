@@ -11,8 +11,6 @@ import {
   LinkedinShareButton,
   TwitterIcon,
   TwitterShareButton,
-  WhatsappIcon,
-  WhatsappShareButton,
 } from 'next-share';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -46,7 +44,9 @@ import Spinner from '~/components/spinner/Spinner';
 import Map from '~/components/utility/Map';
 import ShelterContactDetails from '~/components/utility/ShelterContactDetails';
 import { links } from '~/config/siteConfig';
+import { env } from '~/env.mjs';
 import { useLoginToast } from '~/hooks/useLoginToast';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import dayjs from '~/lib/dayjs';
 import { prisma } from '~/lib/db';
@@ -58,6 +58,7 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
   const { data: session } = useSession();
   const { t } = useTranslation('common');
   const { loginToast } = useLoginToast();
+  const { toast } = useToast();
   const router = useRouter();
   const { locale } = router;
   const [carouselApi, setCarouselApi] = React.useState<CarouselApi>();
@@ -113,7 +114,6 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
 
     if (!isLikeClicked) {
       await markPetAsFavoriteMutation.mutateAsync(pet.id);
-      //                                            ^?
       setTimeout(async () => {
         await router.push(links.favorites);
       }, 1000);
@@ -158,8 +158,25 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
     },
   ].filter((item): item is IconAndText => !!item);
 
+  const copyUrlToClipboard = () => {
+    navigator.clipboard.writeText(
+      `${env.NEXT_PUBLIC_BASE_URL}${links.pet(pet.id)}`
+    );
+    toast({
+      description: t('copied_to_clipboard_toast'),
+      variant: 'success',
+    });
+  };
+
   return (
-    <PageLayout>
+    <PageLayout
+      name={pet.name ?? undefined}
+      description={pet.description ?? undefined}
+      image={
+        pet.image ?? `${env.NEXT_PUBLIC_BASE_URL}/images/no-profile-picture.svg`
+      }
+      url={pet.url ?? `${env.NEXT_PUBLIC_BASE_URL}/pet/${pet.id}`}
+    >
       <div className="mx-auto w-full max-w-8xl p-6">
         <div className="flex h-full flex-col items-center justify-center">
           <Carousel
@@ -334,12 +351,12 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
                         round
                       />
                     </TwitterShareButton>
-                    <WhatsappShareButton url={pet.url}>
-                      <WhatsappIcon
-                        size={32}
-                        round
-                      />
-                    </WhatsappShareButton>
+                    <div
+                      className="rounded-full p-2 hover:cursor-pointer"
+                      onClick={copyUrlToClipboard}
+                    >
+                      <Icons.copy className="h-6 w-6" />
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -353,7 +370,12 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
                   <Button
                     className="w-fit rounded-full px-5 md:px-12"
                     variant="primary"
-                    onClick={() => console.log(pet.id)}
+                    onClick={() =>
+                      router.push({
+                        pathname: links.adoptionSurvey,
+                        query: { petId: pet.id },
+                      })
+                    }
                   >
                     {t('pet_profile_inquire_about_adoption')}
                   </Button>
@@ -442,7 +464,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
       animalId,
       ...(await serverSideTranslations(locale, ['common'], i18nConfig)),
     },
-    revalidate: 1,
+    revalidate: 60,
   };
 }
 

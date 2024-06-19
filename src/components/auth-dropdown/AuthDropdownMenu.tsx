@@ -17,14 +17,18 @@ import {
 import { links } from '~/config/siteConfig';
 import { useToast } from '~/hooks/useToast';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
-import { Roles } from '~/lib/constants';
+import { api } from '~/lib/api';
 
-//TODO: Consider renaming to AuthDropdownMenu
-const AuthButton = () => {
+const AuthDropdownMenu = () => {
   const { data: session } = useSession();
   const { data: userFromSession } = useUserFromSessionQuery(session);
   const { t } = useTranslation('common');
   const { toast } = useToast();
+  const { data: isUserAssociatedWithShelter } =
+    api.user.isUserAssociatedWithShelter.useQuery(undefined, {
+      enabled: session?.user !== undefined,
+      retry: false,
+    });
 
   const handleButtonClick = async () => {
     if (userFromSession) {
@@ -69,14 +73,12 @@ const AuthButton = () => {
         )}
         {userFromSession && <DropdownMenuSeparator />}
         <DropdownMenuItem asChild>
-          {(userFromSession?.role === Roles.Shelter ||
-            userFromSession?.role === Roles.Admin) && (
+          {isUserAssociatedWithShelter && (
             <Link href={links.dashboard}>{t('nav_shelter')}</Link>
           )}
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          {(userFromSession?.role === Roles.Shelter ||
-            userFromSession?.role === Roles.Admin) && (
+          {isUserAssociatedWithShelter && (
             <Link href={links.animals}>{t('nav_animals')}</Link>
           )}
         </DropdownMenuItem>
@@ -100,4 +102,4 @@ const AuthButton = () => {
   );
 };
 
-export default AuthButton;
+export default AuthDropdownMenu;

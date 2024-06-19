@@ -3,7 +3,6 @@ import { useSession } from 'next-auth/react';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShelterDetailsForm from '~/components/forms/ShelterDetailsForm';
-import DashboardLayout from '~/components/layouts/DashboardLayout';
 import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import Spinner from '~/components/spinner/Spinner';
@@ -31,16 +30,16 @@ const RegisterShelter: NextPage = () => {
 
   if (isLoading) {
     return (
-      <DashboardLayout>
+      <PageLayout>
         <div className="grid h-[50vh] content-center">
           <Spinner />
         </div>
-      </DashboardLayout>
+      </PageLayout>
     );
   }
 
   return (
-    <DashboardLayout>
+    <PageLayout>
       {session && !isUserAssociatedWithShelter && (
         <ShelterDetailsForm shelterDetails={null} />
       )}
@@ -51,7 +50,7 @@ const RegisterShelter: NextPage = () => {
           </h1>
         </div>
       )}
-    </DashboardLayout>
+    </PageLayout>
   );
 };
 

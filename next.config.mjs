@@ -19,11 +19,9 @@ const config = {
   },
   i18n: i18nConfig.i18n,
   eslint: {
-    // linting on typecheck-format-lint github action
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // type checking on typecheck-format-lint github action
     ignoreBuildErrors: true,
   },
   swcMinify: true,

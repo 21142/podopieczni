@@ -27,6 +27,10 @@ export const statuses = [
     value: 'quarantined',
     label: 'Quarantined',
   },
+  {
+    value: 'adopted',
+    label: 'Adopted',
+  },
 ];
 
 //TODO: i18n

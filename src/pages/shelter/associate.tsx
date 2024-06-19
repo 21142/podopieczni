@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Icons } from '~/components/icons/Icons';
-import DashboardLayout from '~/components/layouts/DashboardLayout';
 import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import { Button, buttonVariants } from '~/components/primitives/Button';
@@ -25,6 +24,7 @@ import {
 } from '~/components/primitives/Popover';
 import Spinner from '~/components/spinner/Spinner';
 import { links } from '~/config/siteConfig';
+import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { ssghelpers } from '~/lib/ssg';
 import { cn } from '~/lib/utils';
@@ -34,6 +34,7 @@ const AssociateShelter: NextPage = () => {
   const { t } = useTranslation('common');
   const router = useRouter();
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
+  const { toast } = useToast();
 
   if (!session) {
     return (
@@ -57,13 +58,32 @@ const AssociateShelter: NextPage = () => {
     isError,
   } = api.shelter.getSheltersNames.useQuery();
 
+  const requestToJoinShelterMutation =
+    api.shelter.requestToJoinShelter.useMutation({
+      onSuccess: () => {
+        toast({
+          description: t('request_to_join_shelter_toast_success'),
+          variant: 'success',
+        });
+        setTimeout(() => {
+          router.push(links.checkInboxForInviteDecision);
+        }, 5000);
+      },
+      onError: (error) => {
+        toast({
+          description: error.message,
+          variant: 'destructive',
+        });
+      },
+    });
+
   if (isLoadingUserAssociation) {
     return (
-      <DashboardLayout>
+      <PageLayout>
         <div className="grid h-[50vh] content-center">
           <Spinner />
         </div>
-      </DashboardLayout>
+      </PageLayout>
     );
   }
 
@@ -132,9 +152,9 @@ const AssociateShelter: NextPage = () => {
               size="lg"
               disabled={!selectedValue}
               onClick={() =>
-                console.log(
-                  `TODO: Try to associate user: ${session?.user?.email} with shelter: ${selectedValue}`
-                )
+                requestToJoinShelterMutation.mutateAsync({
+                  shelterName: selectedValue,
+                })
               }
             >
               Try to associate

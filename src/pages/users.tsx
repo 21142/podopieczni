@@ -6,6 +6,7 @@ import { DataTable } from '~/components/data-table/DataTable';
 import { usersColumns } from '~/components/data-table/DataTableColumns';
 import { usersColumnsInPolish } from '~/components/data-table/DataTableColumnsInPolish';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
+import PageLayout from '~/components/layouts/PageLayout';
 import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinner/Spinner';
 import useUserFromSessionQuery from '~/hooks/useUserFromSessionQuery';
@@ -23,19 +24,19 @@ const People: NextPage = () => {
 
   if (isLoading) {
     return (
-      <DashboardLayout>
+      <PageLayout>
         <div className="grid h-[50vh] content-center">
           <Spinner />
         </div>
-      </DashboardLayout>
+      </PageLayout>
     );
   }
 
   if (error || sessionData?.role === Roles.Adopter)
     return (
-      <DashboardLayout>
+      <PageLayout>
         <UnauthorizedPage />
-      </DashboardLayout>
+      </PageLayout>
     );
 
   if (errorFetchingUsers) {

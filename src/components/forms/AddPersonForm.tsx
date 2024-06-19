@@ -36,13 +36,13 @@ import {
 import Spinner from '../spinner/Spinner';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
 
-export const RolesMap: Record<
-  z.infer<typeof userAccountDetailsSchema>['role'],
-  string
-> = {
+type Role = z.infer<typeof userAccountDetailsSchema>['role'];
+
+type NonAdminRole = Exclude<Role, 'Admin'>;
+
+export const RolesMap: Record<NonAdminRole, string> = {
   Adopter: 'Adopter',
   Shelter: 'Shelter',
-  Admin: 'Admin',
 };
 
 const AddPersonForm = () => {
@@ -88,7 +88,7 @@ const AddPersonForm = () => {
         dateOfBirth: '',
         phoneNumber: '',
         role: undefined,
-        address: '',
+        address: undefined,
         city: '',
         postCode: '',
         state: '',
@@ -323,7 +323,7 @@ const AddPersonForm = () => {
                           key={op.value}
                           value={op.value}
                         >
-                          {RolesMap[op.value]}
+                          {RolesMap[op.value as NonAdminRole]}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -335,7 +335,7 @@ const AddPersonForm = () => {
             <div className="hidden lg:col-span-2 lg:block lg:h-12" />
             <FormField
               control={form.control}
-              name="address"
+              name="address.address"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('form_label_address')}</FormLabel>
@@ -351,7 +351,7 @@ const AddPersonForm = () => {
             />
             <FormField
               control={form.control}
-              name="city"
+              name="address.city"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('form_label_city')}</FormLabel>
@@ -367,7 +367,7 @@ const AddPersonForm = () => {
             />
             <FormField
               control={form.control}
-              name="postCode"
+              name="address.postCode"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('form_label_zip_code')}</FormLabel>
@@ -383,7 +383,7 @@ const AddPersonForm = () => {
             />
             <FormField
               control={form.control}
-              name="state"
+              name="address.state"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('form_label_state')}</FormLabel>
@@ -399,7 +399,7 @@ const AddPersonForm = () => {
             />
             <FormField
               control={form.control}
-              name="country"
+              name="address.country"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('form_label_country')}</FormLabel>

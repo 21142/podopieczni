@@ -26,11 +26,11 @@ const OrganizationSettings: NextPage = () => {
 
   if (isLoading) {
     return (
-      <DashboardLayout>
+      <PageLayout>
         <div className="grid h-[50vh] content-center">
           <Spinner />
         </div>
-      </DashboardLayout>
+      </PageLayout>
     );
   }
 

@@ -1,6 +1,6 @@
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import AccountSettingsForm from '~/components/forms/AccountSettingsForm';
+import UserDetailsForm from '~/components/forms/UserDetailsForm';
 import PageLayout from '~/components/layouts/PageLayout';
 import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import Spinner from '~/components/spinner/Spinner';
@@ -26,11 +26,7 @@ const UserSettings = () => {
       </PageLayout>
     );
 
-  return (
-    <PageLayout>
-      <AccountSettingsForm user={me} />
-    </PageLayout>
-  );
+  return <PageLayout>{me && <UserDetailsForm user={me} />}</PageLayout>;
 };
 
 export default UserSettings;

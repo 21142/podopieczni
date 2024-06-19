@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
 import { links } from '~/config/siteConfig';
-import { useLoginToast } from '~/hooks/useLoginToast';
+import { api } from '~/lib/api';
 import { type RecentlyAddedAnimals } from '~/types';
 import ShelterStatisticsCard from '../cards/ShelterStatisticsCard';
 import EmailInviteForm from '../forms/EmailInviteForm';
@@ -25,7 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../primitives/Dialog';
-import { Chart } from '../utility/Chart';
+import Chart from '../utility/Chart';
 import RecentAdoptions from '../utility/RecentAdoptions';
 
 type ShelterDashboardProps = {
@@ -39,6 +39,9 @@ type ShelterDashboardProps = {
   usersCountChangeFromLastMonth: number | undefined;
   petsAddedLastMonthCount: number | undefined;
   recentlyAddedPets: RecentlyAddedAnimals | undefined;
+  recentlyAddedPetsIsLoading: boolean;
+  returnedPetsCount: number | undefined;
+  returnedPetsCountChangeFromLastMonth: number | undefined;
 };
 
 const ShelterDashboard: FC<ShelterDashboardProps> = ({
@@ -52,15 +55,22 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
   usersCountChangeFromLastMonth,
   petsAddedLastMonthCount,
   recentlyAddedPets,
+  recentlyAddedPetsIsLoading,
+  returnedPetsCount,
+  returnedPetsCountChangeFromLastMonth,
 }) => {
   const { t } = useTranslation('common');
-  const { loginToast } = useLoginToast();
   const router = useRouter();
+
+  const { data: adoptionRaportChartData } =
+    api.pet.getDataForAdoptionRaportChart.useQuery(undefined, {
+      retry: false,
+    });
 
   return (
     <div className="container">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
+        <div className="flex items-center justify-between space-x-2 space-y-2">
           <div className="flex items-center gap-3">
             {shelterLogo && (
               <Image
@@ -73,7 +83,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             )}
             <h2 className="text-3xl font-bold tracking-tight">{shelterName}</h2>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="hidden items-center space-x-2 sm:flex">
             <Link
               href={links.organizationSettings}
               className={buttonVariants({ size: 'sm' })}
@@ -83,11 +93,25 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             </Link>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col items-start gap-2 sm:flex-row">
+          <Link
+            className={buttonVariants({ size: 'sm' })}
+            href={links.raports}
+          >
+            <Icons.charts className="mr-2 h-4 w-4" />
+            {t('dashboard_raports')}
+          </Link>
+          <Link
+            className={buttonVariants({ size: 'sm' })}
+            href={links.joinRequests}
+          >
+            <Icons.joinRequests className="mr-2 h-4 w-4" />
+            {t('join_requests')}
+          </Link>
           <Dialog>
             <DialogTrigger asChild>
               <Button size="sm">
-                <Icons.mail className="mr-2 h-4 w-4" />
+                <Icons.mailPlus className="mr-2 h-4 w-4" />
                 {t('invite_user')}
               </Button>
             </DialogTrigger>
@@ -100,13 +124,15 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
               </DialogHeader>
             </DialogContent>
           </Dialog>
-          <Button
-            size="sm"
-            onClick={loginToast}
-          >
-            <Icons.download className="mr-2 h-4 w-4" />
-            {t('dashboard_download_raport')}
-          </Button>
+          <div className="flex items-center space-x-2 sm:hidden">
+            <Link
+              href={links.organizationSettings}
+              className={buttonVariants({ size: 'sm' })}
+            >
+              <Icons.settings className="mr-2 h-4 w-4" />
+              {t('dashboard_organization_settings')}
+            </Link>
+          </div>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <ShelterStatisticsCard
@@ -115,7 +141,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             difference={petsCountChangeFromLastMonth}
             onClick={() => router.push(links.animals)}
           >
-            <Icons.dog className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+            <Icons.dog className="h-6 w-6 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
           <ShelterStatisticsCard
             title={t('dashboard_statistics_card_adopted_title')}
@@ -123,7 +149,15 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             difference={adoptedPetsCountChangeFromLastMonth}
             onClick={() => router.push(links.animals)}
           >
-            <Icons.home className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+            <Icons.home className="h-6 w-6 text-muted-foreground dark:text-foreground" />
+          </ShelterStatisticsCard>
+          <ShelterStatisticsCard
+            title={t('dashboard_statistics_card_returned_title')}
+            value={returnedPetsCount}
+            difference={returnedPetsCountChangeFromLastMonth}
+            onClick={() => router.push(links.animals)}
+          >
+            <Icons.returned className="h-6 w-6 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
           <ShelterStatisticsCard
             title={t('dashboard_statistics_card_users_title')}
@@ -131,29 +165,10 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
             difference={usersCountChangeFromLastMonth}
             onClick={() => router.push(links.users)}
           >
-            <Icons.user className="h-4 w-4 text-muted-foreground dark:text-foreground" />
-          </ShelterStatisticsCard>
-          <ShelterStatisticsCard
-            title={t('dashboard_statistics_card_donations_title')}
-            value={1231.89}
-            currency="zł"
-            difference={20.1}
-            onClick={() => router.push(links.donations)}
-          >
-            <Icons.dollarSign className="h-4 w-4 text-muted-foreground dark:text-foreground" />
+            <Icons.user className="h-6 w-6 text-muted-foreground dark:text-foreground" />
           </ShelterStatisticsCard>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-          <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
-            <CardHeader>
-              <CardTitle>
-                {t('dashboard_adoptions_raport_card_title')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pl-2">
-              <Chart />
-            </CardContent>
-          </Card>
           <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent lg:col-span-3">
             <CardHeader>
               <CardTitle>
@@ -164,8 +179,24 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
                 {t('dashboard_recent_adoptions_card_subtitle')}
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <RecentAdoptions animals={recentlyAddedPets} />
+            <CardContent className="p-0">
+              <RecentAdoptions
+                animals={recentlyAddedPets}
+                isLoading={recentlyAddedPetsIsLoading}
+              />
+            </CardContent>
+          </Card>
+          <Card className="col-span-4 transition-colors hover:border-border/60 hover:bg-transparent">
+            <CardHeader>
+              <CardTitle>
+                {t('dashboard_adopted_animals_raport_card_title')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pl-2">
+              <Chart
+                height={390}
+                data={adoptionRaportChartData}
+              />
             </CardContent>
           </Card>
         </div>

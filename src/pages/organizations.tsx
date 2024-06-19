@@ -22,10 +22,9 @@ const Organizations: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ searchQuery }) => {
   const { t } = useTranslation('common');
-  const { data: organizations } =
-    api.shelter.querySheltersFulltextSearch.useQuery({
-      searchQuery,
-    });
+  const { data: organizations } = api.shelter.queryAvailableShelters.useQuery({
+    searchQuery,
+  });
 
   return (
     <PageLayout>

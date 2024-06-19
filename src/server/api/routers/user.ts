@@ -1,4 +1,8 @@
+import { render } from '@react-email/render';
+import { TRPCError } from '@trpc/server';
+import nodemailer from 'nodemailer';
 import { z } from 'zod';
+import WelcomeToOrganizationEmail from '~/components/emails/WelcomeToOrganizationEmail';
 import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
 import { calculatePetAgeGroup } from '~/lib/utils';
 import { userAccountDetailsSchema } from '~/lib/validators/userValidation';
@@ -116,6 +120,9 @@ export const userRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.findUnique({
         where: { id: input.id },
+        include: {
+          address: true,
+        },
       });
       return user;
     }),
@@ -126,8 +133,29 @@ export const userRouter = createTRPCRouter({
         rateLimiterName: 'main',
         identifier: ctx.session?.user.id ?? '',
       });
-      await ctx.prisma.user.delete({
+
+      const associatedWithUserJoinRequests =
+        await ctx.prisma.joinRequest.findMany({
+          where: {
+            userId: input,
+          },
+        });
+
+      if (associatedWithUserJoinRequests.length > 0) {
+        await ctx.prisma.joinRequest.deleteMany({
+          where: {
+            userId: input,
+          },
+        });
+      }
+
+      await ctx.prisma.user.update({
         where: { id: input },
+        data: {
+          worksAt: {
+            disconnect: true,
+          },
+        },
       });
     }),
   getUsersCount: publicProcedure.query(async ({ ctx }) => {
@@ -206,11 +234,11 @@ export const userRouter = createTRPCRouter({
             image: input.image,
             address: {
               create: {
-                address: input.address,
-                city: input.city,
-                postCode: input.postCode,
-                state: input.state,
-                country: input.country,
+                address: input.address.address,
+                city: input.address.city,
+                postCode: input.address.postCode,
+                state: input.address.state,
+                country: input.address.country,
               },
             },
             worksAt: {
@@ -252,6 +280,7 @@ export const userRouter = createTRPCRouter({
         await ctx.prisma.user.update({
           where: { email: input.email },
           data: {
+            title: input.title ?? undefined,
             firstName: input.firstName,
             lastName: input.lastName,
             email: input.email,
@@ -262,18 +291,18 @@ export const userRouter = createTRPCRouter({
             address: {
               upsert: {
                 update: {
-                  address: input.address,
-                  city: input.city,
-                  postCode: input.postCode,
-                  state: input.state,
-                  country: input.country,
+                  address: input.address.address,
+                  city: input.address.city,
+                  postCode: input.address.postCode,
+                  state: input.address.state,
+                  country: input.address.country,
                 },
                 create: {
-                  address: input.address,
-                  city: input.city,
-                  postCode: input.postCode,
-                  state: input.state,
-                  country: input.country,
+                  address: input.address.address,
+                  city: input.address.city,
+                  postCode: input.address.postCode,
+                  state: input.address.state,
+                  country: input.address.country,
                 },
               },
             },
@@ -283,6 +312,7 @@ export const userRouter = createTRPCRouter({
         await ctx.prisma.user.update({
           where: { email: input.email },
           data: {
+            title: input.title ?? undefined,
             firstName: input.firstName,
             lastName: input.lastName,
             email: input.email,
@@ -302,4 +332,101 @@ export const userRouter = createTRPCRouter({
 
     return !!associatedShelter;
   }),
+  associateUserWithShelter: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const associatedShelter = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
+
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          email: input,
+        },
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      await ctx.prisma.user.update({
+        where: {
+          email: input,
+        },
+        data: {
+          worksAt: {
+            connect: {
+              id: associatedShelter.id,
+            },
+          },
+        },
+      });
+
+      const joinRequest = await ctx.prisma.joinRequest.create({
+        data: {
+          status: 'invited',
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
+          shelter: {
+            connect: {
+              id: associatedShelter.id,
+            },
+          },
+        },
+        include: {
+          shelter: true,
+          user: true,
+        },
+      });
+
+      const emailHtml = render(
+        WelcomeToOrganizationEmail({
+          username: joinRequest.user.name ?? undefined,
+          userImage: joinRequest.user.image ?? undefined,
+          teamName: joinRequest.shelter.name,
+          teamImage: joinRequest.shelter.logo ?? undefined,
+        })
+      );
+
+      const emailServer = {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      };
+
+      if (
+        joinRequest.user.email === undefined ||
+        joinRequest.user.email === null ||
+        joinRequest.shelter.email === undefined ||
+        joinRequest.shelter.email === null
+      ) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message:
+            'An error occurred while sending an email to the invited user. Not all emails are provided.',
+        });
+      }
+
+      nodemailer.createTransport(emailServer).sendMail(
+        {
+          to: joinRequest.user.email,
+          from: `${joinRequest.shelter.name}.podopieczni@trial-neqvygme57d40p7w.mlsender.net`,
+          subject: `Witamy w ${joinRequest.shelter.name}`,
+          text: `Witamy w \n${joinRequest.shelter.name}`,
+          html: emailHtml,
+        },
+        (error) => {
+          if (error) {
+            console.log(error);
+          }
+        }
+      );
+    }),
 });

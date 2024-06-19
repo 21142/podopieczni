@@ -1,8 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { links } from '~/config/siteConfig';
 import { useToast } from '~/hooks/useToast';
+import { api } from '~/lib/api';
 import {
   userEmailSchema,
   type IUserEmail,
@@ -21,15 +24,26 @@ import {
 import { Input } from '../primitives/Input';
 
 const EmailInviteForm = () => {
+  const router = useRouter();
   const { toast } = useToast();
   const { t } = useTranslation('common');
+  const trpc = api.useUtils();
 
   const form = useForm<IUserEmail>({
     resolver: zodResolver(userEmailSchema),
   });
 
+  const associateUserWithShelterMutation =
+    api.user.associateUserWithShelter.useMutation({
+      onSuccess: async () => {
+        await trpc.shelter.getJoinRequests.invalidate();
+        await trpc.user.getAllPeopleAssociatedWithShelter.invalidate();
+      },
+    });
+
   const onSubmit = async (values: IUserEmail) => {
     try {
+      await associateUserWithShelterMutation.mutateAsync(values.email);
       await signIn('email', {
         callbackUrl: '/',
         redirect: false,
@@ -41,6 +55,9 @@ const EmailInviteForm = () => {
         }),
         variant: 'success',
       });
+      setTimeout(() => {
+        router.push(links.joinRequests);
+      }, 3000);
     } catch (error) {
       if (error instanceof Error) {
         toast({

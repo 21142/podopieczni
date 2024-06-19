@@ -13,7 +13,6 @@ export const links = {
   footer: '#footer',
   scrollToPosition: '#scrollToPosition',
   results: (type: string) => `/${type}`,
-  resultsPosition: '/pets#scrollToPosition',
   search: (type: string, query: string) => `/${type}?search=${query}`,
   searchDogs: '/pets?search=pies',
   searchCats: '/pets?search=kot',
@@ -28,6 +27,7 @@ export const links = {
   organization: (organizationId: string) => `/organization/${organizationId}`,
   organizationPets: (organizationId: string) =>
     `/organization/${organizationId}/pets`,
+  pet: (petId: string) => `/pet/${petId}`,
   animal: (animalId: string) => `/animal/${animalId}`,
   person: (personId: string) => `/user/${personId}`,
   registerAnimal: '/animal/register',
@@ -42,6 +42,14 @@ export const links = {
   findYourPet: '/find-your-pet',
   signIn: '/signin',
   checkInbox: '/check-inbox',
+  checkInboxForInviteDecision: '/check-inbox?joinRequest=shelter',
   associateShelter: '/shelter/associate',
   registerShelter: '/shelter/register',
+  joinRequests: '/join-requests',
+  raports: '/raports',
+  adoptions: '/adoptions',
+  adoptionSurvey: '/adoption-survey',
+  confirmation: '/tba',
+  application: (applicationId: string) =>
+    `/adoption-application/${applicationId}`,
 };

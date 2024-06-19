@@ -1,13 +1,13 @@
 import { TRPCError } from '@trpc/server';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Image from 'next/image';
 import {
   type GetStaticPaths,
   type GetStaticPropsContext,
   type InferGetStaticPropsType,
   type NextPage,
 } from 'next/types';
+import UserDetailsForm from '~/components/forms/UserDetailsForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
@@ -32,32 +32,7 @@ const UserProfilePage: NextPage<PageProps> = ({ userId }) => {
   }
 
   return (
-    <DashboardLayout>
-      {user && (
-        <div className="grid h-full content-center justify-center">
-          <Image
-            src={user.image ?? '/images/no-profile-picture.svg'}
-            alt="profile picture"
-            className="rounded-md"
-            width="600"
-            height="400"
-            priority={true}
-          />
-          <p>
-            <strong>id:</strong> {userId}
-          </p>
-          <p>
-            <strong>name:</strong> {user.title ?? ''} {user.name}
-          </p>
-          <p>
-            <strong>email:</strong> {user.email}
-          </p>
-          <p>
-            <strong>status:</strong> {user.role}
-          </p>
-        </div>
-      )}
-    </DashboardLayout>
+    <DashboardLayout>{user && <UserDetailsForm user={user} />}</DashboardLayout>
   );
 };
 

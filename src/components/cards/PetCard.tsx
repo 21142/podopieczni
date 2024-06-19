@@ -55,7 +55,7 @@ const PetCard: FC<IAnimalCard> = ({
     onSuccess: async () => {
       await trpcContextUtils.user.getFavoritePets.invalidate();
       await trpcContextUtils.pet.getFeaturedAnimals.invalidate();
-      await trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+      await trpcContextUtils.pet.queryPetsAvailableForAdoption.invalidate();
     },
   });
 
@@ -64,7 +64,7 @@ const PetCard: FC<IAnimalCard> = ({
       onSuccess: async () => {
         await trpcContextUtils.user.getFavoritePets.invalidate();
         await trpcContextUtils.pet.getFeaturedAnimals.invalidate();
-        await trpcContextUtils.pet.queryPetsAvailableForAdoptionFulltextSearch.invalidate();
+        await trpcContextUtils.pet.queryPetsAvailableForAdoption.invalidate();
       },
     });
 
@@ -143,16 +143,16 @@ const PetCard: FC<IAnimalCard> = ({
           </p>
         </CardContent>
         {variant === Variant.Animal && (
-          <CardFooter className="flex justify-end gap-2 pb-3 pt-2">
+          <CardFooter className="flex cursor-default justify-end gap-2 pb-3 pt-2">
             <Icons.heart
               onClick={handleLikeClick}
-              className={`transition-all ease-in-out hover:scale-110 ${
+              className={`cursor-pointer transition-all ease-in-out hover:scale-110 ${
                 isLikeClicked ? 'fill-primary-300 text-primary-300' : ''
               }`}
             />
             <Icons.heartDonate
               onClick={handleDonationClick}
-              className={`transition-all ease-in-out hover:scale-110 ${
+              className={`hidden transition-all ease-in-out hover:scale-110 ${
                 isDonationClicked ? 'fill-success-200 text-success-400' : ''
               }`}
             />

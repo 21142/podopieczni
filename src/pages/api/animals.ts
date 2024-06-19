@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '~/lib/db';
+import { petsSearchWhereConditions } from '~/server/helpers/searchConditions';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -10,34 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let availableAnimals;
     if (searchQuery) {
       availableAnimals = await prisma.pet.findMany({
-        where: {
-          availableForAdoption: true,
-          OR: [
-            {
-              shelter: {
-                OR: [
-                  { name: { search: searchQuery } },
-                  {
-                    address: {
-                      OR: [
-                        { address: { search: searchQuery } },
-                        { city: { search: searchQuery } },
-                        { state: { search: searchQuery } },
-                        { country: { search: searchQuery } },
-                        { postCode: { search: searchQuery } },
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-            { species: { search: searchQuery } },
-            { breed: { search: searchQuery } },
-            { color: { search: searchQuery } },
-            { coat: { search: searchQuery } },
-            { gender: { search: searchQuery } },
-          ],
-        },
+        where: petsSearchWhereConditions(searchQuery),
         include: {
           shelter: {
             include: {
@@ -68,8 +42,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     res.status(200).json(availableAnimals);
+    return availableAnimals;
   } catch (error) {
-    console.error('Error fetching animal data:', error);
+    console.log('Error fetching animal data:', error);
     res.status(500).json({ error: 'Could not load pets' });
   }
 };

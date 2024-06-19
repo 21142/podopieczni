@@ -2,6 +2,7 @@ import { type FC } from 'react';
 import { type RecentlyAddedAnimal } from '~/types';
 import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
+import { Badge } from '../primitives/Badge';
 
 type RecentlyAddedAnimalsRowProps = {
   animal: RecentlyAddedAnimal;
@@ -38,9 +39,12 @@ const RecentlyAddedAnimalsRow: FC<RecentlyAddedAnimalsRowProps> = ({
         <p className="text-sm font-medium leading-none">{animal.name}</p>
         <p className="text-sm text-muted-foreground">{animal.breed}</p>
       </div>
-      <div className="ml-auto font-medium">
-        {animal.status === 'adoptable' ? 'czeka na nowy dom' : ''}
-      </div>
+      <Badge
+        variant="outline"
+        className="ml-auto text-sm font-medium"
+      >
+        {animal.status}
+      </Badge>
     </div>
   );
 };

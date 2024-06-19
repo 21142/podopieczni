@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { links } from '~/config/siteConfig';
 import { env } from '~/env.mjs';
 import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
 import { calculatePetAgeGroup, calculatePetSizeGroup } from '~/lib/utils';
@@ -14,6 +15,7 @@ import {
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import { getShelterAssociatedWithUser } from '~/server/helpers/getShelterAssociatedWithUser';
+import { petsSearchWhereConditions } from '~/server/helpers/searchConditions';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
 import publicProcedure from '../procedures/publicProcedure';
@@ -143,7 +145,7 @@ export const petRouter = createTRPCRouter({
         }
       });
   }),
-  queryPetsAvailableForAdoptionFulltextSearch: publicProcedure
+  queryPetsAvailableForAdoption: publicProcedure
     .input(
       z.object({
         searchQuery: z.string().optional(),
@@ -154,34 +156,7 @@ export const petRouter = createTRPCRouter({
         let pets;
         if (input.searchQuery) {
           pets = await ctx.prisma.pet.findMany({
-            where: {
-              availableForAdoption: true,
-              OR: [
-                {
-                  shelter: {
-                    OR: [
-                      { name: { search: input.searchQuery } },
-                      {
-                        address: {
-                          OR: [
-                            { address: { search: input.searchQuery } },
-                            { city: { search: input.searchQuery } },
-                            { state: { search: input.searchQuery } },
-                            { country: { search: input.searchQuery } },
-                            { postCode: { search: input.searchQuery } },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-                { species: { search: input.searchQuery } },
-                { breed: { search: input.searchQuery } },
-                { color: { search: input.searchQuery } },
-                { coat: { search: input.searchQuery } },
-                { gender: { search: input.searchQuery } },
-              ],
-            },
+            where: petsSearchWhereConditions(input.searchQuery),
             include: {
               shelter: {
                 include: {
@@ -325,7 +300,7 @@ export const petRouter = createTRPCRouter({
         photos: [...profilePhoto, ...pet.photos],
         age: calculatePetAgeGroup(pet.dateOfBirth),
         size: calculatePetSizeGroup(pet.weight ?? 0),
-        url: `${env.NEXT_PUBLIC_BASE_URL}/pet/${pet.id}`,
+        url: `${env.NEXT_PUBLIC_BASE_URL}${links.pet(pet.id)}`,
       };
     }),
   getPetMedicalEvents: protectedProcedure
@@ -427,7 +402,61 @@ export const petRouter = createTRPCRouter({
       },
     });
   }),
-  getPetsCountChangeFromLastMonth: publicProcedure.query(async ({ ctx }) => {
+  getReturnedPetsCount: protectedProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
+    return await ctx.prisma.pet.count({
+      where: {
+        shelterId: shelterAssociatedWithUser.id,
+        outcomeEvents: {
+          some: {
+            eventType: 'RETURN',
+          },
+        },
+      },
+    });
+  }),
+  getReturnedPetsCountChangeFromLastMonth: protectedProcedure.query(
+    async ({ ctx }) => {
+      const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
+
+      const thisMonthsCount = await ctx.prisma.pet.count({
+        where: {
+          shelterId: shelterAssociatedWithUser.id,
+          outcomeEvents: {
+            some: {
+              eventType: 'RETURN',
+              createdAt: {
+                gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+              },
+            },
+          },
+        },
+      });
+      const lastMonthsCount = await ctx.prisma.pet.count({
+        where: {
+          shelterId: shelterAssociatedWithUser.id,
+          outcomeEvents: {
+            some: {
+              eventType: 'RETURN',
+              createdAt: {
+                gt: new Date(new Date().setMonth(new Date().getMonth() - 2)),
+                lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+              },
+            },
+          },
+        },
+      });
+      return thisMonthsCount - lastMonthsCount;
+    }
+  ),
+  getPetsCountChangeFromLastMonth: protectedProcedure.query(async ({ ctx }) => {
     const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
       ctx,
       ctx.session?.user.id
@@ -450,7 +479,17 @@ export const petRouter = createTRPCRouter({
         },
       },
     });
-    return thisMonthsCount - lastMonthsCount;
+
+    if (
+      !thisMonthsCount ||
+      !lastMonthsCount ||
+      lastMonthsCount === 0 ||
+      thisMonthsCount === 0
+    ) {
+      return 0;
+    } else {
+      return thisMonthsCount - lastMonthsCount;
+    }
   }),
   getPetsAddedInTheLastMonth: publicProcedure.query(async ({ ctx }) => {
     const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
@@ -468,6 +507,7 @@ export const petRouter = createTRPCRouter({
       orderBy: {
         createdAt: 'desc',
       },
+      take: 6,
     });
   }),
   getMostRecentlyAddedPets: publicProcedure.query(async ({ ctx }) => {
@@ -483,10 +523,236 @@ export const petRouter = createTRPCRouter({
       orderBy: {
         createdAt: 'desc',
       },
-      take: 5,
+      take: 6,
     });
 
     return pets;
+  }),
+  getDataForAnimalsReturnRateChart: protectedProcedure.query(
+    async ({ ctx }) => {
+      const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
+
+      const beginningOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+
+      const pets = await ctx.prisma.pet.findMany({
+        where: {
+          shelterId: shelterAssociatedWithUser.id,
+          outcomeEvents: {
+            some: {
+              eventType: 'RETURN',
+              createdAt: {
+                gt: beginningOfThisYear,
+              },
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          outcomeEvents: true,
+        },
+      });
+
+      const months = [
+        { name: 'Sty', total: 0 },
+        { name: 'Lut', total: 0 },
+        { name: 'Mar', total: 0 },
+        { name: 'Kwi', total: 0 },
+        { name: 'Maj', total: 0 },
+        { name: 'Cze', total: 0 },
+        { name: 'Lip', total: 0 },
+        { name: 'Sie', total: 0 },
+        { name: 'Wrz', total: 0 },
+        { name: 'Paź', total: 0 },
+        { name: 'Lis', total: 0 },
+        { name: 'Gru', total: 0 },
+      ];
+
+      pets.forEach((pet) => {
+        pet.outcomeEvents.forEach((event) => {
+          if (event.eventType === 'RETURN') {
+            const outcomeDate = new Date(event.eventDate);
+            const monthIndex = outcomeDate.getMonth();
+
+            if (monthIndex !== -1) {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              months[monthIndex]!.total += 1;
+            }
+          }
+        });
+      });
+
+      return months;
+    }
+  ),
+  getDataForEuthanizedAnimalsChart: protectedProcedure.query(
+    async ({ ctx }) => {
+      const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
+
+      const beginningOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+
+      const pets = await ctx.prisma.pet.findMany({
+        where: {
+          shelterId: shelterAssociatedWithUser.id,
+          outcomeEvents: {
+            some: {
+              eventType: 'EUTHANIZED',
+              createdAt: {
+                gt: beginningOfThisYear,
+              },
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          outcomeEvents: true,
+        },
+      });
+
+      const months = [
+        { name: 'Sty', total: 0 },
+        { name: 'Lut', total: 0 },
+        { name: 'Mar', total: 0 },
+        { name: 'Kwi', total: 0 },
+        { name: 'Maj', total: 0 },
+        { name: 'Cze', total: 0 },
+        { name: 'Lip', total: 0 },
+        { name: 'Sie', total: 0 },
+        { name: 'Wrz', total: 0 },
+        { name: 'Paź', total: 0 },
+        { name: 'Lis', total: 0 },
+        { name: 'Gru', total: 0 },
+      ];
+
+      pets.forEach((pet) => {
+        pet.outcomeEvents.forEach((event) => {
+          if (event.eventType === 'EUTHANIZED') {
+            const outcomeDate = new Date(event.eventDate);
+            const monthIndex = outcomeDate.getMonth();
+
+            if (monthIndex !== -1) {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              months[monthIndex]!.total += 1;
+            }
+          }
+        });
+      });
+
+      return months;
+    }
+  ),
+  getDataForAdmittedAnimalsRaportChart: protectedProcedure.query(
+    async ({ ctx }) => {
+      const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+        ctx,
+        ctx.session?.user.id
+      );
+
+      const beginningOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+
+      const pets = await ctx.prisma.pet.findMany({
+        where: {
+          shelterId: shelterAssociatedWithUser.id,
+          createdAt: {
+            gt: beginningOfThisYear,
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      const months = [
+        { name: 'Sty', total: 0 },
+        { name: 'Lut', total: 0 },
+        { name: 'Mar', total: 0 },
+        { name: 'Kwi', total: 0 },
+        { name: 'Maj', total: 0 },
+        { name: 'Cze', total: 0 },
+        { name: 'Lip', total: 0 },
+        { name: 'Sie', total: 0 },
+        { name: 'Wrz', total: 0 },
+        { name: 'Paź', total: 0 },
+        { name: 'Lis', total: 0 },
+        { name: 'Gru', total: 0 },
+      ];
+
+      pets.forEach((pet) => {
+        const monthIndex = new Date(pet.createdAt).getMonth();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        months[monthIndex]!.total += 1;
+      });
+
+      return months;
+    }
+  ),
+  getDataForAdoptionRaportChart: protectedProcedure.query(async ({ ctx }) => {
+    const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
+      ctx,
+      ctx.session?.user.id
+    );
+
+    const beginningOfThisYear = new Date(new Date().getFullYear(), 0, 1);
+
+    const pets = await ctx.prisma.pet.findMany({
+      where: {
+        shelterId: shelterAssociatedWithUser.id,
+        outcomeEvents: {
+          some: {
+            eventType: 'ADOPTION',
+            createdAt: {
+              gt: beginningOfThisYear,
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        outcomeEvents: true,
+      },
+    });
+
+    const months = [
+      { name: 'Sty', total: 0 },
+      { name: 'Lut', total: 0 },
+      { name: 'Mar', total: 0 },
+      { name: 'Kwi', total: 0 },
+      { name: 'Maj', total: 0 },
+      { name: 'Cze', total: 0 },
+      { name: 'Lip', total: 0 },
+      { name: 'Sie', total: 0 },
+      { name: 'Wrz', total: 0 },
+      { name: 'Paź', total: 0 },
+      { name: 'Lis', total: 0 },
+      { name: 'Gru', total: 0 },
+    ];
+
+    pets.forEach((pet) => {
+      pet.outcomeEvents.forEach((event) => {
+        if (event.eventType === 'ADOPTION') {
+          const outcomeDate = new Date(event.eventDate);
+          const monthIndex = outcomeDate.getMonth();
+
+          if (monthIndex !== -1) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            months[monthIndex]!.total += 1;
+          }
+        }
+      });
+    });
+
+    return months;
   }),
   getPetsAddedInTheLastMonthCount: publicProcedure.query(async ({ ctx }) => {
     const shelterAssociatedWithUser = await getShelterAssociatedWithUser(
@@ -502,6 +768,10 @@ export const petRouter = createTRPCRouter({
         },
       },
     });
+
+    if (!count) {
+      return -1;
+    }
     return count;
   }),
   add: protectedProcedure
@@ -535,7 +805,6 @@ export const petRouter = createTRPCRouter({
           microchipBrand: input.microchipBrand,
           microchipNumber: input.microchipNumber,
           healthStatus: input.healthStatus,
-          //TODO: remove this parsing
           weight: parseFloat(input.weight ?? '0.0'),
           shelter: {
             connect: {
@@ -573,7 +842,6 @@ export const petRouter = createTRPCRouter({
           gender: input.pet.gender,
           color: input.pet.color,
           coat: input.pet.coat,
-          //TODO: remove this parsing
           weight: parseFloat(input.pet.weight ?? '0.0'),
           image: input.pet.image,
           adoptionFee: input.pet.adoptionFee,
