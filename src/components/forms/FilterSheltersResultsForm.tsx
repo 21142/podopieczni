@@ -68,24 +68,6 @@ const FilterSheltersResults = () => {
         />
         <FormField
           control={form.control}
-          name="distance"
-          render={({ field }) => (
-            <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>Distance</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Input
-                    placeholder="Define distance... (in km)"
-                    {...field}
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="address"
           render={({ field }) => (
             <FormItem className="col-span-6 sm:col-span-3">

@@ -1,5 +1,6 @@
 import {
   ArrowDownRight,
+  ArrowRightLeft,
   ArrowUpDown,
   ArrowUpRight,
   Baby,
@@ -48,8 +49,8 @@ import {
   Trash,
   Undo2,
   User,
-  X,
   UserRoundPlus,
+  X,
   type LucideIcon,
   type LucideProps,
 } from 'lucide-react';
@@ -67,6 +68,7 @@ export const Icons = {
   arrowUpDown: ArrowUpDown,
   arrowDownRight: ArrowDownRight,
   arrowUpRight: ArrowUpRight,
+  arrows: ArrowRightLeft,
   copy: Copy,
   dashboard: LayoutDashboard,
   charts: BarChart3,

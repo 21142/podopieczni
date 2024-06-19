@@ -805,7 +805,6 @@ export const petRouter = createTRPCRouter({
           microchipBrand: input.microchipBrand,
           microchipNumber: input.microchipNumber,
           healthStatus: input.healthStatus,
-          //TODO: remove this parsing
           weight: parseFloat(input.weight ?? '0.0'),
           shelter: {
             connect: {
@@ -843,7 +842,6 @@ export const petRouter = createTRPCRouter({
           gender: input.pet.gender,
           color: input.pet.color,
           coat: input.pet.coat,
-          //TODO: remove this parsing
           weight: parseFloat(input.pet.weight ?? '0.0'),
           image: input.pet.image,
           adoptionFee: input.pet.adoptionFee,

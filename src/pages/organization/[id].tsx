@@ -10,8 +10,6 @@ import {
   LinkedinShareButton,
   TwitterIcon,
   TwitterShareButton,
-  WhatsappIcon,
-  WhatsappShareButton,
 } from 'next-share';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -166,14 +164,6 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
                     round
                   />
                 </TwitterShareButton>
-                <WhatsappShareButton
-                  url={`${env.NEXT_PUBLIC_BASE_URL}/organization/${organization.id}`}
-                >
-                  <WhatsappIcon
-                    size={32}
-                    round
-                  />
-                </WhatsappShareButton>
                 <div
                   className="rounded-full p-2 hover:cursor-pointer"
                   onClick={copyUrlToClipboard}

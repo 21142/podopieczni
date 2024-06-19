@@ -296,7 +296,7 @@ export function DataTableRowActions<TData extends object>({
           data.status !== 'APPROVED' && (
             <>
               <DropdownMenuItem onClick={() => markAsContacted(data)}>
-                {t('adoption_table_row_action_mark_as_contacted')}
+                {t('mark_as_contacted')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>
@@ -307,10 +307,10 @@ export function DataTableRowActions<TData extends object>({
           data.status !== 'REJECTED' && (
             <>
               <DropdownMenuItem onClick={() => acceptApplication(data)}>
-                {t('join_requests_table_row_action_accept')}
+                {t('accept')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => rejectApplication(data)}>
-                {t('join_requests_table_row_action_reject')}
+                {t('reject')}
               </DropdownMenuItem>
             </>
           )}
@@ -319,10 +319,10 @@ export function DataTableRowActions<TData extends object>({
           data.status !== 'invited' && (
             <>
               <DropdownMenuItem onClick={() => acceptJoinRequest(data)}>
-                {t('join_requests_table_row_action_accept')}
+                {t('accept')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => rejectRequest(data)}>
-                {t('join_requests_table_row_action_reject')}
+                {t('reject')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>

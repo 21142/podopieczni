@@ -283,15 +283,7 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
   };
 
   const form = useForm<IPetFullDetails>({
-    resolver: async (data, context, options) => {
-      // debug zod validation schema
-      console.log('formData', data);
-      console.log(
-        'zod validation result',
-        await zodResolver(fullPetDetailsSchema)(data, context, options)
-      );
-      return zodResolver(fullPetDetailsSchema)(data, context, options);
-    },
+    resolver: zodResolver(fullPetDetailsSchema),
     defaultValues: {
       ...pet,
       image: pet?.image ?? '/images/no-profile-picture.svg',

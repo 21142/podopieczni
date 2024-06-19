@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { useState, type FC } from 'react';
-import AuthButton from 'src/components/buttons/auth/AuthButton';
+import AuthDropdownMenu from '~/components/auth-dropdown/AuthDropdownMenu';
 import Logo from '~/components/logos/Logo';
 import LogoDark from '~/components/logos/LogoDark';
 import { buttonVariants } from '~/components/primitives/Button';
@@ -88,7 +88,7 @@ const Header: FC<JSX.IntrinsicElements['header']> = ({
             <div className="flex items-center gap-x-5 pl-10 pt-3 md:hidden">
               <ThemeToggle />
               <LanguageToggle />
-              <AuthButton />
+              <AuthDropdownMenu />
             </div>
           )}
         </nav>
@@ -108,7 +108,7 @@ const Header: FC<JSX.IntrinsicElements['header']> = ({
                 </Link>
                 <ThemeToggle />
                 <LanguageToggle />
-                <AuthButton />
+                <AuthDropdownMenu />
               </>
             )}
           </div>

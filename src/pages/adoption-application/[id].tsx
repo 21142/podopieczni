@@ -8,6 +8,7 @@ import {
   type InferGetStaticPropsType,
   type NextPage,
 } from 'next/types';
+import AdoptionSurveyAnswers from '~/components/forms/AdoptionSurveyAnswers';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
@@ -40,7 +41,7 @@ const AdoptionApplicationPage: NextPage<PageProps> = ({ applicationId }) => {
   return (
     <DashboardLayout>
       {application && isUserAssociatedWithShelter && (
-        <pre>{JSON.stringify(application, null, 2)}</pre>
+        <AdoptionSurveyAnswers applicationId={applicationId} />
       )}
     </DashboardLayout>
   );

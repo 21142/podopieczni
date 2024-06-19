@@ -52,12 +52,14 @@ export const adoptionApplicationRouter = createTRPCRouter({
           include: {
             pet: {
               select: {
+                id: true,
                 name: true,
                 image: true,
               },
             },
             user: {
               select: {
+                image: true,
                 firstName: true,
                 lastName: true,
                 email: true,

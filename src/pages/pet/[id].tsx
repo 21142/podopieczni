@@ -11,8 +11,6 @@ import {
   LinkedinShareButton,
   TwitterIcon,
   TwitterShareButton,
-  WhatsappIcon,
-  WhatsappShareButton,
 } from 'next-share';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -353,12 +351,6 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
                         round
                       />
                     </TwitterShareButton>
-                    <WhatsappShareButton url={pet.url}>
-                      <WhatsappIcon
-                        size={32}
-                        round
-                      />
-                    </WhatsappShareButton>
                     <div
                       className="rounded-full p-2 hover:cursor-pointer"
                       onClick={copyUrlToClipboard}
