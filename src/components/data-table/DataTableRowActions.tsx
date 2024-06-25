@@ -296,7 +296,7 @@ export function DataTableRowActions<TData extends object>({
           data.status !== 'APPROVED' && (
             <>
               <DropdownMenuItem onClick={() => markAsContacted(data)}>
-                {t('mark_as_contacted')}
+                {t('marked_as_contacted')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
             </>
