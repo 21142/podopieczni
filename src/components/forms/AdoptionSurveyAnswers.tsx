@@ -175,7 +175,7 @@ const AdoptionSurveyAnswers: FC<Props> = ({ applicationId }) => {
   const { variant } = getBadgeVariant(adoptionSurveyData.status);
 
   return (
-    <div className="p-4">
+    <div className="p-4 sm:p-0 sm:pb-4">
       <BackgroundWavesFeaturedPets className="absolute -z-10 aspect-[10/1] w-full rotate-180" />
       <Card className="mx-auto mt-4 w-full max-w-7xl p-4 px-4 py-5 sm:mt-6 sm:p-10 2xl:max-w-8xl">
         <CardHeader className="px-0 pb-12 pt-0">
