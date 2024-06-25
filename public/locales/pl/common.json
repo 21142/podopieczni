@@ -69,6 +69,7 @@
    "invite_user_form_title": "Email użytkownika",
    "invite_user_form_subtitle": "Wysłany link będzie aktywny przez kolejne 24 godziny.",
    "invite_user_form_button": "Wyślij zaproszenie",
+   "form_button_send": "Wyślij",
    "dashboard": "Panel organizacji",
    "dashboard_raports": "Raporty",
    "dashboard_download_raport": "Pobierz raporty",

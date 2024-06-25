@@ -69,6 +69,7 @@
    "invite_user_form_title": "Enter email address of the user you want to invite",
    "invite_user_form_subtitle": "The link will be valid for the next 24 hours.",
    "invite_user_form_button": "Send invitation",
+   "form_button_send": "Send",
    "dashboard": "Go to dashboard",
    "dashboard_raports": "Go to raports",
    "dashboard_download_raport": "Download raports",
