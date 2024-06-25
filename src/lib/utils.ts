@@ -47,7 +47,7 @@ export const createFormattedForOgImageUrl = ({
 };
 
 export const truncate = (input: string) =>
-  input?.length > 200 ? `${input.substring(0, 150)}...` : input;
+  input?.length > 80 ? `${input.substring(0, 80)}...` : input;
 
 export function getTodayDate(): string {
   const today = new Date();
@@ -88,11 +88,11 @@ export function calculatePetAgeGroup(dateOfBirth: Date): string {
   const ageInYears = ageInMilliseconds / (1000 * 60 * 60 * 24 * 365);
 
   if (ageInYears < 1) {
-    return 'Puppy';
+    return 'Szczeniak';
   } else if (ageInYears < 3) {
-    return 'Young';
+    return 'Młody';
   } else if (ageInYears < 7) {
-    return 'Adult';
+    return 'Dorosły';
   } else {
     return 'Senior';
   }
@@ -100,14 +100,14 @@ export function calculatePetAgeGroup(dateOfBirth: Date): string {
 
 export function calculatePetSizeGroup(weight: number): string {
   if (weight == 0) {
-    return 'Unknown';
+    return 'Niezana';
   } else if (weight < 11) {
-    return 'Small';
+    return 'Mały';
   } else if (weight < 27) {
-    return 'Medium';
+    return 'Średni';
   } else if (weight < 45) {
-    return 'Large';
+    return 'Duży';
   } else {
-    return 'Extra Large';
+    return 'Bardzo duży';
   }
 }
