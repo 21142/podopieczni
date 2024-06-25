@@ -20,29 +20,25 @@ export enum Variant {
 //TODO: i18n
 export const statuses = [
   {
-    value: 'adoptable',
-    label: 'Adoptable',
+    value: 'Do adopcji',
+    label: 'Do adopcji',
   },
   {
-    value: 'quarantined',
-    label: 'Quarantined',
-  },
-  {
-    value: 'adopted',
-    label: 'Adopted',
+    value: 'Zaadoptowany',
+    label: 'Zaadoptowany',
   },
 ];
 
 //TODO: i18n
 export const species = [
   {
-    value: 'dog',
-    label: 'Dog',
+    value: 'Pies',
+    label: 'Pies',
     icon: Icons.dog,
   },
   {
-    value: 'cat',
-    label: 'Cat',
+    value: 'Kot',
+    label: 'Kot',
     icon: Icons.cat,
   },
 ];

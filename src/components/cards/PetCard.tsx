@@ -15,6 +15,7 @@ import { links } from '~/config/siteConfig';
 import { useLoginToast } from '~/hooks/useLoginToast';
 import { api } from '~/lib/api';
 import { Variant } from '~/lib/constants';
+import { truncate } from '~/lib/utils';
 import { Icons } from '../icons/Icons';
 
 type IAnimalCard = {
@@ -136,7 +137,7 @@ const PetCard: FC<IAnimalCard> = ({
         >
           <p className="h-12 text-center">
             {body && body !== '-'
-              ? body
+              ? truncate(body)
               : variant === Variant.Organization
               ? ''
               : t('pet_card_default_description')}

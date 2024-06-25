@@ -5,7 +5,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '~/components/primitives/Avatar';
-import { statuses } from '~/lib/constants';
+import { statuses } from '~/static/statuses';
 import {
   type AdoptionApplicationDto,
   type AnimalDto,
@@ -67,7 +67,7 @@ export const animalsColumns: ColumnDef<AnimalDto>[] = [
     ),
     cell: ({ row }) => {
       const status = statuses.find(
-        (status) => status.value === row.getValue('status')
+        (status) => status.en === row.getValue('status')
       );
 
       if (!status) {
@@ -76,7 +76,7 @@ export const animalsColumns: ColumnDef<AnimalDto>[] = [
 
       return (
         <div className="flex w-[100px] items-center">
-          <span>{status.label}</span>
+          <span>{status.en}</span>
         </div>
       );
     },

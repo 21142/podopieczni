@@ -59,6 +59,7 @@ import { IntakeEventTypeMap } from '~/static/intakeEventTypes';
 import { MedicalEventTypeMap } from '~/static/medicalEventTypes';
 import { OutcomeEventTypeMap } from '~/static/outcomeEventTypes';
 import { species } from '~/static/species';
+import { statuses } from '~/static/statuses';
 import { Icons } from '../icons/Icons';
 import {
   AlertDialog,
@@ -693,13 +694,14 @@ const PetDetailsForm: FC<Props> = ({ animalId }) => {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="adoptable">
-                                Adoptable
-                              </SelectItem>
-                              <SelectItem value="adopted">Adopted</SelectItem>
-                              <SelectItem value="quarantined">
-                                Quarantined
-                              </SelectItem>
+                              {statuses.map((status) => (
+                                <SelectItem
+                                  key={status[i18n.language as 'en' | 'pl']}
+                                  value={status[i18n.language as 'en' | 'pl']}
+                                >
+                                  {status[i18n.language as 'en' | 'pl']}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                           <FormMessage />

@@ -22,6 +22,7 @@ import { genders } from '~/static/genders';
 import { HealthStatusMap } from '~/static/healthStatuses';
 import { IntakeEventTypeMap } from '~/static/intakeEventTypes';
 import { species } from '~/static/species';
+import { statuses } from '~/static/statuses';
 import { Icons } from '../icons/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../primitives/Avatar';
 import { Button } from '../primitives/Button';
@@ -230,8 +231,14 @@ const AddPetForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="adoptable">Adoptable</SelectItem>
-                      <SelectItem value="quarantined">Quarantined</SelectItem>
+                      {statuses.map((status) => (
+                        <SelectItem
+                          key={status[i18n.language as 'en' | 'pl']}
+                          value={status[i18n.language as 'en' | 'pl']}
+                        >
+                          {status[i18n.language as 'en' | 'pl']}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

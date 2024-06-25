@@ -563,7 +563,7 @@ const AdoptionSurveyAnswers: FC<Props> = ({ applicationId }) => {
               ) : adoptionSurveyData?.status === 'CONTACTED' ? (
                 t('marked_as_contacted')
               ) : (
-                t('mark_as_contacted')
+                t('marked_as_contacted')
               )}
             </Button>
             <Button
