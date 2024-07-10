@@ -124,7 +124,7 @@ const Raports: NextPage = () => {
                     src={shelterDetails.logo}
                     width={48}
                     height={48}
-                    className="h-12"
+                    className="h-12 rounded-full"
                     alt="Shelter logo"
                   />
                 )}

@@ -29,7 +29,7 @@ const ShelterStatisticsCard: FC<ShelterStatisticsCardProps> = ({
         <CardTitle className="text-lg font-semibold">{title}</CardTitle>
         {children}
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col justify-between">
         <div className="text-3xl font-bold">
           {value} {currency ?? ''}
         </div>
