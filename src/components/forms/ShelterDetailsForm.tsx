@@ -340,7 +340,7 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                     <div className="grid gap-2">
                       <Image
                         alt="Organization logo"
-                        className="aspect-square w-full rounded-md object-cover"
+                        className="aspect-square w-full rounded-full object-cover"
                         height="300"
                         width="300"
                         src={logo ?? '/images/no-profile-picture.svg'}

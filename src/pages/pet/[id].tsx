@@ -395,7 +395,7 @@ const PetProfilePage: NextPage<PageProps> = ({ animalId }) => {
                             src={pet.shelter.logo}
                             width={48}
                             height={48}
-                            className="h-16 w-16"
+                            className="h-16 w-16 rounded-full"
                             alt="Shelter logo"
                           />
                         )}

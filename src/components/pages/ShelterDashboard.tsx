@@ -77,7 +77,7 @@ const ShelterDashboard: FC<ShelterDashboardProps> = ({
                 src={shelterLogo}
                 width={48}
                 height={48}
-                className="h-12"
+                className="h-12 rounded-full"
                 alt="Shelter logo"
               />
             )}
