@@ -100,7 +100,7 @@ const OrganizationProfilePage: NextPage<PageProps> = ({ shelterId }) => {
                 src={organization.logo ?? '/images/no-profile-picture.svg'}
                 width={400}
                 height={400}
-                className="h-96 w-96 rounded-sm object-cover"
+                className="h-96 w-96 rounded-full object-cover"
               />
               <div className="flex flex-col gap-6">
                 <h1 className="text-3xl font-semibold">{organization.name}</h1>
