@@ -22,7 +22,7 @@ const ShelterStatisticsCard: FC<ShelterStatisticsCardProps> = ({
   const { t } = useTranslation('common');
   return (
     <Card
-      className="min-h-34 transition-colors hover:cursor-pointer hover:border-border/60 hover:bg-transparent"
+      className="min-h-4 transition-colors hover:cursor-pointer hover:border-border/60 hover:bg-transparent"
       onClick={onClick}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -39,7 +39,7 @@ const ShelterStatisticsCard: FC<ShelterStatisticsCardProps> = ({
             {t('dashboard_statistics_card_change_from_last_month')}
           </p>
         )}
-        {difference === 0 && (
+        {difference !== undefined && difference <= 0 && (
           <p className="mt-2 text-xs text-muted-foreground">
             {t('dashboard_statistics_card_no_change_from_last_month')}
           </p>
