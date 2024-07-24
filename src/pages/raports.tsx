@@ -198,7 +198,7 @@ const Raports: NextPage = () => {
       {!isUserAssociatedWithShelter && (
         <div className="grid h-[50vh] content-center">
           <h1 className="text-center text-2xl font-semibold">
-            You are not associated with any shelter
+            {t('shelter_associate_title')}
           </h1>
         </div>
       )}

@@ -462,34 +462,32 @@ export const petRouter = createTRPCRouter({
       ctx.session?.user.id
     );
 
+    const now = new Date();
+
+    const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
     const thisMonthsCount = await ctx.prisma.pet.count({
       where: {
         shelterId: shelterAssociatedWithUser.id,
         createdAt: {
-          gt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-        },
-      },
-    });
-    const lastMonthsCount = await ctx.prisma.pet.count({
-      where: {
-        shelterId: shelterAssociatedWithUser.id,
-        createdAt: {
-          gt: new Date(new Date().setMonth(new Date().getMonth() - 2)),
-          lt: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+          gte: startOfThisMonth,
         },
       },
     });
 
-    if (
-      !thisMonthsCount ||
-      !lastMonthsCount ||
-      lastMonthsCount === 0 ||
-      thisMonthsCount === 0
-    ) {
-      return 0;
-    } else {
-      return thisMonthsCount - lastMonthsCount;
-    }
+    const lastMonthsCount = await ctx.prisma.pet.count({
+      where: {
+        shelterId: shelterAssociatedWithUser.id,
+        createdAt: {
+          gte: startOfLastMonth,
+          lt: startOfThisMonth,
+        },
+      },
+    });
+
+    return thisMonthsCount - lastMonthsCount;
   }),
   getPetsAddedInTheLastMonth: publicProcedure.query(async ({ ctx }) => {
     const shelterAssociatedWithUser = await getShelterAssociatedWithUser(

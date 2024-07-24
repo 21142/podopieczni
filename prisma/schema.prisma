@@ -57,7 +57,7 @@ model User {
   updatedAt           DateTime              @updatedAt
   address             AddressInfo?
   adoptedPets         Pet[]
-  worksAt             Shelter?              @relation(fields: [shelterId], references: [id])
+  worksAt             Shelter?              @relation(fields: [shelterId], references: [id], onDelete: Cascade)
   shelterId           String?
   favoritePets        FavoritePet[]
   accounts            Account[]
@@ -124,9 +124,9 @@ model JoinRequest {
   status    String   @default("pending")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation("UserJoinRequest", fields: [userId], references: [id])
+  user      User     @relation("UserJoinRequest", fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  shelter   Shelter  @relation("ShelterJoinRequest", fields: [shelterId], references: [id])
+  shelter   Shelter  @relation("ShelterJoinRequest", fields: [shelterId], references: [id], onDelete: Cascade)
   shelterId String
 
   @@unique([userId, shelterId])
@@ -194,8 +194,8 @@ model Pet {
 model FavoritePet {
   id        String   @default(cuid())
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  pet       Pet      @relation(fields: [petId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pet       Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
   userId    String
   petId     String
 
@@ -285,11 +285,11 @@ model AdoptionApplication {
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
 
-  user      User?   @relation(fields: [userId], references: [id])
+  user      User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String?
-  shelter   Shelter @relation(fields: [shelterId], references: [id])
+  shelter   Shelter @relation(fields: [shelterId], references: [id], onDelete: Cascade)
   shelterId String
-  pet       Pet     @relation(fields: [petId], references: [id])
+  pet       Pet     @relation(fields: [petId], references: [id], onDelete: Cascade)
   petId     String
 
   @@index([userId])
