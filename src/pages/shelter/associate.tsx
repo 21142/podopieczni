@@ -94,11 +94,11 @@ const AssociateShelter: NextPage = () => {
   return (
     <PageLayout>
       {!isUserAssociatedWithShelter && (
-        <div className="grid h-[50vh] content-center justify-center gap-6 text-center">
+        <div className="grid h-[50vh] content-center justify-center gap-6 p-3 text-center">
           <h1 className="text-center text-2xl font-semibold">
-            You are not associated with any shelter
+            {t('shelter_associate_title')}
           </h1>
-          <p>Choose a shelter you are associated with</p>
+          <p className="max-w-2xl">{t('shelter_associate_subtitle')}</p>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -157,14 +157,14 @@ const AssociateShelter: NextPage = () => {
                 })
               }
             >
-              Try to associate
+              {t('shelter_associate_button')}
             </Button>
             <p className="text-sm">or</p>
             <Link
               href={links.registerShelter}
               className={buttonVariants({ variant: 'default', size: 'lg' })}
             >
-              Register a new shelter
+              {t('shelter_registration_button')}
             </Link>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
+import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShelterSettings from '~/components/forms/ShelterDetailsForm';
@@ -13,6 +14,7 @@ import { ssghelpers } from '~/lib/ssg';
 
 const OrganizationSettings: NextPage = () => {
   const { data: session } = useSession();
+  const { t } = useTranslation('common');
 
   const { data: isUserAssociatedWithShelter, isLoading } =
     api.user.isUserAssociatedWithShelter.useQuery(undefined, {
@@ -55,7 +57,7 @@ const OrganizationSettings: NextPage = () => {
       {!isUserAssociatedWithShelter && (
         <div className="grid h-[50vh] content-center">
           <h1 className="text-center text-2xl font-semibold">
-            You are not associated with any shelter
+            {t('shelter_associate_title')}
           </h1>
         </div>
       )}
