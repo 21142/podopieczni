@@ -49,7 +49,7 @@ export const links = {
   raports: '/raports',
   adoptions: '/adoptions',
   adoptionSurvey: '/adoption-survey',
-  confirmation: '/tba',
+  confirmation: '/check-inbox?adoptionApplication=sent',
   application: (applicationId: string) =>
     `/adoption-application/${applicationId}`,
 };
