@@ -6,7 +6,8 @@ import CheckInbox from '~/components/utility/CheckInbox';
 
 const CheckInboxForMagicLinkPage = () => {
   const params = useSearchParams();
-  const joinRequest = params.get('joinRequest');
+  const joinRequest =
+    params.get('joinRequest') || params.get('adoptionApplication');
 
   return (
     <PageLayout>

@@ -7,6 +7,7 @@ import { buttonVariants } from '../primitives/Button';
 
 type Props = {
   joinRequest?: string | null;
+  adoptionApplication?: string | null;
 };
 
 const CheckInbox: FC<Props> = ({ joinRequest }) => {
