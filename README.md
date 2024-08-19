@@ -37,7 +37,7 @@
 
    <p align="center">
        <br />
-       <h3>The perfect data managment app and animal promotion platform.</h2>
+       <h3>The perfect data managment app and animal promotion platform.</h3>
        <br />
        <br />
        <a href="https://podopieczni-21142.vercel.app"><strong>Website »</strong></a>
