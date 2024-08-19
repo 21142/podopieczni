@@ -17,9 +17,6 @@
   <a href="https://codecov.io/gh/21142/podopieczni" target="_blank" rel="noopener">
    <img alt="Website status" src="https://img.shields.io/website?label=website%20status&url=https%3A%2F%2Fpodopieczni-21142.vercel.app%2F">
   </a>
-  <a href="https://codecov.io/gh/21142/podopieczni" target="_blank" rel="noopener">
-    <img src="https://codecov.io/gh/21142/podopieczni/graph/badge.svg?token=PLMEIQ6USW" alt="Codecov Coverage">
-  </a>
   <a href="https://github.com/microsoft/TypeScript" target="_blank" rel="noopener">
     <img src="https://badges.frapsoft.com/typescript/version/typescript-next.svg?v=103" alt="TypeScript">
   </a>
@@ -84,6 +81,10 @@
 ### Overview
 
 **Podopieczni.pl** is a comprehensive web application designed to facilitate animal adoption and manage shelter data in Poland. The platform integrates promotional features with management tools to provide a seamless experience for both prospective pet owners and animal shelters.
+
+<br />
+
+[![Podopieczni Screen Shot][product-screenshot]][product-url]
 
 ### Key Features
 
@@ -330,3 +331,6 @@ I would like to acknowledge my own efforts in developing this project. This appl
 Thank you to everyone who has supported and encouraged me throughout this process. Your support has been invaluable.
 
 <p align="right"><a href="#readme-beginning">&#9650;</a></p>
+
+[product-screenshot]: public/images/product-screenshot.png
+[product-url]: https://podopieczni-21142.vercel.app
