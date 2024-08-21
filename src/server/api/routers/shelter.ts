@@ -7,6 +7,7 @@ import JoinRequestRejected from '~/components/emails/JoinRequestRejectedEmail';
 import { Roles } from '~/lib/constants';
 import { shelterSettingsSchema } from '~/lib/validators/shelterValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
+import { getSheltersSortOrderBy } from '~/server/helpers/getSortOrderBy';
 import { sheltersSearchWhereConditions } from '~/server/helpers/searchConditions';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
@@ -133,38 +134,42 @@ export const shelterRouter = createTRPCRouter({
             sortBy: z.string().optional(),
           })
           .optional(),
+        cursor: z.string().optional(),
+        limit: z.number().default(12),
       })
     )
     .query(async ({ ctx, input }) => {
       try {
-        const sortBy = input.filter?.sortBy;
-        let orderBy: { createdAt?: 'asc' | 'desc' } = {};
+        const { searchQuery, filter, cursor } = input;
+        const limit = input.limit ?? 12;
 
-        if (sortBy === 'oldest') {
-          orderBy = { createdAt: 'asc' };
-        } else if (sortBy === 'newest') {
-          orderBy = { createdAt: 'desc' };
-        }
+        const sortBy = filter?.sortBy;
+        const orderBy = getSheltersSortOrderBy(sortBy);
 
-        if (!input.searchQuery) {
-          const shelters = await ctx.prisma.shelter.findMany({
-            include: {
-              address: true,
-            },
-            orderBy: orderBy,
-          });
+        const where = searchQuery
+          ? sheltersSearchWhereConditions(searchQuery)
+          : undefined;
 
-          return shelters;
-        }
         const shelters = await ctx.prisma.shelter.findMany({
-          where: sheltersSearchWhereConditions(input.searchQuery),
+          where,
           include: {
             address: true,
           },
-          orderBy: orderBy,
+          orderBy,
+          take: limit + 1,
+          cursor: cursor ? { id: cursor } : undefined,
         });
 
-        return shelters;
+        let nextCursor: typeof cursor | undefined = undefined;
+        if (shelters.length > limit) {
+          const nextItem = shelters.pop();
+          nextCursor = nextItem?.id;
+        }
+
+        return {
+          shelters,
+          nextCursor,
+        };
       } catch (error) {
         console.log(error);
         throw new TRPCError({

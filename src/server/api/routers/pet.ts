@@ -15,6 +15,7 @@ import {
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import { getShelterAssociatedWithUser } from '~/server/helpers/getShelterAssociatedWithUser';
+import { getPetsSortOrderBy } from '~/server/helpers/getSortOrderBy';
 import { petsSearchWhereConditions } from '~/server/helpers/searchConditions';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
@@ -154,46 +155,38 @@ export const petRouter = createTRPCRouter({
             sortBy: z.string().optional(),
           })
           .optional(),
+        cursor: z.string().optional(),
+        limit: z.number().default(12),
       })
     )
     .query(async ({ ctx, input }) => {
       try {
-        const sortBy = input.filter?.sortBy;
-        let orderBy: { publishedAt?: 'asc' | 'desc' } = {};
+        const { searchQuery, filter, cursor } = input;
+        const limit = input.limit ?? 12;
 
-        if (sortBy === 'oldest') {
-          orderBy = { publishedAt: 'asc' };
-        } else if (sortBy === 'newest') {
-          orderBy = { publishedAt: 'desc' };
-        }
+        const sortBy = filter?.sortBy;
+        const orderBy = getPetsSortOrderBy(sortBy);
 
-        let pets;
-        if (input.searchQuery) {
-          pets = await ctx.prisma.pet.findMany({
-            where: petsSearchWhereConditions(input.searchQuery),
-            include: {
-              shelter: {
-                include: {
-                  address: true,
-                },
+        const pets = await ctx.prisma.pet.findMany({
+          where: searchQuery
+            ? petsSearchWhereConditions(searchQuery)
+            : { availableForAdoption: true },
+          include: {
+            shelter: {
+              include: {
+                address: true,
               },
             },
-            orderBy: orderBy,
-          });
-        } else {
-          pets = await ctx.prisma.pet.findMany({
-            where: {
-              availableForAdoption: true,
-            },
-            include: {
-              shelter: {
-                include: {
-                  address: true,
-                },
-              },
-            },
-            orderBy: orderBy,
-          });
+          },
+          orderBy: orderBy,
+          take: limit + 1,
+          cursor: cursor ? { id: cursor } : undefined,
+        });
+
+        let nextCursor: typeof cursor | undefined = undefined;
+        if (pets.length > limit) {
+          const nextItem = pets.pop();
+          nextCursor = nextItem?.id;
         }
 
         if (ctx.session?.user.id) {
@@ -216,19 +209,22 @@ export const petRouter = createTRPCRouter({
             favoriteStatusMap[favoritePet.petId] = true;
           }
 
-          pets = pets.map((pet) => ({
-            ...pet,
-            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
-            isLikedByUser: favoriteStatusMap[pet.id] || false,
-          }));
-
-          return pets;
+          return {
+            pets: pets.map((pet) => ({
+              ...pet,
+              age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+              isLikedByUser: favoriteStatusMap[pet.id] || false,
+            })),
+            nextCursor,
+          };
         } else {
-          pets = pets.map((pet) => ({
-            ...pet,
-            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
-          }));
-          return pets;
+          return {
+            pets: pets.map((pet) => ({
+              ...pet,
+              age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+            })),
+            nextCursor,
+          };
         }
       } catch (error) {
         console.log(error);
