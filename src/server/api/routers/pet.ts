@@ -3,7 +3,11 @@ import { z } from 'zod';
 import { links } from '~/config/siteConfig';
 import { env } from '~/env.mjs';
 import { checkIfRateLimitHasExceeded } from '~/lib/checkRateLimit';
-import { calculatePetAgeGroup, calculatePetSizeGroup } from '~/lib/utils';
+import {
+  calculatePetAgeGroup,
+  calculatePetSizeGroup,
+  getPetsSortOrderBy,
+} from '~/lib/utils';
 import {
   document,
   fullPetDetailsSchema,
@@ -15,7 +19,6 @@ import {
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import { getShelterAssociatedWithUser } from '~/server/helpers/getShelterAssociatedWithUser';
-import { getPetsSortOrderBy } from '~/server/helpers/getSortOrderBy';
 import { petsSearchWhereConditions } from '~/server/helpers/searchConditions';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
