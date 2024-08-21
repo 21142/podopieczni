@@ -93,7 +93,7 @@ const Results: NextPage<
       <BackgroundWave />
 
       <main className="container mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-        <div className="relative z-10 flex items-baseline justify-between pb-6">
+        <div className="z-10 flex items-baseline justify-between pb-6">
           <h1 className="max-w-[300px] text-2xl font-semibold tracking-tight sm:max-w-none sm:text-4xl">
             {t('results_title')}
           </h1>

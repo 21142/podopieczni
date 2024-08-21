@@ -15,6 +15,7 @@ import {
 } from '~/lib/validators/petValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
 import { getShelterAssociatedWithUser } from '~/server/helpers/getShelterAssociatedWithUser';
+import { getPetsSortOrderBy } from '~/server/helpers/getSortOrderBy';
 import { petsSearchWhereConditions } from '~/server/helpers/searchConditions';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
@@ -158,43 +159,24 @@ export const petRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       try {
-        const sortBy = input.filter?.sortBy;
-        let orderBy: { publishedAt?: 'asc' | 'desc' } = {};
+        const { searchQuery, filter } = input;
 
-        if (sortBy === 'oldest') {
-          orderBy = { publishedAt: 'asc' };
-        } else if (sortBy === 'newest') {
-          orderBy = { publishedAt: 'desc' };
-        }
+        const sortBy = filter?.sortBy;
+        const orderBy = getPetsSortOrderBy(sortBy);
 
-        let pets;
-        if (input.searchQuery) {
-          pets = await ctx.prisma.pet.findMany({
-            where: petsSearchWhereConditions(input.searchQuery),
-            include: {
-              shelter: {
-                include: {
-                  address: true,
-                },
+        const pets = await ctx.prisma.pet.findMany({
+          where: searchQuery
+            ? petsSearchWhereConditions(searchQuery)
+            : { availableForAdoption: true },
+          include: {
+            shelter: {
+              include: {
+                address: true,
               },
             },
-            orderBy: orderBy,
-          });
-        } else {
-          pets = await ctx.prisma.pet.findMany({
-            where: {
-              availableForAdoption: true,
-            },
-            include: {
-              shelter: {
-                include: {
-                  address: true,
-                },
-              },
-            },
-            orderBy: orderBy,
-          });
-        }
+          },
+          orderBy: orderBy,
+        });
 
         if (ctx.session?.user.id) {
           const petIds = pets.map((pet) => pet.id);
@@ -216,19 +198,16 @@ export const petRouter = createTRPCRouter({
             favoriteStatusMap[favoritePet.petId] = true;
           }
 
-          pets = pets.map((pet) => ({
+          return pets.map((pet) => ({
             ...pet,
             age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
             isLikedByUser: favoriteStatusMap[pet.id] || false,
           }));
-
-          return pets;
         } else {
-          pets = pets.map((pet) => ({
+          return pets.map((pet) => ({
             ...pet,
             age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
           }));
-          return pets;
         }
       } catch (error) {
         console.log(error);
