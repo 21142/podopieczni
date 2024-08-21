@@ -86,7 +86,7 @@ const Organizations: NextPage<
       <BackgroundWave />
 
       <main className="container mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
-        <div className="flex w-full justify-between">
+        <div className="z-10 flex items-baseline justify-between">
           <h1 className="max-w-[300px] pb-6 text-2xl font-semibold tracking-tight sm:max-w-none sm:text-4xl">
             {t('organizations_title')}
           </h1>

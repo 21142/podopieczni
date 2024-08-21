@@ -7,6 +7,7 @@ import JoinRequestRejected from '~/components/emails/JoinRequestRejectedEmail';
 import { Roles } from '~/lib/constants';
 import { shelterSettingsSchema } from '~/lib/validators/shelterValidation';
 import { createTRPCRouter } from '~/server/api/trpc';
+import { getSheltersSortOrderBy } from '~/server/helpers/getSortOrderBy';
 import { sheltersSearchWhereConditions } from '~/server/helpers/searchConditions';
 import adminProcedure from '../procedures/adminProcedure';
 import protectedProcedure from '../procedures/protectedProcedure';
@@ -137,31 +138,21 @@ export const shelterRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       try {
-        const sortBy = input.filter?.sortBy;
-        let orderBy: { createdAt?: 'asc' | 'desc' } = {};
+        const { searchQuery, filter } = input;
 
-        if (sortBy === 'oldest') {
-          orderBy = { createdAt: 'asc' };
-        } else if (sortBy === 'newest') {
-          orderBy = { createdAt: 'desc' };
-        }
+        const sortBy = filter?.sortBy;
+        const orderBy = getSheltersSortOrderBy(sortBy);
 
-        if (!input.searchQuery) {
-          const shelters = await ctx.prisma.shelter.findMany({
-            include: {
-              address: true,
-            },
-            orderBy: orderBy,
-          });
+        const where = searchQuery
+          ? sheltersSearchWhereConditions(searchQuery)
+          : undefined;
 
-          return shelters;
-        }
         const shelters = await ctx.prisma.shelter.findMany({
-          where: sheltersSearchWhereConditions(input.searchQuery),
+          where,
           include: {
             address: true,
           },
-          orderBy: orderBy,
+          orderBy,
         });
 
         return shelters;
