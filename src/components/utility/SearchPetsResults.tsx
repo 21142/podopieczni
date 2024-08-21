@@ -12,13 +12,13 @@ type ISearchResults = {
 
 const SearchPetsResults: FC<ISearchResults> = ({ results, isLoading }) => {
   const { t } = useTranslation('common');
-  if (results?.length === 0)
+
+  if (results?.length === 0 && !isLoading)
     return (
       <p className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
         {t('no_results_found')}
       </p>
     );
-
   if (isLoading) {
     return (
       <div className="grid h-[50vh] content-center">

@@ -7,7 +7,8 @@ import type {
 import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useState } from 'react';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
 import AdoptionFormCard from '~/components/cards/AdoptionFormCard';
 import FilterSheltersResults from '~/components/forms/FilterSheltersResultsForm';
 import { Icons } from '~/components/icons/Icons';
@@ -27,9 +28,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '~/components/primitives/Sheet';
+import Spinner from '~/components/spinner/Spinner';
 import BackgroundWave from '~/components/utility/BackgroundWave';
 import SearchCategory from '~/components/utility/SearchCategory';
 import SearchSheltersResults from '~/components/utility/SearchSheltersResults';
+import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
 import { cn } from '~/lib/utils';
@@ -66,11 +69,45 @@ const Organizations: NextPage<
   });
 
   const { t, i18n } = useTranslation('common');
-  const { data: organizations, isLoading } =
-    api.shelter.queryAvailableShelters.useQuery({
+  const {
+    data: sheltersData,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = api.shelter.queryAvailableShelters.useInfiniteQuery(
+    {
       searchQuery,
       filter,
-    });
+      limit: 12,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
+
+  const loadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 500 >=
+        document.documentElement.offsetHeight
+      ) {
+        loadMore();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [loadMore]);
 
   return (
     <PageLayout>
@@ -108,7 +145,7 @@ const Organizations: NextPage<
                       className={cn(
                         option.value === filter.sortBy
                           ? 'font-medium text-foreground'
-                          : 'text-gray-500',
+                          : 'text-muted-foreground',
                         'block w-full px-4 py-2 text-sm',
                         'hover:cursor-pointer hover:bg-gray-100'
                       )}
@@ -165,7 +202,7 @@ const Organizations: NextPage<
             </Sheet>
           </div>
         </div>
-        <div className="relative z-10 flex items-baseline justify-between pb-6">
+        <div className="relative z-10 mb-12 flex items-baseline justify-between pb-6">
           <div className="grid w-full grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-[250px_minmax(700px,_1fr)]">
             <AdoptionFormCard />
             <div className="hidden lg:row-start-2 lg:row-end-3 lg:block">
@@ -174,11 +211,28 @@ const Organizations: NextPage<
 
             <SearchCategory />
             <SearchSheltersResults
-              results={organizations}
+              results={
+                sheltersData?.pages.flatMap((page) => page.shelters) ?? []
+              }
               isLoading={isLoading}
             />
           </div>
         </div>
+        {isFetchingNextPage && (
+          <div className="z-50 mx-auto -mt-6 flex w-fit justify-center">
+            <Spinner />
+          </div>
+        )}
+        {!hasNextPage && (
+          <Link
+            href={links.organizationsScrollToPosition}
+            scroll={false}
+            className="z-50 mx-auto -mt-6 flex w-fit justify-center"
+          >
+            <span className="sr-only">Scroll to top</span>
+            <Icons.doubleChevronUp className="duration-50 h-12 w-12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+          </Link>
+        )}
       </main>
     </PageLayout>
   );

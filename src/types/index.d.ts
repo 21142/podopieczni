@@ -24,12 +24,12 @@ export type RecentlyAddedAnimal =
 export type FeaturedPet = RouterOutputs['pet']['getFeaturedAnimals'][number];
 
 export type PetAvailableForAdoption =
-  RouterOutputs['pet']['queryPetsAvailableForAdoption'][number];
+  RouterOutputs['pet']['queryPetsAvailableForAdoption']['pets'][number];
 
 export type FavoritePet = RouterOutputs['user']['getFavoritePets'][number];
 
 export type Shelter =
-  RouterOutputs['shelter']['queryAvailableShelters'][number];
+  RouterOutputs['shelter']['queryAvailableShelters']['shelters'][number];
 
 export type ShelterDetails = RouterOutputs['shelter']['getShelterDetails'];
 

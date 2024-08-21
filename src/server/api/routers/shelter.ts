@@ -134,11 +134,14 @@ export const shelterRouter = createTRPCRouter({
             sortBy: z.string().optional(),
           })
           .optional(),
+        cursor: z.string().optional(),
+        limit: z.number().default(12),
       })
     )
     .query(async ({ ctx, input }) => {
       try {
-        const { searchQuery, filter } = input;
+        const { searchQuery, filter, cursor } = input;
+        const limit = input.limit ?? 12;
 
         const sortBy = filter?.sortBy;
         const orderBy = getSheltersSortOrderBy(sortBy);
@@ -153,9 +156,20 @@ export const shelterRouter = createTRPCRouter({
             address: true,
           },
           orderBy,
+          take: limit + 1,
+          cursor: cursor ? { id: cursor } : undefined,
         });
 
-        return shelters;
+        let nextCursor: typeof cursor | undefined = undefined;
+        if (shelters.length > limit) {
+          const nextItem = shelters.pop();
+          nextCursor = nextItem?.id;
+        }
+
+        return {
+          shelters,
+          nextCursor,
+        };
       } catch (error) {
         console.log(error);
         throw new TRPCError({

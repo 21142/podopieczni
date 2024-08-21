@@ -23,6 +23,7 @@ export const links = {
   phone: (phoneNumber: string) => `tel:${phoneNumber}`,
   email: (email: string) => `mailto:${email}`,
   organizations: '/organizations',
+  organizationsScrollToPosition: '/organizations#scrollToPosition',
   organizationSettings: '/organization/settings',
   organization: (organizationId: string) => `/organization/${organizationId}`,
   organizationPets: (organizationId: string) =>
