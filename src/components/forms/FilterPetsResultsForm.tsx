@@ -3,7 +3,6 @@ import { useTranslation } from 'next-i18next';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { links } from '~/config/siteConfig';
-import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
 import { cn } from '~/lib/utils';
@@ -43,7 +42,6 @@ import {
 } from '../primitives/Select';
 
 const FilterPetsResultsForm = () => {
-  const { toast } = useToast();
   const { t, i18n } = useTranslation('common');
   const router = useRouter();
   const params = useSearchParams();
@@ -55,18 +53,7 @@ const FilterPetsResultsForm = () => {
   } = api.shelter.getSheltersNames.useQuery();
 
   const form = useForm<IPetFilterOptions>({
-    resolver: async (data, context, options) => {
-      // debug zod validation schema
-      console.log('formData', data);
-      console.log(
-        'zod validation result',
-        await zodResolver(petFilterOptionsSchema)(data, context, options)
-      );
-      return zodResolver(petFilterOptionsSchema)(data, context, options);
-    },
-    defaultValues: {
-      healthStatus: undefined,
-    },
+    resolver: zodResolver(petFilterOptionsSchema),
   });
 
   const onSubmit = (values: IPetFilterOptions) => {
@@ -80,10 +67,6 @@ const FilterPetsResultsForm = () => {
 
     const searchQuery = filters.join('&');
     router.push(links.search(TypeOfResults.Animal, searchQuery));
-    toast({
-      description: `Loading new results...`,
-      variant: 'success',
-    });
   };
 
   const breedsToDisplay = params.get('search') == 'kot' ? catBreeds : dogBreeds;
@@ -94,6 +77,18 @@ const FilterPetsResultsForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-y-6"
       >
+        {params.has('search') && (
+          <Button
+            className="transition-all duration-300 ease-in-out"
+            size="lg"
+            onClick={() => {
+              form.reset();
+              router.push(links.results(TypeOfResults.Animal));
+            }}
+          >
+            {t('reset_filters')}
+          </Button>
+        )}
         {form.formState.isDirty && (
           <Button
             type="submit"
@@ -101,7 +96,7 @@ const FilterPetsResultsForm = () => {
             className="transition-all duration-300 ease-in-out"
             size="lg"
           >
-            Search new results
+            {t('search_new_results')}
           </Button>
         )}
         <FormField
@@ -109,68 +104,16 @@ const FilterPetsResultsForm = () => {
           name="name"
           render={({ field }) => (
             <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t('animals_table_name_column')}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
-                    placeholder="Search by name..."
+                    placeholder={t('animals_table_input_placeholder')}
                     {...field}
                   />
                   <Icons.search className="absolute right-2 top-2 text-muted-foreground" />
                 </div>
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="age"
-          render={({ field }) => (
-            <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>Age</FormLabel>
-              <Select
-                onValueChange={field.onChange as (value: string) => void}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select age" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="puppy">Puppy</SelectItem>
-                  <SelectItem value="young">Young</SelectItem>
-                  <SelectItem value="adult">Adult</SelectItem>
-                  <SelectItem value="senior">Senior</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="size"
-          render={({ field }) => (
-            <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>Size</FormLabel>
-              <Select
-                onValueChange={field.onChange as (value: string) => void}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select size" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="small">Small</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="large">Large</SelectItem>
-                  <SelectItem value="extralarge">Extra large</SelectItem>
-                </SelectContent>
-              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -213,6 +156,7 @@ const FilterPetsResultsForm = () => {
                           value={breed[i18n.language as 'en' | 'pl']}
                           key={breed[i18n.language as 'en' | 'pl']}
                           onSelect={() => {
+                            field.onChange(breed[i18n.language as 'en' | 'pl']);
                             form.setValue(
                               'breed',
                               breed[i18n.language as 'en' | 'pl']
@@ -336,22 +280,26 @@ const FilterPetsResultsForm = () => {
         />
         <FormField
           control={form.control}
-          name="characteristics"
+          name="age"
           render={({ field }) => (
             <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>Characteristics</FormLabel>
+              <FormLabel>{t('pet_age')}</FormLabel>
               <Select
                 onValueChange={field.onChange as (value: string) => void}
                 defaultValue={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select characteristics" />
+                    <SelectValue
+                      placeholder={t('pet_age_filter_placeholder')}
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="houseTrained">House trained</SelectItem>
-                  <SelectItem value="specialNeeds">Special Needs</SelectItem>
+                  <SelectItem value="Szczeniak">Szczeniak</SelectItem>
+                  <SelectItem value="Młody">Młody</SelectItem>
+                  <SelectItem value="Dorosły">Dorosły</SelectItem>
+                  <SelectItem value="Senior">Senior</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -360,23 +308,26 @@ const FilterPetsResultsForm = () => {
         />
         <FormField
           control={form.control}
-          name="goodWith"
+          name="size"
           render={({ field }) => (
             <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>Good with</FormLabel>
+              <FormLabel>{t('pet_size')}</FormLabel>
               <Select
                 onValueChange={field.onChange as (value: string) => void}
                 defaultValue={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select environment" />
+                    <SelectValue
+                      placeholder={t('pet_size_filter_placeholder')}
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="dogs">Dogs</SelectItem>
-                  <SelectItem value="cats">Cats</SelectItem>
-                  <SelectItem value="kids">Kids</SelectItem>
+                  <SelectItem value="Mały">Mały</SelectItem>
+                  <SelectItem value="Średni">Średni</SelectItem>
+                  <SelectItem value="Duży">Duży</SelectItem>
+                  <SelectItem value="Bardzo duży">Bardzo duży</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -419,8 +370,8 @@ const FilterPetsResultsForm = () => {
                           <CommandItem
                             value={shelterName.name}
                             key={shelterName.name}
-                            onSelect={async () => {
-                              await form.trigger('shelter');
+                            onSelect={() => {
+                              field.onChange(shelterName.name);
                               form.setValue('shelter', shelterName.name);
                             }}
                           >

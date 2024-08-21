@@ -1,13 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { useToast } from '~/hooks/useToast';
-import { voivodships } from '~/lib/constants';
+import { links } from '~/config/siteConfig';
+import { TypeOfResults, voivodships } from '~/lib/constants';
 import {
   shelterFilterOptionsSchema,
   type IShelterFilterOptions,
-} from '~/lib/validators/petValidation';
+} from '~/lib/validators/shelterValidation';
 import { Icons } from '../icons/Icons';
+import { Button } from '../primitives/Button';
 import {
   Form,
   FormControl,
@@ -26,19 +28,25 @@ import {
 } from '../primitives/Select';
 
 const FilterSheltersResults = () => {
-  const { toast } = useToast();
   const { t } = useTranslation('common');
+  const router = useRouter();
+  const params = useSearchParams();
 
   const form = useForm<IShelterFilterOptions>({
     resolver: zodResolver(shelterFilterOptionsSchema),
   });
 
   const onSubmit = (values: IShelterFilterOptions) => {
-    console.log(values);
-    toast({
-      description: `Loading new results...`,
-      variant: 'success',
+    const filters: string[] = [];
+
+    Object.entries(values).forEach(([, value]) => {
+      if (value !== '' && value !== undefined) {
+        filters.push(`${value}`);
+      }
     });
+
+    const searchQuery = filters.join('&');
+    router.push(links.search(TypeOfResults.Organization, searchQuery));
   };
 
   return (
@@ -47,16 +55,38 @@ const FilterSheltersResults = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-y-6"
       >
+        {params.has('search') && (
+          <Button
+            className="transition-all duration-300 ease-in-out"
+            size="lg"
+            onClick={() => {
+              form.reset();
+              router.push(links.results(TypeOfResults.Organization));
+            }}
+          >
+            {t('reset_filters')}
+          </Button>
+        )}
+        {form.formState.isDirty && (
+          <Button
+            type="submit"
+            variant="primary"
+            className="transition-all duration-300 ease-in-out"
+            size="lg"
+          >
+            {t('search_new_results')}
+          </Button>
+        )}
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t('shelter_settings_form_label_name')}</FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
-                    placeholder="Search by name..."
+                    placeholder={t('shelter_filter_name_placeholder')}
                     {...field}
                   />
                   <Icons.search className="absolute right-2 top-2 text-muted-foreground" />
@@ -75,7 +105,7 @@ const FilterSheltersResults = () => {
               <FormControl>
                 <div className="relative">
                   <Input
-                    placeholder="Search by address..."
+                    placeholder={t('shelter_filter_address_placeholder')}
                     {...field}
                   />
                   <Icons.search className="absolute right-2 top-2 text-muted-foreground" />

@@ -128,15 +128,30 @@ export const shelterRouter = createTRPCRouter({
     .input(
       z.object({
         searchQuery: z.string().optional(),
+        filter: z
+          .object({
+            sortBy: z.string().optional(),
+          })
+          .optional(),
       })
     )
     .query(async ({ ctx, input }) => {
       try {
+        const sortBy = input.filter?.sortBy;
+        let orderBy: { createdAt?: 'asc' | 'desc' } = {};
+
+        if (sortBy === 'oldest') {
+          orderBy = { createdAt: 'asc' };
+        } else if (sortBy === 'newest') {
+          orderBy = { createdAt: 'desc' };
+        }
+
         if (!input.searchQuery) {
           const shelters = await ctx.prisma.shelter.findMany({
             include: {
               address: true,
             },
+            orderBy: orderBy,
           });
 
           return shelters;
@@ -146,6 +161,7 @@ export const shelterRouter = createTRPCRouter({
           include: {
             address: true,
           },
+          orderBy: orderBy,
         });
 
         return shelters;
