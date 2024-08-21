@@ -7,7 +7,7 @@ import type {
 import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import AdoptionFormCard from '~/components/cards/AdoptionFormCard';
 import FilterSheltersResults from '~/components/forms/FilterSheltersResultsForm';
@@ -63,6 +63,7 @@ const SORT_OPTIONS = [
 const Organizations: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ searchQuery }) => {
+  const router = useRouter();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filter, setFilter] = useState<IShelterFilterOptions>({
     sortBy: 'none',
@@ -224,14 +225,13 @@ const Organizations: NextPage<
           </div>
         )}
         {!hasNextPage && (
-          <Link
-            href={links.organizationsScrollToPosition}
-            scroll={false}
+          <span
+            onClick={() => router.push(links.scrollToPosition)}
             className="z-50 mx-auto -mt-6 flex w-fit justify-center"
           >
             <span className="sr-only">Scroll to top</span>
             <Icons.doubleChevronUp className="duration-50 h-12 w-12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
-          </Link>
+          </span>
         )}
       </main>
     </PageLayout>
