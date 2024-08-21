@@ -1,8 +1,8 @@
-import { SearchIcon } from '@heroicons/react/outline';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type FC } from 'react';
 import { links } from '~/config/siteConfig';
+import { Icons } from '../icons/Icons';
 
 type ISearch = {
   query: string;
@@ -45,7 +45,7 @@ const Search: FC<ISearch> = ({ query, typeOfResults }) => {
         aria-label="Search button"
         type="submit"
       >
-        <SearchIcon className="duration-50 h-14 cursor-pointer rounded-full bg-primary-300 p-2 text-white transition-transform ease-in-out hover:scale-95" />
+        <Icons.search className="duration-50 h-11 w-11 cursor-pointer rounded-full bg-primary-300 p-2 text-white transition-transform ease-in-out hover:scale-95" />
       </button>
     </form>
   );
