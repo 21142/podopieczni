@@ -149,10 +149,24 @@ export const petRouter = createTRPCRouter({
     .input(
       z.object({
         searchQuery: z.string().optional(),
+        filter: z
+          .object({
+            sortBy: z.string().optional(),
+          })
+          .optional(),
       })
     )
     .query(async ({ ctx, input }) => {
       try {
+        const sortBy = input.filter?.sortBy;
+        let orderBy: { publishedAt?: 'asc' | 'desc' } = {};
+
+        if (sortBy === 'oldest') {
+          orderBy = { publishedAt: 'asc' };
+        } else if (sortBy === 'newest') {
+          orderBy = { publishedAt: 'desc' };
+        }
+
         let pets;
         if (input.searchQuery) {
           pets = await ctx.prisma.pet.findMany({
@@ -164,9 +178,7 @@ export const petRouter = createTRPCRouter({
                 },
               },
             },
-            orderBy: {
-              publishedAt: 'desc',
-            },
+            orderBy: orderBy,
           });
         } else {
           pets = await ctx.prisma.pet.findMany({
@@ -180,9 +192,7 @@ export const petRouter = createTRPCRouter({
                 },
               },
             },
-            orderBy: {
-              publishedAt: 'desc',
-            },
+            orderBy: orderBy,
           });
         }
 

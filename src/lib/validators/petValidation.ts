@@ -80,33 +80,14 @@ export const petDetailsSchema = z.object({
 
 export const petFilterOptionsSchema = z.object({
   name: z.string().optional(),
-  shelter: z.string().optional(),
   breed: z.string().optional(),
   gender: z.string().optional(),
-  color: z.string().optional(),
   coat: z.string().optional(),
+  color: z.string().optional(),
   age: z.string().optional(),
   size: z.string().optional(),
-  characteristics: z.string().optional(),
-  goodWith: z.string().optional(),
-  status: z.string().optional(),
-  healthStatus: z
-    .enum([
-      'HEALTHY',
-      'INJURED',
-      'SICK',
-      'TREATED',
-      'QUARANTINE',
-      'DEAD',
-      'UNKNOWN',
-    ])
-    .optional(),
-});
-
-export const shelterFilterOptionsSchema = z.object({
-  name: z.string().optional(),
-  address: z.string().optional(),
-  state: z.string().optional(),
+  shelter: z.string().optional(),
+  sortBy: z.string().optional(),
 });
 
 export const fullPetDetailsSchema = z.object({
@@ -174,7 +155,6 @@ export const petIdSchema = z.object({
 export type IPetDetails = z.infer<typeof petDetailsSchema>;
 export type IPetFullDetails = z.infer<typeof fullPetDetailsSchema>;
 export type IPetFilterOptions = z.infer<typeof petFilterOptionsSchema>;
-export type IShelterFilterOptions = z.infer<typeof shelterFilterOptionsSchema>;
 export type IPetMedicalEvent = z.infer<typeof medicalEvent>;
 export type IPetOutcomeEvent = z.infer<typeof outcomeEvent>;
 export type IDocument = z.infer<typeof document>;

@@ -35,6 +35,7 @@ import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
 import { cn } from '~/lib/utils';
+import { type IPetFilterOptions } from '~/lib/validators/petValidation';
 import { type PetAvailableForAdoption } from '~/types';
 
 export interface IResults {
@@ -43,31 +44,39 @@ export interface IResults {
 
 const SORT_OPTIONS = [
   {
-    en: 'Newest addition',
-    pl: 'Nowi podopieczni',
-    value: 'newest',
-    href: links.scrollToPosition,
+    en: 'None',
+    pl: 'Brak',
+    value: 'none',
     current: true,
   },
   {
-    en: 'Oldest addition',
-    pl: 'Starsi podopieczni',
-    value: 'oldest',
-    href: links.scrollToPosition,
+    en: 'Newest addition',
+    pl: 'Ostatnio dodani',
+    value: 'newest',
     current: false,
   },
-];
+  {
+    en: 'Oldest addition',
+    pl: 'Dawniej dodani',
+    value: 'oldest',
+    current: false,
+  },
+] as const;
 
 const Results: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ searchQuery }) => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [filter, setFilter] = useState<IPetFilterOptions>({
+    sortBy: 'none',
+  });
 
   const { t, i18n } = useTranslation('common');
 
   const { data: animals, isLoading } =
     api.pet.queryPetsAvailableForAdoption.useQuery({
       searchQuery,
+      filter,
     });
 
   return (
@@ -105,15 +114,25 @@ const Results: NextPage<
                     <DropdownMenuItem
                       key={option[i18n.language as 'en' | 'pl']}
                       className={cn(
-                        option.current
+                        option.value === filter.sortBy
                           ? 'font-medium text-foreground'
                           : 'text-gray-500',
-                        'px-4 py-2 text-sm',
-                        'hover:bg-gray-100'
+                        'block w-full px-4 py-2 text-sm',
+                        'hover:cursor-pointer hover:bg-gray-100'
                       )}
-                      onClick={() => (window.location.href = option.href)}
                     >
-                      {option[i18n.language as 'en' | 'pl']}
+                      <button
+                        key={option.value}
+                        className="w-full text-left"
+                        onClick={() => {
+                          setFilter((...prev) => ({
+                            ...prev,
+                            sortBy: option.value,
+                          }));
+                        }}
+                      >
+                        {option[i18n.language as 'en' | 'pl']}
+                      </button>
                     </DropdownMenuItem>
                   ))}
                 </div>
