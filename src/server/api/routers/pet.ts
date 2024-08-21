@@ -155,11 +155,14 @@ export const petRouter = createTRPCRouter({
             sortBy: z.string().optional(),
           })
           .optional(),
+        cursor: z.string().optional(),
+        limit: z.number().default(12),
       })
     )
     .query(async ({ ctx, input }) => {
       try {
-        const { searchQuery, filter } = input;
+        const { searchQuery, filter, cursor } = input;
+        const limit = input.limit ?? 12;
 
         const sortBy = filter?.sortBy;
         const orderBy = getPetsSortOrderBy(sortBy);
@@ -176,7 +179,15 @@ export const petRouter = createTRPCRouter({
             },
           },
           orderBy: orderBy,
+          take: limit + 1,
+          cursor: cursor ? { id: cursor } : undefined,
         });
+
+        let nextCursor: typeof cursor | undefined = undefined;
+        if (pets.length > limit) {
+          const nextItem = pets.pop();
+          nextCursor = nextItem?.id;
+        }
 
         if (ctx.session?.user.id) {
           const petIds = pets.map((pet) => pet.id);
@@ -198,16 +209,22 @@ export const petRouter = createTRPCRouter({
             favoriteStatusMap[favoritePet.petId] = true;
           }
 
-          return pets.map((pet) => ({
-            ...pet,
-            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
-            isLikedByUser: favoriteStatusMap[pet.id] || false,
-          }));
+          return {
+            pets: pets.map((pet) => ({
+              ...pet,
+              age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+              isLikedByUser: favoriteStatusMap[pet.id] || false,
+            })),
+            nextCursor,
+          };
         } else {
-          return pets.map((pet) => ({
-            ...pet,
-            age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
-          }));
+          return {
+            pets: pets.map((pet) => ({
+              ...pet,
+              age: pet.age || calculatePetAgeGroup(pet.dateOfBirth),
+            })),
+            nextCursor,
+          };
         }
       } catch (error) {
         console.log(error);
