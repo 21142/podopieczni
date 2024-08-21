@@ -37,4 +37,12 @@ export const shelterSettingsSchema = z.object({
     .optional(),
 });
 
+export const shelterFilterOptionsSchema = z.object({
+  name: z.string().optional(),
+  address: z.string().optional(),
+  state: z.string().optional(),
+  sortBy: z.string().optional(),
+});
+
 export type IShelterSettings = z.infer<typeof shelterSettingsSchema>;
+export type IShelterFilterOptions = z.infer<typeof shelterFilterOptionsSchema>;

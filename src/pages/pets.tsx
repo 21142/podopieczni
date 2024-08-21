@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Dialog, Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, FilterIcon, XIcon } from '@heroicons/react/outline';
-import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
 import type {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -11,11 +8,26 @@ import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import AdoptionFormCard from '~/components/cards/AdoptionFormCard';
 import FilterPetsResultsForm from '~/components/forms/FilterPetsResultsForm';
+import { Icons } from '~/components/icons/Icons';
 import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
+import { Button } from '~/components/primitives/Button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '~/components/primitives/DropdownMenu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '~/components/primitives/Sheet';
 import BackgroundWave from '~/components/utility/BackgroundWave';
 import SearchCategory from '~/components/utility/SearchCategory';
 import SearchPetsResults from '~/components/utility/SearchPetsResults';
@@ -23,43 +35,48 @@ import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
 import { TypeOfResults } from '~/lib/constants';
 import { cn } from '~/lib/utils';
+import { type IPetFilterOptions } from '~/lib/validators/petValidation';
 import { type PetAvailableForAdoption } from '~/types';
 
 export interface IResults {
   searchQuery: string;
 }
 
-const sortOptions = [
+const SORT_OPTIONS = [
   {
-    en: 'Newest addition',
-    pl: 'Nowi podopieczni',
-    href: links.scrollToPosition,
+    en: 'None',
+    pl: 'Brak',
+    value: 'none',
     current: true,
   },
   {
-    en: 'Oldest addition',
-    pl: 'Starsi podopieczni',
-    href: links.scrollToPosition,
+    en: 'Newest addition',
+    pl: 'Ostatnio dodani',
+    value: 'newest',
     current: false,
   },
   {
-    en: 'Most Popular',
-    pl: 'Najbardziej popularni',
-    href: links.scrollToPosition,
+    en: 'Oldest addition',
+    pl: 'Dawniej dodani',
+    value: 'oldest',
     current: false,
   },
-];
+] as const;
 
 const Results: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ searchQuery }) => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [filter, setFilter] = useState<IPetFilterOptions>({
+    sortBy: 'none',
+  });
 
   const { t, i18n } = useTranslation('common');
 
   const { data: animals, isLoading } =
     api.pet.queryPetsAvailableForAdoption.useQuery({
       searchQuery,
+      filter,
     });
 
   return (
@@ -75,62 +92,6 @@ const Results: NextPage<
       </div>
       <BackgroundWave />
 
-      {/* Mobile filter dialog */}
-      <Transition.Root
-        show={mobileFiltersOpen}
-        as={Fragment}
-      >
-        <Dialog
-          as="div"
-          className="fixed inset-0 z-40 flex lg:hidden"
-          onClose={setMobileFiltersOpen}
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="transition-opacity ease-linear duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity ease-linear duration-300"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-25" />
-          </Transition.Child>
-
-          <Transition.Child
-            as={Fragment}
-            enter="transition ease-in-out duration-300 transform"
-            enterFrom="translate-x-full"
-            enterTo="translate-x-0"
-            leave="transition ease-in-out duration-300 transform"
-            leaveFrom="translate-x-0"
-            leaveTo="translate-x-full"
-          >
-            <div className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-background py-4 pb-12 shadow-xl">
-              <div className="flex items-center justify-between px-4">
-                <h2 className="text-lg font-medium text-foreground">
-                  {t('filters')}
-                </h2>
-                <button
-                  type="button"
-                  className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-background p-2 text-gray-400"
-                  onClick={() => setMobileFiltersOpen(false)}
-                >
-                  <span className="sr-only">Close menu</span>
-                  <XIcon
-                    className="h-6 w-6"
-                    aria-hidden="true"
-                  />
-                </button>
-              </div>
-              <div className="p-4">
-                <FilterPetsResultsForm />
-              </div>
-            </div>
-          </Transition.Child>
-        </Dialog>
-      </Transition.Root>
-
       <main className="container mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
         <div className="relative z-10 flex items-baseline justify-between pb-6">
           <h1 className="max-w-[300px] text-2xl font-semibold tracking-tight sm:max-w-none sm:text-4xl">
@@ -138,65 +99,78 @@ const Results: NextPage<
           </h1>
 
           <div className="flex items-center">
-            <Menu
-              as="div"
-              className="relative inline-block text-left"
+            <DropdownMenu>
+              <DropdownMenuTrigger className="inline-flex items-center text-sm font-medium text-foreground/80 transition-all hover:text-foreground">
+                {t('sort')}
+                <Icons.chevronDown
+                  className="ml-1 h-5 w-5 text-foreground/80 transition-all hover:text-foreground"
+                  aria-hidden="true"
+                />
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent className="mt-2 w-40 origin-top-right rounded-md bg-background shadow-2xl ring-1 ring-black ring-opacity-5">
+                <div className="py-1">
+                  {SORT_OPTIONS.map((option) => (
+                    <DropdownMenuItem
+                      key={option[i18n.language as 'en' | 'pl']}
+                      className={cn(
+                        option.value === filter.sortBy
+                          ? 'font-medium text-foreground'
+                          : 'text-gray-500',
+                        'block w-full px-4 py-2 text-sm',
+                        'hover:cursor-pointer hover:bg-gray-100'
+                      )}
+                    >
+                      <button
+                        key={option.value}
+                        className="w-full text-left"
+                        onClick={() => {
+                          setFilter((...prev) => ({
+                            ...prev,
+                            sortBy: option.value,
+                          }));
+                        }}
+                      >
+                        {option[i18n.language as 'en' | 'pl']}
+                      </button>
+                    </DropdownMenuItem>
+                  ))}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Sheet
+              open={mobileFiltersOpen}
+              onOpenChange={setMobileFiltersOpen}
             >
-              <div>
-                <Menu.Button className="group inline-flex justify-center text-sm font-medium text-foreground/60">
-                  {t('sort')}
-                  <ChevronDownIcon
-                    className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+              <SheetTrigger asChild>
+                <Button
+                  variant="link"
+                  className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
+                >
+                  <span className="sr-only">Filters</span>
+                  <Icons.filter
+                    className="h-5 w-5"
                     aria-hidden="true"
                   />
-                </Menu.Button>
-              </div>
-
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="flex w-full p-0 lg:hidden"
               >
-                <Menu.Items className="absolute right-0 mt-2 w-40 origin-top-right rounded-md bg-background shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <div className="py-1">
-                    {sortOptions.map((option) => (
-                      <Menu.Item key={option[i18n.language as 'en' | 'pl']}>
-                        {({ active }) => (
-                          <a
-                            href={option.href}
-                            className={cn(
-                              option.current
-                                ? 'font-medium text-foreground'
-                                : 'text-gray-500',
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm'
-                            )}
-                          >
-                            {option[i18n.language as 'en' | 'pl']}
-                          </a>
-                        )}
-                      </Menu.Item>
-                    ))}
+                <div className="relative flex h-full w-full flex-col overflow-y-auto bg-background py-4 pb-12 pl-4 shadow-xl">
+                  <SheetHeader className="flex items-start px-4 pb-6">
+                    <SheetTitle className="text-lg font-medium text-foreground sm:text-xl md:text-3xl">
+                      {t('filters')}
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="w-full p-4">
+                    <FilterPetsResultsForm />
                   </div>
-                </Menu.Items>
-              </Transition>
-            </Menu>
-
-            <button
-              type="button"
-              className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
-              onClick={() => setMobileFiltersOpen(true)}
-            >
-              <span className="sr-only">{t('filters')}</span>
-              <FilterIcon
-                className="h-5 w-5"
-                aria-hidden="true"
-              />
-            </button>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
 
@@ -229,7 +203,7 @@ const Results: NextPage<
           className="z-50 mx-auto -mt-6 flex w-fit justify-center"
         >
           <span className="sr-only">Scroll to top</span>
-          <ChevronDoubleUpIcon className="duration-50 h-12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+          <Icons.doubleChevronUp className="duration-50 h-12 w-12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
         </Link>
       </main>
     </PageLayout>

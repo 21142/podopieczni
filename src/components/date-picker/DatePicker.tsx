@@ -1,5 +1,5 @@
-import { format } from 'date-fns';
 import { useState } from 'react';
+import dayjs from '~/lib/dayjs';
 import { cn } from '~/lib/utils';
 import { Icons } from '../icons/Icons';
 import { Button } from '../primitives/Button';
@@ -20,7 +20,7 @@ export function DatePicker() {
           )}
         >
           <Icons.calendar className="mr-2 h-4 w-4" />
-          {date ? format(date, 'PPP') : <span>Pick a date</span>}
+          {date ? dayjs(date).format('MMMM D, YYYY') : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

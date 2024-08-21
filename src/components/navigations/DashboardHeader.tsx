@@ -1,4 +1,3 @@
-import { MenuAlt2Icon, XIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
@@ -137,9 +136,9 @@ const DashboardHeader: FC<JSX.IntrinsicElements['header']> = ({
             >
               <span className="sr-only">Toggle navigation menu</span>
               {mobileMenuIsOpen ? (
-                <XIcon className="h-8 w-8 cursor-pointer" />
+                <Icons.close className="h-8 w-8 translate-x-3 cursor-pointer" />
               ) : (
-                <MenuAlt2Icon className="h-8 w-8 cursor-pointer" />
+                <Icons.menu className="h-8 w-8 cursor-pointer" />
               )}
             </button>
           </div>

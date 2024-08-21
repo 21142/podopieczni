@@ -1,4 +1,3 @@
-import { ChevronDoubleDownIcon } from '@heroicons/react/outline';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import FeaturedPets from '~/components/utility/FeaturedPets';
@@ -7,6 +6,7 @@ import Hero from '~/components/utility/Hero';
 import SearchByBreed from '~/components/utility/SearchByBreed';
 import SearchByState from '~/components/utility/SearchByState';
 import { links } from '~/config/siteConfig';
+import { Icons } from '../icons/Icons';
 
 const Landing = () => {
   const { t } = useTranslation('common');
@@ -34,7 +34,7 @@ const Landing = () => {
           scroll={false}
           aria-label="Przewiń w dół"
         >
-          <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+          <Icons.doubleChevronDown className="duration-50 h-9 w-9 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
         </Link>
 
         <FeaturedPets />
@@ -44,7 +44,7 @@ const Landing = () => {
             scroll={false}
             aria-label="Przewiń w dół"
           >
-            <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+            <Icons.doubleChevronDown className="duration-50 h-9 w-9 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
           </Link>
         </div>
         <GlobalStatistics />
@@ -54,7 +54,7 @@ const Landing = () => {
             scroll={false}
             aria-label="Przewiń w dół"
           >
-            <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+            <Icons.doubleChevronDown className="duration-50 h-9 w-9/12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
           </Link>
         </div>
         <SearchByBreed />
@@ -64,7 +64,7 @@ const Landing = () => {
             scroll={false}
             aria-label="Przewiń w dół"
           >
-            <ChevronDoubleDownIcon className="duration-50 h-8 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+            <Icons.doubleChevronDown className="duration-50 h-9 w-9/12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
           </Link>
         </div>
         <SearchByState />
