@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { ChevronDownIcon, FilterIcon } from '@heroicons/react/outline';
-import ChevronDoubleUpIcon from '@heroicons/react/solid/ChevronDoubleUpIcon';
 import type {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -13,6 +11,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import AdoptionFormCard from '~/components/cards/AdoptionFormCard';
 import FilterPetsResultsForm from '~/components/forms/FilterPetsResultsForm';
+import { Icons } from '~/components/icons/Icons';
 import Search from '~/components/inputs/Search';
 import PageLayout from '~/components/layouts/PageLayout';
 import { Button } from '~/components/primitives/Button';
@@ -92,10 +91,10 @@ const Results: NextPage<
 
           <div className="flex items-center">
             <DropdownMenu>
-              <DropdownMenuTrigger className="inline-flex items-center text-sm font-medium text-foreground/60">
+              <DropdownMenuTrigger className="inline-flex items-center text-sm font-medium text-foreground/80 transition-all hover:text-foreground">
                 {t('sort')}
-                <ChevronDownIcon
-                  className="ml-1 h-5 w-5 text-gray-400 hover:text-gray-500"
+                <Icons.chevronDown
+                  className="ml-1 h-5 w-5 text-foreground/80 transition-all hover:text-foreground"
                   aria-hidden="true"
                 />
               </DropdownMenuTrigger>
@@ -131,7 +130,7 @@ const Results: NextPage<
                   className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
                 >
                   <span className="sr-only">Filters</span>
-                  <FilterIcon
+                  <Icons.filter
                     className="h-5 w-5"
                     aria-hidden="true"
                   />
@@ -185,7 +184,7 @@ const Results: NextPage<
           className="z-50 mx-auto -mt-6 flex w-fit justify-center"
         >
           <span className="sr-only">Scroll to top</span>
-          <ChevronDoubleUpIcon className="duration-50 h-12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
+          <Icons.doubleChevronUp className="duration-50 h-12 w-12 cursor-pointer text-primary-300 transition-transform ease-in-out hover:scale-95" />
         </Link>
       </main>
     </PageLayout>
