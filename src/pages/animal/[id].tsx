@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { useSession } from 'next-auth/react';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import {
@@ -8,12 +9,24 @@ import {
   type NextPage,
 } from 'next/types';
 import PetDetailsForm from '~/components/forms/PetDetailsForm';
+import PageLayout from '~/components/layouts/PageLayout';
+import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
+import { Roles } from '~/lib/constants';
 import { prisma } from '~/lib/db';
 import { ssghelpers } from '~/lib/ssg';
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const AnimalProfilePage: NextPage<PageProps> = ({ animalId }) => {
+  const { data: session } = useSession();
+
+  if (!session || session.user.role === Roles.Adopter) {
+    return (
+      <PageLayout>
+        <UnauthorizedPage />
+      </PageLayout>
+    );
+  }
   return <PetDetailsForm animalId={animalId} />;
 };
 

@@ -11,7 +11,9 @@ const AdoptionSurvey = () => {
   if (!petId) {
     return (
       <PageLayout>
-        <p>Invalid pet id</p>
+        <div className="flex h-[40vh] w-screen items-center justify-center">
+          <p>petId parameter is missing</p>
+        </div>
       </PageLayout>
     );
   }

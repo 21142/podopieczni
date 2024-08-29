@@ -5,15 +5,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import AddPetForm from '~/components/forms/AddPetForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import PageLayout from '~/components/layouts/PageLayout';
-import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
+import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
+import { Roles } from '~/lib/constants';
 
 const Register: NextPage = () => {
   const { data: session } = useSession();
 
-  if (!session)
+  if (!session || session.user.role === Roles.Adopter)
     return (
       <PageLayout>
-        <LoginToAccessPage />
+        <UnauthorizedPage />
       </PageLayout>
     );
 
