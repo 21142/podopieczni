@@ -44,7 +44,6 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
   const trpc = api.useUtils();
   const { t } = useTranslation('common');
   const router = useRouter();
-
   const [logo, setLogo] = useState(
     shelterDetails?.logo ?? '/images/no-profile-picture.svg'
   );
@@ -61,17 +60,17 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
     resolver: zodResolver(shelterSettingsSchema),
     defaultValues: {
       ...shelterDetails,
-      website: shelterDetails?.website || '-',
-      description: shelterDetails?.description || '-',
-      phoneNumber: shelterDetails?.phoneNumber || '-',
-      email: shelterDetails?.email || 'provideyouremail@example.com',
+      website: shelterDetails?.website || '',
+      description: shelterDetails?.description || '',
+      phoneNumber: shelterDetails?.phoneNumber || '',
+      email: shelterDetails?.email || '',
       address: {
         ...shelterDetails?.address,
-        address: shelterDetails?.address?.address || '-',
-        city: shelterDetails?.address?.city || '-',
-        state: shelterDetails?.address?.state || '-',
-        country: shelterDetails?.address?.country || '-',
-        postCode: shelterDetails?.address?.postCode || '-',
+        address: shelterDetails?.address?.address || '',
+        city: shelterDetails?.address?.city || '',
+        state: shelterDetails?.address?.state || '',
+        country: shelterDetails?.address?.country || '',
+        postCode: shelterDetails?.address?.postCode || '',
       },
     },
   });
@@ -119,7 +118,7 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                   size="sm"
                   type="submit"
                   className="text-xs"
-                  disabled={!form.formState.isDirty || !form.formState.isValid}
+                  disabled={!form.formState.isDirty}
                 >
                   {t('form_save_changes_button')}
                 </Button>
