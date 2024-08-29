@@ -67,26 +67,19 @@ const AdoptionSurveyForm: FC<Props> = ({ petId }) => {
 
   const form = useForm<IAdoptionSurvey>({
     resolver: zodResolver(adoptionSurveySchema),
-    defaultValues: userDetails
-      ? {
-          firstName: userDetails.firstName || '',
-          lastName: userDetails.lastName || '',
-          email: userDetails.email || '',
-          phoneNumber: userDetails.phoneNumber || '',
-          address: {
-            address: userDetails.address?.address || '',
-            city: userDetails.address?.city || '',
-            postCode: userDetails.address?.postCode || '',
-            state: userDetails.address?.state || '',
-            country: userDetails.address?.country || '',
-          },
-        }
-      : {
-          firstName: '',
-          lastName: '',
-          email: '',
-          phoneNumber: '',
-        },
+    defaultValues: {
+      firstName: userDetails?.firstName ?? '',
+      lastName: userDetails?.lastName ?? '',
+      email: userDetails?.email ?? '',
+      phoneNumber: userDetails?.phoneNumber ?? '',
+      address: {
+        address: userDetails?.address?.address ?? '',
+        city: userDetails?.address?.city ?? '',
+        postCode: userDetails?.address?.postCode ?? '',
+        state: userDetails?.address?.state ?? '',
+        country: userDetails?.address?.country ?? '',
+      },
+    },
   });
 
   const onSubmit = async (values: IAdoptionSurvey) => {
