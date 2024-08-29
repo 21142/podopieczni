@@ -32,12 +32,13 @@ const People: NextPage = () => {
     );
   }
 
-  if (error || sessionData?.role === Roles.Adopter)
+  if (error || !sessionData || sessionData?.role === Roles.Adopter) {
     return (
       <PageLayout>
         <UnauthorizedPage />
       </PageLayout>
     );
+  }
 
   if (errorFetchingUsers) {
     return (

@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import UserDetailsForm from '~/components/forms/UserDetailsForm';
@@ -8,6 +9,15 @@ import useMeQuery from '~/hooks/useMeQuery';
 
 const UserSettings = () => {
   const { data: me, isLoading, error } = useMeQuery();
+  const { data: session } = useSession();
+
+  if (!session) {
+    return (
+      <PageLayout>
+        <LoginToAccessPage />
+      </PageLayout>
+    );
+  }
 
   if (isLoading) {
     return (

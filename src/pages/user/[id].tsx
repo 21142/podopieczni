@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { useSession } from 'next-auth/react';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import {
@@ -9,8 +10,11 @@ import {
 } from 'next/types';
 import UserDetailsForm from '~/components/forms/UserDetailsForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
+import PageLayout from '~/components/layouts/PageLayout';
+import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
+import { Roles } from '~/lib/constants';
 import { prisma } from '~/lib/db';
 import { ssghelpers } from '~/lib/ssg';
 
@@ -20,6 +24,16 @@ const UserProfilePage: NextPage<PageProps> = ({ userId }) => {
   const { data: user, isLoading } = api.user.getUserById.useQuery({
     id: userId,
   });
+
+  const { data: session } = useSession();
+
+  if (!session || session.user.role === Roles.Adopter) {
+    return (
+      <PageLayout>
+        <UnauthorizedPage />
+      </PageLayout>
+    );
+  }
 
   if (isLoading) {
     return (

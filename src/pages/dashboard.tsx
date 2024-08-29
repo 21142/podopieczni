@@ -6,11 +6,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import PageLayout from '~/components/layouts/PageLayout';
-import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
 import ShelterDashboard from '~/components/pages/ShelterDashboard';
+import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinner/Spinner';
 import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
+import { Roles } from '~/lib/constants';
 import { ssghelpers } from '~/lib/ssg';
 
 const Dashboard: NextPage = () => {
@@ -97,20 +98,20 @@ const Dashboard: NextPage = () => {
     { enabled: session?.user !== undefined, retry: false }
   );
 
+  if (!session || session.user.role === Roles.Adopter) {
+    return (
+      <PageLayout>
+        <UnauthorizedPage />
+      </PageLayout>
+    );
+  }
+
   if (isLoading) {
     return (
       <PageLayout>
         <div className="grid h-[50vh] content-center">
           <Spinner />
         </div>
-      </PageLayout>
-    );
-  }
-
-  if (!session) {
-    return (
-      <PageLayout>
-        <LoginToAccessPage />
       </PageLayout>
     );
   }

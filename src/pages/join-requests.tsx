@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import i18nConfig from 'next-i18next.config.mjs';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -10,6 +11,8 @@ import { joinRequestColumnsInPolish } from '~/components/data-table/DataTableCol
 import EmailInviteForm from '~/components/forms/EmailInviteForm';
 import { Icons } from '~/components/icons/Icons';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
+import PageLayout from '~/components/layouts/PageLayout';
+import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import { Button, buttonVariants } from '~/components/primitives/Button';
 import {
   Dialog,
@@ -21,12 +24,23 @@ import {
 } from '~/components/primitives/Dialog';
 import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
+import { Roles } from '~/lib/constants';
 import { ssghelpers } from '~/lib/ssg';
 
 const JoinRequests: NextPage = () => {
   const { data } = api.shelter.getJoinRequests.useQuery();
   const { locale } = useRouter();
   const { t } = useTranslation('common');
+
+  const { data: session } = useSession();
+
+  if (!session || session.user.role === Roles.Adopter) {
+    return (
+      <PageLayout>
+        <UnauthorizedPage />
+      </PageLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

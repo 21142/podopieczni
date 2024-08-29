@@ -8,7 +8,7 @@ import { api } from '~/lib/api';
 import { UploadButton } from '~/lib/uploadthing';
 import {
   userAccountDetailsSchema,
-  type IUserAccountDetails
+  type IUserAccountDetails,
 } from '~/lib/validators/userValidation';
 import { type UserDetailsDto } from '~/types';
 import { Icons } from '../icons/Icons';
@@ -21,7 +21,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from '../primitives/Form';
 import { Input } from '../primitives/Input';
 import { RadioGroup, RadioGroupItem } from '../primitives/RadioButton';
@@ -30,7 +30,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from '../primitives/Select';
 import Spinner from '../spinner/Spinner';
 import BackgroundWavesFeaturedPets from '../utility/BackgroundWavesFeaturedPets';
@@ -405,7 +405,7 @@ const UserDetailsForm: FC<Props> = ({ user }) => {
               type="submit"
               className="col-span-2 justify-self-start"
               size="lg"
-              disabled={!form.formState.isDirty || !form.formState.isValid}
+              disabled={!form.formState.isDirty}
             >
               {updateUserDetails.isPending ? (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
