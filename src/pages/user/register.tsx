@@ -23,7 +23,7 @@ const RegisterUser: NextPage = () => {
     );
   }
 
-  if (error || sessionData?.role === Roles.Adopter)
+  if (error || !sessionData || sessionData?.role === Roles.Adopter)
     return (
       <PageLayout>
         <UnauthorizedPage />
@@ -32,7 +32,7 @@ const RegisterUser: NextPage = () => {
 
   return (
     <DashboardLayout>
-      {sessionData && sessionData.role !== Roles.Adopter && <AddPersonForm />}
+      <AddPersonForm />
     </DashboardLayout>
   );
 };

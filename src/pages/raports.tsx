@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { Icons } from '~/components/icons/Icons';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import PageLayout from '~/components/layouts/PageLayout';
-import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
+import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import { Button, buttonVariants } from '~/components/primitives/Button';
 import {
   Card,
@@ -21,6 +21,7 @@ import Spinner from '~/components/spinner/Spinner';
 import Chart from '~/components/utility/Chart';
 import { links } from '~/config/siteConfig';
 import { api } from '~/lib/api';
+import { Roles } from '~/lib/constants';
 import generateCombinedCSVReport from '~/lib/generateRaport';
 import { ssghelpers } from '~/lib/ssg';
 
@@ -94,20 +95,20 @@ const Raports: NextPage = () => {
     generateCombinedCSVReport(combinedData);
   };
 
+  if (!session || session.user.role === Roles.Adopter) {
+    return (
+      <PageLayout>
+        <UnauthorizedPage />
+      </PageLayout>
+    );
+  }
+
   if (isLoading) {
     return (
       <PageLayout>
         <div className="grid h-[50vh] content-center">
           <Spinner />
         </div>
-      </PageLayout>
-    );
-  }
-
-  if (!session) {
-    return (
-      <PageLayout>
-        <LoginToAccessPage />
       </PageLayout>
     );
   }

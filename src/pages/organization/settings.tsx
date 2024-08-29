@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ShelterSettings from '~/components/forms/ShelterDetailsForm';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
 import PageLayout from '~/components/layouts/PageLayout';
-import LoginToAccessPage from '~/components/pages/LoginToAccessPage';
+import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
 import { Roles } from '~/lib/constants';
@@ -26,6 +26,14 @@ const OrganizationSettings: NextPage = () => {
     { enabled: session?.user !== undefined }
   );
 
+  if (!session || session.user.role === Roles.Adopter) {
+    return (
+      <PageLayout>
+        <UnauthorizedPage />
+      </PageLayout>
+    );
+  }
+
   if (isLoading) {
     return (
       <PageLayout>
@@ -36,24 +44,14 @@ const OrganizationSettings: NextPage = () => {
     );
   }
 
-  if (!session)
-    return (
-      <PageLayout>
-        <LoginToAccessPage />
-      </PageLayout>
-    );
-
   if (!shelterDetails)
     return <p>No shelter details retrieved from our database.</p>;
 
   return (
     <DashboardLayout>
-      {isUserAssociatedWithShelter &&
-        session &&
-        (session.user.role === Roles.Shelter ||
-          session.user.role === Roles.Admin) && (
-          <ShelterSettings shelterDetails={shelterDetails} />
-        )}
+      {isUserAssociatedWithShelter && (
+        <ShelterSettings shelterDetails={shelterDetails} />
+      )}
       {!isUserAssociatedWithShelter && (
         <div className="grid h-[50vh] content-center">
           <h1 className="text-center text-2xl font-semibold">

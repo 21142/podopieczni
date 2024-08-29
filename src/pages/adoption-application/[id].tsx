@@ -10,8 +10,11 @@ import {
 } from 'next/types';
 import AdoptionSurveyAnswers from '~/components/forms/AdoptionSurveyAnswers';
 import DashboardLayout from '~/components/layouts/DashboardLayout';
+import PageLayout from '~/components/layouts/PageLayout';
+import UnauthorizedPage from '~/components/pages/UnauthorizedPage';
 import Spinner from '~/components/spinner/Spinner';
 import { api } from '~/lib/api';
+import { Roles } from '~/lib/constants';
 import { prisma } from '~/lib/db';
 import { ssghelpers } from '~/lib/ssg';
 
@@ -27,6 +30,14 @@ const AdoptionApplicationPage: NextPage<PageProps> = ({ applicationId }) => {
 
   const { data: application, isLoading } =
     api.adoptionApplication.getApplicationById.useQuery(applicationId);
+
+  if (!session || session.user.role === Roles.Adopter) {
+    return (
+      <PageLayout>
+        <UnauthorizedPage />
+      </PageLayout>
+    );
+  }
 
   if (isLoading || isLoadingUser) {
     return (
