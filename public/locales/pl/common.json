@@ -86,6 +86,7 @@
    "dashboard_euthanized_animals_raport_card_title": "Raport uśpionych zwierząt",
    "dashboard_recent_adoptions_card_title": "Ostatnio przyjęte zwierzęta",
    "dashboard_recent_adoptions_card_subtitle": " przyjętych w ostatnim miesiącu",
+   "recent_adoptions_no_animals": "Brak przyjętych w ostatnim miesiącu zwierzaków",
    "animals_table_no_results": "Brak danych",
    "animals_table_reset_filters": "Wyczyść filtry",
    "animals_table_filter_selected": " wybrano",

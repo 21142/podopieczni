@@ -10,6 +10,7 @@ import { ZodError } from 'zod';
 import { links } from '~/config/siteConfig';
 import { toast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
+import { voivodships } from '~/lib/constants';
 import {
   shelterSettingsSchema,
   type IShelterSettings,
@@ -34,6 +35,13 @@ import {
   FormMessage,
 } from '../primitives/Form';
 import { Input } from '../primitives/Input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../primitives/Select';
 import { Textarea } from '../primitives/Textarea';
 
 type Props = {
@@ -279,14 +287,34 @@ const ShelterDetailsForm = ({ shelterDetails }: Props) => {
                         control={form.control}
                         name="address.state"
                         render={({ field }) => (
-                          <FormItem className="col-span-2 grid gap-3 sm:col-span-1">
+                          <FormItem>
                             <FormLabel>{t('form_label_state')}</FormLabel>
-                            <FormControl>
-                              <Input
-                                className="w-full"
-                                {...field}
-                              />
-                            </FormControl>
+                            <Select
+                              onValueChange={
+                                field.onChange as (value: string) => void
+                              }
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue
+                                    placeholder={t(
+                                      'form_label_state_placeholder'
+                                    )}
+                                  />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {voivodships.map((voivodship) => (
+                                  <SelectItem
+                                    key={voivodship.name}
+                                    value={voivodship.name}
+                                  >
+                                    {voivodship.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                             <FormMessage />
                           </FormItem>
                         )}

@@ -86,6 +86,7 @@
    "dashboard_euthanized_animals_raport_card_title": "Euthanized animals raport",
    "dashboard_recent_adoptions_card_title": "Recently admitted animals",
    "dashboard_recent_adoptions_card_subtitle": " admitted last month",
+   "recent_adoptions_no_animals": "No pets admitted last month",
    "animals_table_no_results": "No results",
    "animals_table_reset_filters": "Reset",
    "animals_table_filter_selected": " selected",
