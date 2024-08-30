@@ -178,7 +178,7 @@ const AdoptionSurveyAnswers: FC<Props> = ({ applicationId }) => {
     <div className="p-4 sm:p-0 sm:pb-4">
       <BackgroundWavesFeaturedPets className="absolute -z-10 aspect-[10/1] w-full rotate-180" />
       <Card className="mx-auto mt-4 w-full max-w-7xl p-4 px-4 py-5 sm:mt-6 sm:p-10 2xl:max-w-8xl">
-        <CardHeader className="px-0 pb-12 pt-0">
+        <CardHeader className="mx-auto max-w-7xl px-0 pb-12 pt-0">
           <h1 className="mb-6 font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
             {t('adoption_survey_form_title')}
           </h1>
@@ -220,7 +220,7 @@ const AdoptionSurveyAnswers: FC<Props> = ({ applicationId }) => {
           </div>
         </CardHeader>
         <Form {...form}>
-          <form className="flex flex-col gap-y-6 md:grid md:grid-cols-2 md:gap-6">
+          <form className="mx-auto flex max-w-7xl flex-col gap-y-6 md:grid md:grid-cols-2 md:gap-6">
             <FormField
               control={form.control}
               name="reasonForAdoption"
@@ -541,7 +541,7 @@ const AdoptionSurveyAnswers: FC<Props> = ({ applicationId }) => {
               )}
             />
           </form>
-          <div className="mt-10 grid w-fit grid-cols-1 gap-3 xs:grid-cols-2 md:grid-cols-4">
+          <div className="mx-auto mt-10 grid max-w-7xl grid-cols-1 gap-3 xs:grid-cols-2 md:grid-cols-4">
             <Link
               className={buttonVariants({ variant: 'subtle', size: 'lg' })}
               href={links.adoptions}

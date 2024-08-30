@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/navigation';
 import { type FC } from 'react';
 import { links } from '~/config/siteConfig';
@@ -14,6 +15,7 @@ type RecentAdoptionsProps = {
 
 const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals, isLoading }) => {
   const router = useRouter();
+  const { t } = useTranslation('common');
 
   if (isLoading) {
     return (
@@ -37,16 +39,16 @@ const RecentAdoptions: FC<RecentAdoptionsProps> = ({ animals, isLoading }) => {
       ) : (
         <div className="p-4">
           <Icons.crossedCircle className="my-9 h-24 w-24 text-muted-foreground transition-colors hover:text-muted-foreground/80" />
-          <span className="text-md font-light">
-            Brak przyjętych w ostatnim miesiącu zwierzaków
-          </span>
+          <p className="text-md font-light">
+            {t('recent_adoptions_no_animals')}
+          </p>
           <Button
             onClick={() => router.push(links.registerAnimal)}
             size="lg"
             variant="primary"
             className="my-4"
           >
-            Dodaj zwierzaka
+            {t('add_pet_form_title')}
           </Button>
         </div>
       )}
