@@ -167,6 +167,7 @@
    "form_label_city": "Miasto",
    "form_label_zip_code": "Kod pocztowy",
    "form_label_state": "Województwo",
+   "form_label_state_placeholder": "Wybierz województwo",
    "form_label_country": "Kraj",
    "update_user_details_form_title": "Twój profil",
    "update_user_details_form_title_address": "Twoje dane adresowe",
