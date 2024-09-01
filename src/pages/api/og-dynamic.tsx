@@ -35,7 +35,7 @@ export default function (req: NextRequest) {
             }}
           />
         </div>
-        {name && description && description != '-' && (
+        {name && description && description.length > 0 && (
           <div tw="mt-24 flex w-1/3 flex-col p-[48px] text-white">
             <h1 tw="text-[52px] tracking-tight">{name}</h1>
             <p tw="text-[26px] text-neutral-100 tracking-tight">
@@ -52,7 +52,7 @@ export default function (req: NextRequest) {
             </p>
           </div>
         )}
-        {name && description === '-' && (
+        {name && description?.length === 0 && (
           <div tw="mt-24 flex w-1/3 flex-col p-[48px] text-white">
             <h1 tw="text-[52px] tracking-tight">{name}</h1>
             <p tw="text-[26px] text-neutral-100 tracking-tight">

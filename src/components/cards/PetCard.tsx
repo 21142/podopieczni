@@ -98,6 +98,14 @@ const PetCard: FC<IAnimalCard> = ({
     }, 1000);
   };
 
+  const formatPetDetails = (
+    age?: string,
+    breed?: string,
+    type?: string
+  ): string => {
+    return [age, breed, type].filter(Boolean).join(' • ');
+  };
+
   return (
     <Card
       id="card"
@@ -126,9 +134,7 @@ const PetCard: FC<IAnimalCard> = ({
           <CardDescription className="mx-auto flex max-w-[90%] justify-center">
             {variant === Variant.Organization
               ? t('organization_card_default_description')
-              : `${age ? `${age} ` : ''} ${breed ? `• ${breed}` : ''} ${
-                  type ? `• ${type}` : ''
-                }`}
+              : formatPetDetails(age, breed, type)}
           </CardDescription>
         </CardHeader>
         <CardContent
@@ -136,7 +142,7 @@ const PetCard: FC<IAnimalCard> = ({
           className="flex flex-col overflow-hidden pt-3"
         >
           <p className="h-12 text-center">
-            {body && body !== '-'
+            {body && body.length > 0
               ? truncate(body)
               : variant === Variant.Organization
               ? ''

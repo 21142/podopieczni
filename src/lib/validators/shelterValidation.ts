@@ -9,11 +9,14 @@ export const shelterSettingsSchema = z.object({
   phoneNumber: z.string().optional(),
   email: z
     .string()
-    .email({ message: 'Email is invalid' })
     .optional()
-    .refine((value) => {
-      return value === '-' || typeof value === 'string';
-    }),
+    .refine(
+      (value) => {
+        return value === '' || z.string().email().safeParse(value).success;
+      },
+      { message: 'Email is invalid' }
+    ),
+
   taxId: z.string().refine(
     async (value) => {
       const onlyDigits = value.replace(/-/g, '');

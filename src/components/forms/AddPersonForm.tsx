@@ -7,6 +7,7 @@ import type * as z from 'zod';
 import { links } from '~/config/siteConfig';
 import { useToast } from '~/hooks/useToast';
 import { api } from '~/lib/api';
+import { voivodships } from '~/lib/constants';
 import { UploadButton } from '~/lib/uploadthing';
 import {
   userAccountDetailsSchema,
@@ -103,7 +104,7 @@ const AddPersonForm = () => {
     <div className="pb-4">
       <BackgroundWavesFeaturedPets className="absolute -z-10 aspect-[10/1] w-full rotate-180" />
       <Card className="mx-auto mt-4 w-full max-w-7xl p-4 px-4 py-5 sm:mt-6 sm:p-10 2xl:max-w-8xl">
-        <CardHeader className="px-0 pt-2">
+        <CardHeader className="mx-auto max-w-7xl px-0 pt-2">
           <h1 className="mb-6 font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
             {t('add_person_form_title')}
           </h1>
@@ -111,7 +112,7 @@ const AddPersonForm = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-y-6 md:grid md:grid-cols-2 md:gap-6"
+            className="mx-auto flex max-w-7xl flex-col gap-y-6 md:grid md:grid-cols-2 md:gap-6"
           >
             <div className="col-span-2 flex justify-center gap-6 md:justify-start">
               <div className="flex flex-col items-center gap-6 md:flex-row">
@@ -387,12 +388,28 @@ const AddPersonForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('form_label_state')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder=""
-                      {...field}
-                    />
-                  </FormControl>
+                  <Select
+                    onValueChange={field.onChange as (value: string) => void}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={t('form_label_state_placeholder')}
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {voivodships.map((voivodship) => (
+                        <SelectItem
+                          key={voivodship.name}
+                          value={voivodship.name}
+                        >
+                          {voivodship.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
