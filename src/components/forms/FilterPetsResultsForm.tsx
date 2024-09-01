@@ -339,7 +339,7 @@ const FilterPetsResultsForm = () => {
           name="shelter"
           render={({ field }) => (
             <FormItem className="col-span-6 sm:col-span-3">
-              <FormLabel>Shelter</FormLabel>
+              <FormLabel>{t('nav_shelter')}</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
