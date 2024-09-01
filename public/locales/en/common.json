@@ -167,6 +167,7 @@
    "form_label_city": "City",
    "form_label_zip_code": "Post code",
    "form_label_state": "State",
+   "form_label_state_placeholder": "Select state",
    "form_label_country": "Country",
    "update_user_details_form_title": "Your profile",
    "update_user_details_form_title_address": "Your address details",
