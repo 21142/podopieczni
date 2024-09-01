@@ -92,7 +92,7 @@ const UserDetailsForm: FC<Props> = ({ user }) => {
       <Card className="mx-auto mt-4 w-full max-w-7xl p-4 px-4 py-5 sm:mt-6 sm:p-10 2xl:max-w-8xl">
         {user?.name && (
           <CardHeader className="mx-auto max-w-7xl px-0 pt-2">
-            <h1 className="mb-6 font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
+            <h1 className="my-6 font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
               {user.name}
             </h1>
           </CardHeader>

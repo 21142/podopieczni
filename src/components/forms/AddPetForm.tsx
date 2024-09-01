@@ -122,9 +122,9 @@ const AddPetForm = () => {
     <div className="pb-4">
       <BackgroundWavesFeaturedPets className="absolute -z-10 aspect-[10/1] w-full rotate-180" />
       <Card className="mx-auto mt-4 w-full max-w-7xl p-4 px-4 py-5 sm:mt-6 sm:p-10 2xl:max-w-8xl">
-        <p className="mx-auto mb-6 max-w-7xl font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
+        <h1 className="mx-auto my-6 max-w-7xl font-sans text-4xl tracking-wide text-foreground underline decoration-2 underline-offset-4 sm:text-6xl">
           {t('add_pet_form_title')}
-        </p>
+        </h1>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
